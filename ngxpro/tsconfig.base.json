@@ -1,0 +1,35 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ngxpro/cdk": ["libs/cdk/src/index.ts"],
+      "@ngxpro/core": ["libs/core/src/index.ts"],
+      "@ngxpro/components": ["libs/components/src/index.ts"],
+      "@ngxpro/components/accordion": ["libs/components/accordion/src/index.ts"],
+      "@ngxpro/components/avatar": ["libs/components/avatar/src/index.ts"],
+      "@ngxpro/components/button": ["libs/components/button/src/index.ts"],
+      "@ngxpro/components/card": ["libs/components/card/src/index.ts"],
+      "@ngxpro/components/input": ["libs/components/input/src/index.ts"],
+      "@ngxpro/components/text-morph": ["libs/components/text-morph/src/index.ts"],
+      "@ngxpro/blocks": ["libs/blocks/src/index.ts"],
+      "@ngxpro/blocks/charts": ["libs/blocks/charts/src/index.ts"],
+      "@ngxpro/blocks/kpi-cards": ["libs/blocks/kpi-cards/src/index.ts"],
+      "@ngxpro/blocks/tables": ["libs/blocks/tables/src/index.ts"],
+      "@ngxpro/fintech": ["libs/fintech/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

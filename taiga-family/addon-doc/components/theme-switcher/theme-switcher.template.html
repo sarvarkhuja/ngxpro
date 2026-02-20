@@ -1,0 +1,30 @@
+<tui-textfield
+    tuiChevron
+    [tuiTextfieldCleaner]="false"
+>
+    <label tuiLabel>
+        <ng-content />
+    </label>
+    <input
+        tuiSelect
+        [ngModel]="theme"
+        (ngModelChange)="onTheme($event)"
+    />
+    <tui-data-list *tuiDropdown>
+        @for (key of keys; track key) {
+            <button
+                tuiOption
+                type="button"
+                [value]="key"
+            >
+                <img
+                    alt=""
+                    [src]="themes[key]"
+                    [style.margin-inline-end.rem]="0.5"
+                    [style.width.rem]="1.75"
+                />
+                {{ key }}
+            </button>
+        }
+    </tui-data-list>
+</tui-textfield>

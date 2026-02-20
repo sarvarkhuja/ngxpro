@@ -1,0 +1,145 @@
+@import '@taiga-ui/styles/utils';
+
+@color-dark: #454e58;
+@color-gray: #e5e7ea;
+@color-dark-resizer: #3e464e;
+
+:host {
+    position: relative;
+    display: block;
+    min-inline-size: 100%;
+    margin: 0 0 1.5rem;
+    font: var(--tui-typography-body-s);
+    color: var(--tui-text-primary);
+    background: var(--tui-background-base-alt);
+    box-shadow: 0 0 1rem 0.5rem var(--tui-background-base);
+    border-radius: var(--tui-radius-m);
+    overflow: hidden;
+    box-sizing: border-box;
+
+    &[tuiTheme='dark'] {
+        box-shadow: none;
+    }
+
+    :host-context([tuiTheme='dark']) {
+        background: var(--tui-background-elevation-2);
+        box-shadow: 0 0 1rem 0.5rem var(--tui-background-base);
+
+        &[tuiTheme='light'] {
+            box-shadow: none;
+        }
+    }
+}
+
+.t-settings {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.5rem 0.75rem 0.25rem;
+}
+
+.t-wrapper {
+    display: flex;
+    max-inline-size: 100%;
+    min-block-size: 6rem;
+    inline-size: 100%;
+    min-inline-size: 10rem;
+    color: var(--tui-text-primary);
+    background-color: var(--tui-background-base);
+    padding: 0.25rem;
+    border-radius: var(--tui-radius-m);
+    box-sizing: border-box;
+    box-shadow: inset 0 0 0 0.25rem var(--tui-background-base-alt);
+    overflow: hidden;
+    pointer-events: auto;
+
+    :host-context([tuiTheme='dark']) & {
+        box-shadow: inset 0 0 0 0.25rem var(--tui-background-elevation-2);
+    }
+
+    &.t-wrapper_transparent {
+        background-image:
+            linear-gradient(45deg, var(--tui-background-base-alt) 25%, transparent 25%),
+            linear-gradient(-45deg, var(--tui-background-base-alt) 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, var(--tui-background-base-alt) 75%),
+            linear-gradient(-45deg, transparent 75%, var(--tui-background-base-alt) 75%);
+        background-size: 1.25rem 1.25rem;
+        background-position:
+            0 0,
+            0 0.625rem,
+            0.625rem -0.625rem,
+            -0.625rem 0;
+    }
+
+    @media @tui-mobile {
+        min-block-size: auto;
+    }
+}
+
+.t-content {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    @media @tui-mobile {
+        padding: 1rem;
+    }
+}
+
+.t-footer {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0 0.25rem 0.25rem;
+}
+
+.t-select {
+    inline-size: 6rem;
+    margin-inline-start: auto;
+}
+
+.t-value {
+    flex: 1;
+    background: var(--tui-background-base);
+    border-radius: var(--tui-radius-m);
+    box-shadow: inset 0 -0.25rem 0 0.25rem var(--tui-background-base-alt);
+    padding: 0.5rem 0.75rem 1rem;
+    margin: 0 0 -0.25rem;
+
+    :host-context([tuiTheme='dark']) & {
+        box-shadow: inset 0 -0.25rem 0 0.25rem var(--tui-background-elevation-2);
+    }
+}
+
+.t-resizer {
+    .transition(color);
+
+    position: relative;
+    display: flex;
+    min-block-size: inherit;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--tui-text-tertiary);
+
+    &:hover,
+    &:active {
+        color: var(--tui-text-secondary);
+    }
+
+    @media @tui-mobile {
+        display: none;
+    }
+}
+
+@media screen and (min-height: 37.5rem) {
+    :host {
+        &._sticky {
+            position: sticky;
+            top: 4.625rem;
+            z-index: 2;
+        }
+    }
+}

@@ -1,0 +1,74 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    display: block;
+}
+
+.t-header {
+    font: var(--tui-typography-body-s);
+    font-weight: bold;
+}
+
+.t-header + .t-code {
+    border-radius: 0.25rem;
+}
+
+.t-code {
+    position: relative;
+    margin: 0;
+    white-space: normal;
+    outline: 1px solid var(--tui-border-normal);
+
+    ::ng-deep .hljs-ln {
+        inline-size: 100%;
+
+        .hljs-ln-numbers {
+            inline-size: 1rem;
+        }
+
+        td {
+            white-space: pre;
+
+            &:not(.hljs-ln-numbers):hover {
+                outline: 1px solid var(--tui-border-normal);
+                border-radius: 0.25rem;
+            }
+        }
+    }
+}
+
+.t-code + .t-code {
+    margin-block-start: 1rem;
+}
+
+.t-code-actions {
+    position: absolute;
+    display: flex;
+    inset-block-start: 0.75rem;
+    inset-inline-end: 0.75rem;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row-reverse;
+    background: var(--tui-background-base-alt);
+    border-radius: var(--tui-radius-xs);
+
+    :host-context([tuiTheme='dark']) & {
+        background: var(--tui-background-elevation-2);
+    }
+
+    --tui-stroke-width: 0.09375rem;
+}
+
+.t-copy-button::ng-deep + *:not(:empty) {
+    margin-inline-end: 0.375rem;
+}
+
+// highlightjs added class
+.hljs:not(:empty) {
+    font: var(--tui-typography-body-m);
+    font-size: 0.875rem;
+    padding: 1rem;
+    font-family: monospace;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}

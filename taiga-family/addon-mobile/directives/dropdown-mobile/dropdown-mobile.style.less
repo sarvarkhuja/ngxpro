@@ -1,0 +1,72 @@
+@import '@taiga-ui/styles/utils';
+
+tui-dropdown-mobile {
+    .scrollbar-hidden();
+    .fullsize();
+
+    visibility: visible !important;
+    background: var(--tui-background-base);
+    overscroll-behavior: contain;
+    overflow: auto;
+    box-shadow:
+        0 -0.5rem 0.5rem var(--tui-background-base),
+        0 10rem var(--tui-background-base),
+        0 20rem var(--tui-background-base),
+        0 30rem var(--tui-background-base);
+    box-sizing: border-box;
+    padding-block-end: env(safe-area-inset-bottom);
+    pointer-events: auto;
+
+    &.tui-enter,
+    &.tui-leave {
+        animation-name: tuiFade, tuiSlide;
+    }
+
+    &::after {
+        content: '';
+        display: block;
+        block-size: 1px;
+    }
+
+    > .t-container {
+        .scrollbar-hidden();
+
+        position: sticky;
+        top: 0;
+        block-size: 100%;
+        overflow: auto;
+        padding: 0 1rem;
+        touch-action: pan-y !important;
+
+        tui-data-list {
+            padding: 0;
+            margin: 0 -0.5rem;
+        }
+    }
+
+    [tuiDropdownButton][tuiDropdownButton] {
+        position: fixed;
+        right: 1rem;
+        bottom: ~'max(1rem, env(safe-area-inset-bottom))';
+        display: inline-flex;
+    }
+}
+
+.t-dropdown-mobile {
+    touch-action: none;
+    visibility: hidden;
+
+    * {
+        touch-action: inherit;
+        visibility: inherit;
+    }
+
+    tui-root {
+        visibility: visible;
+
+        .t-root-content,
+        tui-dialogs {
+            visibility: hidden;
+        }
+    }
+}

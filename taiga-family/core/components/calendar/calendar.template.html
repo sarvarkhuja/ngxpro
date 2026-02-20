@@ -1,0 +1,37 @@
+@if (isInYearView) {
+    <tui-scrollbar
+        automation-id="tui-calendar__scrollbar"
+        class="t-scrollbar"
+    >
+        <tui-calendar-year
+            automation-id="tui-calendar__year"
+            [initialItem]="month.year"
+            [max]="computedMax.year"
+            [min]="computedMin.year"
+            [rangeMode]="options.rangeMode"
+            [value]="value"
+            (yearClick)="onPickerYearClick($event)"
+        />
+    </tui-scrollbar>
+} @else {
+    <tui-calendar-spin
+        automation-id="tui-calendar__pagination"
+        class="t-pagination"
+        [max]="computedMaxViewedMonth"
+        [min]="computedMinViewedMonth"
+        [value]="month"
+        (valueChange)="onPaginationValueChange($event)"
+        (yearClick)="onPaginationYearClick()"
+    />
+    <tui-calendar-sheet
+        automation-id="tui-calendar__calendar"
+        [disabledItemHandler]="disabledItemHandler | tuiMapper: disabledItemHandlerMapper : computedMin : computedMax"
+        [hoveredItem]="hoveredItem"
+        [markerHandler]="markerHandler"
+        [month]="month"
+        [showAdjacent]="showAdjacent"
+        [value]="value"
+        (dayClick)="onDayClick($event)"
+        (hoveredItemChange)="onHoveredItemChange($event)"
+    />
+}

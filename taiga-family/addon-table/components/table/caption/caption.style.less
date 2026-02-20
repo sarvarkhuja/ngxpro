@@ -1,0 +1,20 @@
+caption[tuiCaption] {
+    caption-side: bottom;
+    text-align: start;
+    padding: 0.75rem 0;
+    color: var(--tui-text-secondary);
+
+    > * {
+        vertical-align: middle;
+
+        &:not(:first-child) {
+            margin-inline-start: 0.5rem;
+        }
+    }
+
+    tui-pagination:not(:first-child),
+    tui-pager:not(:first-child) {
+        display: inline-flex;
+        vertical-align: middle;
+    }
+}

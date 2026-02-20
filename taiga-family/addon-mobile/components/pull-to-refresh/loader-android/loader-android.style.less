@@ -1,0 +1,41 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    .transition(opacity);
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: block;
+    block-size: 0;
+    opacity: 0;
+
+    &._visible {
+        opacity: 1;
+    }
+
+    &._dropped {
+        transition:
+            transform var(--tui-duration) cubic-bezier(0.4, 0, 0.2, 1),
+            opacity var(--tui-duration) var(--tui-duration);
+    }
+}
+
+.t-wrapper {
+    position: absolute;
+    top: -2.5rem;
+    left: 50%;
+    display: flex;
+    box-shadow: var(--tui-shadow-medium);
+    block-size: 2.25rem;
+    inline-size: 2.25rem;
+    background-color: var(--tui-background-neutral-1);
+    border-radius: 6.25rem;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: -1.125rem;
+}
+
+.t-loader {
+    color: var(--tui-text-primary);
+}

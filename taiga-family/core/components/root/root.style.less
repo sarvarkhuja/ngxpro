@@ -1,0 +1,41 @@
+@import '@taiga-ui/styles/utils';
+
+.tui-zero-scrollbar {
+    .scrollbar-hidden();
+}
+
+body,
+input {
+    margin: 0; // lowest possible specificity CSS reset for default margins
+}
+
+tui-root {
+    position: relative;
+    display: block;
+    font: var(--tui-typography-body-s);
+    color: var(--tui-text-primary);
+    flex: 1;
+    border-image: conic-gradient(var(--tui-background-base) 0 0) fill 0/0/0 0 100vh 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+tui-root > .t-root-scrollbar {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+}
+
+.t-root-content {
+    position: relative;
+    top: var(--t-root-top);
+    block-size: 100%;
+    isolation: isolate;
+
+    > * {
+        --t-root-top: 0;
+    }
+}
+
+[tuiDropdownButton][tuiDropdownButton] {
+    display: none;
+}

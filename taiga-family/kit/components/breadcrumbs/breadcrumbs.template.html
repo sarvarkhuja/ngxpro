@@ -1,0 +1,74 @@
+@if (itemsLimit() > 1) {
+    @if (itemsLimit() !== 2) {
+        <ng-container [ngTemplateOutlet]="items()[0] || null" />
+        <ng-container [ngTemplateOutlet]="separator" />
+    }
+    <tui-items-with-more
+        side="start"
+        [itemsLimit]="itemsLimit() - 2"
+        [required]="items().length + offset() - 2"
+    >
+        @for (item of items(); track item) {
+            @if (item !== items()[0] || itemsLimit() === 2) {
+                <ng-container *tuiItem>
+                    <ng-container [ngTemplateOutlet]="item" />
+                    @if (!$last) {
+                        <ng-container [ngTemplateOutlet]="separator" />
+                    }
+                </ng-container>
+            }
+        }
+        <ng-template
+            let-index
+            tuiMore
+        >
+            <span class="t-more">
+                <button
+                    appearance="flat"
+                    size="xs"
+                    tuiDropdownAuto
+                    tuiIconButton
+                    type="button"
+                    [iconStart]="icons.ellipsis"
+                    [tuiDropdown]="dropdown"
+                >
+                    {{ more() }}
+                </button>
+                <ng-container [ngTemplateOutlet]="separator" />
+            </span>
+            <ng-template #dropdown>
+                <tui-data-list size="s">
+                    @for (item of items(); track item) {
+                        @if ($index + offset() && $index <= index && item !== items()[items().length - 1]) {
+                            <span
+                                tuiOption
+                                class="t-option"
+                            >
+                                <ng-container [ngTemplateOutlet]="item" />
+                            </span>
+                        }
+                    }
+                </tui-data-list>
+            </ng-template>
+        </ng-template>
+    </tui-items-with-more>
+} @else {
+    @for (item of items(); track item) {
+        <ng-container [ngTemplateOutlet]="item" />
+        @if (!$last) {
+            <ng-container [ngTemplateOutlet]="separator" />
+        }
+    }
+}
+<ng-template #separator>
+    @if (options.icon.length > 1) {
+        <tui-icon
+            class="t-icon"
+            [icon]="options.icon"
+        />
+    } @else {
+        <span class="t-char">{{ options.icon }}</span>
+    }
+</ng-template>
+
+<ng-content />

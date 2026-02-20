@@ -1,0 +1,102 @@
+@import '@taiga-ui/styles/utils';
+
+tui-block-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    inline-size: 100%;
+    block-size: 100%;
+
+    &._card {
+        border-radius: var(--tui-radius-xl);
+        padding: 2rem;
+    }
+
+    .t-block-image:empty,
+    .t-block-text:empty,
+    .t-block-actions:empty {
+        display: none;
+    }
+
+    .t-block-image:not(:empty) {
+        display: flex;
+        margin-block-end: 2rem;
+    }
+
+    .t-block-text:not(:empty) {
+        font: var(--tui-typography-body-m);
+        color: var(--tui-text-secondary);
+        white-space: pre-line;
+    }
+
+    .t-block-actions:not(:empty) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        inline-size: 100%;
+        margin-block-start: 2rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font: var(--tui-typography-heading-h4);
+        margin: 0;
+
+        & ~ .t-block-text:not(:empty) {
+            margin-block-start: 1rem;
+        }
+    }
+
+    img {
+        inline-size: 9rem;
+        block-size: 9rem;
+    }
+
+    a:not(:last-child),
+    button:not(:last-child) {
+        margin-block-end: 0.75rem;
+    }
+}
+
+[data-platform='web'] tui-block-status {
+    &[data-size='m'] {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font: var(--tui-typography-heading-h6);
+            margin-block-start: 0;
+
+            & ~ .t-block-text:not(:empty) {
+                margin-block-start: 0.75rem;
+            }
+        }
+
+        img {
+            inline-size: 6rem;
+            block-size: 6rem;
+        }
+
+        .t-block-text:not(:empty) {
+            font: var(--tui-typography-body-s);
+        }
+
+        .t-block-actions:not(:empty) {
+            margin-block-start: 1.5rem;
+        }
+
+        .t-block-image:not(:empty) {
+            margin-block-end: 1.5rem;
+        }
+    }
+}

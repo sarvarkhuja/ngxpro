@@ -1,0 +1,138 @@
+@import '@taiga-ui/styles/utils';
+
+// Safari doesn't support rem units for all properties of `<circle />`.
+// `<circle />`'s wrapper has `font-size: 1rem` to use em units as rem ones interchangeably
+@circle-diameter: {
+    xs: 0.75em;
+    s: 1em;
+    m: 1.5em;
+    l: 2.5em;
+    xl: 3.5em;
+    xxl: 5em;
+};
+
+:host {
+    position: relative;
+    display: grid;
+
+    --tui-thickness: calc(var(--t-diameter) / 12);
+
+    &._loading {
+        overflow: hidden;
+    }
+
+    &[data-size='xs'] {
+        --t-diameter: @circle-diameter[xs];
+    }
+
+    &[data-size='s'] {
+        --t-diameter: @circle-diameter[s];
+    }
+
+    &[data-size='m'] {
+        --t-diameter: @circle-diameter[m];
+    }
+
+    &[data-size='l'] {
+        --t-diameter: @circle-diameter[l];
+    }
+
+    &[data-size='xl'] {
+        --t-diameter: @circle-diameter[xl];
+    }
+
+    &[data-size='xxl'] {
+        --t-diameter: @circle-diameter[xxl];
+    }
+}
+
+.t-content {
+    grid-area: 1 / 1;
+    padding: 0;
+    margin: 0;
+    border: none;
+    isolation: inherit;
+}
+
+.t-loader {
+    position: relative;
+    display: flex;
+    grid-area: 1 / 1;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--tui-text-primary);
+    stroke: var(--tui-background-accent-1);
+    font-size: 1rem; // to use em units as rem ones interchangeably (Safari)
+
+    :host[data-size='xs'] &,
+    :host[data-size='s'] & {
+        flex-direction: row;
+    }
+
+    &&_inherit-color {
+        color: inherit;
+        stroke: currentColor;
+    }
+}
+
+.t-text {
+    .text-overflow();
+
+    font: var(--tui-typography-body-s);
+    color: inherit;
+    max-inline-size: 100%;
+    text-align: center;
+}
+
+@keyframes tuiLoaderRotate {
+    @initial-shift: rotate(-90deg);
+
+    0% {
+        transform: @initial-shift;
+    }
+
+    50% {
+        transform: @initial-shift rotate(1turn);
+    }
+
+    100% {
+        transform: @initial-shift rotate(3turn);
+    }
+}
+
+.t-icon {
+    inline-size: var(--t-diameter);
+    block-size: var(--t-diameter);
+    animation: tuiLoaderRotate 4s linear infinite;
+}
+
+@radius: calc(var(--t-diameter) / 2 - var(--tui-thickness));
+@circumference: calc(2 * pi() * @radius);
+
+@keyframes tuiLoaderDashOffset {
+    0% {
+        stroke-dashoffset: @circumference;
+    }
+
+    50% {
+        stroke-dashoffset: calc(0.05 * @circumference);
+    }
+
+    100% {
+        stroke-dashoffset: @circumference;
+    }
+}
+
+.t-circle {
+    r: @radius;
+    cx: 50%;
+    cy: 50%;
+    stroke-dasharray: @circumference;
+    fill: none;
+    stroke: inherit;
+    // Use native CSS max function instead LESS one
+    stroke-width: ~'max(var(--tui-thickness), 1.5px)';
+    animation: tuiLoaderDashOffset 4s linear infinite;
+}

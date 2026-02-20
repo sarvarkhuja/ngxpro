@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.json",
+    "files": ["src/typings.d.ts"],
+    "include": ["src/**/*.ts"],
+    "angularCompilerOptions": {
+        "strictMetadataEmit": false,
+        "compilationMode": "full",
+        "extendedDiagnostics": {
+            "defaultCategory": "warning"
+        }
+    },
+    "compilerOptions": {
+        "target": "ES2022",
+        "lib": ["ES2022", "dom"],
+        "useDefineForClassFields": false
+    }
+}

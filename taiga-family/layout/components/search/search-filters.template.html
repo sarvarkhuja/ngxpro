@@ -1,0 +1,37 @@
+@for (template of templates(); track template) {
+    @if ($index < overflown()) {
+        <ng-container [ngTemplateOutlet]="template" />
+    }
+}
+<div
+    #rem
+    class="t-rem"
+></div>
+@if (overflown() < templates().length) {
+    <button
+        appearance="secondary"
+        tuiIconButton
+        tuiSearchFilter
+        type="button"
+        class="t-button"
+        [class._active]="enabled()"
+        [size]="size()"
+    >
+        <form
+            class="t-form"
+            (reset)="onReset()"
+        >
+            <fieldset
+                class="t-header"
+                [disabled]="!enabled()"
+            >
+                <ng-content />
+            </fieldset>
+            @for (template of templates(); track template) {
+                @if ($index >= overflown()) {
+                    <ng-container [ngTemplateOutlet]="template" />
+                }
+            }
+        </form>
+    </button>
+}

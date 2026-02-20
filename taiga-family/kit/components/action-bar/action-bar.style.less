@@ -1,0 +1,78 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    position: fixed;
+    left: ~'max(calc(50% - 37rem), 1.5rem)';
+    bottom: ~'max(1rem, env(safe-area-inset-bottom))';
+    display: flex;
+    inline-size: 100%;
+    max-inline-size: ~'min(calc(100vw - 3rem), 74rem)';
+    box-sizing: border-box;
+    border-radius: 1rem;
+    background: var(--tui-background-elevation-2);
+    background: color-mix(in hsl, var(--tui-background-elevation-2) 75%, transparent);
+    color: var(--tui-text-primary);
+    backdrop-filter: blur(2rem);
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.75rem;
+    text-indent: 0.75rem;
+    font: var(--tui-typography-body-m);
+    white-space: nowrap;
+
+    &.tui-enter,
+    &.tui-leave {
+        animation-name: tuiFade, tuiSlide;
+    }
+
+    &[data-size='s'] {
+        border-radius: var(--tui-radius-l);
+        font: var(--tui-typography-body-s);
+        padding: 0.5rem;
+    }
+
+    :host-context(tui-root._mobile) & {
+        padding: 1rem;
+        border-radius: 1.25rem;
+        text-indent: 0;
+    }
+
+    ::ng-deep tui-data-list[data-size] {
+        padding: 0;
+        margin: -0.625rem -0.625rem 1rem;
+    }
+
+    ::ng-deep tui-items-with-more {
+        text-indent: 0.5rem;
+
+        :host-context(tui-root._mobile) & {
+            display: none;
+        }
+    }
+}
+
+.t-content {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem 2.5rem;
+
+    :host-context(tui-root._mobile) & {
+        flex-wrap: wrap;
+    }
+}
+
+.t-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-inline-start: auto;
+    text-indent: 0;
+
+    :host-context(tui-root._mobile) & {
+        flex: 1;
+
+        ::ng-deep [tuiButton] {
+            flex: 1;
+        }
+    }
+}

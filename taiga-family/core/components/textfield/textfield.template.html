@@ -1,0 +1,41 @@
+@if (control()?.control?.valueChanges | async) {}
+<ng-content select="input" />
+<ng-content select="select" />
+<ng-content select="textarea" />
+<ng-content select="label" />
+<span
+    class="t-content"
+    (pointerdown)="input()?.nativeElement?.focus()"
+    (waResizeObserver)="$event[0] && onResize($event[0])"
+>
+    <ng-content />
+    <ng-container #vcr />
+    @if (options.cleaner()) {
+        <button
+            tuiButtonX
+            (click)="accessor()?.setValue(null)"
+        >
+            {{ clear() }}
+        </button>
+    }
+    <ng-content select="tui-icon" />
+</span>
+@if (control()?.value != null) {
+    <span
+        class="t-template"
+        [tuiCell]="options.size()"
+    >
+        <ng-container *polymorpheusOutlet="content() as text; context: {$implicit: control()?.value}">
+            {{ text }}
+        </ng-container>
+    </span>
+}
+@if (showFiller()) {
+    <input
+        #ghost
+        aria-hidden="true"
+        disabled
+        class="t-filler"
+        [value]="computedFiller()"
+    />
+}

@@ -1,0 +1,50 @@
+@import '@taiga-ui/styles/utils';
+
+.date-picker();
+
+.t-cell {
+    inline-size: calc(100% / 7);
+}
+
+[data-type='weekday'] {
+    color: var(--tui-text-primary);
+}
+
+[data-type='weekend'] {
+    color: var(--tui-text-negative);
+}
+
+.t-row {
+    justify-content: flex-start;
+
+    &:first-child {
+        justify-content: flex-end;
+    }
+
+    &_weekday {
+        font: var(--tui-typography-body-s);
+        color: var(--tui-text-secondary);
+        pointer-events: none;
+    }
+}
+
+.t-cell_unavailable {
+    opacity: var(--tui-disabled-opacity);
+}
+
+.t-dots {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    margin-block-start: -0.5rem;
+    padding-block-end: 0.25rem;
+}
+
+.t-dot {
+    display: inline-block;
+    inline-size: 0.25rem;
+    block-size: 0.25rem;
+    border-radius: 100%;
+    margin: 0 0.0625rem;
+}

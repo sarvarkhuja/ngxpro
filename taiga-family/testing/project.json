@@ -1,0 +1,51 @@
+{
+    "name": "testing",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "projects/{projectName}",
+    "projectType": "library",
+    "prefix": "tui",
+    "targets": {
+        "build": {
+            "executor": "@angular/build:ng-packagr",
+            "outputs": ["{workspaceRoot}/dist/{projectName}"],
+            "options": {
+                "tsConfig": "{projectRoot}/tsconfig.build.json",
+                "project": "{projectRoot}/ng-package.json"
+            },
+            "dependsOn": [
+                {
+                    "target": "build",
+                    "params": "ignore",
+                    "dependencies": true
+                }
+            ]
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectName}"],
+            "options": {
+                "jestConfig": "package.json",
+                "collectCoverage": false,
+                "testMatch": ["<rootDir>/{projectRoot}/**/*.spec.ts"]
+            }
+        },
+        "publish": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": false,
+                "forwardAllArgs": false,
+                "commands": [
+                    "cp ./LICENSE ./dist/{projectName}",
+                    "ts-node ./scripts/publish.ts --path ./dist/{projectName} --dry-run {args.dry-run} --customVersion {args.customVersion} --customTag {args.customTag}"
+                ]
+            },
+            "dependsOn": [
+                {
+                    "target": "build",
+                    "params": "ignore",
+                    "dependencies": false
+                }
+            ]
+        }
+    }
+}

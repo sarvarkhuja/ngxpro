@@ -1,0 +1,35 @@
+<svg
+    height="36"
+    preserveAspectRatio="xMidYMid"
+    viewBox="0 0 100 100"
+    width="36"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns="http://www.w3.org/2000/svg"
+>
+    @for (_ of '-'.repeat(steps); track $index) {
+        @if (isShown($index)) {
+            <g [attr.transform]="calculateTransform($index)">
+                <rect
+                    fill="#c7c9cc"
+                    height="16"
+                    rx="7.05"
+                    ry="3.3"
+                    width="6"
+                    x="47"
+                    y="22"
+                >
+                    @if (finished) {
+                        <animate
+                            attributeName="opacity"
+                            dur="1s"
+                            keyTimes="0;1"
+                            repeatCount="indefinite"
+                            values="1;0"
+                            [attr.begin]="calculateAnimationBegin($index)"
+                        />
+                    }
+                </rect>
+            </g>
+        }
+    }
+</svg>

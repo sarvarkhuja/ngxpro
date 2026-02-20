@@ -1,0 +1,42 @@
+@import '@taiga-ui/styles/utils';
+
+@safari-safe-space: 1px;
+
+tui-input-inline {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    box-sizing: border-box;
+
+    > .t-before {
+        padding-inline-end: 0.02em; // to prevent caret shaking
+        margin-inline-start: @safari-safe-space; // to prevent hiding characters in safari
+        white-space: pre;
+        visibility: hidden;
+    }
+
+    > .t-placeholder {
+        display: inline-block;
+        min-inline-size: 1px;
+        margin-inline-start: -@safari-safe-space;
+    }
+
+    > input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: transparent;
+        padding: inherit;
+        font: inherit;
+        color: inherit;
+        box-sizing: border-box;
+        inline-size: 100%;
+        block-size: 100%;
+        border-width: 0;
+        text-align: inherit;
+        letter-spacing: inherit;
+        text-indent: inherit;
+        text-transform: inherit;
+        outline: none;
+    }
+}

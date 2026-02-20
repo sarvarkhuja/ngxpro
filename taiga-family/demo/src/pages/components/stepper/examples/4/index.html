@@ -1,0 +1,11 @@
+<tui-stepper
+    orientation="vertical"
+    tuiConnected
+    [activeItemIndex]="1"
+>
+    @for (step of steps; track step) {
+        <button tuiStep>
+            {{ step }}
+        </button>
+    }
+</tui-stepper>

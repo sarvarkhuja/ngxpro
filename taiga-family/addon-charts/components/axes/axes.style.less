@@ -1,0 +1,177 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 1fr auto;
+    block-size: 100%;
+}
+
+.t-wrapper {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-row: span 2;
+}
+
+.t-grid {
+    position: relative;
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+    align-items: flex-end;
+    border-width: 1px;
+    border-color: var(--tui-border-normal);
+    isolation: isolate;
+    grid-row: 1;
+}
+
+.t-horizontal {
+    .fullsize();
+
+    display: flex;
+    flex-direction: column;
+}
+
+.t-vertical {
+    .fullsize();
+
+    display: flex;
+
+    :host._centered &::after {
+        content: '';
+        display: block;
+        flex: 1 0 1px;
+    }
+}
+
+.t-line {
+    flex: 2 0 1px;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-color: var(--tui-border-normal);
+
+    &_vertical {
+        :host._centered &:first-child {
+            flex: 1 0 1px;
+            pointer-events: none;
+        }
+    }
+}
+
+.t-side {
+    display: flex;
+    align-items: stretch;
+
+    &_padding {
+        padding-block-end: 2rem;
+    }
+}
+
+.t-name {
+    font: var(--tui-typography-body-xs);
+    writing-mode: tb;
+    text-align: center;
+    padding-block-end: 0.75rem;
+    color: var(--tui-text-secondary);
+
+    &_primary {
+        transform: rotate(180deg);
+    }
+}
+
+.t-labels-y {
+    display: flex;
+    font: var(--tui-typography-body-xs);
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    color: var(--tui-text-secondary);
+
+    &_primary {
+        text-align: end;
+        padding-inline-end: 0.75rem;
+    }
+
+    &_secondary {
+        padding-inline-start: 0.75rem;
+    }
+
+    &_transparent {
+        border-color: transparent;
+    }
+
+    &_inset {
+        position: absolute;
+        inset-block: 0.5625rem -0.75rem;
+        inset-inline: 0.25rem auto;
+        pointer-events: none;
+
+        &_secondary {
+            inset-inline: auto 0.25rem;
+            text-align: end;
+        }
+    }
+}
+
+.t-labels-x {
+    position: relative;
+    display: flex;
+    font: var(--tui-typography-body-xs);
+    border-inline-end: 1px solid transparent;
+    color: var(--tui-text-secondary);
+}
+
+.t-label-x {
+    flex: 1;
+
+    &::before {
+        content: '';
+        display: block;
+        block-size: 0.5625rem;
+        border-inline-start: 1px solid var(--tui-border-normal);
+    }
+
+    &:last-of-type::before {
+        border: none;
+    }
+
+    &_transparent {
+        border-color: transparent;
+    }
+
+    :host._centered & {
+        block-size: 2rem;
+        text-align: center;
+        margin: 0;
+
+        &::before {
+            border: none;
+        }
+    }
+
+    :host:not(._centered) & {
+        &:last-child:not(:first-child) {
+            position: absolute;
+            inset-inline-end: 0;
+            text-align: end;
+            border-inline-start: none;
+        }
+    }
+}
+
+.t-label-y {
+    &:first-child {
+        margin-block-end: -0.375rem;
+    }
+
+    &:last-child {
+        margin-block-start: -0.375rem;
+    }
+}
+
+.t-content {
+    position: absolute;
+    display: flex;
+    inset-block: 0 -1px;
+    inset-inline: -1px 0;
+    align-items: flex-end;
+}

@@ -1,0 +1,46 @@
+@import '@taiga-ui/styles/utils';
+
+tui-files {
+    inline-size: 100%;
+    overflow: hidden;
+    border-radius: var(--tui-radius-m);
+
+    // Increased specificity due to no encapsulation
+    &:empty:empty {
+        display: none;
+    }
+
+    .t-files {
+        position: relative;
+        display: block;
+        inline-size: 100%;
+        block-size: 100%;
+        border-radius: var(--tui-radius-m);
+        overflow: hidden;
+    }
+
+    .t-button {
+        inline-size: 100%;
+        border-radius: inherit;
+    }
+
+    .t-bottom {
+        z-index: 3;
+        inline-size: 100%;
+        background: var(--tui-background-base);
+        mask: none !important;
+
+        &_collapsed {
+            box-shadow: var(--tui-shadow-popup);
+            margin-block-start: -1.5rem;
+        }
+    }
+
+    .t-extra-items {
+        inline-size: 100%;
+
+        > * {
+            border-radius: 0 !important;
+        }
+    }
+}

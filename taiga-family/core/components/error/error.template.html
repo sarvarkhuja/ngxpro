@@ -1,0 +1,11 @@
+@if (content(); as error) {
+    <span
+        tuiAnimated
+        class="t-message-text"
+    >
+        <span
+            *polymorpheusOutlet="error.message || default() as text; context: error.context || {}"
+            [innerHTML]="text"
+        ></span>
+    </span>
+}

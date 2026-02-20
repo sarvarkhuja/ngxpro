@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(npm --version:*)",
+      "Bash(npx nx build:*)",
+      "Bash(npm install:*)",
+      "Bash(npx nx generate:*)",
+      "Bash(npx nx show:*)",
+      "Bash(ls:*)",
+      "Bash(npx nx reset:*)",
+      "Bash(npx nx run-many:*)",
+      "Bash(done)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(npx nx test:*)",
+      "Bash(awk:*)",
+      "Bash(npx nx serve:*)",
+      "mcp__ide__getDiagnostics"
+    ]
+  }
+}

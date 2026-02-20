@@ -1,0 +1,37 @@
+@if (!stringified()) {
+    <option
+        disabled
+        selected
+        value=""
+    >
+        {{ placeholder() }}
+    </option>
+}
+
+@let elements = items();
+
+@if (elements && !isFlat(elements)) {
+    @for (group of labels(); track group) {
+        <optgroup [label]="labels()[$index]">
+            <ng-container *ngTemplateOutlet="options; context: {$implicit: elements[$index]}" />
+        </optgroup>
+    }
+} @else {
+    <ng-container *ngTemplateOutlet="options; context: {$implicit: elements}" />
+}
+
+<ng-template
+    #options
+    let-items
+>
+    @for (option of items; track option) {
+        <option
+            #option
+            [disabled]="itemsHandlers.disabledItemHandler()(option)"
+            [selected]="isSelected()(option)"
+            [value]="itemsHandlers.stringify()(option)"
+        >
+            {{ itemsHandlers.stringify()(option) }}
+        </option>
+    }
+</ng-template>

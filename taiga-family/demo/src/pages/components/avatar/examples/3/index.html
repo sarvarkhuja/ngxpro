@@ -1,0 +1,14 @@
+@for (size of sizes; track size) {
+    <section>
+        <div
+            tuiAvatar
+            [size]="size"
+        >
+            {{ size | uppercase }}
+        </div>
+        <div
+            tuiAvatar="@tui.user"
+            [size]="size"
+        ></div>
+    </section>
+}

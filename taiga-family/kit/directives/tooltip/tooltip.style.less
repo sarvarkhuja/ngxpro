@@ -1,0 +1,32 @@
+@import '@taiga-ui/styles/utils.less';
+
+[tuiTooltip] {
+    border-width: 0.125rem;
+    border-radius: 100%;
+    cursor: pointer;
+    pointer-events: auto;
+    background-clip: content-box !important;
+
+    [tuiBlock],
+    [tuiCell][data-size='s'],
+    [tuiLabel][data-orientation='horizontal'] &,
+    &[data-size='s'] {
+        font-size: 1.25rem;
+    }
+
+    [tuiTitle] & {
+        font-size: 1rem;
+        border: none;
+    }
+
+    &::before {
+        font-size: 1rem;
+    }
+}
+
+@media @tui-mouse {
+    tui-textfield:hover [tuiTooltip][data-appearance='icon']::before,
+    tui-textarea:hover [tuiTooltip][data-appearance='icon']::before {
+        color: var(--tui-text-secondary);
+    }
+}

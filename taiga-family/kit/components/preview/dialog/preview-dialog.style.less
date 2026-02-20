@@ -1,0 +1,26 @@
+@import '@taiga-ui/styles/utils';
+
+tui-preview-dialog {
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: hidden;
+
+    &.tui-enter,
+    &.tui-leave {
+        animation-name: tuiFade, tuiSlide;
+    }
+}
+
+/* stylelint-disable order/order */
+[tuiAppearance][data-appearance='preview-action'] {
+    background: rgba(104, 104, 104, 0.96);
+    color: #fff;
+
+    .appearance-hover({
+        background: rgba(159, 159, 159, 0.86);
+    });
+
+    .appearance-active({
+        background: rgba(159, 159, 159, 0.75);
+    });
+}

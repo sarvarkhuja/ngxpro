@@ -1,0 +1,194 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        ngxpro Component Showcase
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
+        Production-ready Angular UI library with Taiga architecture + Tremor styling
+      </p>
+    </div>
+
+    <!-- Accordion Section -->
+    <ngxpro-card class="mb-8">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Accordion</h2>
+
+      <div class="space-y-6">
+        <!-- Multiple Mode (default) -->
+        <div>
+          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Multiple Mode</h3>
+          <ngxpro-accordion>
+            <ngxpro-accordion-trigger ngxproAccordion ngxproCell="m">
+              <div ngxproTitle>
+                <h3><strong>What is ngxpro?</strong></h3>
+                <p ngxproSubtitle>Production-ready Angular UI library</p>
+              </div>
+            </ngxpro-accordion-trigger>
+            <ngxpro-expand>
+              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                ngxpro is a production-ready Angular UI library built with Taiga architecture patterns
+                and Tremor Tailwind styling. It provides 300+ components and blocks for building modern web applications.
+              </div>
+            </ngxpro-expand>
+
+            <ngxpro-accordion-trigger ngxproAccordion ngxproCell="m">
+              <div ngxproTitle>
+                <h3><strong>Key Features</strong></h3>
+                <p ngxproSubtitle>Taiga + Tremor patterns</p>
+              </div>
+            </ngxpro-accordion-trigger>
+            <ngxpro-expand>
+              <div class="overflow-hidden px-4 pb-4">
+                <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 dark:text-gray-200">
+                  <li>Taiga UI architecture patterns</li>
+                  <li>Tremor Tailwind styling</li>
+                  <li>Light/Dark mode support</li>
+                  <li>Fully responsive and accessible</li>
+                  <li>300+ components and blocks</li>
+                </ul>
+              </div>
+            </ngxpro-expand>
+
+            <ngxpro-accordion-trigger ngxproAccordion ngxproCell="m">
+              <div ngxproTitle>
+                <span><strong>Installation</strong></span>
+                <span ngxproSubtitle>npm or pnpm</span>
+              </div>
+            </ngxpro-accordion-trigger>
+            <ngxpro-expand>
+              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                Install ngxpro using npm or pnpm:
+                <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">npm install @ngxpro/components</pre>
+              </div>
+            </ngxpro-expand>
+          </ngxpro-accordion>
+        </div>
+
+        <!-- Single Mode -->
+        <div>
+          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Single Mode</h3>
+          <ngxpro-accordion type="single">
+            <ngxpro-accordion-trigger ngxproAccordion ngxproCell="m">
+              <div ngxproTitle>
+                <span><strong>Section 1</strong></span>
+                <span ngxproSubtitle>Only one open at a time</span>
+              </div>
+            </ngxpro-accordion-trigger>
+            <ngxpro-expand>
+              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                Only one section can be open at a time in single mode.
+              </div>
+            </ngxpro-expand>
+
+            <ngxpro-accordion-trigger ngxproAccordion ngxproCell="m">
+              <div ngxproTitle>
+                <span><strong>Section 2</strong></span>
+                <span ngxproSubtitle>Click to expand</span>
+              </div>
+            </ngxpro-accordion-trigger>
+            <ngxpro-expand>
+              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                Opening this section will close the others.
+              </div>
+            </ngxpro-expand>
+
+            <ngxpro-accordion-trigger ngxproAccordion ngxproCell="m">
+              <div ngxproTitle>
+                <span><strong>Section 3</strong></span>
+                <span ngxproSubtitle>Focused content</span>
+              </div>
+            </ngxpro-accordion-trigger>
+            <ngxpro-expand>
+              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                This ensures focused content viewing.
+              </div>
+            </ngxpro-expand>
+          </ngxpro-accordion>
+        </div>
+
+        <!-- Custom Accordion (Operations) -->
+        <div>
+          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            Custom Accordion (Operations)
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            Directive-based accordion with ngxproCell, ngxproTitle, ngxproSubtitle, and default toggle icon.
+          </p>
+          <ngxpro-accordion type="single" class="max-w-2xl">
+            @for (group of operations | keyvalue; track group.key) {
+              <ngxpro-accordion-trigger ngxproAccordion ngxproCell="m">
+                <span ngxproTitle>
+                  <strong>{{ group.key }}</strong>
+                  <span ngxproSubtitle>
+                    @if (group.value.length; as count) {
+                      {{ count }} operations &bull; Total:
+                      {{ sum(group.value) | ngxproAmount:'USD':'start' }}
+                    } @else {
+                      No operations so far
+                    }
+                  </span>
+                </span>
+              </ngxpro-accordion-trigger>
+              <ngxpro-expand [style.display]="group.value.length ? null : 'none'">
+                <div class="overflow-hidden px-4 pb-4">
+                @for (operation of group.value; track operation.title) {
+                  <div ngxproCell="m" class="border-b border-gray-100 dark:border-gray-800 last:border-b-0">
+                    <ngxpro-avatar
+                      [appearance]="operation.sum && operation.sum > 0 ? 'primary' : 'negative'"
+                      [alt]="operation.title"
+                    />
+                    <span ngxproTitle>
+                      <strong>{{ operation.title }}</strong>
+                      @if (operation.subtitle) {
+                        <span ngxproSubtitle>{{ operation.subtitle }}</span>
+                      }
+                    </span>
+                    @if (operation.sum; as s) {
+                      <span
+                        ngxproTitle
+                        [class]="s > 0 ? 'text-green-600 dark:text-green-400' : ''"
+                      >
+                        {{ s | ngxproAmount:'USD':'start' }}
+                        <span ngxproSubtitle>{{ operation.time }}</span>
+                      </span>
+                    } @else {
+                      <button ngxproButton appearance="secondary" type="button">
+                        Retry
+                      </button>
+                    }
+                  </div>
+                }
+                </div>
+              </ngxpro-expand>
+            }
+          </ngxpro-accordion>
+        </div>
+      </div>
+    </ngxpro-card>
+
+    <!-- Component Demos -->
+    <ngxpro-card class="mb-8">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Component Demos</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a
+          routerLink="/text-morph"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">TextMorph</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Smooth FLIP-based text animation</p>
+        </a>
+      </div>
+    </ngxpro-card>
+
+    <!-- Footer -->
+    <div class="text-center mt-12 text-gray-600 dark:text-gray-400">
+      <p>Built with Taiga architecture + Tremor styling</p>
+      <p class="mt-2 text-sm">
+        <a href="https://github.com/your-repo/ngxpro" class="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">
+          View on GitHub
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

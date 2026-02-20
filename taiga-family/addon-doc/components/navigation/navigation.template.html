@@ -1,0 +1,205 @@
+@if (searchEnabled()) {
+    <tui-textfield
+        tuiTextfieldSize="m"
+        class="t-input"
+        [iconStart]="docIcons.search"
+        [open]="open() && canOpen"
+        (keyup)="open.set(canOpen && $event.code !== 'Escape')"
+        (openChange)="open.set($event)"
+    >
+        @if (!search.value) {
+            <code class="t-slash">/</code>
+        }
+
+        <input
+            tuiInput
+            class="t-prevent-ios-scroll"
+            [formControl]="search"
+            [placeholder]="searchText"
+            [tuiAutoFocus]="!!drawer"
+        />
+
+        @if (canOpen) {
+            <tui-data-list *tuiDropdown>
+                @for (group of filtered(); track group) {
+                    <tui-opt-group [label]="labels[$index] || ''">
+                        @for (item of group; track item) {
+                            @if (item.route.includes('://')) {
+                                <a
+                                    tuiOption
+                                    [attr.rel]="item.rel"
+                                    [href]="item.route"
+                                    [target]="item.target || '_self'"
+                                    [textContent]="item.title"
+                                ></a>
+                            } @else {
+                                <a
+                                    tuiOption
+                                    [attr.rel]="item.rel"
+                                    [fragment]="item.fragment"
+                                    [routerLink]="item.route"
+                                    [target]="item.target || '_self'"
+                                    [textContent]="item.title"
+                                    (click)="onClick()"
+                                ></a>
+                            }
+                        }
+                    </tui-opt-group>
+                }
+            </tui-data-list>
+        }
+    </tui-textfield>
+}
+
+<nav class="t-navigation">
+    <tui-scrollbar class="t-scrollbar">
+        <tui-accordion
+            size="s"
+            class="t-accordion"
+            [closeOthers]="false"
+        >
+            @for (item of itemsWithoutSections; track item) {
+                <ng-container
+                    [ngTemplateOutlet]="page"
+                    [ngTemplateOutletContext]="{$implicit: item}"
+                />
+            }
+            @for (label of labels; track $index; let index = $index) {
+                <button
+                    appearance=""
+                    iconEnd=""
+                    class="t-accordion-item"
+                    [iconStart]="pagesIcons[label]"
+                    [tuiAccordion]="!!openPagesArr[$index]"
+                    (tuiAccordionChange)="openPagesArr[$index] = !!$event"
+                >
+                    <span class="t-label">{{ label }}</span>
+                    <tui-icon
+                        class="t-chevron"
+                        [class.t-chevron_active]="!!openPagesArr[$index]"
+                        [icon]="icons.more"
+                        [style.margin]="0"
+                    />
+                </button>
+                <tui-expand [style.padding-block]="0">
+                    <div
+                        *tuiItem
+                        class="t-section"
+                    >
+                        @for (item of items[$index]; track $index) {
+                            <ng-container
+                                [ngTemplateOutlet]="pages"
+                                [ngTemplateOutletContext]="{item: item, index: index * 100 + $index}"
+                            />
+                        }
+                    </div>
+                </tui-expand>
+            }
+        </tui-accordion>
+
+        <ng-template
+            #page
+            let-item
+        >
+            @if (item.route.includes('://')) {
+                <a
+                    tuiLink
+                    class="t-sublink"
+                    [attr.rel]="item.rel"
+                    [href]="item.route"
+                    [iconStart]="item.section ? '' : pagesIcons[item.title]"
+                    [target]="item.target || '_self'"
+                    [textContent]="item.title"
+                ></a>
+            } @else {
+                <a
+                    routerLinkActive="t-sublink_active"
+                    tuiLink
+                    class="t-sublink"
+                    [attr.rel]="item.rel"
+                    [iconStart]="item.section ? '' : pagesIcons[item.title]"
+                    [routerLink]="item.route"
+                    [target]="item.target || '_self'"
+                    [textContent]="item.title"
+                    [tuiDocScrollIntoViewLink]="isActive(item.route)"
+                    (click)="closeMenu()"
+                ></a>
+            }
+        </ng-template>
+
+        <ng-template
+            #pages
+            let-index="index"
+            let-item="item"
+        >
+            @if (!item.subPages) {
+                <ng-container
+                    [ngTemplateOutlet]="page"
+                    [ngTemplateOutletContext]="{$implicit: item}"
+                />
+            } @else {
+                <div
+                    routerLinkActive
+                    class="t-subsection"
+                    [routerLinkActiveOptions]="{exact: false}"
+                >
+                    @if (item.subPages) {
+                        <button
+                            tuiLink
+                            type="button"
+                            class="t-sublink t-sublink_subsection"
+                            (click)="onGroupClick(index)"
+                        >
+                            <tui-icon
+                                class="t-chevron"
+                                [class.t-chevron_active]="!!openPagesGroupsArr[index]"
+                                [icon]="icons.more"
+                            />
+                            {{ item.title }}
+                            <tui-icon
+                                *polymorpheusOutlet="item.icon as icon"
+                                class="t-icon"
+                                [icon]="icon"
+                            />
+                        </button>
+                    }
+
+                    <tui-expand
+                        class="t-expand"
+                        [expanded]="!!openPagesGroupsArr[index]"
+                    >
+                        <div class="t-section t-section_nested">
+                            @for (subPage of $pages(item.subPages); track subPage) {
+                                @if (subPage.route.includes('://')) {
+                                    <a
+                                        tuiLink
+                                        class="t-sublink t-sublink_small"
+                                        [attr.rel]="subPage.rel"
+                                        [href]="subPage.route"
+                                        [target]="subPage.target || '_self'"
+                                        [textContent]="subPage.title"
+                                    ></a>
+                                } @else {
+                                    <a
+                                        routerLinkActive="t-sublink_active"
+                                        tuiLink
+                                        class="t-sublink t-sublink_small"
+                                        [attr.rel]="subPage.rel"
+                                        [fragment]="subPage.fragment"
+                                        [routerLink]="subPage.route"
+                                        [target]="subPage.target || '_self'"
+                                        [textContent]="subPage.title"
+                                        [tuiDocScrollIntoViewLink]="isActive(subPage.route)"
+                                        (click)="closeMenu()"
+                                    ></a>
+                                }
+                            }
+                        </div>
+                    </tui-expand>
+                </div>
+            }
+        </ng-template>
+    </tui-scrollbar>
+</nav>
+
+<ng-content />

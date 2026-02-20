@@ -1,0 +1,12 @@
+<tui-pie-chart
+    [tuiHintContent]="content"
+    [value]="value"
+/>
+
+<ng-template
+    #content
+    let-index
+>
+    <span>{{ value[index] || 0 | tuiAmount: 'RUB' }}</span>
+    <div>{{ labels[index] }}</div>
+</ng-template>

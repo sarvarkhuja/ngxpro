@@ -1,0 +1,9 @@
+<ng-container *polymorpheusOutlet="component; context: {$implicit: pulling()}" />
+
+<div
+    [class.t-drop]="dropped()"
+    [style.position]="'relative'"
+    [style]="style()"
+>
+    <ng-content />
+</div>

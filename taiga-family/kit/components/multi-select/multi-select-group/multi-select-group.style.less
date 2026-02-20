@@ -1,0 +1,33 @@
+@import '@taiga-ui/styles/utils';
+
+:host::before {
+    display: none;
+}
+
+.t-label {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0.5rem;
+
+    &:last-child {
+        display: none;
+    }
+
+    :host-context(tui-data-list[data-size='s']) & {
+        padding: 0.1875rem 0.375rem;
+    }
+
+    :host-context(tui-sheet-dialog) && {
+        font: var(--tui-typography-heading-h6);
+        padding: 0.5rem 0;
+    }
+}
+
+.t-button {
+    font: var(--tui-typography-body-s);
+
+    :host-context(tui-data-list[data-size='l']) & {
+        margin-block-start: 0.1875rem;
+    }
+}

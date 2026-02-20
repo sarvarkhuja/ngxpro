@@ -1,0 +1,32 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    .transition(grid-template-rows);
+
+    display: grid;
+    font: var(--tui-typography-body-s);
+    color: var(--tui-text-negative);
+    overflow-wrap: break-word;
+    grid-template-rows: 0fr;
+
+    &._error {
+        grid-template-rows: 1fr;
+    }
+}
+
+.t-message-text {
+    white-space: pre-line;
+    grid-area: 1 / 1 / span 2;
+    overflow: hidden;
+
+    &.tui-enter,
+    &.tui-leave {
+        animation-name: tuiFade;
+    }
+
+    &::before {
+        content: '';
+        line-height: 1.5rem;
+        vertical-align: bottom;
+    }
+}

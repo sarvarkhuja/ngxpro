@@ -1,0 +1,11 @@
+<tui-mobile-calendar
+    [disabledItemHandler]="handler | tuiMapper: mapper : selectedPeriod : control?.minLength"
+    [max]="max()"
+    [min]="min()"
+    [multi]="multi"
+    [single]="single"
+    [value]="value()"
+    (cancel)="close()"
+    (confirm)="confirm($event)"
+    (valueChange)="onValueChange($event)"
+/>

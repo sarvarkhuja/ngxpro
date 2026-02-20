@@ -1,0 +1,39 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: var(--tui-radius-m);
+}
+
+.t-copy {
+    .transition(background);
+
+    inline-size: 100%;
+    block-size: 100%;
+    color: var(--tui-text-primary);
+    background: var(--tui-background-base);
+    overflow: hidden;
+
+    &:hover {
+        background: var(--tui-background-base-alt);
+    }
+}
+
+.t-initial {
+    white-space: nowrap;
+
+    &:empty::before {
+        content: attr(data-text);
+    }
+}
+
+.t-content {
+    .transition(transform);
+
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    line-height: 2rem;
+}

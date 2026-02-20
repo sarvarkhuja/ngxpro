@@ -1,0 +1,62 @@
+import {ChangeDetectionStrategy, Component, viewChild} from '@angular/core';
+import {type ComponentFixture, TestBed} from '@angular/core/testing';
+import {TuiTablePagination, type TuiTablePaginationEvent} from '@taiga-ui/addon-table';
+
+describe('TablePagination', () => {
+    let fixture: ComponentFixture<Test>;
+    let testComponent: Test;
+
+    @Component({
+        imports: [TuiTablePagination],
+        template: `
+            <tui-table-pagination
+                [page]="page"
+                [size]="size"
+                [total]="237"
+                (paginationChange)="update($event)"
+            />
+        `,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+    })
+    class Test {
+        public readonly component = viewChild.required(TuiTablePagination);
+        public page = 3;
+        public size = 10;
+
+        protected update({page, size}: TuiTablePaginationEvent): void {
+            this.page = page;
+            this.size = size;
+        }
+    }
+
+    beforeEach(async () => {
+        TestBed.configureTestingModule({imports: [Test]});
+        await TestBed.compileComponents();
+        fixture = TestBed.createComponent(Test);
+        testComponent = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    describe('Keeps current top item on the page when switching page size', () => {
+        it('31 switching to 20', () => {
+            testComponent.component().onItem(20);
+            fixture.detectChanges();
+
+            expect(testComponent.page).toBe(1);
+        });
+
+        it('31 switching to 50', () => {
+            testComponent.component().onItem(50);
+            fixture.detectChanges();
+
+            expect(testComponent.page).toBe(0);
+        });
+
+        it('31 switching to 100', () => {
+            testComponent.component().onItem(100);
+            fixture.detectChanges();
+
+            expect(testComponent.page).toBe(0);
+        });
+    });
+});

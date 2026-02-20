@@ -1,0 +1,481 @@
+import {
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    CdkVirtualScrollViewport,
+} from '@angular/cdk/scrolling';
+import {AsyncPipe, DOCUMENT} from '@angular/common';
+import {
+    type AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    DestroyRef,
+    inject,
+    input,
+    model,
+    NgZone,
+    output,
+    viewChild,
+} from '@angular/core';
+import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
+import {WA_IS_E2E, WA_IS_IOS} from '@ng-web-apis/platform';
+import {TuiMobileCalendarSheet} from '@taiga-ui/addon-mobile/components/mobile-calendar-sheet';
+import {TuiRipple} from '@taiga-ui/addon-mobile/directives/ripple';
+import {TuiTouchable} from '@taiga-ui/addon-mobile/directives/touchable';
+import {TUI_FALSE_HANDLER} from '@taiga-ui/cdk/constants';
+import {
+    MONTHS_IN_YEAR,
+    TUI_FIRST_DAY,
+    TUI_LAST_DAY,
+    TuiDay,
+    TuiDayRange,
+    TuiMonth,
+} from '@taiga-ui/cdk/date-time';
+import {
+    tuiTypedFromEvent,
+    tuiZonefree,
+    tuiZonefreeScheduler,
+} from '@taiga-ui/cdk/observables';
+import {TuiMapperPipe} from '@taiga-ui/cdk/pipes/mapper';
+import {type TuiBooleanHandler, type TuiMapper} from '@taiga-ui/cdk/types';
+import {TuiButton} from '@taiga-ui/core/components/button';
+import {
+    TUI_CALENDAR_SHEET_OPTIONS,
+    TuiOrderWeekDaysPipe,
+} from '@taiga-ui/core/components/calendar';
+import {TuiLink} from '@taiga-ui/core/components/link';
+import {
+    TUI_ANIMATIONS_SPEED,
+    TUI_CLOSE_WORD,
+    TUI_COMMON_ICONS,
+    TUI_MONTHS,
+    TUI_SHORT_WEEK_DAYS,
+} from '@taiga-ui/core/tokens';
+import {tuiGetDuration} from '@taiga-ui/core/utils/miscellaneous';
+import {
+    TUI_CANCEL_WORD,
+    TUI_CHOOSE_DAY_OR_RANGE_TEXTS,
+    TUI_DONE_WORD,
+} from '@taiga-ui/kit/tokens';
+import {
+    debounceTime,
+    delay,
+    filter,
+    identity,
+    map,
+    mergeMap,
+    type MonoTypeOperatorFunction,
+    race,
+    switchMap,
+    take,
+    takeUntil,
+    timer,
+    windowToggle,
+} from 'rxjs';
+
+import {
+    RANGE,
+    SCROLL_DEBOUNCE_TIME,
+    STARTING_YEAR,
+    YEARS_IN_ROW,
+} from './mobile-calendar.const';
+import {
+    TUI_MOBILE_CALENDAR_PROVIDERS,
+    TUI_VALUE_STREAM,
+} from './mobile-calendar.providers';
+
+@Component({
+    selector: 'tui-mobile-calendar',
+    imports: [
+        AsyncPipe,
+        CdkFixedSizeVirtualScroll,
+        CdkVirtualForOf,
+        CdkVirtualScrollViewport,
+        TuiButton,
+        TuiLink,
+        TuiMapperPipe,
+        TuiMobileCalendarSheet,
+        TuiOrderWeekDaysPipe,
+        TuiRipple,
+        TuiTouchable,
+    ],
+    templateUrl: './mobile-calendar.template.html',
+    styleUrl: './mobile-calendar.style.less',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: TUI_MOBILE_CALENDAR_PROVIDERS,
+    host: {
+        '[class._ios]': 'isIOS',
+        '[class._initialized]': 'initialized',
+        '(mousedown.prevent)': '0',
+    },
+})
+export class TuiMobileCalendar implements AfterViewInit {
+    private readonly yearsScroll = viewChild<CdkVirtualScrollViewport>('yearsScroll');
+    private readonly monthsScroll = viewChild<CdkVirtualScrollViewport>('monthsScroll');
+    private readonly today = TuiDay.currentLocal();
+    private activeYear = 0;
+    private activeMonth = 0;
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly doc = inject(DOCUMENT);
+    private readonly speed = inject(TUI_ANIMATIONS_SPEED);
+    private readonly ngZone = inject(NgZone);
+    private readonly getYearsViewportSize = computed(
+        () => this.yearsScroll()?.getViewportSize() || 0,
+    );
+
+    private readonly initialYear = computed((value = this.value()) => {
+        if (!value) {
+            return this.today.year;
+        }
+
+        if (value instanceof TuiDay) {
+            return value.year;
+        }
+
+        if (!(value instanceof TuiDayRange)) {
+            return value?.[0]?.year ?? this.today.year;
+        }
+
+        return value.to.year;
+    });
+
+    private readonly initialMonth = computed((value = this.value()) => {
+        if (!value) {
+            return this.today.month + (this.today.year - STARTING_YEAR) * MONTHS_IN_YEAR;
+        }
+
+        if (value instanceof TuiDay) {
+            return value.month + (value.year - STARTING_YEAR) * MONTHS_IN_YEAR;
+        }
+
+        if (!(value instanceof TuiDayRange)) {
+            return (
+                (value?.[0]?.month ?? this.today.month) +
+                ((value?.[0]?.year ?? this.today.year) - STARTING_YEAR) * MONTHS_IN_YEAR
+            );
+        }
+
+        return value.to.month + (value.to.year - STARTING_YEAR) * MONTHS_IN_YEAR;
+    });
+
+    protected initialized = false;
+    protected readonly isIOS = inject(WA_IS_IOS);
+    protected readonly isE2E = inject(WA_IS_E2E);
+    protected readonly icons = inject(TUI_COMMON_ICONS);
+    protected readonly closeWord = inject(TUI_CLOSE_WORD);
+    protected readonly cancelWord = inject(TUI_CANCEL_WORD);
+    protected readonly doneWord = inject(TUI_DONE_WORD);
+    protected readonly monthNames = inject(TUI_MONTHS);
+    protected readonly unorderedWeekDays$ = toObservable(inject(TUI_SHORT_WEEK_DAYS));
+    protected readonly chooseDayOrRangeTexts = inject(TUI_CHOOSE_DAY_OR_RANGE_TEXTS, {
+        optional: true,
+    });
+
+    protected readonly years = Array.from({length: RANGE}, (_, i) => i + STARTING_YEAR);
+    protected readonly months = Array.from(
+        {length: RANGE * 12},
+        (_, i) =>
+            new TuiMonth(
+                Math.floor(i / MONTHS_IN_YEAR) + STARTING_YEAR,
+                i % MONTHS_IN_YEAR,
+            ),
+    );
+
+    /**
+     * @deprecated use static DI options instead
+     * ```
+     * tuiCalendarSheetOptionsProvider({rangeMode: boolean})
+     * ```
+     * TODO(v5): delete it
+     */
+    public readonly single = input(!inject(TUI_CALENDAR_SHEET_OPTIONS).rangeMode);
+
+    public readonly multi = input(false);
+
+    public readonly min = input(TUI_FIRST_DAY);
+
+    public readonly max = input(TUI_LAST_DAY);
+
+    public readonly disabledItemHandler =
+        input<TuiBooleanHandler<TuiDay>>(TUI_FALSE_HANDLER);
+
+    public readonly cancel = output();
+
+    public readonly confirm = output<TuiDay | TuiDayRange | readonly TuiDay[]>();
+
+    public readonly value = model<TuiDay | TuiDayRange | readonly TuiDay[] | null>(null);
+
+    constructor() {
+        inject(TUI_VALUE_STREAM)
+            .pipe(takeUntilDestroyed())
+            .subscribe((value) => {
+                this.value.set(value);
+            });
+    }
+
+    public ngAfterViewInit(): void {
+        this.activeYear = this.initialYear();
+        this.activeMonth = this.initialMonth();
+
+        // Virtual scroll has not yet rendered items even in ngAfterViewInit
+        this.waitScrolledChange();
+    }
+
+    public setYear(year: number): void {
+        if (this.activeYear === year) {
+            return;
+        }
+
+        this.activeMonth += this.getMonthOffset(year);
+        this.activeYear = year;
+        this.scrollToActiveYear('smooth');
+
+        timer(0, tuiZonefreeScheduler(this.ngZone))
+            .pipe(tuiZonefree(this.ngZone), takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => this.scrollToActiveMonth());
+    }
+
+    protected get yearWidth(): number {
+        return this.doc.documentElement.clientWidth / YEARS_IN_ROW;
+    }
+
+    protected onClose(): void {
+        this.cancel.emit();
+    }
+
+    protected onConfirm(): void {
+        const value = this.value();
+
+        if (value) {
+            this.confirm.emit(value);
+        } else {
+            this.cancel.emit();
+        }
+    }
+
+    protected onDayClick(day: TuiDay): void {
+        const value = this.value();
+
+        if (this.single()) {
+            this.value.set(day);
+        } else if (this.isMultiValue(value)) {
+            this.value.set(toggleDay(value, day));
+        } else if (value instanceof TuiDay) {
+            this.value.set(TuiDayRange.sort(value, day));
+        } else if (value instanceof TuiDayRange) {
+            this.value.set(day);
+        } else if (!value) {
+            this.value.set(day);
+        }
+    }
+
+    protected getState(index: number): 'active' | 'adjacent' | null {
+        if (this.isYearActive(index)) {
+            return 'active';
+        }
+
+        if (this.isYearActive(index - 1) || this.isYearActive(index + 1)) {
+            return 'adjacent';
+        }
+
+        return null;
+    }
+
+    protected onMonthChange(month: number): void {
+        // Skipping initial callback where index === 0
+        if (!month || this.activeMonth === month) {
+            return;
+        }
+
+        this.activeMonth = month;
+
+        const activeYear = this.monthToYear(month);
+
+        if (activeYear === this.activeYear) {
+            return;
+        }
+
+        this.activeYear = activeYear;
+        this.scrollToActiveYear();
+    }
+
+    protected readonly disabledItemHandlerMapper: TuiMapper<
+        [TuiBooleanHandler<TuiDay>, TuiDay, TuiDay],
+        TuiBooleanHandler<TuiDay>
+    > = (disabledItemHandler, min, max) => (item) =>
+        item.dayBefore(min) ||
+        (max !== null && item.dayAfter(max)) ||
+        disabledItemHandler(item);
+
+    private isMultiValue(day: unknown): day is readonly TuiDay[] | undefined {
+        return !(day instanceof TuiDay) && !(day instanceof TuiDayRange) && this.multi();
+    }
+
+    private updateViewportDimension(): void {
+        this.yearsScroll()?.checkViewportSize();
+        this.monthsScroll()?.checkViewportSize();
+    }
+
+    private lateInit(): MonoTypeOperatorFunction<number> {
+        return this.getYearsViewportSize() > 0 ? identity : delay(200);
+    }
+
+    private waitScrolledChange(): void {
+        this.updateViewportDimension();
+
+        this.monthsScroll()
+            ?.scrolledIndexChange.pipe(
+                delay(tuiGetDuration(this.speed)),
+                this.lateInit(),
+                take(1),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe(() => {
+                this.initialized = true;
+                this.updateViewportDimension();
+                this.initYearScroll();
+                this.initMonthScroll();
+                this.scrollToActiveYear();
+                this.scrollToActiveMonth();
+            });
+    }
+
+    private initYearScroll(): void {
+        const yearsScroll = this.yearsScroll();
+
+        if (!yearsScroll) {
+            return;
+        }
+
+        const touchstart$ = tuiTypedFromEvent(
+            yearsScroll.elementRef.nativeElement,
+            'touchstart',
+            {passive: true},
+        );
+        const touchend$ = tuiTypedFromEvent(
+            yearsScroll.elementRef.nativeElement,
+            'touchend',
+            {passive: true},
+        );
+        const click$ = tuiTypedFromEvent(yearsScroll.elementRef.nativeElement, 'click');
+
+        // Refresh activeYear
+        yearsScroll
+            .elementScrolled()
+            .pipe(
+                // Ignore smooth scroll resulting from click on the exact year
+                windowToggle(touchstart$, () => click$),
+                mergeMap((x) => x),
+                // Delay is required to run months scroll in the next frame to prevent flicker
+                delay(0),
+                map(
+                    () =>
+                        Math.round(yearsScroll.measureScrollOffset() / this.yearWidth) +
+                        Math.floor(YEARS_IN_ROW / 2) +
+                        STARTING_YEAR,
+                ),
+                filter((activeYear) => activeYear !== this.activeYear),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe((activeYear) => {
+                this.activeMonth += this.getMonthOffset(activeYear);
+                this.activeYear = activeYear;
+                this.scrollToActiveMonth();
+            });
+
+        // Smooth scroll to activeYear after scrolling is done
+        touchstart$
+            .pipe(
+                switchMap(() => touchend$),
+                switchMap(() =>
+                    race(
+                        yearsScroll.elementScrolled(),
+                        timer(SCROLL_DEBOUNCE_TIME, tuiZonefreeScheduler(this.ngZone)),
+                    ).pipe(
+                        debounceTime(
+                            SCROLL_DEBOUNCE_TIME * 2,
+                            tuiZonefreeScheduler(this.ngZone),
+                        ),
+                        take(1),
+                        takeUntil(touchstart$),
+                    ),
+                ),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe(() => this.scrollToActiveYear('smooth'));
+    }
+
+    private initMonthScroll(): void {
+        const monthsScroll = this.monthsScroll();
+
+        if (!monthsScroll) {
+            return;
+        }
+
+        const touchstart$ = tuiTypedFromEvent(
+            monthsScroll.elementRef.nativeElement,
+            'touchstart',
+            {passive: true},
+        );
+        const touchend$ = tuiTypedFromEvent(
+            monthsScroll.elementRef.nativeElement,
+            'touchend',
+            {passive: true},
+        );
+
+        // Smooth scroll to the closest month after scrolling is done
+        touchstart$
+            .pipe(
+                switchMap(() => touchend$),
+                switchMap(() =>
+                    race(
+                        monthsScroll.elementScrolled(),
+                        timer(SCROLL_DEBOUNCE_TIME, tuiZonefreeScheduler(this.ngZone)),
+                    ).pipe(
+                        debounceTime(
+                            SCROLL_DEBOUNCE_TIME * 2,
+                            tuiZonefreeScheduler(this.ngZone),
+                        ),
+                        take(1),
+                        takeUntil(touchstart$),
+                    ),
+                ),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe(() => this.scrollToActiveMonth('smooth'));
+    }
+
+    private scrollToActiveYear(behavior: ScrollBehavior = 'auto'): void {
+        this.yearsScroll()?.scrollToIndex(
+            Math.max(this.activeYear - STARTING_YEAR - 2, 0),
+            this.isE2E ? 'auto' : behavior,
+        );
+    }
+
+    private scrollToActiveMonth(behavior: ScrollBehavior = 'auto'): void {
+        this.monthsScroll()?.scrollToIndex(
+            this.activeMonth,
+            this.isE2E ? 'auto' : behavior,
+        );
+    }
+
+    private isYearActive(index: number): boolean {
+        return index === this.activeYear;
+    }
+
+    private monthToYear(month: number): number {
+        return Math.ceil((month + 1) / MONTHS_IN_YEAR) + STARTING_YEAR - 1;
+    }
+
+    private getMonthOffset(year: number): number {
+        return (year - this.activeYear) * MONTHS_IN_YEAR;
+    }
+}
+
+function toggleDay(days: readonly TuiDay[] | null, day: TuiDay): readonly TuiDay[] {
+    return (
+        (days?.find((item) => item.daySame(day))
+            ? days.filter((item) => !item.daySame(day))
+            : days?.concat(day)) || []
+    );
+}

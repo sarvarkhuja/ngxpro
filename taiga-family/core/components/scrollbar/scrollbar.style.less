@@ -1,0 +1,41 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    position: relative;
+    display: flex;
+    max-block-size: 100%;
+    isolation: isolate;
+    overflow: auto;
+
+    &._native-hidden {
+        .scrollbar-hidden();
+    }
+
+    .t-hover-mode:not(:active) {
+        .transition(opacity);
+
+        opacity: 0;
+    }
+
+    &:hover .t-hover-mode {
+        .transition(opacity);
+
+        opacity: 1;
+    }
+}
+
+.t-content {
+    isolation: isolate;
+    flex: 1;
+    flex-basis: auto;
+    inline-size: 100%;
+    block-size: max-content;
+
+    &_delegated {
+        block-size: 100%;
+    }
+}
+
+.t-bars {
+    color: var(--tui-text-primary);
+}

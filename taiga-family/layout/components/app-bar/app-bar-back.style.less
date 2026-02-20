@@ -1,0 +1,47 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    .button-clear();
+
+    display: flex;
+    align-items: center;
+    padding: 0 1rem 0 0;
+    cursor: pointer;
+
+    :host-context([data-platform='web'] tui-dialog) {
+        padding: 0 0.5rem;
+    }
+
+    :host-context([data-platform='android']) {
+        font-size: 0;
+        padding: 0 1rem;
+
+        .t-android {
+            display: block;
+        }
+
+        .t-web {
+            display: none;
+        }
+    }
+
+    :host-context([data-platform='ios']) {
+        .t-ios {
+            display: block;
+            margin-inline-start: 0.5rem;
+        }
+
+        .t-web {
+            display: none;
+        }
+    }
+}
+
+.t-web {
+    transform: scaleX(var(--tui-inline));
+}
+
+.t-android,
+.t-ios {
+    display: none;
+}

@@ -1,0 +1,49 @@
+@if (isYearPickerShown) {
+    <tui-scrollbar class="t-scrollbar">
+        <tui-calendar-year
+            [initialItem]="activeYear().year"
+            [max]="max().year"
+            [min]="min().year"
+            [rangeMode]="options.rangeMode"
+            [value]="value()"
+            (yearClick)="onPickerYearClick($event)"
+        />
+    </tui-scrollbar>
+} @else {
+    <tui-spin-button
+        class="t-spin"
+        [focusable]="false"
+        [leftDisabled]="activeYear().yearSameOrBefore(min())"
+        [rightDisabled]="activeYear().yearSameOrAfter(max())"
+        (leftClick)="onPreviousYear()"
+        (rightClick)="onNextYear()"
+    >
+        <button
+            automation-id="tui-calendar-month__active-year"
+            tabIndex="-1"
+            tuiLink
+            type="button"
+            (click)="onYearClick()"
+        >
+            {{ activeYear().formattedYear }}
+        </button>
+    </tui-spin-button>
+    @for (_ of '-'.repeat(3); track $index) {
+        @let row = $index;
+        <div class="t-row">
+            @for (_ of '-'.repeat(4); track $index) {
+                @let item = getTuiMonth(row * 4 + $index, activeYear().year);
+                <div
+                    class="t-cell"
+                    [attr.data-range]="getItemRange(item)"
+                    [class.t-cell_disabled]="handler()(item)"
+                    [class.t-cell_today]="isItemToday(item)"
+                    (click)="onItemClick(item)"
+                    (tuiHoveredChange)="onItemHovered($event, item)"
+                >
+                    {{ months()[row * 4 + $index] }}
+                </div>
+            }
+        </div>
+    }
+}

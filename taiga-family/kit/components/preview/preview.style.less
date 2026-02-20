@@ -1,0 +1,68 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    inline-size: 100%;
+    block-size: 100%;
+    user-select: none;
+}
+
+.t-header {
+    position: fixed;
+    top: ~'max(1rem, env(safe-area-inset-top))';
+    display: flex;
+    inline-size: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.t-footer {
+    position: absolute;
+    bottom: ~'max(1rem, env(safe-area-inset-bottom))';
+    display: flex;
+    inline-size: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.t-actions {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+
+    ::ng-deep > * {
+        margin-inline-start: 0.625rem;
+    }
+}
+
+.t-rotate-button {
+    margin-inline-end: 0.3125rem;
+}
+
+.t-title {
+    flex: 1;
+
+    :host-context(tui-root._mobile) & {
+        display: none;
+    }
+}
+
+.t-not-interactive-content {
+    /* stylelint-disable */
+    ::ng-deep > * {
+        pointer-events: none;
+    }
+    /* stylelint-enable */
+}
+
+.t-wrapper {
+    will-change: transform;
+}
+
+.t-transitive {
+    transition-duration: 0.3s;
+}

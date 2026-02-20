@@ -1,0 +1,54 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    --t-size: 1.5rem;
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    color: #fff;
+    border-radius: 2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    font: var(--tui-typography-body-s);
+    max-inline-size: 100%;
+    padding: 0 0.25rem;
+    background: #f52222;
+    block-size: var(--t-size);
+    min-inline-size: var(--t-size);
+
+    &.tui-enter {
+        animation: tuiScale var(--tui-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    &.tui-leave {
+        animation: tuiScale var(--tui-duration) ease-in-out reverse;
+    }
+
+    &[data-size='m'] {
+        --t-size: 1.25rem;
+    }
+
+    &[data-size='s'] {
+        --t-size: 1rem;
+
+        padding: 0 0.125rem;
+        font: var(--tui-typography-body-xs);
+    }
+
+    &[data-size='xs'] {
+        --t-size: 0.375rem;
+
+        padding: 0;
+        font-size: 0;
+    }
+
+    :host-context([tuiIconButton]) {
+        position: absolute;
+        right: 25%;
+        top: 25%;
+    }
+}

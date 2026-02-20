@@ -1,0 +1,4 @@
+@use 'tailwindcss';
+
+/* Class-based dark mode: ThemeService adds/removes .dark on <html> */
+@custom-variant dark (&:where(.dark, .dark *));

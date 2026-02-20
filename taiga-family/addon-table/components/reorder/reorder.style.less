@@ -1,0 +1,64 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    display: block;
+    font: var(--tui-typography-body-s);
+    padding: 0.5rem 0;
+    user-select: none;
+}
+
+.t-wrapper {
+    grid-auto-rows: 2rem;
+}
+
+.t-draggable {
+    cursor: ns-resize;
+    flex: 1 1 auto;
+}
+
+.t-item {
+    .transition(background);
+
+    display: flex;
+    block-size: 2rem;
+    align-items: center;
+    padding: 0 0.75rem;
+    background: var(--tui-background-base);
+
+    &_disabled {
+        opacity: var(--tui-disabled-opacity);
+
+        .t-button {
+            color: var(--tui-text-primary);
+            opacity: 1;
+        }
+    }
+
+    &:hover {
+        background: var(--tui-background-base-alt);
+
+        .t-button {
+            opacity: 1;
+        }
+    }
+}
+
+.t-icon {
+    margin-inline-end: 0.5rem;
+    color: var(--tui-text-tertiary);
+
+    &::before {
+        font-size: 1rem;
+    }
+}
+
+.t-button {
+    .transition(opacity);
+
+    margin-inline-start: auto;
+    opacity: 0;
+
+    &:focus {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,46 @@
+<div class="t-image">
+    <ng-content select="img" />
+</div>
+@if (close['listeners']?.length) {
+    <button
+        appearance=""
+        size="xs"
+        tuiIconButton
+        type="button"
+        class="t-close"
+        [iconStart]="icons.close"
+        [style.border-radius.%]="100"
+        (click)="close.emit()"
+    >
+        {{ closeWord() }}
+    </button>
+}
+<div class="t-top">
+    <span class="t-icon">
+        <ng-content select="tui-icon" />
+    </span>
+    {{ type() }}
+    @if (timestamp()) {
+        <span
+            class="t-time"
+            [textContent]="isString(timestamp()) ? timestamp() : (timestamp() | date: 'h:mm a')"
+        ></span>
+    }
+</div>
+<h3
+    automation-id="tui-push__heading"
+    class="t-heading"
+>
+    {{ heading() }}
+</h3>
+<div class="t-content">
+    <ng-content />
+</div>
+<div class="t-actions">
+    <span class="t-button">
+        <ng-content select="[tuiButton]" />
+    </span>
+    <span class="t-link">
+        <ng-content select="[tuiLink]" />
+    </span>
+</div>

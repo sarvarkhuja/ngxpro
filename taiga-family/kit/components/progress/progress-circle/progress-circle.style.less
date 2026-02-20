@@ -1,0 +1,109 @@
+@import '@taiga-ui/styles/utils';
+
+/* Safari doesn't support rem units inside svg (but supports em units) */
+// TODO: replace all `em` with `rem` after bumping browser support of Safari to 16+
+@diameter: {
+    xxs: 2em;
+    xs: 2.5em;
+    s: 3.5em;
+    m: 4em;
+    l: 5em;
+    xl: 6em;
+    xxl: 8em;
+};
+
+@radius: calc((var(--t-diameter) - var(--t-stroke-width)) / 2);
+@circumference: calc(2 * pi() * @radius);
+
+:host {
+    --t-stroke-width: var(--tui-thickness, 0.375em);
+
+    position: relative;
+    display: block;
+    color: var(--tui-background-accent-1);
+    transform: rotate(-90deg);
+    transform-origin: center;
+    // TODO: delete this line after bumping browser support of Safari to 16+
+    font-size: 1rem; // to use em units inside svg (Safari doesn't support rem units inside svg)
+    inline-size: var(--t-diameter);
+    min-inline-size: var(--t-diameter);
+    block-size: var(--t-diameter);
+    border-radius: 100%;
+    mask: radial-gradient(
+        closest-side,
+        transparent calc(100% - var(--t-stroke-width)),
+        #000 calc(100% - var(--t-stroke-width) + 0.5px)
+    );
+
+    &._arc {
+        transform: rotate(135deg);
+    }
+
+    &[data-size='xxs'] {
+        --t-diameter: @diameter[xxs];
+    }
+
+    &[data-size='xs'] {
+        --t-diameter: @diameter[xs];
+    }
+
+    &[data-size='s'] {
+        --t-diameter: @diameter[s];
+    }
+
+    &[data-size='m'] {
+        --t-diameter: @diameter[m];
+    }
+
+    &[data-size='l'] {
+        --t-diameter: @diameter[l];
+    }
+
+    &[data-size='xl'] {
+        --t-diameter: @diameter[xl];
+    }
+
+    &[data-size='xxl'] {
+        --t-diameter: @diameter[xxl];
+    }
+}
+
+.t-track,
+.t-progress {
+    fill: transparent;
+    stroke-linecap: round;
+    stroke-width: var(--t-stroke-width);
+    /* clean-css ignore:start */
+    r: @radius;
+    /* clean-css ignore:end */
+}
+
+.t-track {
+    stroke: var(--tui-background-neutral-1);
+
+    :host._arc & {
+        stroke-dasharray: calc(0.75 * @circumference) calc(0.25 * @circumference);
+    }
+}
+
+.t-progress {
+    .transition(~'stroke-dashoffset, stroke-dasharray');
+
+    transition-timing-function: linear;
+    stroke: var(--tui-progress-color, currentColor);
+    stroke-dasharray: @circumference;
+    stroke-dashoffset: calc(@circumference - var(--t-progress-ratio) * @circumference);
+
+    :host._arc & {
+        stroke-dashoffset: 0.1px;
+        stroke-dasharray: calc(0.75 * var(--t-progress-ratio) * @circumference) calc(@circumference);
+    }
+}
+
+.t-hidden-progress {
+    .sr-only();
+}
+
+.t-svg {
+    overflow: unset;
+}

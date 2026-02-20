@@ -1,0 +1,195 @@
+{
+    "name": "demo",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "projects/{projectName}",
+    "projectType": "application",
+    "prefix": "app",
+    "implicitDependencies": ["!testing", "icons*"],
+    "targets": {
+        "i18n": {
+            "outputs": ["{workspaceRoot}/dist/i18n"],
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "nx build i18n"
+            }
+        },
+        "build": {
+            "executor": "@nx/angular:application",
+            "outputs": ["{options.outputPath}"],
+            "dependsOn": [
+                {
+                    "target": "i18n",
+                    "params": "ignore"
+                },
+                {
+                    "target": "generate-llms",
+                    "params": "ignore"
+                }
+            ],
+            "options": {
+                "baseHref": "/",
+                "outputPath": "dist/{projectName}",
+                "index": "{projectRoot}/src/index.html",
+                "browser": "{projectRoot}/src/main.ts",
+                "polyfills": ["zone.js"],
+                "inlineStyleLanguage": "less",
+                "tsConfig": "{projectRoot}/tsconfig.app.json",
+                "allowedCommonJsDependencies": ["@taiga-ui/browserslist-config"],
+                "assets": [
+                    {
+                        "glob": "**/404.html",
+                        "input": "{projectRoot}/src/",
+                        "output": "./"
+                    },
+                    {
+                        "glob": "**/sitemap.xml",
+                        "input": "{projectRoot}/",
+                        "output": "./"
+                    },
+                    {
+                        "glob": "**/*",
+                        "input": "{projectRoot}/src/assets/",
+                        "output": "./assets/"
+                    },
+                    {
+                        "glob": "**/*",
+                        "input": "projects/icons/src",
+                        "output": "assets/taiga-ui/icons"
+                    },
+                    {
+                        "glob": "llms.txt",
+                        "input": "{projectRoot}/src/",
+                        "output": "./"
+                    },
+                    {
+                        "glob": "llms-full.txt",
+                        "input": "{projectRoot}/src/",
+                        "output": "./"
+                    }
+                ],
+                "styles": ["{projectRoot}/src/styles/styles.less", "{projectRoot}/src/styles/styles.scss"],
+                "server": "{projectRoot}/src/main.server.ts",
+                "ssr": {
+                    "entry": "{projectRoot}/src/server.ts"
+                },
+                "outputMode": "server",
+                "loader": {
+                    ".md": "text",
+                    ".html": "text",
+                    ".less": "text",
+                    ".svg": "text"
+                },
+                "externalDependencies": ["ng-morph"]
+            },
+            "configurations": {
+                "production": {
+                    "fileReplacements": [
+                        {
+                            "replace": "{projectRoot}/src/environments/environment.ts",
+                            "with": "{projectRoot}/src/environments/environment.prod.ts"
+                        }
+                    ],
+                    "tsConfig": "{projectRoot}/tsconfig.app.prod.json",
+                    "outputHashing": "all"
+                },
+                "development": {
+                    "optimization": false,
+                    "extractLicenses": false,
+                    "sourceMap": true,
+                    "server": false,
+                    "ssr": false,
+                    "outputMode": "static"
+                },
+                "def": {
+                    "fileReplacements": [
+                        {
+                            "replace": "{projectRoot}/src/emulate/change-detection-strategy.ts",
+                            "with": "{projectRoot}/src/emulate/change-detection-strategy.def.ts"
+                        }
+                    ]
+                },
+                "shadow": {
+                    "fileReplacements": [
+                        {
+                            "replace": "{projectRoot}/src/emulate/view-encapsulation.ts",
+                            "with": "{projectRoot}/src/emulate/view-encapsulation.shadow.ts"
+                        }
+                    ]
+                }
+            },
+            "defaultConfiguration": "production"
+        },
+        "mkcert": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "echo \"mkcert is a simple tool for making locally-trusted development certificates\"",
+                    "echo \"Read about installation and more: https://github.com/FiloSottile/mkcert\"",
+                    "echo ------",
+                    "mkcert -install",
+                    "mkdir -p .ssl",
+                    "mkcert -key-file .ssl/localhost-key.pem -cert-file .ssl/localhost.pem localhost 127.0.0.1 $(ifconfig | grep \"inet \" | grep -Fv 127.0.0.1 | awk '{print $2}' | tr '\\n' ' ') ::1"
+                ]
+            }
+        },
+        "serve": {
+            "continuous": true,
+            "executor": "@nx/angular:dev-server",
+            "options": {
+                "port": 3333,
+                "sslCert": ".ssl/localhost.pem",
+                "sslKey": ".ssl/localhost-key.pem"
+            },
+            "configurations": {
+                "production": {
+                    "buildTarget": "{projectName}:build:production"
+                },
+                "development": {
+                    "buildTarget": "{projectName}:build:development"
+                },
+                "def": {
+                    "buildTarget": "{projectName}:build:def"
+                },
+                "shadow": {
+                    "buildTarget": "{projectName}:build:shadow"
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "serve-ssl": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "nx mkcert {projectName} && nx serve {projectName} --ssl --open --host 0.0.0.0 --disable-host-check"
+            }
+        },
+        "generate-sitemap-file": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "ts-node ./scripts/generate-sitemap.ts"
+            },
+            "dependsOn": [
+                {
+                    "target": "generate-routes-file",
+                    "params": "ignore"
+                }
+            ]
+        },
+        "generate-llms": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": false,
+                "command": "npm run generate:llms && npm run generate:llms-full"
+            }
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectName}"],
+            "options": {
+                "jestConfig": "package.json",
+                "collectCoverage": false,
+                "testMatch": ["<rootDir>/{projectRoot}/src/**/*.spec.ts"]
+            }
+        }
+    }
+}

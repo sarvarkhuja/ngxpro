@@ -1,0 +1,74 @@
+<tr>
+    <td colspan="3">
+        <span tuiTitle>
+            <strong>TextfieldOptions</strong>
+            <span tuiSubtitle>Applied as a host directive</span>
+        </span>
+    </td>
+</tr>
+@if (!hiddenOptions().includes('cleaner')) {
+    <tr
+        name="[tuiTextfieldCleaner]"
+        tuiDocAPIItem
+        type="boolean"
+        [(value)]="cleaner"
+    >
+        Shows a cross to reset a value
+    </tr>
+}
+@if (!hiddenOptions().includes('size')) {
+    <tr
+        name="[tuiTextfieldSize]"
+        tuiDocAPIItem
+        type="TuiSizeS | TuiSizeL"
+        [items]="sizeVariants"
+        [(value)]="size"
+    >
+        Size
+        <p>
+            <strong>
+                Don't use
+                <code>label[tuiLabel]</code>
+                inside
+                <code>s</code>
+                - size
+                <code>&lt;tui-textfield /&gt;</code>
+                !
+            </strong>
+            <br />
+            Use outside label or
+            <code>&lt;input placeholder="..." /&gt;</code>
+            instead.
+        </p>
+    </tr>
+}
+
+@if (!hiddenOptions().includes('rows')) {
+    <tr
+        name="[rows]"
+        tuiDocAPIItem
+        type="number"
+        [(value)]="rows"
+    >
+        Maximum number of rows
+    </tr>
+}
+
+@if (!hiddenOptions().includes('content')) {
+    <tr
+        name="[content]"
+        tuiDocAPIItem
+        type="PolymorpheusContent"
+        [items]="contentVariants()"
+        [(value)]="content"
+    >
+        A template for custom view of textfield value.
+
+        <p>
+            We strongly recommend to unset this property on focus – otherwise, it breaks UX on attempt to edit field by
+            keyboard!
+        </p>
+    </tr>
+}
+
+<ng-content />

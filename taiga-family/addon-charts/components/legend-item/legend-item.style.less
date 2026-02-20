@@ -1,0 +1,44 @@
+:host {
+    display: inline-block;
+}
+
+.t-button {
+    block-size: 2rem;
+    font-weight: bold;
+
+    :host[data-size='m'] & {
+        block-size: 2.25rem;
+        font: var(--tui-typography-body-m);
+        font-weight: bold;
+    }
+}
+
+.t-wrapper {
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+
+    :host._disabled & {
+        color: var(--tui-text-tertiary);
+    }
+}
+
+.t-dot {
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 100%;
+    flex-shrink: 0;
+
+    :host._disabled & {
+        background: var(--tui-border-normal);
+    }
+
+    &:not(:first-child) {
+        display: none;
+    }
+}
+
+.t-text {
+    margin: 0 0.5rem;
+    font-weight: normal;
+}

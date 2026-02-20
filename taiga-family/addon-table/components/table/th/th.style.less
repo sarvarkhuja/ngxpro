@@ -1,0 +1,165 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    .transition(box-shadow);
+
+    position: relative;
+    top: 0;
+    block-size: var(--tui-height-m);
+    font: var(--tui-typography-body-s);
+    text-align: start;
+    font-weight: bold;
+    color: var(--tui-text-secondary);
+    background: var(--tui-background-base);
+    cursor: default;
+    padding: 0 0.75rem;
+    box-sizing: border-box;
+    box-shadow: 0 0.3125rem rgba(237, 237, 237, 0);
+    border: 1px solid var(--tui-border-normal);
+    // TODO: Remove in v5 after we drop all legacy controls
+    // Create new viewport for fixed positioning
+    filter: opacity(1);
+
+    // TODO: Remove in v5 after we drop all legacy controls
+    .safari-only({
+        transform: translate3d(0, 0, 0);
+    });
+
+    &:not(:first-child) {
+        border-inline-start: none;
+    }
+
+    &._sticky,
+    :host-context(._stuck) &._sticky {
+        position: sticky;
+        z-index: 3000;
+
+        &:first-child {
+            left: 0;
+        }
+
+        &::after {
+            .transition(opacity);
+
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 100%;
+            bottom: 0;
+            inline-size: 0.3125rem;
+            pointer-events: none;
+            background: rgba(237, 237, 237, 0.7);
+            opacity: 0;
+        }
+    }
+
+    :host-context(._stuck) & {
+        z-index: 2000;
+    }
+}
+
+:host-context(tr:not(:first-child)) {
+    border-block-start: none;
+}
+
+:host-context(table[data-size='l']) {
+    block-size: var(--tui-height-l);
+    font: var(--tui-typography-body-m);
+    font-weight: bold;
+    padding: 0 1rem;
+}
+
+:host-context(table[data-size='s']) {
+    block-size: var(--tui-height-s);
+    font: var(--tui-typography-body-s);
+    font-weight: bold;
+    padding: 0 0.5rem;
+}
+
+:host-context(thead[tuiThead]) {
+    position: sticky;
+}
+
+:host-context(table._stuck)._sticky::after {
+    opacity: 1;
+}
+
+:host-context(thead[tuiThead]._stuck) {
+    box-shadow: 0 0.3125rem rgba(237, 237, 237, 0.7);
+}
+
+:host-context([tuiTheme='dark'])._sticky::after {
+    background: rgba(60, 60, 60, 0.9);
+}
+
+:host-context([tuiTheme='dark'] thead[tuiThead]._stuck) {
+    box-shadow: 0 0.3125rem rgba(60, 60, 60, 0.9);
+}
+
+:host-context([tuiTheme='dark'] thead[tuiThead]._stuck):first-child {
+    box-shadow: 0.0625rem 0.3125rem rgba(60, 60, 60, 0.9);
+}
+
+:host-context(table[data-size='l'] thead[tuiThead] tr:nth-child(2)) {
+    top: var(--tui-height-l);
+}
+
+:host-context(table[data-size='m'] thead[tuiThead] tr:nth-child(2)) {
+    top: var(--tui-height-m);
+}
+
+:host-context(table[data-size='s'] thead[tuiThead] tr:nth-child(2)) {
+    top: var(--tui-height-s);
+}
+
+.t-sort {
+    .transition(color);
+    .button-clear();
+
+    display: inline-flex;
+    vertical-align: top;
+    flex-direction: inherit;
+    align-items: center;
+    outline: none;
+    font: inherit;
+    text-transform: inherit;
+    color: inherit;
+    cursor: pointer;
+
+    &_sorted {
+        color: var(--tui-text-primary);
+    }
+
+    &:focus-visible {
+        background: var(--tui-service-selection-background);
+    }
+
+    &:hover {
+        color: var(--tui-text-primary);
+    }
+}
+
+.t-bar {
+    .transition(opacity);
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -1px;
+    inline-size: 0.1875rem;
+    justify-self: flex-end;
+    border-inline-start: 2px solid transparent;
+    background: var(--tui-status-warning);
+    background-clip: content-box;
+    cursor: ew-resize;
+    opacity: 0;
+
+    &:hover,
+    &:active {
+        opacity: 1;
+    }
+}
+
+.t-icon::before {
+    font-size: 1rem;
+}

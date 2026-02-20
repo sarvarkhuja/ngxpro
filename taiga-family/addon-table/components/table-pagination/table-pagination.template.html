@@ -1,0 +1,81 @@
+@if (texts(); as texts) {
+    <span class="t-pages">
+        @if (options.showPages) {
+            {{ texts.pages }}
+            <strong class="t-strong">{{ pages() }}</strong>
+        }
+    </span>
+    <span automation-id="tui-table-pagination__lines-per-page-wrapper">
+        {{ texts.linesPerPage }}
+        @if (total() !== 0) {
+            <button
+                tuiDropdown
+                tuiDropdownAuto
+                tuiLink
+                type="button"
+            >
+                <strong>{{ start + 1 }}–{{ end() }}</strong>
+                <tui-data-list
+                    *tuiDropdown="let close"
+                    size="s"
+                >
+                    @for (item of items(); track item) {
+                        <button
+                            tuiOption
+                            type="button"
+                            class="t-item"
+                            (click)="close(); onItem(item)"
+                        >
+                            <ng-container
+                                *polymorpheusOutlet="
+                                    sizeOptionContent as text;
+                                    context: {$implicit: item, total: total()}
+                                "
+                            >
+                                {{ text }}
+                            </ng-container>
+                            @if (item === size()) {
+                                <tui-icon
+                                    class="t-checkmark"
+                                    [icon]="icons.check"
+                                />
+                            } @else {
+                                <span class="t-checkmark"></span>
+                            }
+                        </button>
+                    }
+                </tui-data-list>
+            </button>
+        } @else {
+            <strong>0 - 0</strong>
+        }
+        {{ texts.of }}
+        <strong class="t-strong">{{ total() }}</strong>
+    </span>
+    @if (spinTexts(); as spinTexts) {
+        <button
+            appearance="icon"
+            size="xs"
+            tuiIconButton
+            type="button"
+            class="t-button t-button_back"
+            [disabled]="!start"
+            [iconStart]="icons.decrement"
+            (click)="back()"
+        >
+            {{ spinTexts[0] }}
+        </button>
+        <button
+            appearance="icon"
+            size="xs"
+            tuiIconButton
+            type="button"
+            class="t-button"
+            [disabled]="rightDisabled()"
+            [iconStart]="icons.increment"
+            (click)="forth()"
+        >
+            {{ spinTexts[1] }}
+        </button>
+    }
+}

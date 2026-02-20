@@ -1,0 +1,37 @@
+@if (size()) {
+    @for (item of computedValue(); track item) {
+        <ng-container
+            [ngTemplateOutlet]="bar"
+            [ngTemplateOutletContext]="{$implicit: item, index: $index, flexible: false}"
+        />
+    }
+} @else {
+    @for (item of computedValue(); track item) {
+        <div class="t-wrapper">
+            <ng-container
+                [ngTemplateOutlet]="bar"
+                [ngTemplateOutletContext]="{$implicit: item, index: $index, flexible: true}"
+            />
+        </div>
+    }
+}
+<ng-template
+    #bar
+    let-flexible="flexible"
+    let-index="index"
+    let-item
+>
+    <tui-bar
+        automation-id="tui-bar-set__bar"
+        class="t-bar"
+        [class.t-bar_flexible]="flexible"
+        [class.t-bar_negative]="item < 0"
+        [size]="size() || 'm'"
+        [style.background]="`var(--tui-chart-categorical-${index.toString().padStart(2, '0')})`"
+        [style.height.%]="getHeight(item)"
+        [value]="computedSegments()"
+    />
+</ng-template>
+<span class="t-label">
+    <ng-content />
+</span>

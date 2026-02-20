@@ -1,0 +1,89 @@
+import {type KeyValue, KeyValuePipe, NgTemplateOutlet} from '@angular/common';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    contentChild,
+    inject,
+    input,
+    type OnChanges,
+    TemplateRef,
+} from '@angular/core';
+import {TuiFilterPipe} from '@taiga-ui/cdk/pipes/filter';
+import {tuiInjectElement} from '@taiga-ui/cdk/utils/dom';
+import {tuiMoveFocus} from '@taiga-ui/cdk/utils/focus';
+import {tuiClamp} from '@taiga-ui/cdk/utils/math';
+import {TuiIcon} from '@taiga-ui/core/components/icon';
+import {TuiLoader} from '@taiga-ui/core/components/loader';
+import {TuiScrollbar} from '@taiga-ui/core/components/scrollbar';
+import {TuiTextfieldComponent} from '@taiga-ui/core/components/textfield';
+import {TuiTabs} from '@taiga-ui/kit/components/tabs';
+import {TuiBlockStatus} from '@taiga-ui/layout/components/block-status';
+import {TUI_INPUT_SEARCH} from '@taiga-ui/layout/tokens';
+
+import {TUI_SEARCH_RESULTS_OPTIONS} from './search-results.options';
+
+@Component({
+    selector: 'tui-search-results',
+    imports: [
+        KeyValuePipe,
+        NgTemplateOutlet,
+        TuiBlockStatus,
+        TuiFilterPipe,
+        TuiIcon,
+        TuiLoader,
+        TuiScrollbar,
+        TuiTabs,
+    ],
+    templateUrl: './search-results.component.html',
+    styleUrl: './search-results.component.less',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: {
+        '(keydown.arrowDown.prevent)': 'onArrow($event.target, 1)',
+        '(keydown.arrowUp.prevent)': 'onArrow($event.target, -1)',
+    },
+})
+export class TuiSearchResultsComponent<T> implements OnChanges {
+    private readonly el = tuiInjectElement();
+
+    protected readonly options = inject(TUI_SEARCH_RESULTS_OPTIONS);
+    protected readonly i18n = inject(TUI_INPUT_SEARCH);
+    protected readonly textfield = inject(TuiTextfieldComponent);
+    protected active = 0;
+    protected readonly empty = computed(
+        (results = this.results() || {}) =>
+            !Object.values(results).reduce((total, {length}) => length + total, 0),
+    );
+
+    public readonly template = contentChild(TemplateRef);
+    public readonly results = input<Record<string, readonly T[]> | null>({});
+
+    public ngOnChanges(): void {
+        this.active = 0;
+    }
+
+    protected onArrow(current: HTMLElement, step: number): void {
+        const elements = Array.from(this.el.querySelectorAll<HTMLElement>('[tuiCell]'));
+
+        if (elements[0] === current && step < 0) {
+            this.textfield.input()?.nativeElement.focus();
+        } else {
+            tuiMoveFocus(elements.indexOf(current), elements, step);
+        }
+    }
+
+    protected tab(step: number): void {
+        const max = Object.values(this.results() || {}).filter((v) => v.length).length;
+
+        this.active = tuiClamp(this.active + step, 0, max);
+        this.textfield.input()?.nativeElement.focus();
+    }
+
+    protected notEmpty({value}: KeyValue<string, readonly T[]>): boolean {
+        return !!value.length;
+    }
+
+    protected asIs(): number {
+        return 0;
+    }
+}

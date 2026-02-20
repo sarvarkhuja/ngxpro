@@ -1,0 +1,15 @@
+@for (stop of stops(); track $index) {
+    <div
+        #stops
+        class="t-stop"
+        [style.inset-block-start]="stop"
+    ></div>
+}
+<div
+    #content
+    class="t-content"
+    (resize)="onScroll()"
+>
+    <ng-content />
+</div>
+<div class="t-bottom"></div>

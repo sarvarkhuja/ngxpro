@@ -1,0 +1,41 @@
+@import '@taiga-ui/styles/utils';
+@import '../mixin.style.less';
+
+:host {
+    position: relative;
+    display: flex;
+}
+
+.t-zoom {
+    .preview-item();
+
+    display: flex;
+    font: var(--tui-typography-body-s);
+    justify-content: space-between;
+    align-items: center;
+    inline-size: 12rem;
+}
+
+.t-slider {
+    inline-size: 7.5rem;
+}
+
+.t-sign {
+    &_minus {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    &_plus {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+}
+
+.t-invisible {
+    visibility: hidden;
+}
+
+.t-reset-button {
+    margin-inline-start: 0.3125rem;
+}

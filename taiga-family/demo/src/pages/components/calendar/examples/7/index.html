@@ -1,0 +1,8 @@
+<tui-calendar
+    initialView="year"
+    [value]="value"
+    (dayClick)="onDayClick($event)"
+/>
+@if (value) {
+    <div>Chosen date: {{ value }}</div>
+}

@@ -1,0 +1,39 @@
+<input
+    min="1"
+    type="range"
+    class="t-range"
+    [attr.aria-disabled]="readOnly()"
+    [disabled]="disabled()"
+    [max]="max()"
+    [ngModel]="value()"
+    [ngModelOptions]="{standalone: true}"
+    (blur)="onTouched()"
+    (ngModelChange)="onChange($event)"
+/>
+<div class="t-items">
+    @for (_ of array(); track $index) {
+        @let $implicit = max() - $index;
+        @let filled = $implicit - value() < 1;
+
+        <div
+            class="t-item"
+            [class.t-item_active]="isActive($index)"
+            (pointerup)="onClick($implicit)"
+        >
+            @if (isFraction($index)) {
+                <tui-icon
+                    *polymorpheusOutlet="icon() as src; context: {$implicit, filled: false, value: value()}"
+                    class="t-icon t-icon_blank"
+                    [background]="src.toString()"
+                    [style.--t-cut.%]="100 - getCut($index)"
+                />
+            }
+            <tui-icon
+                *polymorpheusOutlet="icon() as src; context: {$implicit, filled, value: value()}"
+                class="t-icon"
+                [background]="src.toString()"
+                [style.--t-cut.%]="getCut($index)"
+            />
+        </div>
+    }
+</div>

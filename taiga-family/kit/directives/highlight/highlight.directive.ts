@@ -1,0 +1,103 @@
+import {DOCUMENT} from '@angular/common';
+import {Directive, inject, input, type OnChanges} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {WaResizeObserverService} from '@ng-web-apis/resize-observer';
+import {svgNodeFilter} from '@taiga-ui/cdk/constants';
+import {tuiCreateOptions} from '@taiga-ui/cdk/utils/di';
+import {tuiInjectElement} from '@taiga-ui/cdk/utils/dom';
+import {tuiPx} from '@taiga-ui/cdk/utils/miscellaneous';
+
+export const [TUI_HIGHLIGHT_OPTIONS, tuiHighlightOptionsProvider] = tuiCreateOptions({
+    highlightColor: 'var(--tui-service-selection-background)',
+});
+
+@Directive({
+    selector: '[tuiHighlight]',
+    providers: [WaResizeObserverService],
+    host: {
+        '[style.position]': '"relative"',
+        '[style.z-index]': '0',
+    },
+})
+export class TuiHighlight implements OnChanges {
+    private readonly el = tuiInjectElement();
+    private readonly options = inject(TUI_HIGHLIGHT_OPTIONS);
+    private readonly doc = inject(DOCUMENT);
+    private readonly highlight: HTMLElement = this.setUpHighlight();
+    private readonly treeWalker = this.doc.createTreeWalker(
+        this.el,
+        NodeFilter.SHOW_TEXT,
+        svgNodeFilter,
+    );
+
+    public readonly tuiHighlight = input('');
+    public readonly tuiHighlightColor = input(this.options.highlightColor);
+
+    constructor() {
+        inject(WaResizeObserverService, {self: true})
+            .pipe(takeUntilDestroyed())
+            .subscribe(() => this.updateStyles());
+    }
+
+    public ngOnChanges(): void {
+        this.updateStyles();
+    }
+
+    protected get match(): boolean {
+        return this.indexOf(this.el.textContent) !== -1;
+    }
+
+    private updateStyles(): void {
+        this.highlight.style.display = 'none';
+
+        if (!this.match) {
+            return;
+        }
+
+        this.treeWalker.currentNode = this.el;
+
+        do {
+            const index = this.indexOf(this.treeWalker.currentNode.nodeValue);
+
+            if (index === -1) {
+                continue;
+            }
+
+            const range = this.doc.createRange();
+
+            range.setStart(this.treeWalker.currentNode, index);
+            range.setEnd(this.treeWalker.currentNode, index + this.tuiHighlight().length);
+
+            const hostRect = this.el.getBoundingClientRect();
+            const {left, top, width, height} = range.getBoundingClientRect();
+            const {style} = this.highlight;
+
+            style.background = this.tuiHighlightColor();
+            style.left = tuiPx(left - hostRect.left);
+            style.top = tuiPx(top - hostRect.top);
+            style.width = tuiPx(width);
+            style.height = tuiPx(height);
+            style.display = 'block';
+
+            return;
+        } while (this.treeWalker.nextNode());
+    }
+
+    private indexOf(source: string | null): number {
+        return !source || !this.tuiHighlight()
+            ? -1
+            : source.toLowerCase().indexOf(this.tuiHighlight().toLowerCase());
+    }
+
+    private setUpHighlight(): HTMLElement {
+        const highlight = this.doc.createElement('div');
+        const {style} = highlight;
+
+        style.background = this.options.highlightColor;
+        style.zIndex = '-1';
+        style.position = 'absolute';
+        this.el.appendChild(highlight);
+
+        return highlight;
+    }
+}

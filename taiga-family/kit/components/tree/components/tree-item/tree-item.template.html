@@ -1,0 +1,19 @@
+<ng-template #template>
+    <ng-content />
+</ng-template>
+<ng-container *polymorpheusOutlet="content as text; context: {$implicit: this, template: template}">
+    {{ text }}
+</ng-container>
+@if (isExpandable) {
+    <tui-expand
+        role="group"
+        class="t-children"
+        [expanded]="expanded()"
+    >
+        <div>
+            <ng-content select="tui-tree-item" />
+            <ng-content select="tui-tree" />
+        </div>
+    </tui-expand>
+}
+@if (attached()) {}

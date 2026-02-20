@@ -1,0 +1,59 @@
+@import '@taiga-ui/styles/utils';
+
+:host {
+    display: block;
+    font: var(--tui-typography-body-s);
+    color: var(--tui-text-primary);
+    text-align: center;
+}
+
+.t-content {
+    display: flex;
+    justify-content: center;
+}
+
+.t-button {
+    margin: 0 0.125rem;
+    flex-shrink: 0;
+
+    &[tuiButton]:not(.t-button_small) {
+        min-inline-size: var(--tui-height-s);
+        padding: 0 0.5rem;
+
+        &[data-size='xs'] {
+            min-inline-size: var(--tui-height-xs);
+            padding: 0 0.375rem;
+        }
+    }
+
+    &:first-child {
+        transform: scaleX(var(--tui-inline));
+        margin-inline-start: 0;
+    }
+
+    &:last-child {
+        transform: scaleX(var(--tui-inline));
+        margin-inline-end: 0;
+    }
+}
+
+.t-ellipsis {
+    inline-size: var(--tui-height-s);
+    block-size: var(--tui-height-s);
+    line-height: var(--tui-height-s);
+    margin: 0 0.125rem;
+    flex-shrink: 0;
+    color: var(--tui-text-action);
+    text-align: center;
+    cursor: default;
+
+    &_small {
+        inline-size: var(--tui-height-xs);
+        block-size: var(--tui-height-xs);
+        line-height: var(--tui-height-xs);
+    }
+
+    &::before {
+        content: '\2026';
+    }
+}
