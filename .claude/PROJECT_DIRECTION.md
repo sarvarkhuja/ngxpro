@@ -1,4 +1,4 @@
-# ngxpro Project Direction
+# nxp Project Direction
 
 **Updated**: 2026-02-14
 
@@ -7,6 +7,7 @@
 ## 🎯 Mission Statement
 
 Build a **from-scratch Angular UI component library** inspired by:
+
 - **Taiga UI's architecture** (@taiga-family/cdk, @taiga-family/core, @taiga-family/kit)
 - **Tremor's Tailwind styling** (utility-first CSS, dark mode, responsive)
 
@@ -17,7 +18,9 @@ Build a **from-scratch Angular UI component library** inspired by:
 ## 🔑 Key Principles
 
 ### 1. Architecture from Taiga UI
+
 Study and adopt these patterns from Taiga:
+
 - **CDK utilities**: Focus management, DOM helpers, observables, math utils
 - **Signal-based inputs**: `input()`, `signal()`, `computed()`
 - **Content queries**: `contentChildren()`, `viewChildren()`
@@ -27,12 +30,15 @@ Study and adopt these patterns from Taiga:
 - **Component structure**: How to organize complex components
 
 **DO NOT**:
+
 - Import or use Taiga UI components
 - Do not use Taiga's styling system
 - Copy Taiga code directly (study patterns, implement our own)
 
 ### 2. Styling from Tremor
+
 Study and adopt these patterns from Tremor:
+
 - **Tailwind CSS**: 100% utility classes, NO SCSS (except global tokens)
 - **Dark mode**: `dark:` variant on all colors
 - **Responsive**: `sm:`, `md:`, `lg:`, `xl:` breakpoints
@@ -42,10 +48,12 @@ Study and adopt these patterns from Tremor:
 - **Spacing**: Consistent spacing patterns
 
 **DO NOT**:
+
 - Use React patterns (convert to Angular)
 - Use Radix UI primitives (build our own)
 
 ### 3. Build Everything From Scratch
+
 - **NO Taiga UI components** in production bundles
 - **NO external component dependencies** (except Angular core, CDK for utilities)
 - **Every component** is built by us
@@ -56,7 +64,7 @@ Study and adopt these patterns from Tremor:
 ## 📦 Package Architecture
 
 ```
-@ngxpro/
+@nxp/
 ├── cdk/                    # Low-level utilities (inspired by @taiga-family/cdk)
 │   ├── utils/
 │   │   ├── focus/         # Focus management utilities
@@ -86,7 +94,7 @@ Study and adopt these patterns from Tremor:
 │   └── ...                # 30+ components total
 │
 ├── blocks/                 # Composed blocks
-│   ├── charts/            # Built ON TOP of @ngxpro/components
+│   ├── charts/            # Built ON TOP of @nxp/components
 │   ├── kpi-cards/
 │   ├── tables/
 │   ├── forms/
@@ -108,17 +116,18 @@ Study and adopt these patterns from Tremor:
 ## 🏗️ Implementation Workflow
 
 ### Phase 1: Foundation Setup
+
 **Agent**: Architecture Agent
 
 1. Initialize Nx workspace
 2. Install and configure Tailwind CSS
 3. Create package structure:
-   - `@ngxpro/cdk`
-   - `@ngxpro/core`
-   - `@ngxpro/components`
-   - `@ngxpro/blocks`
-   - `@ngxpro/fintech`
-   - `@ngxpro/cli`
+   - `@nxp/cdk`
+   - `@nxp/core`
+   - `@nxp/components`
+   - `@nxp/blocks`
+   - `@nxp/fintech`
+   - `@nxp/cli`
 4. Set up CI/CD, linting, testing
 5. Install Taiga UI as **dev dependency only**
 
@@ -127,6 +136,7 @@ Study and adopt these patterns from Tremor:
 ---
 
 ### Phase 2: CDK Utilities
+
 **Agent**: CDK Agent
 
 Study `@taiga-family/cdk` and implement:
@@ -139,11 +149,12 @@ Study `@taiga-family/cdk` and implement:
 
 **Reference**: `taiga-family/cdk/utils/`
 
-**Deliverable**: `@ngxpro/cdk` ready for use
+**Deliverable**: `@nxp/cdk` ready for use
 
 ---
 
 ### Phase 3: Core Services
+
 **Agent**: Core Agent
 
 Study `@taiga-family/core` and implement:
@@ -156,11 +167,12 @@ Study `@taiga-family/core` and implement:
 
 **Reference**: `taiga-family/core/services/`
 
-**Deliverable**: `@ngxpro/core` ready for use
+**Deliverable**: `@nxp/core` ready for use
 
 ---
 
 ### Phase 4: First Component - Accordion
+
 **Agent**: Component Generator Agent
 
 **Architecture reference**: `taiga-family/kit/components/accordion/`
@@ -177,16 +189,18 @@ Study both, implement our own:
 
 **Implementation guide**: `.claude/ACCORDION_IMPLEMENTATION.md`
 
-**Deliverable**: `@ngxpro/components/accordion` complete
+**Deliverable**: `@nxp/components/accordion` complete
 
 ---
 
 ### Phase 5: More Components
+
 **Agent**: Component Generator Agent
 
 Following the same pattern as Accordion, implement:
 
 **Priority 1** (Core components):
+
 - Button
 - Card
 - Input
@@ -195,6 +209,7 @@ Following the same pattern as Accordion, implement:
 - Label
 
 **Priority 2** (Interactive):
+
 - Dialog
 - Dropdown
 - Tabs
@@ -202,6 +217,7 @@ Following the same pattern as Accordion, implement:
 - Popover
 
 **Priority 3** (Advanced):
+
 - DatePicker
 - Slider
 - Calendar
@@ -210,14 +226,15 @@ Following the same pattern as Accordion, implement:
 
 Each follows: Taiga architecture + Tremor styling
 
-**Deliverable**: 30+ components in `@ngxpro/components`
+**Deliverable**: 30+ components in `@nxp/components`
 
 ---
 
 ### Phase 6: Composed Blocks
+
 **Agent**: Block Generator Agent
 
-Build blocks ON TOP of `@ngxpro/components`:
+Build blocks ON TOP of `@nxp/components`:
 
 1. **Charts**: Line, Bar, Area, Donut, etc.
 2. **KPI Cards**: Metric cards, stat cards
@@ -227,11 +244,12 @@ Build blocks ON TOP of `@ngxpro/components`:
 6. **Feedback**: Alerts, toasts, progress
 7. **Layouts**: Page shells, grids
 
-**Deliverable**: 300+ blocks in `@ngxpro/blocks`
+**Deliverable**: 300+ blocks in `@nxp/blocks`
 
 ---
 
 ### Phase 7: Fintech Domain
+
 **Agent**: Fintech Agent
 
 Build domain-specific blocks:
@@ -242,11 +260,12 @@ Build domain-specific blocks:
 4. Banking dashboards
 5. Trading interfaces
 
-**Deliverable**: `@ngxpro/fintech` complete
+**Deliverable**: `@nxp/fintech` complete
 
 ---
 
 ### Phase 8: Polish & Release
+
 **Agent**: Master Agent + Documentation Agent
 
 1. Showcase website (Tremor-style gallery)
@@ -293,6 +312,7 @@ When styling a component, study the Tremor version:
 Every component must pass:
 
 ### Architecture
+
 - [ ] Standalone component
 - [ ] OnPush change detection
 - [ ] Signal-based inputs (`input()` not `@Input()`)
@@ -300,55 +320,65 @@ Every component must pass:
 - [ ] Host directives for composition (if applicable)
 
 ### Styling
+
 - [ ] 100% Tailwind CSS (NO SCSS except global tokens)
 - [ ] Dark mode support (all colors have `dark:` variant)
 - [ ] Responsive (proper use of `sm:`, `md:`, `lg:` breakpoints)
 - [ ] Consistent spacing (Tailwind spacing scale)
 
 ### Testing
+
 - [ ] ≥80% code coverage
 - [ ] 0 critical accessibility violations (axe-core)
 - [ ] Unit tests for all public methods
 - [ ] Tests for edge cases
 
 ### Documentation
+
 - [ ] Storybook story with all variants
 - [ ] README with usage examples
 - [ ] Props/Events documented
 - [ ] Examples for common use cases
 
 ### Dependencies
+
 - [ ] NO Taiga UI components in imports
 - [ ] NO external component libraries
-- [ ] Only Angular core and @ngxpro packages
+- [ ] Only Angular core and @nxp packages
 
 ---
 
 ## 🚀 Getting Started
 
 ### For Architecture Agent
+
 Read: `.claude/rules/architecture-agent.md`
 
 ### For Component Generator Agent
-Read: 
+
+Read:
+
 1. `.claude/rules/block-generator-agent.md`
 2. `.claude/ACCORDION_IMPLEMENTATION.md`
 
 ### For All Agents
+
 - Main reference: `.claude/CLAUDE.md`
 - Agent roles: `AGENTS.md`
-- Project context: `.cursor/rules/ngxpro-project-context.mdc`
+- Project context: `.cursor/rules/nxp-project-context.mdc`
 
 ---
 
 ## 📌 Key Differences from Original Plan
 
 ### ❌ OLD Approach
+
 - Build blocks ON TOP of Taiga UI components
 - Use Taiga's styling system
 - Import and use `TuiButton`, `TuiCard`, etc.
 
 ### ✅ NEW Approach
+
 - Build EVERYTHING from scratch
 - Use Taiga for **architecture patterns only**
 - Use Tremor for **styling patterns only**

@@ -11,18 +11,18 @@ import {
  * Directive that emits when a click occurs outside the host element.
  *
  * @example
- * <div (ngxproClickOutside)="onClose()">...</div>
+ * <div (nxpClickOutside)="onClose()">...</div>
  */
 @Directive({
-  selector: '[ngxproClickOutside]',
+  selector: '[nxpClickOutside]',
 })
 export class ClickOutsideDirective implements OnInit, OnDestroy {
-  readonly ngxproClickOutside = output<MouseEvent>();
+  readonly nxpClickOutside = output<MouseEvent>();
 
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly listener = (event: MouseEvent): void => {
     if (!this.el.nativeElement.contains(event.target as Node)) {
-      this.ngxproClickOutside.emit(event);
+      this.nxpClickOutside.emit(event);
     }
   };
 

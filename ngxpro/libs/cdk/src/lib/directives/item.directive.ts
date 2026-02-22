@@ -5,14 +5,14 @@ import { Directive } from '@angular/core';
  * Used as a marker for flexible content projection patterns.
  *
  * @example
- * <ng-template ngxproItem>
+ * <ng-template nxpItem>
  *   Content here
  * </ng-template>
  *
  * Pattern: Taiga UI's TuiItem directive
  */
 @Directive({
-  selector: '[ngxproItem]',
+  selector: '[nxpItem]',
   standalone: true,
 })
 export class ItemDirective {}

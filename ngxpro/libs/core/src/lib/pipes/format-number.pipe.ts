@@ -5,13 +5,16 @@ import { FormatService } from '../services/format.service';
  * Pipe to format a number using the FormatService.
  *
  * @example
- * {{ 1234567 | ngxproNumber }} => "1,234,567"
+ * {{ 1234567 | nxpNumber }} => "1,234,567"
  */
-@Pipe({ name: 'ngxproNumber' })
+@Pipe({ name: 'nxpNumber' })
 export class FormatNumberPipe implements PipeTransform {
   private readonly format = inject(FormatService);
 
-  transform(value: number | null | undefined, options?: Intl.NumberFormatOptions): string {
+  transform(
+    value: number | null | undefined,
+    options?: Intl.NumberFormatOptions,
+  ): string {
     if (value == null) return '';
     return this.format.formatNumber(value, options);
   }

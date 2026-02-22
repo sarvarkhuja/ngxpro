@@ -1,5 +1,5 @@
 import { Injectable, signal, inject, OnDestroy } from '@angular/core';
-import { NGXPRO_WINDOW } from '@ngxpro/cdk';
+import { NXP_WINDOW } from '@nxp/cdk';
 
 export type NgxproBreakpoint = 'mobile' | 'tablet' | 'desktop' | 'desktopLarge';
 
@@ -16,7 +16,7 @@ const BREAKPOINTS: Record<NgxproBreakpoint, number> = {
  */
 @Injectable({ providedIn: 'root' })
 export class BreakpointService implements OnDestroy {
-  private readonly win = inject(NGXPRO_WINDOW);
+  private readonly win = inject(NXP_WINDOW);
   private readonly queries: { mql: MediaQueryList; handler: () => void }[] = [];
 
   /** Current breakpoint. */
@@ -46,7 +46,9 @@ export class BreakpointService implements OnDestroy {
       const bp = this.getCurrentBreakpoint();
       this.breakpoint.set(bp);
       this.isMobile.set(bp === 'mobile');
-      this.isTablet.set(bp === 'tablet' || bp === 'desktop' || bp === 'desktopLarge');
+      this.isTablet.set(
+        bp === 'tablet' || bp === 'desktop' || bp === 'desktopLarge',
+      );
       this.isDesktop.set(bp === 'desktop' || bp === 'desktopLarge');
     };
 

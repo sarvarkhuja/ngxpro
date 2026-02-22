@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { cx, focusInput, hasErrorInput } from '@ngxpro/cdk';
+import { cx, focusInput, hasErrorInput } from '@nxp/cdk';
 
 /**
  * Input directive styled with Tremor patterns.
  * Apply to native `<input>` elements.
  *
  * @example
- * <input ngxpro-input placeholder="Enter text..." />
- * <input ngxpro-input [hasError]="true" />
+ * <input nxp-input placeholder="Enter text..." />
+ * <input nxp-input [hasError]="true" />
  */
 @Component({
-  selector: '[ngxpro-input]',
+  selector: '[nxp-input]',
   template: ``,
   host: {
     '[class]': 'hostClasses()',

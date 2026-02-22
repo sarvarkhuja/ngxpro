@@ -29,19 +29,19 @@
     grid-template-rows: 1fr;
 
     /* Apply opacity and visibility when expanded */
-    > .ngxpro-expand-wrapper {
+    > .nxp-expand-wrapper {
       opacity: 1;
       visibility: visible;
     }
 
     /* When animation is complete (_open), allow overflow */
-    &._open > .ngxpro-expand-wrapper {
+    &._open > .nxp-expand-wrapper {
       overflow: visible;
     }
   }
 }
 
-.ngxpro-expand-wrapper {
+.nxp-expand-wrapper {
   /* CRITICAL: Transition ALL properties for proper collapse animation
    * Tremor: 150ms cubic-bezier(0.87, 0, 0.13, 1) */
   transition-property: all;

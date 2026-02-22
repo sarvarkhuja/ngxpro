@@ -1,0 +1,126 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto">
+    <!-- Back link -->
+    <a
+      routerLink="/"
+      class="inline-flex items-center text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 mb-6"
+    >
+      &larr; Back to showcase
+    </a>
+
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Button</h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-10">
+      All button variants, sizes, and states.
+    </p>
+
+    <!-- Variants -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Variants</h2>
+      <div class="flex flex-wrap items-center gap-3">
+        @for (v of variants; track v) {
+          <button nxpButton [variant]="v">{{ v }}</button>
+        }
+      </div>
+    </section>
+
+    <!-- Sizes -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Sizes</h2>
+      <div class="flex flex-wrap items-end gap-3">
+        @for (s of sizes; track s) {
+          <button nxpButton [size]="s">{{ s }}</button>
+        }
+      </div>
+    </section>
+
+    <!-- Sizes x Variants matrix -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Sizes &times; Variants</h2>
+      <div class="space-y-4">
+        @for (v of variants; track v) {
+          <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2 capitalize">{{ v }}</p>
+            <div class="flex flex-wrap items-end gap-3">
+              @for (s of sizes; track s) {
+                <button nxpButton [variant]="v" [size]="s">{{ s }}</button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Loading State -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Loading State</h2>
+      <div class="flex flex-wrap items-center gap-3">
+        @for (v of variants; track v) {
+          <button nxpButton [variant]="v" [loading]="true">{{ v }}</button>
+        }
+      </div>
+    </section>
+
+    <!-- Disabled State -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Disabled State</h2>
+      <div class="flex flex-wrap items-center gap-3">
+        @for (v of variants; track v) {
+          <button nxpButton [variant]="v" disabled>{{ v }}</button>
+        }
+      </div>
+    </section>
+
+    <!-- With Icons -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">With Icons</h2>
+      <div class="flex flex-wrap items-center gap-3">
+        <button nxpButton variant="primary" iconStart="&#x2795;">Add Item</button>
+        <button nxpButton variant="secondary" iconEnd="&#x2192;">Next</button>
+        <button nxpButton variant="destructive" iconStart="&#x1F5D1;">Delete</button>
+        <button nxpButton variant="outline" iconStart="&#x2B07;" iconEnd="&#x2197;">Download</button>
+      </div>
+    </section>
+
+    <!-- As Anchor -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">As Anchor</h2>
+      <div class="flex flex-wrap items-center gap-3">
+        <a nxpButton variant="primary" routerLink="/">Link Primary</a>
+        <a nxpButton variant="secondary" routerLink="/">Link Secondary</a>
+        <a nxpButton variant="ghost" routerLink="/">Link Ghost</a>
+      </div>
+    </section>
+
+    <!-- TextMorph + Button -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">With TextMorph</h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        Click each button to see smooth FLIP-based text animation between label states.
+      </p>
+      <div class="flex flex-wrap items-center gap-4">
+        <!-- Submit cycle: Submit → Submitting... → Submitted! -->
+        <button nxpButton variant="primary" (click)="toggleSubmit()">
+          <nxp-text-morph [text]="submitLabel()" />
+        </button>
+
+        <!-- Follow toggle: Follow ↔ Following -->
+        <button
+          nxpButton
+          [variant]="followLabel() === 'Following' ? 'secondary' : 'outline'"
+          (click)="toggleFollow()"
+        >
+          <nxp-text-morph [text]="followLabel()" />
+        </button>
+
+        <!-- Delete cycle: Delete → Are you sure? → Deleted! -->
+        <button
+          nxpButton
+          [variant]="deleteLabel() === 'Delete' ? 'destructive' : 'secondary'"
+          (click)="toggleDelete()"
+        >
+          <nxp-text-morph [text]="deleteLabel()" />
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

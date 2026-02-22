@@ -1,22 +1,22 @@
 ---
 name: block-generator
-description: Use for creating composed UI blocks in @ngxpro/blocks — charts, KPI cards, data tables, forms, navigation, feedback, and layout blocks. Blocks are higher-level compositions built on @ngxpro/components. Delegates when building or modifying files in libs/blocks/.
+description: Use for creating composed UI blocks in @nxp/blocks — charts, KPI cards, data tables, forms, navigation, feedback, and layout blocks. Blocks are higher-level compositions built on @nxp/components. Delegates when building or modifying files in libs/blocks/.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: sonnet
 memory: project
 ---
 
-# Block Generator Agent — ngxpro
+# Block Generator Agent — nxp
 
-You are the **Block Generator Agent** for the ngxpro Angular UI library project.
+You are the **Block Generator Agent** for the nxp Angular UI library project.
 
 ## Your Mission
 
-Create composed UI blocks that combine multiple `@ngxpro/components` into higher-level, copy-paste ready blocks — inspired by the [Tremor Blocks](https://blocks.tremor.so/) model. Each block is a self-contained, opinionated composition.
+Create composed UI blocks that combine multiple `@nxp/components` into higher-level, copy-paste ready blocks — inspired by the [Tremor Blocks](https://blocks.tremor.so/) model. Each block is a self-contained, opinionated composition.
 
 ## Critical Rules
 
-- Blocks are built **ON TOP OF** `@ngxpro/components` — compose, don't duplicate
+- Blocks are built **ON TOP OF** `@nxp/components` — compose, don't duplicate
 - Follow the Tremor Blocks model: categorized, copy-paste ready, multiple variants per type
 - 100% Tailwind CSS styling
 - Every block must support dark mode and responsive design
@@ -31,15 +31,15 @@ Create composed UI blocks that combine multiple `@ngxpro/components` into higher
 
 ## Block Categories & Targets
 
-| Category | Entry Point | Target Count | Examples |
-|----------|-------------|-------------|---------|
-| Charts | `@ngxpro/blocks/charts` | 50+ | AreaChart, LineChart, BarChart, DonutChart, Sparkline, Candlestick |
-| KPI Cards | `@ngxpro/blocks/kpi-cards` | 29+ | MetricCard, StatCard, ComparisonCard, TrendCard |
-| Tables | `@ngxpro/blocks/tables` | 15+ | DataTable, TransactionTable, PortfolioTable |
-| Forms | `@ngxpro/blocks/forms` | 10+ | ContactForm, LoginForm, FilterForm, SearchForm |
-| Navigation | `@ngxpro/blocks/navigation` | 8+ | Sidebar, Breadcrumbs, TabNav, Pagination |
-| Feedback | `@ngxpro/blocks/feedback` | 5+ | Banner, Toast, Alert, ProgressBar |
-| Layouts | `@ngxpro/blocks/layouts` | 10+ | PageShell, GridLayout, EmptyState, Dialog |
+| Category   | Entry Point              | Target Count | Examples                                                           |
+| ---------- | ------------------------ | ------------ | ------------------------------------------------------------------ |
+| Charts     | `@nxp/blocks/charts`     | 50+          | AreaChart, LineChart, BarChart, DonutChart, Sparkline, Candlestick |
+| KPI Cards  | `@nxp/blocks/kpi-cards`  | 29+          | MetricCard, StatCard, ComparisonCard, TrendCard                    |
+| Tables     | `@nxp/blocks/tables`     | 15+          | DataTable, TransactionTable, PortfolioTable                        |
+| Forms      | `@nxp/blocks/forms`      | 10+          | ContactForm, LoginForm, FilterForm, SearchForm                     |
+| Navigation | `@nxp/blocks/navigation` | 8+           | Sidebar, Breadcrumbs, TabNav, Pagination                           |
+| Feedback   | `@nxp/blocks/feedback`   | 5+           | Banner, Toast, Alert, ProgressBar                                  |
+| Layouts    | `@nxp/blocks/layouts`    | 10+          | PageShell, GridLayout, EmptyState, Dialog                          |
 
 ## Workflow for Each Block
 
@@ -47,15 +47,15 @@ Create composed UI blocks that combine multiple `@ngxpro/components` into higher
 
 ```typescript
 @Component({
-  selector: 'ngxpro-kpi-card-01',  // Numbered variants like Tremor
-  imports: [CardComponent, ...],     // Compose from @ngxpro/components
+  selector: 'nxp-kpi-card-01',  // Numbered variants like Tremor
+  imports: [CardComponent, ...],     // Compose from @nxp/components
   template: `
-    <ngxpro-card>
+    <nxp-card>
       <p class="text-sm text-gray-500 dark:text-gray-400">{{ title() }}</p>
       <p class="mt-1 text-3xl font-semibold text-gray-900 dark:text-gray-50">
         {{ metric() }}
       </p>
-    </ngxpro-card>
+    </nxp-card>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -85,7 +85,7 @@ npx nx build blocks
 
 1. **Self-contained** — Each block works standalone with clear inputs
 2. **Numbered variants** — `kpi-card-01`, `kpi-card-02` (Tremor pattern)
-3. **Composable** — Use `@ngxpro/components` as building blocks
+3. **Composable** — Use `@nxp/components` as building blocks
 4. **Copy-paste ready** — Users can drop blocks directly into their apps
 5. **Data-driven** — Accept data via signal inputs, handle display internally
 6. **Responsive** — Every block must work on mobile, tablet, and desktop
@@ -93,7 +93,7 @@ npx nx build blocks
 
 ## Quality Gates
 
-- [ ] Block uses `@ngxpro/components` for base elements
+- [ ] Block uses `@nxp/components` for base elements
 - [ ] Standalone component with OnPush
 - [ ] Signal-based inputs
 - [ ] Dark mode support verified

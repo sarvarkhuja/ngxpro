@@ -3,11 +3,11 @@ import { TestBed } from '@angular/core/testing';
 import { TextMorphDirective } from './text-morph.directive';
 import { TextMorphComponent } from './text-morph.component';
 import {
-  NGXPRO_TEXT_MORPH_OPTIONS,
+  NXP_TEXT_MORPH_OPTIONS,
   provideTextMorphOptions,
 } from './text-morph.providers';
-import { NGXPRO_TEXT_MORPH_DEFAULT_OPTIONS } from './text-morph.types';
-import { NGXPRO_IS_BROWSER } from '@ngxpro/cdk';
+import { NXP_TEXT_MORPH_DEFAULT_OPTIONS } from './text-morph.types';
+import { NXP_IS_BROWSER } from '@nxp/cdk';
 
 // Mock Web Animations API for test environment
 function setupAnimationMocks() {
@@ -32,7 +32,7 @@ function setupAnimationMocks() {
       vi.fn().mockImplementation(createMockAnimation);
   } else {
     vi.spyOn(HTMLElement.prototype, 'animate').mockImplementation(
-      createMockAnimation
+      createMockAnimation,
     );
   }
   if (!HTMLElement.prototype.getAnimations) {
@@ -61,7 +61,7 @@ function setupAnimationMocks() {
   imports: [TextMorphDirective],
   template: `
     <span
-      ngxproTextMorph
+      nxpTextMorph
       [text]="text()"
       [duration]="duration()"
       [scale]="scale()"
@@ -95,7 +95,7 @@ class TestHostComponent {
   standalone: true,
   imports: [TextMorphComponent],
   template: `
-    <ngxpro-text-morph
+    <nxp-text-morph
       [text]="text()"
       class="custom-class"
       data-testid="morph-component"
@@ -123,7 +123,9 @@ describe('TextMorphDirective', () => {
   it('should create', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     fixture.detectChanges();
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     expect(element).toBeTruthy();
   });
 
@@ -132,7 +134,9 @@ describe('TextMorphDirective', () => {
     fixture.detectChanges();
     flushRender();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     expect(element.hasAttribute('torph-root')).toBe(true);
   });
 
@@ -141,7 +145,9 @@ describe('TextMorphDirective', () => {
     fixture.detectChanges();
     flushRender();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     const items = element.querySelectorAll('[torph-item]');
     expect(items.length).toBeGreaterThan(0);
   });
@@ -151,7 +157,9 @@ describe('TextMorphDirective', () => {
     fixture.detectChanges();
     flushRender();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     const items = element.querySelectorAll('[torph-item]');
     items.forEach((item: Element) => {
       expect(item.hasAttribute('torph-id')).toBe(true);
@@ -164,7 +172,9 @@ describe('TextMorphDirective', () => {
     fixture.detectChanges();
     flushRender();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     expect(element.hasAttribute('torph-debug')).toBe(true);
   });
 
@@ -174,7 +184,9 @@ describe('TextMorphDirective', () => {
     fixture.detectChanges();
     flushRender();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     expect(element.textContent).toBe('Hello');
     expect(element.querySelectorAll('[torph-item]').length).toBe(0);
   });
@@ -185,7 +197,9 @@ describe('TextMorphDirective', () => {
     fixture.detectChanges();
     flushRender();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     expect(element.hasAttribute('torph-root')).toBe(false);
   });
 
@@ -194,7 +208,9 @@ describe('TextMorphDirective', () => {
     fixture.detectChanges();
     flushRender();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     const initialItems = element.querySelectorAll('[torph-item]');
     expect(initialItems.length).toBeGreaterThan(0);
 
@@ -229,9 +245,17 @@ describe('TextMorphDirective', () => {
     fixture.detectChanges();
     flushRender();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
-    Object.defineProperty(element, 'offsetWidth', { value: 100, configurable: true });
-    Object.defineProperty(element, 'offsetHeight', { value: 20, configurable: true });
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
+    Object.defineProperty(element, 'offsetWidth', {
+      value: 100,
+      configurable: true,
+    });
+    Object.defineProperty(element, 'offsetHeight', {
+      value: 20,
+      configurable: true,
+    });
 
     fixture.componentInstance.text.set('World');
     fixture.detectChanges();
@@ -285,7 +309,9 @@ describe('TextMorphDirective', () => {
     flushRender();
     await Promise.resolve();
 
-    const element = fixture.nativeElement.querySelector('[data-testid="morph"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph"]',
+    );
     expect(element.textContent?.trim()).toBe('ABC');
   });
 });
@@ -304,9 +330,9 @@ describe('TextMorphDirective with custom options', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     fixture.detectChanges();
 
-    const options = TestBed.inject(NGXPRO_TEXT_MORPH_OPTIONS);
+    const options = TestBed.inject(NXP_TEXT_MORPH_OPTIONS);
     expect(options.duration).toBe(800);
-    expect(options.ease).toBe(NGXPRO_TEXT_MORPH_DEFAULT_OPTIONS.ease);
+    expect(options.ease).toBe(NXP_TEXT_MORPH_DEFAULT_OPTIONS.ease);
   });
 });
 
@@ -316,7 +342,7 @@ describe('TextMorphDirective SSR safety', () => {
 
     await TestBed.configureTestingModule({
       imports: [TestHostComponent],
-      providers: [{ provide: NGXPRO_IS_BROWSER, useValue: false }],
+      providers: [{ provide: NXP_IS_BROWSER, useValue: false }],
     }).compileComponents();
   });
 
@@ -341,14 +367,18 @@ describe('TextMorphComponent', () => {
   it('should create', () => {
     const fixture = TestBed.createComponent(TestComponentHost);
     fixture.detectChanges();
-    const element = fixture.nativeElement.querySelector('[data-testid="morph-component"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph-component"]',
+    );
     expect(element).toBeTruthy();
   });
 
   it('should apply inline-flex class', () => {
     const fixture = TestBed.createComponent(TestComponentHost);
     fixture.detectChanges();
-    const element = fixture.nativeElement.querySelector('[data-testid="morph-component"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="morph-component"]',
+    );
     expect(element.classList.contains('inline-flex')).toBe(true);
   });
 });

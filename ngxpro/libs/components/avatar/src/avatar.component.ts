@@ -5,9 +5,9 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { NgIf, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { tv, type VariantProps } from 'tailwind-variants';
-import { cx } from '@ngxpro/cdk';
+import { cx } from '@nxp/cdk';
 
 const avatarVariants = tv({
   slots: {
@@ -19,12 +19,8 @@ const avatarVariants = tv({
       // transition
       'transition-all duration-150',
     ],
-    image: [
-      'h-full w-full object-cover',
-    ],
-    fallback: [
-      'flex h-full w-full items-center justify-center',
-    ],
+    image: ['h-full w-full object-cover'],
+    fallback: ['flex h-full w-full items-center justify-center'],
     badge: [
       'absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-950',
     ],
@@ -82,7 +78,9 @@ const avatarVariants = tv({
   },
 });
 
-export type AvatarSize = NonNullable<VariantProps<typeof avatarVariants>['size']>;
+export type AvatarSize = NonNullable<
+  VariantProps<typeof avatarVariants>['size']
+>;
 export type AvatarAppearance = 'primary' | 'negative' | 'neutral' | '';
 
 /**
@@ -98,15 +96,15 @@ export type AvatarAppearance = 'primary' | 'negative' | 'neutral' | '';
  *
  * @example
  * <!-- Basic usage with image -->
- * <ngxpro-avatar src="/path/to/image.jpg" alt="John Doe" />
+ * <nxp-avatar src="/path/to/image.jpg" alt="John Doe" />
  *
  * @example
  * <!-- With initials fallback -->
- * <ngxpro-avatar alt="John Doe" />
+ * <nxp-avatar alt="John Doe" />
  *
  * @example
  * <!-- With size and appearance -->
- * <ngxpro-avatar
+ * <nxp-avatar
  *   src="/path/to/image.jpg"
  *   alt="Jane Smith"
  *   size="xl"
@@ -116,32 +114,33 @@ export type AvatarAppearance = 'primary' | 'negative' | 'neutral' | '';
  *
  * @example
  * <!-- With badge indicator -->
- * <ngxpro-avatar
+ * <nxp-avatar
  *   src="/path/to/image.jpg"
  *   alt="Alice Johnson"
  *   badge="bg-green-500"
  * />
  */
 @Component({
-  selector: 'ngxpro-avatar',
-  imports: [NgIf, NgClass],
+  selector: 'nxp-avatar',
+  imports: [NgClass],
   template: `
-    <img
-      *ngIf="src() && !fallback()"
-      [src]="src()"
-      [alt]="alt()"
-      [class]="imageClasses()"
-      (error)="handleImageError()"
-      (load)="handleImageLoad()"
-    />
-    <div *ngIf="!src() || fallback()" [class]="fallbackClasses()">
-      {{ initials() }}
-    </div>
-    <span
-      *ngIf="badge()"
-      [class]="badgeClasses()"
-      [ngClass]="badge()"
-    ></span>
+    @if (src() && !fallback()) {
+      <img
+        [src]="src()"
+        [alt]="alt()"
+        [class]="imageClasses()"
+        (error)="handleImageError()"
+        (load)="handleImageLoad()"
+      />
+    }
+    @if (!src() || fallback()) {
+      <div [class]="fallbackClasses()">
+        {{ initials() }}
+      </div>
+    }
+    @if (badge()) {
+      <span [class]="badgeClasses()" [ngClass]="badge()"></span>
+    }
   `,
   host: {
     '[class]': 'hostClasses()',
@@ -190,11 +189,11 @@ export class AvatarComponent {
       size: this.size(),
       round: this.round(),
       appearance: this.appearance(),
-    })
+    }),
   );
 
   readonly hostClasses = computed(() =>
-    cx(this.variants().base(), this.class())
+    cx(this.variants().base(), this.class()),
   );
 
   readonly imageClasses = computed(() => this.variants().image());

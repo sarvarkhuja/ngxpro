@@ -1,4 +1,139 @@
 @use 'tailwindcss';
+@import 'remixicon/fonts/remixicon.css';
 
 /* Class-based dark mode: ThemeService adds/removes .dark on <html> */
 @custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * ─── Color Scheme System ────────────────────────────────────────────────────
+ *
+ * Runtime-swappable brand colors via CSS custom properties.
+ * ColorSchemeService sets `data-scheme="[name]"` on <html>.
+ *
+ * Components use Tailwind `brand-*` utilities (bg-brand-500, text-brand-600…)
+ * which resolve to the active scheme's palette at runtime.
+ *
+ * Supported schemes: blue | indigo | violet | rose | orange | emerald | teal
+ * ────────────────────────────────────────────────────────────────────────────
+ */
+
+/* Register `brand` as a runtime-resolved Tailwind color family */
+@theme inline {
+  --color-brand-50: var(--nxp-brand-50);
+  --color-brand-100: var(--nxp-brand-100);
+  --color-brand-200: var(--nxp-brand-200);
+  --color-brand-300: var(--nxp-brand-300);
+  --color-brand-400: var(--nxp-brand-400);
+  --color-brand-500: var(--nxp-brand-500);
+  --color-brand-600: var(--nxp-brand-600);
+  --color-brand-700: var(--nxp-brand-700);
+  --color-brand-800: var(--nxp-brand-800);
+  --color-brand-900: var(--nxp-brand-900);
+  --color-brand-950: var(--nxp-brand-950);
+}
+
+/* ── Blue (default) ── */
+:root,
+[data-scheme='blue'] {
+  --nxp-brand-50: var(--color-blue-50);
+  --nxp-brand-100: var(--color-blue-100);
+  --nxp-brand-200: var(--color-blue-200);
+  --nxp-brand-300: var(--color-blue-300);
+  --nxp-brand-400: var(--color-blue-400);
+  --nxp-brand-500: var(--color-blue-500);
+  --nxp-brand-600: var(--color-blue-600);
+  --nxp-brand-700: var(--color-blue-700);
+  --nxp-brand-800: var(--color-blue-800);
+  --nxp-brand-900: var(--color-blue-900);
+  --nxp-brand-950: var(--color-blue-950);
+}
+
+/* ── Indigo ── */
+[data-scheme='indigo'] {
+  --nxp-brand-50: var(--color-indigo-50);
+  --nxp-brand-100: var(--color-indigo-100);
+  --nxp-brand-200: var(--color-indigo-200);
+  --nxp-brand-300: var(--color-indigo-300);
+  --nxp-brand-400: var(--color-indigo-400);
+  --nxp-brand-500: var(--color-indigo-500);
+  --nxp-brand-600: var(--color-indigo-600);
+  --nxp-brand-700: var(--color-indigo-700);
+  --nxp-brand-800: var(--color-indigo-800);
+  --nxp-brand-900: var(--color-indigo-900);
+  --nxp-brand-950: var(--color-indigo-950);
+}
+
+/* ── Violet ── */
+[data-scheme='violet'] {
+  --nxp-brand-50: var(--color-violet-50);
+  --nxp-brand-100: var(--color-violet-100);
+  --nxp-brand-200: var(--color-violet-200);
+  --nxp-brand-300: var(--color-violet-300);
+  --nxp-brand-400: var(--color-violet-400);
+  --nxp-brand-500: var(--color-violet-500);
+  --nxp-brand-600: var(--color-violet-600);
+  --nxp-brand-700: var(--color-violet-700);
+  --nxp-brand-800: var(--color-violet-800);
+  --nxp-brand-900: var(--color-violet-900);
+  --nxp-brand-950: var(--color-violet-950);
+}
+
+/* ── Rose ── */
+[data-scheme='rose'] {
+  --nxp-brand-50: var(--color-rose-50);
+  --nxp-brand-100: var(--color-rose-100);
+  --nxp-brand-200: var(--color-rose-200);
+  --nxp-brand-300: var(--color-rose-300);
+  --nxp-brand-400: var(--color-rose-400);
+  --nxp-brand-500: var(--color-rose-500);
+  --nxp-brand-600: var(--color-rose-600);
+  --nxp-brand-700: var(--color-rose-700);
+  --nxp-brand-800: var(--color-rose-800);
+  --nxp-brand-900: var(--color-rose-900);
+  --nxp-brand-950: var(--color-rose-950);
+}
+
+/* ── Orange ── */
+[data-scheme='orange'] {
+  --nxp-brand-50: var(--color-orange-50);
+  --nxp-brand-100: var(--color-orange-100);
+  --nxp-brand-200: var(--color-orange-200);
+  --nxp-brand-300: var(--color-orange-300);
+  --nxp-brand-400: var(--color-orange-400);
+  --nxp-brand-500: var(--color-orange-500);
+  --nxp-brand-600: var(--color-orange-600);
+  --nxp-brand-700: var(--color-orange-700);
+  --nxp-brand-800: var(--color-orange-800);
+  --nxp-brand-900: var(--color-orange-900);
+  --nxp-brand-950: var(--color-orange-950);
+}
+
+/* ── Emerald ── */
+[data-scheme='emerald'] {
+  --nxp-brand-50: var(--color-emerald-50);
+  --nxp-brand-100: var(--color-emerald-100);
+  --nxp-brand-200: var(--color-emerald-200);
+  --nxp-brand-300: var(--color-emerald-300);
+  --nxp-brand-400: var(--color-emerald-400);
+  --nxp-brand-500: var(--color-emerald-500);
+  --nxp-brand-600: var(--color-emerald-600);
+  --nxp-brand-700: var(--color-emerald-700);
+  --nxp-brand-800: var(--color-emerald-800);
+  --nxp-brand-900: var(--color-emerald-900);
+  --nxp-brand-950: var(--color-emerald-950);
+}
+
+/* ── Teal ── */
+[data-scheme='teal'] {
+  --nxp-brand-50: var(--color-teal-50);
+  --nxp-brand-100: var(--color-teal-100);
+  --nxp-brand-200: var(--color-teal-200);
+  --nxp-brand-300: var(--color-teal-300);
+  --nxp-brand-400: var(--color-teal-400);
+  --nxp-brand-500: var(--color-teal-500);
+  --nxp-brand-600: var(--color-teal-600);
+  --nxp-brand-700: var(--color-teal-700);
+  --nxp-brand-800: var(--color-teal-800);
+  --nxp-brand-900: var(--color-teal-900);
+  --nxp-brand-950: var(--color-teal-950);
+}

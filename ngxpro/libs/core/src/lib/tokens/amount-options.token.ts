@@ -54,7 +54,7 @@ const DEFAULT_AMOUNT_OPTIONS: NgxproAmountOptions = {
  * ```typescript
  * providers: [
  *   {
- *     provide: NGXPRO_AMOUNT_OPTIONS,
+ *     provide: NXP_AMOUNT_OPTIONS,
  *     useValue: {
  *       currency: 'USD',
  *       currencyAlign: 'start',
@@ -66,7 +66,7 @@ const DEFAULT_AMOUNT_OPTIONS: NgxproAmountOptions = {
  * ]
  * ```
  */
-export const NGXPRO_AMOUNT_OPTIONS = new InjectionToken<NgxproAmountOptions>(
-  'NGXPRO_AMOUNT_OPTIONS',
+export const NXP_AMOUNT_OPTIONS = new InjectionToken<NgxproAmountOptions>(
+  'NXP_AMOUNT_OPTIONS',
   { factory: () => DEFAULT_AMOUNT_OPTIONS },
 );

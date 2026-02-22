@@ -9,12 +9,12 @@ import { cx } from '../utils/cx';
  *
  * @example
  * ```html
- * <div ngxproCell="l">
- *   <div ngxproTitle>
+ * <div nxpCell="l">
+ *   <div nxpTitle>
  *     <div>Item Title</div>
- *     <div ngxproSubtitle>Description</div>
+ *     <div nxpSubtitle>Description</div>
  *   </div>
- *   <div ngxproCellActions>
+ *   <div nxpCellActions>
  *     <button class="p-2 rounded hover:bg-gray-100">Edit</button>
  *     <button class="p-2 rounded hover:bg-gray-100">Delete</button>
  *   </div>
@@ -25,7 +25,7 @@ import { cx } from '../utils/cx';
  * Styling: Tailwind CSS with opacity transitions
  */
 @Directive({
-  selector: '[ngxproCellActions]',
+  selector: '[nxpCellActions]',
   standalone: true,
 })
 export class CellActionsDirective {
@@ -38,7 +38,7 @@ export class CellActionsDirective {
       '[&>button]:transition-opacity [&>a]:transition-opacity [&>label]:transition-opacity',
       '[&>button:focus-visible]:opacity-100 [&>a:focus-visible]:opacity-100',
       // Hover state controlled by parent cell
-      'group-hover/cell:[&>button]:opacity-100 group-hover/cell:[&>a]:opacity-100 group-hover/cell:[&>label]:opacity-100'
+      'group-hover/cell:[&>button]:opacity-100 group-hover/cell:[&>a]:opacity-100 group-hover/cell:[&>label]:opacity-100',
     );
   }
 }

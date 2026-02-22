@@ -1,5 +1,5 @@
 /**
- * @ngxpro/blocks/tables
+ * @nxp/blocks/tables
  * Table blocks: DataTable, TransactionTable, PortfolioTable, etc.
  */
-export const NGXPRO_TABLES_ENTRY = '@ngxpro/blocks/tables';
+export const NXP_TABLES_ENTRY = '@nxp/blocks/tables';

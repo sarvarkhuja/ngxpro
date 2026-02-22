@@ -83,7 +83,7 @@ export class TextMorph {
   private isDisabled(): boolean {
     return Boolean(
       this.options.disabled ||
-        (this.options.respectReducedMotion && this.prefersReducedMotion),
+      (this.options.respectReducedMotion && this.prefersReducedMotion),
     );
   }
 

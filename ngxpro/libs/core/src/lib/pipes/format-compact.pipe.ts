@@ -5,10 +5,10 @@ import { FormatService } from '../services/format.service';
  * Pipe to format a number in compact notation.
  *
  * @example
- * {{ 1200 | ngxproCompact }} => "1.2K"
- * {{ 3400000 | ngxproCompact }} => "3.4M"
+ * {{ 1200 | nxpCompact }} => "1.2K"
+ * {{ 3400000 | nxpCompact }} => "3.4M"
  */
-@Pipe({ name: 'ngxproCompact' })
+@Pipe({ name: 'nxpCompact' })
 export class FormatCompactPipe implements PipeTransform {
   private readonly format = inject(FormatService);
 

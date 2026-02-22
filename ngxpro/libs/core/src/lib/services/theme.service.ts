@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, effect, inject } from '@angular/core';
-import { NGXPRO_DOCUMENT } from '@ngxpro/cdk';
+import { NXP_DOCUMENT } from '@nxp/cdk';
 
 export type NgxproTheme = 'light' | 'dark' | 'system';
 
@@ -12,7 +12,7 @@ export type NgxproTheme = 'light' | 'dark' | 'system';
  */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private readonly doc = inject(NGXPRO_DOCUMENT);
+  private readonly doc = inject(NXP_DOCUMENT);
   private readonly _theme = signal<NgxproTheme>(this.getStoredTheme());
 
   /** System preference for dark mode (reactive to OS theme changes). */
@@ -47,7 +47,7 @@ export class ThemeService {
   setTheme(theme: NgxproTheme): void {
     this._theme.set(theme);
     try {
-      localStorage.setItem('ngxpro-theme', theme);
+      localStorage.setItem('nxp-theme', theme);
     } catch {
       // localStorage not available
     }
@@ -60,7 +60,7 @@ export class ThemeService {
 
   private getStoredTheme(): NgxproTheme {
     try {
-      const stored = localStorage.getItem('ngxpro-theme');
+      const stored = localStorage.getItem('nxp-theme');
       if (stored === 'light' || stored === 'dark' || stored === 'system') {
         return stored;
       }
@@ -71,11 +71,16 @@ export class ThemeService {
   }
 
   private readPrefersDark(): boolean {
-    return this.doc.defaultView?.matchMedia('(prefers-color-scheme: dark)')?.matches ?? false;
+    return (
+      this.doc.defaultView?.matchMedia('(prefers-color-scheme: dark)')
+        ?.matches ?? false
+    );
   }
 
   private setupPrefersDarkListener(): void {
-    const mql = this.doc.defaultView?.matchMedia('(prefers-color-scheme: dark)');
+    const mql = this.doc.defaultView?.matchMedia(
+      '(prefers-color-scheme: dark)',
+    );
     if (!mql) return;
     mql.addEventListener('change', () => {
       this._prefersDark.set(this.readPrefersDark());

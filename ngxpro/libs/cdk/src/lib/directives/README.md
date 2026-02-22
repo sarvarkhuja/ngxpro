@@ -2,28 +2,28 @@
 
 Low-level directives for building UI components. These directives provide the foundation for creating cells, titles, and other common UI patterns.
 
-## CellDirective (`[ngxproCell]`)
+## CellDirective (`[nxpCell]`)
 
 Creates structured list items with consistent spacing and sizing. Supports three size variants and three height modes.
 
 ### Basic Usage
 
 ```typescript
-import { CellDirective, TitleDirective, SubtitleDirective } from '@ngxpro/cdk';
+import { CellDirective, TitleDirective, SubtitleDirective } from '@nxp/cdk';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective],
   template: `
-    <div ngxproCell="m">
-      <img src="avatar.png" alt="User" class="w-10 h-10 rounded-full">
-      <div ngxproTitle>
+    <div nxpCell="m">
+      <img src="avatar.png" alt="User" class="w-10 h-10 rounded-full" />
+      <div nxpTitle>
         <div>John Doe</div>
-        <div ngxproSubtitle>Software Engineer</div>
+        <div nxpSubtitle>Software Engineer</div>
       </div>
     </div>
-  `
+  `,
 })
 export class UserListComponent {}
 ```
@@ -32,32 +32,26 @@ export class UserListComponent {}
 
 ```html
 <!-- Small (40px min height) -->
-<div ngxproCell="s">Small cell</div>
+<div nxpCell="s">Small cell</div>
 
 <!-- Medium (52px min height) -->
-<div ngxproCell="m">Medium cell</div>
+<div nxpCell="m">Medium cell</div>
 
 <!-- Large (72px min height) - default -->
-<div ngxproCell="l">Large cell</div>
+<div nxpCell="l">Large cell</div>
 ```
 
 ### Height Modes
 
 ```html
 <!-- Compact: No vertical padding -->
-<div ngxproCell="m" [height]="'compact'">
-  Minimal padding
-</div>
+<div nxpCell="m" [height]="'compact'">Minimal padding</div>
 
 <!-- Normal: Standard padding (default) -->
-<div ngxproCell="m" [height]="'normal'">
-  Normal padding
-</div>
+<div nxpCell="m" [height]="'normal'">Normal padding</div>
 
 <!-- Spacious: Extra vertical padding -->
-<div ngxproCell="m" [height]="'spacious'">
-  Extra padding
-</div>
+<div nxpCell="m" [height]="'spacious'">Extra padding</div>
 ```
 
 ### Interactive Cells
@@ -65,24 +59,24 @@ export class UserListComponent {}
 When applied to `button`, `label`, or `a` elements, the cell automatically adds hover and active states:
 
 ```html
-<button ngxproCell="l" (click)="handleClick()">
-  <div ngxproTitle>
+<button nxpCell="l" (click)="handleClick()">
+  <div nxpTitle>
     <div>Clickable Item</div>
-    <div ngxproSubtitle>Click to expand</div>
+    <div nxpSubtitle>Click to expand</div>
   </div>
 </button>
 ```
 
-## TitleDirective (`[ngxproTitle]`)
+## TitleDirective (`[nxpTitle]`)
 
 Creates structured title/subtitle layouts with optional size variants.
 
 ### Basic Usage
 
 ```html
-<div ngxproTitle>
+<div nxpTitle>
   <h2>Main Title</h2>
-  <p ngxproSubtitle>Supporting description</p>
+  <p nxpSubtitle>Supporting description</p>
 </div>
 ```
 
@@ -90,53 +84,53 @@ Creates structured title/subtitle layouts with optional size variants.
 
 ```html
 <!-- Small -->
-<div ngxproTitle="s">
+<div nxpTitle="s">
   <span>Small Title</span>
-  <span ngxproSubtitle>Caption text</span>
+  <span nxpSubtitle>Caption text</span>
 </div>
 
 <!-- Medium -->
-<div ngxproTitle="m">
+<div nxpTitle="m">
   <h3>Medium Title</h3>
-  <p ngxproSubtitle>Description</p>
+  <p nxpSubtitle>Description</p>
 </div>
 
 <!-- Large -->
-<div ngxproTitle="l">
+<div nxpTitle="l">
   <h1>Large Page Title</h1>
-  <p ngxproSubtitle>Subtitle with more spacing</p>
+  <p nxpSubtitle>Subtitle with more spacing</p>
 </div>
 ```
 
 ### In a Cell
 
 ```html
-<div ngxproCell="m">
-  <img src="avatar.png" class="w-10 h-10 rounded-full">
-  <div ngxproTitle>
+<div nxpCell="m">
+  <img src="avatar.png" class="w-10 h-10 rounded-full" />
+  <div nxpTitle>
     <div>Jane Smith</div>
-    <div ngxproSubtitle>Product Manager</div>
+    <div nxpSubtitle>Product Manager</div>
   </div>
 </div>
 ```
 
-## SubtitleDirective (`[ngxproSubtitle]`)
+## SubtitleDirective (`[nxpSubtitle]`)
 
 Renders secondary text in a lighter color with smaller font size.
 
 ### Basic Usage
 
 ```html
-<div ngxproTitle>
+<div nxpTitle>
   <div>Primary Text</div>
-  <div ngxproSubtitle>Secondary description text</div>
+  <div nxpSubtitle>Secondary description text</div>
 </div>
 ```
 
 ### With Icons
 
 ```html
-<div ngxproSubtitle>
+<div nxpSubtitle>
   <svg class="w-4 h-4" fill="currentColor">
     <use href="#icon-check"></use>
   </svg>
@@ -144,19 +138,19 @@ Renders secondary text in a lighter color with smaller font size.
 </div>
 ```
 
-## CellActionsDirective (`[ngxproCellActions]`)
+## CellActionsDirective (`[nxpCellActions]`)
 
 Positions action buttons within a cell. Actions are revealed on hover with smooth transitions.
 
 ### Basic Usage
 
 ```html
-<div ngxproCell="l">
-  <div ngxproTitle>
+<div nxpCell="l">
+  <div nxpTitle>
     <div>Item Title</div>
-    <div ngxproSubtitle>Description</div>
+    <div nxpSubtitle>Description</div>
   </div>
-  <div ngxproCellActions>
+  <div nxpCellActions>
     <button class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
       <svg class="w-4 h-4"><use href="#icon-edit"></use></svg>
     </button>
@@ -174,58 +168,36 @@ The actions are hidden by default and revealed when the parent cell is hovered. 
 ## Complete Example
 
 ```typescript
-import {
-  CellDirective,
-  TitleDirective,
-  SubtitleDirective,
-  CellActionsDirective
-} from '@ngxpro/cdk';
+import { CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective } from '@nxp/cdk';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [
-    CellDirective,
-    TitleDirective,
-    SubtitleDirective,
-    CellActionsDirective
-  ],
+  imports: [CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective],
   template: `
     <div class="space-y-2">
       @for (user of users; track user.id) {
-        <div ngxproCell="m">
-          <img
-            [src]="user.avatar"
-            [alt]="user.name"
-            class="w-10 h-10 rounded-full"
-          >
-          <div ngxproTitle>
+        <div nxpCell="m">
+          <img [src]="user.avatar" [alt]="user.name" class="w-10 h-10 rounded-full" />
+          <div nxpTitle>
             <div class="font-medium">{{ user.name }}</div>
-            <div ngxproSubtitle>
+            <div nxpSubtitle>
               <svg class="w-4 h-4"><use href="#icon-briefcase"></use></svg>
               <span>{{ user.role }}</span>
             </div>
           </div>
-          <div ngxproCellActions>
-            <button
-              (click)="editUser(user)"
-              class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-              aria-label="Edit user"
-            >
+          <div nxpCellActions>
+            <button (click)="editUser(user)" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Edit user">
               <svg class="w-4 h-4"><use href="#icon-edit"></use></svg>
             </button>
-            <button
-              (click)="deleteUser(user)"
-              class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-              aria-label="Delete user"
-            >
+            <button (click)="deleteUser(user)" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Delete user">
               <svg class="w-4 h-4"><use href="#icon-delete"></use></svg>
             </button>
           </div>
         </div>
       }
     </div>
-  `
+  `,
 })
 export class UserListComponent {
   users = [
@@ -250,14 +222,14 @@ All directives include dark mode variants using Tailwind's `dark:` prefix:
 
 ```html
 <!-- SubtitleDirective automatically adapts -->
-<div ngxproSubtitle>
+<div nxpSubtitle>
   <!-- text-gray-600 in light mode -->
   <!-- text-gray-400 in dark mode -->
   Secondary text
 </div>
 
 <!-- CellDirective hover states adapt -->
-<button ngxproCell="m">
+<button nxpCell="m">
   <!-- bg-gray-50 hover in light mode -->
   <!-- bg-gray-900/50 hover in dark mode -->
   Clickable cell
@@ -270,11 +242,12 @@ All directives include dark mode variants using Tailwind's `dark:` prefix:
 - Cell actions remain visible when focused for keyboard navigation
 - Use semantic HTML elements (`button`, `a`) for interactive cells
 - Always provide `aria-label` for icon-only buttons
-- Use proper heading hierarchy with `ngxproTitle`
+- Use proper heading hierarchy with `nxpTitle`
 
 ## Pattern Source
 
 These directives are based on Taiga UI's architecture patterns:
+
 - `CellDirective` → `TuiCell`
 - `TitleDirective` → `TuiTitle`
 - `SubtitleDirective` → `tuiSubtitle`

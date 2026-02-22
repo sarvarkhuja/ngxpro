@@ -4,39 +4,31 @@ import {
   HostBinding,
   inject,
 } from '@angular/core';
-import { cx } from '@ngxpro/cdk';
+import { cx } from '@nxp/cdk';
 import { AccordionDirective } from './accordion.directive';
 
 /**
  * Accordion trigger with default plus icon (Tremor style).
- * Use with ngxpro-expand for the directive-based accordion pattern.
+ * Use with nxp-expand for the directive-based accordion pattern.
  *
  * @example
- * <ngxpro-accordion type="single">
- *   <ngxpro-accordion-trigger ngxproCell="m">
- *     <span ngxproTitle><strong>Section 1</strong></span>
- *     <span ngxproSubtitle>Description</span>
- *   </ngxpro-accordion-trigger>
- *   <ngxpro-expand>Content here</ngxpro-expand>
- * </ngxpro-accordion>
+ * <nxp-accordion type="single">
+ *   <nxp-accordion-trigger nxpCell="m">
+ *     <span nxpTitle><strong>Section 1</strong></span>
+ *     <span nxpSubtitle>Description</span>
+ *   </nxp-accordion-trigger>
+ *   <nxp-expand>Content here</nxp-expand>
+ * </nxp-accordion>
  */
 @Component({
-  selector: 'ngxpro-accordion-trigger[ngxproAccordion]',
+  selector: 'nxp-accordion-trigger[nxpAccordion]',
   standalone: true,
   hostDirectives: [AccordionDirective],
   template: `
     <span class="flex flex-1 min-w-0">
       <ng-content />
     </span>
-    <svg
-      [class]="iconClasses()"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z" />
-    </svg>
+    <i [class]="iconClasses()" class="ri-add-line" aria-hidden="true"></i>
   `,
   host: {
     type: 'button',

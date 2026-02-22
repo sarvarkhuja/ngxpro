@@ -1,6 +1,6 @@
-# ngxpro Agent Initialization Guide
+# nxp Agent Initialization Guide
 
-Step-by-step guide to initialize and use the ngxpro AI agent system with Claude Code.
+Step-by-step guide to initialize and use the nxp AI agent system with Claude Code.
 
 ---
 
@@ -8,14 +8,14 @@ Step-by-step guide to initialize and use the ngxpro AI agent system with Claude 
 
 - **Claude Code CLI** installed and authenticated
 - **Node.js 22+** and **npm**
-- The ngxpro repository cloned locally
-- Working directory: `/Users/aki/Documents/GitHub/ngxpro/ngxpro/`
+- The nxp repository cloned locally
+- Working directory: `/Users/aki/Documents/GitHub/nxp/nxp/`
 
 ---
 
 ## Agent System Overview
 
-ngxpro uses **9 specialized Claude Code sub-agents** defined in `.claude/agents/`. Each agent is a markdown file with YAML frontmatter that tells Claude Code when and how to use it.
+nxp uses **9 specialized Claude Code sub-agents** defined in `.claude/agents/`. Each agent is a markdown file with YAML frontmatter that tells Claude Code when and how to use it.
 
 ```
 .claude/agents/
@@ -53,8 +53,8 @@ You should see 9 `.md` files. If any are missing, create them from the templates
 ## Step 2: Start a Claude Code Session
 
 ```bash
-# Navigate to the ngxpro workspace
-cd /Users/aki/Documents/GitHub/ngxpro
+# Navigate to the nxp workspace
+cd /Users/aki/Documents/GitHub/nxp
 
 # Start Claude Code (agents auto-load from .claude/agents/)
 claude
@@ -65,11 +65,13 @@ Claude Code automatically discovers and loads all agents from `.claude/agents/` 
 ### Verify Agents Are Loaded
 
 In a Claude Code session, type:
+
 ```
 /agents
 ```
 
 This shows all available agents. You should see:
+
 - master-agent
 - architecture-agent
 - cdk-agent
@@ -90,13 +92,13 @@ Claude automatically delegates to the right agent based on your request. Example
 
 ```
 # → Routes to component-generator
-"Create a Select component for @ngxpro/components"
+"Create a Select component for @nxp/components"
 
 # → Routes to testing-agent
 "Write unit tests for the Accordion component"
 
 # → Routes to architecture-agent
-"Add a new secondary entry point for @ngxpro/components/dialog"
+"Add a new secondary entry point for @nxp/components/dialog"
 
 # → Routes to block-generator
 "Create a KPI card block with metric, trend, and sparkline"
@@ -130,13 +132,14 @@ For long-running tasks, run agents in the background:
 ### Phase 1: Foundation (Already Complete)
 
 The Architecture Agent has already set up:
+
 - [x] Nx workspace with Angular 21.1
 - [x] Tailwind CSS v4.1.18 configured
-- [x] `@ngxpro/cdk` with utilities, directives, tokens, types
-- [x] `@ngxpro/core` with ThemeService, BreakpointService, FormatService, pipes
-- [x] `@ngxpro/components` with accordion, button, card, input
-- [x] `@ngxpro/blocks` with charts, kpi-cards, tables entry points
-- [x] `@ngxpro/fintech` placeholder
+- [x] `@nxp/cdk` with utilities, directives, tokens, types
+- [x] `@nxp/core` with ThemeService, BreakpointService, FormatService, pipes
+- [x] `@nxp/components` with accordion, button, card, input
+- [x] `@nxp/blocks` with charts, kpi-cards, tables entry points
+- [x] `@nxp/fintech` placeholder
 - [x] CI/CD workflows
 
 ### Phase 2: Core Components
@@ -158,6 +161,7 @@ Use the **component-generator** agent to build remaining base components:
 ```
 
 Each invocation:
+
 1. Studies Taiga architecture pattern for the component
 2. Studies Tremor Tailwind styling
 3. Creates the component with signals + Tailwind
@@ -169,7 +173,7 @@ Each invocation:
 Use the **block-generator** agent:
 
 ```
-"Create 5 KPI card variants for @ngxpro/blocks/kpi-cards:
+"Create 5 KPI card variants for @nxp/blocks/kpi-cards:
 - Simple metric card (title + value)
 - Metric with trend indicator (up/down arrow + percentage)
 - Metric with sparkline chart
@@ -194,7 +198,7 @@ Use the **fintech-agent**:
 Run in parallel:
 
 ```
-"Use the testing-agent to write tests for all components in @ngxpro/components"
+"Use the testing-agent to write tests for all components in @nxp/components"
 "Use the documentation-agent to create README files for all existing components"
 ```
 
@@ -235,6 +239,7 @@ rm -rf .claude/agent-memory/
 Every agent enforces these quality gates before considering work complete:
 
 ### Per Component/Block
+
 - [ ] Standalone component with OnPush
 - [ ] Signal inputs (`input()`, NOT `@Input()`)
 - [ ] 100% Tailwind CSS (no custom SCSS)
@@ -245,6 +250,7 @@ Every agent enforces these quality gates before considering work complete:
 - [ ] `npx nx build [package]` succeeds
 
 ### Per Package
+
 - [ ] ≥80% test coverage
 - [ ] 0 lint errors
 - [ ] Bundle size <200KB
@@ -253,7 +259,7 @@ Every agent enforces these quality gates before considering work complete:
 ### Verify All Builds
 
 ```bash
-cd /Users/aki/Documents/GitHub/ngxpro/ngxpro
+cd /Users/aki/Documents/GitHub/nxp/nxp
 npx nx run-many -t build --parallel=3
 npx nx run-many -t lint --parallel=3
 npx nx run-many -t test --parallel=3
@@ -281,15 +287,15 @@ Your instructions here...
 
 ### Key Fields
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `name` | Yes | Lowercase with hyphens (e.g., `my-agent`) |
-| `description` | Yes | When to delegate (Claude reads this to decide routing) |
-| `tools` | No | Comma-separated tool list (inherits all if omitted) |
-| `model` | No | `haiku` (fast), `sonnet` (balanced), `opus` (powerful) |
-| `memory` | No | `project` (shared), `user` (personal), `local` (temp) |
-| `maxTurns` | No | Max agent turns before stopping |
-| `permissionMode` | No | `default`, `acceptEdits`, `plan`, etc. |
+| Field            | Required | Description                                            |
+| ---------------- | -------- | ------------------------------------------------------ |
+| `name`           | Yes      | Lowercase with hyphens (e.g., `my-agent`)              |
+| `description`    | Yes      | When to delegate (Claude reads this to decide routing) |
+| `tools`          | No       | Comma-separated tool list (inherits all if omitted)    |
+| `model`          | No       | `haiku` (fast), `sonnet` (balanced), `opus` (powerful) |
+| `memory`         | No       | `project` (shared), `user` (personal), `local` (temp)  |
+| `maxTurns`       | No       | Max agent turns before stopping                        |
+| `permissionMode` | No       | `default`, `acceptEdits`, `plan`, etc.                 |
 
 ### Tool Options
 
@@ -359,6 +365,7 @@ head -10 .claude/agents/component-generator.md
 ### Agent Using Wrong Model
 
 Check the `model` field in the agent's frontmatter. Options:
+
 - `haiku` — Fastest, cheapest
 - `sonnet` — Balanced (default for most agents)
 - `opus` — Most capable (used for master-agent)
@@ -390,17 +397,17 @@ npm install --cache /tmp/npm-cache
 
 ## Quick Reference: Agent Selection
 
-| Task | Agent | Example Prompt |
-|------|-------|---------------|
-| Add new library/package | architecture-agent | "Add @ngxpro/layout package" |
-| Create CDK utility | cdk-agent | "Add a trapFocus directive" |
-| Create core service | core-agent | "Add a NotificationService" |
-| Create UI component | component-generator | "Create a Tabs component" |
-| Create composed block | block-generator | "Create chart blocks" |
-| Create fintech feature | fintech-agent | "Build a portfolio tracker" |
-| Write tests | testing-agent | "Test the Select component" |
-| Write docs/stories | documentation-agent | "Document the Card component" |
-| Plan/review/release | master-agent | "Plan the next sprint" |
+| Task                    | Agent               | Example Prompt                |
+| ----------------------- | ------------------- | ----------------------------- |
+| Add new library/package | architecture-agent  | "Add @nxp/layout package"     |
+| Create CDK utility      | cdk-agent           | "Add a trapFocus directive"   |
+| Create core service     | core-agent          | "Add a NotificationService"   |
+| Create UI component     | component-generator | "Create a Tabs component"     |
+| Create composed block   | block-generator     | "Create chart blocks"         |
+| Create fintech feature  | fintech-agent       | "Build a portfolio tracker"   |
+| Write tests             | testing-agent       | "Test the Select component"   |
+| Write docs/stories      | documentation-agent | "Document the Card component" |
+| Plan/review/release     | master-agent        | "Plan the next sprint"        |
 
 ---
 

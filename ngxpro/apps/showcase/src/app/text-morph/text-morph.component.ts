@@ -2,9 +2,9 @@ import { Component, signal, computed } from '@angular/core';
 import {
   TextMorphDirective,
   TextMorphComponent as NgxproTextMorph,
-} from '@ngxpro/components/text-morph';
-import { ButtonComponent } from '@ngxpro/components/button';
-import { CardComponent } from '@ngxpro/components/card';
+} from '@nxp/components/text-morph';
+import { ButtonComponent } from '@nxp/components/button';
+import { CardComponent } from '@nxp/components/card';
 
 @Component({
   selector: 'app-text-morph-demo',
@@ -60,13 +60,7 @@ export class TextMorphDemoComponent {
   );
 
   // Demo 4: Status
-  private readonly statuses = [
-    'Loading...',
-    'Connected',
-    'Syncing data...',
-    'Ready',
-    'Idle',
-  ];
+  private readonly statuses = ['Copying to clipboard', 'Copied to clipboard'];
   readonly statusIndex = signal(0);
   readonly status = computed(
     () => this.statuses[this.statusIndex() % this.statuses.length]!,

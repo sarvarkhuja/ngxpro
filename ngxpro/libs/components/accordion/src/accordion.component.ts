@@ -4,36 +4,36 @@ import {
   contentChildren,
   input,
 } from '@angular/core';
-import { ExpandComponent } from '@ngxpro/cdk';
+import { ExpandComponent } from '@nxp/cdk';
 import { AccordionDirective } from './accordion.directive';
 import { AccordionItemComponent } from './accordion-item.component';
 
 /**
  * Accordion component (Taiga architecture + Tremor styling).
- * Directive-based: use ngxpro-accordion-trigger (with default icon) or button[ngxproAccordion] + ngxpro-expand.
+ * Directive-based: use nxp-accordion-trigger (with default icon) or button[nxpAccordion] + nxp-expand.
  *
  * @example
- * With default icon (ngxpro-accordion-trigger):
- * <ngxpro-accordion type="single">
- *   <ngxpro-accordion-trigger ngxproCell="m">
- *     <span ngxproTitle><strong>Section 1</strong></span>
- *     <span ngxproSubtitle>Description</span>
- *   </ngxpro-accordion-trigger>
- *   <ngxpro-expand>Content here</ngxpro-expand>
- * </ngxpro-accordion>
+ * With default icon (nxp-accordion-trigger):
+ * <nxp-accordion type="single">
+ *   <nxp-accordion-trigger nxpCell="m">
+ *     <span nxpTitle><strong>Section 1</strong></span>
+ *     <span nxpSubtitle>Description</span>
+ *   </nxp-accordion-trigger>
+ *   <nxp-expand>Content here</nxp-expand>
+ * </nxp-accordion>
  *
  * @example
  * Custom button:
- * <ngxpro-accordion>
- *   <button ngxproAccordion ngxproCell="m">
- *     <span ngxproTitle><strong>Group</strong></span>
- *     <span ngxproSubtitle>3 operations • $1,234</span>
+ * <nxp-accordion>
+ *   <button nxpAccordion nxpCell="m">
+ *     <span nxpTitle><strong>Group</strong></span>
+ *     <span nxpSubtitle>3 operations • $1,234</span>
  *   </button>
- *   <ngxpro-expand>...</ngxpro-expand>
- * </ngxpro-accordion>
+ *   <nxp-expand>...</nxp-expand>
+ * </nxp-accordion>
  */
 @Component({
-  selector: 'ngxpro-accordion',
+  selector: 'nxp-accordion',
   template: `<ng-content />`,
 
   changeDetection: ChangeDetectionStrategy.OnPush,

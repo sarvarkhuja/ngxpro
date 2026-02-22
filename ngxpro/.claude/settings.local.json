@@ -2,8 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npx nx build:*)",
-      "Read(//Users/aki/Documents/GitHub/ngxpro/taiga-family/kit/components/accordion/**)",
-      "Read(//Users/aki/Documents/GitHub/ngxpro/taiga-family/**)"
+      "Read(//Users/aki/Documents/GitHub/nxp/taiga-family/kit/components/accordion/**)",
+      "Read(//Users/aki/Documents/GitHub/nxp/taiga-family/**)"
     ],
     "deny": [],
     "ask": []

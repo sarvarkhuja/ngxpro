@@ -6,9 +6,9 @@ model: sonnet
 memory: project
 ---
 
-# Documentation Agent — ngxpro
+# Documentation Agent — nxp
 
-You are the **Documentation Agent** for the ngxpro Angular UI library project.
+You are the **Documentation Agent** for the nxp Angular UI library project.
 
 ## Your Mission
 
@@ -42,45 +42,49 @@ Brief description of what this component does.
 ## Import
 
 \`\`\`typescript
-import { ComponentName } from '@ngxpro/components/[name]';
+import { ComponentName } from '@nxp/components/[name]';
 \`\`\`
 
 ## Usage
 
 \`\`\`html
-<ngxpro-[name] [prop]="value">Content</ngxpro-[name]>
+<nxp-[name] [prop]="value">Content</nxp-[name]>
 \`\`\`
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| variant | 'primary' \| 'secondary' | 'primary' | Visual variant |
-| size | 'sm' \| 'md' \| 'lg' | 'md' | Size of the component |
-| disabled | boolean | false | Whether the component is disabled |
+| Prop     | Type                     | Default   | Description                       |
+| -------- | ------------------------ | --------- | --------------------------------- |
+| variant  | 'primary' \| 'secondary' | 'primary' | Visual variant                    |
+| size     | 'sm' \| 'md' \| 'lg'     | 'md'      | Size of the component             |
+| disabled | boolean                  | false     | Whether the component is disabled |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| clicked | void | Emitted when clicked |
+| Event   | Payload | Description          |
+| ------- | ------- | -------------------- |
+| clicked | void    | Emitted when clicked |
 
 ## Examples
 
 ### Basic Usage
+
 \`\`\`html
-<ngxpro-[name]>Hello</ngxpro-[name]>
+<nxp-[name]>Hello</nxp-[name]>
 \`\`\`
 
 ### With Variants
+
 \`\`\`html
-<ngxpro-[name] variant="secondary">Secondary</ngxpro-[name]>
+<nxp-[name] variant="secondary">Secondary</nxp-[name]>
 \`\`\`
 
 ### Dark Mode
+
 Works automatically with Tailwind dark mode class on `<html>`.
 
 ## Accessibility
+
 - Keyboard navigation: [describe]
 - ARIA attributes: [describe]
 - Screen reader: [describe]
@@ -89,31 +93,31 @@ Works automatically with Tailwind dark mode class on `<html>`.
 ## Storybook Story Template
 
 ```typescript
-import { Meta, StoryObj } from '@storybook/angular';
-import { ComponentName } from '@ngxpro/components/[name]';
+import { Meta, StoryObj } from "@storybook/angular";
+import { ComponentName } from "@nxp/components/[name]";
 
 const meta: Meta<ComponentName> = {
-  title: 'Components/[Name]',
-  component: ComponentName,
-  tags: ['autodocs'],
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'ghost', 'destructive'],
-    },
-    size: {
-      control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl'],
-    },
-  },
+	title: "Components/[Name]",
+	component: ComponentName,
+	tags: ["autodocs"],
+	argTypes: {
+		variant: {
+			control: "select",
+			options: ["primary", "secondary", "ghost", "destructive"],
+		},
+		size: {
+			control: "select",
+			options: ["xs", "sm", "md", "lg", "xl"],
+		},
+	},
 };
 
 export default meta;
 type Story = StoryObj<ComponentName>;
 
 export const Default: Story = { args: {} };
-export const Secondary: Story = { args: { variant: 'secondary' } };
-export const Small: Story = { args: { size: 'sm' } };
+export const Secondary: Story = { args: { variant: "secondary" } };
+export const Small: Story = { args: { size: "sm" } };
 ```
 
 ## Quality Gates

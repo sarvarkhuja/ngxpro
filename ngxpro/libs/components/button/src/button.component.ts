@@ -5,7 +5,7 @@ import {
   input,
 } from '@angular/core';
 import { tv, type VariantProps } from 'tailwind-variants';
-import { cx } from '@ngxpro/cdk';
+import { cx } from '@nxp/cdk';
 
 const buttonVariants = tv({
   slots: {
@@ -15,25 +15,21 @@ const buttonVariants = tv({
       // transition
       'transition-colors duration-150',
       // focus
-      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
+      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
       // disabled
       'disabled:pointer-events-none disabled:opacity-50',
     ],
-    icon: [
-      'shrink-0',
-    ],
-    spinner: [
-      'animate-spin shrink-0',
-    ],
+    icon: ['shrink-0'],
+    spinner: ['animate-spin shrink-0'],
   },
   variants: {
     variant: {
       primary: {
         base: [
           'border-transparent',
-          'bg-blue-500 text-white',
-          'hover:bg-blue-600 dark:hover:bg-blue-400',
-          'dark:bg-blue-500 dark:text-white',
+          'bg-brand-500 text-white',
+          'hover:bg-brand-600 dark:hover:bg-brand-400',
+          'dark:bg-brand-500 dark:text-white',
         ],
       },
       secondary: {
@@ -99,8 +95,12 @@ const buttonVariants = tv({
   },
 });
 
-export type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>['variant']>;
-export type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>;
+export type ButtonVariant = NonNullable<
+  VariantProps<typeof buttonVariants>['variant']
+>;
+export type ButtonSize = NonNullable<
+  VariantProps<typeof buttonVariants>['size']
+>;
 
 /**
  * Button component with variants, icons, and loading state (Taiga architecture + Tremor styling).
@@ -115,59 +115,37 @@ export type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']
  *
  * @example
  * <!-- Basic usage -->
- * <button ngxproButton>Primary</button>
+ * <button nxpButton>Primary</button>
  *
  * @example
  * <!-- With variant and size -->
- * <button ngxproButton variant="secondary" size="sm">Secondary</button>
+ * <button nxpButton variant="secondary" size="sm">Secondary</button>
  *
  * @example
  * <!-- With icons -->
- * <button ngxproButton iconStart="plus">Add Item</button>
- * <button ngxproButton iconEnd="arrow-right">Next</button>
+ * <button nxpButton iconStart="plus">Add Item</button>
+ * <button nxpButton iconEnd="arrow-right">Next</button>
  *
  * @example
  * <!-- Loading state -->
- * <button ngxproButton [loading]="isLoading">Submit</button>
+ * <button nxpButton [loading]="isLoading">Submit</button>
  *
  * @example
  * <!-- Destructive action -->
- * <button ngxproButton variant="destructive" iconStart="trash">Delete</button>
+ * <button nxpButton variant="destructive" iconStart="trash">Delete</button>
  */
 @Component({
-  selector: 'button[ngxproButton], a[ngxproButton]',
+  selector: 'nxp-button, nxp-a-button, button[nxpButton], a[nxpButton]',
   standalone: true,
   template: `
     <!-- Loading spinner (replaces iconStart when loading) -->
     @if (loading()) {
-      <svg
-        [class]="spinnerClasses()"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <i [class]="spinnerClasses()" class="ri-loader-4-line" aria-hidden="true"></i>
     }
 
     <!-- Icon start (hidden when loading) -->
     @if (iconStart() && !loading()) {
-      <span
-        [class]="iconClasses()"
-        [innerHTML]="iconStart()"
-      ></span>
+      <span [class]="iconClasses()" [innerHTML]="iconStart()"></span>
     }
 
     <!-- Button content -->
@@ -175,10 +153,7 @@ export type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']
 
     <!-- Icon end -->
     @if (iconEnd()) {
-      <span
-        [class]="iconClasses()"
-        [innerHTML]="iconEnd()"
-      ></span>
+      <span [class]="iconClasses()" [innerHTML]="iconEnd()"></span>
     }
   `,
   host: {
@@ -207,11 +182,11 @@ export class ButtonComponent {
   readonly class = input<string>('');
 
   private readonly variants = computed(() =>
-    buttonVariants({ variant: this.variant(), size: this.size() })
+    buttonVariants({ variant: this.variant(), size: this.size() }),
   );
 
   readonly hostClasses = computed(() =>
-    cx(this.variants().base(), this.class())
+    cx(this.variants().base(), this.class()),
   );
 
   readonly iconClasses = computed(() => this.variants().icon());

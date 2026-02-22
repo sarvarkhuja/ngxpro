@@ -9,12 +9,9 @@ import {
   output,
   untracked,
 } from '@angular/core';
-import { NGXPRO_IS_BROWSER } from '@ngxpro/cdk';
-import { NGXPRO_TEXT_MORPH_OPTIONS } from './text-morph.providers';
-import type {
-  TextMorphBlock,
-  TextMorphMeasures,
-} from './text-morph.types';
+import { NXP_IS_BROWSER } from '@nxp/cdk';
+import { NXP_TEXT_MORPH_OPTIONS } from './text-morph.providers';
+import type { TextMorphBlock, TextMorphMeasures } from './text-morph.types';
 
 const ATTR_ROOT = 'torph-root';
 const ATTR_ITEM = 'torph-item';
@@ -26,13 +23,12 @@ let sharedStyleEl: HTMLStyleElement | null = null;
 let sharedStyleRefCount = 0;
 
 @Directive({
-  selector: '[ngxproTextMorph]',
-  standalone: true,
+  selector: '[nxpTextMorph]',
 })
 export class TextMorphDirective {
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
-  private readonly isBrowser = inject(NGXPRO_IS_BROWSER);
-  private readonly defaults = inject(NGXPRO_TEXT_MORPH_OPTIONS);
+  private readonly isBrowser = inject(NXP_IS_BROWSER);
+  private readonly defaults = inject(NXP_TEXT_MORPH_OPTIONS);
   private readonly destroyRef = inject(DestroyRef);
 
   /** The text value to display and animate to. */
@@ -109,7 +105,10 @@ export class TextMorphDirective {
       }
       this.transitionEndCleanup?.();
       if (this.mediaQuery) {
-        this.mediaQuery.removeEventListener('change', this.handleMediaQueryChange);
+        this.mediaQuery.removeEventListener(
+          'change',
+          this.handleMediaQueryChange,
+        );
       }
       const element = this.el.nativeElement;
       element.getAnimations().forEach((anim) => anim.cancel());
@@ -177,8 +176,10 @@ export class TextMorphDirective {
   }
 
   private isAnimationDisabled(): boolean {
-    return this.resolvedDisabled ||
-      (this.resolvedRespectReducedMotion && this.prefersReducedMotion);
+    return (
+      this.resolvedDisabled ||
+      (this.resolvedRespectReducedMotion && this.prefersReducedMotion)
+    );
   }
 
   // -- Core animation --
@@ -373,7 +374,10 @@ export class TextMorphDirective {
     // Use transitionend for accurate completion timing; fallback to setTimeout for edge cases
     let transitionCount = 0;
     const handleTransitionEnd = (e: TransitionEvent) => {
-      if (e.target !== element || (e.propertyName !== 'width' && e.propertyName !== 'height')) {
+      if (
+        e.target !== element ||
+        (e.propertyName !== 'width' && e.propertyName !== 'height')
+      ) {
         return;
       }
       transitionCount++;
@@ -407,7 +411,9 @@ export class TextMorphDirective {
   // -- Measurement --
 
   private measure(): TextMorphMeasures {
-    const children = Array.from(this.el.nativeElement.children) as HTMLElement[];
+    const children = Array.from(
+      this.el.nativeElement.children,
+    ) as HTMLElement[];
     const measures: TextMorphMeasures = {};
 
     children.forEach((child, index) => {
@@ -427,10 +433,22 @@ export class TextMorphDirective {
   private animateBlocks(blocks: TextMorphBlock[]): void {
     if (this.isInitialRender) return;
 
-    const children = Array.from(this.el.nativeElement.children) as HTMLElement[];
+    const children = Array.from(
+      this.el.nativeElement.children,
+    ) as HTMLElement[];
     const persistentIds = new Set(
       blocks.map((b) => b.id).filter((id) => this.prevMeasures[id]),
     );
+
+    // Precompute old position range so orphaned new blocks can enter
+    const prevPositionValues = Object.values(this.prevMeasures);
+    const hasOldPositions = prevPositionValues.length > 0;
+    const minOldX = hasOldPositions
+      ? Math.min(...prevPositionValues.map((p) => p.x))
+      : 0;
+    const maxOldX = hasOldPositions
+      ? Math.max(...prevPositionValues.map((p) => p.x))
+      : 0;
 
     children.forEach((child, index) => {
       if (child.hasAttribute(ATTR_EXITING)) return;
@@ -439,16 +457,18 @@ export class TextMorphDirective {
       const prev = this.prevMeasures[key];
       const current = this.currentMeasures[key];
 
-      const cx = current?.x || 0;
-      const cy = current?.y || 0;
+      const cx = current?.x ?? 0;
+      const cy = current?.y ?? 0;
 
       let deltaX = prev ? prev.x - cx : 0;
       let deltaY = prev ? prev.y - cy : 0;
       const isNew = !prev;
+      let blockIndex = -1;
 
-      // For new characters, use nearest persistent neighbor's FLIP delta
+      // For new blocks, use nearest persistent neighbor's FLIP delta when available,
+      // or proportionally map to the old text's position range when all blocks are new
       if (isNew) {
-        const blockIndex = blocks.findIndex((b) => b.id === key);
+        blockIndex = blocks.findIndex((b) => b.id === key);
         let anchorId: string | null = null;
 
         for (let j = blockIndex - 1; j >= 0; j--) {
@@ -471,6 +491,14 @@ export class TextMorphDirective {
           const anchorCurr = this.currentMeasures[anchorId]!;
           deltaX = anchorPrev.x - anchorCurr.x;
           deltaY = anchorPrev.y - anchorCurr.y;
+        } else if (hasOldPositions) {
+          // No persistent anchor: map this block proportionally to the old
+          // position range so words emerge from where the previous text was
+          const fraction =
+            blocks.length > 1 ? blockIndex / (blocks.length - 1) : 0.5;
+          const targetX = minOldX + fraction * (maxOldX - minOldX);
+          deltaX = targetX - cx;
+          deltaY = 0;
         }
       }
 
@@ -490,18 +518,25 @@ export class TextMorphDirective {
         },
       );
 
-      // Opacity animation (for new characters: fade in with delay)
-      const fadeDuration = isNew ? this.resolvedDuration * 0.25 : 0;
-      const fadeDelay = isNew ? this.resolvedDuration * 0.25 : 0;
-      child.animate(
-        { opacity: isNew ? 0 : 1, offset: 0 },
-        {
-          duration: fadeDuration,
-          delay: fadeDelay,
-          easing: 'linear',
-          fill: 'both',
-        },
-      );
+      // Opacity animation: persistent blocks reset to opaque immediately;
+      // new blocks fade in with a per-word stagger for a natural left-to-right reveal
+      if (isNew) {
+        const staggerDelay =
+          blockIndex * Math.min(this.resolvedDuration * 0.04, 30);
+        const fadeDuration = this.resolvedDuration * 0.35;
+        const fadeDelay = this.resolvedDuration * 0.1 + staggerDelay;
+        child.animate(
+          { opacity: 0, offset: 0 },
+          {
+            duration: fadeDuration,
+            delay: fadeDelay,
+            easing: 'linear',
+            fill: 'both',
+          },
+        );
+      } else {
+        child.animate({ opacity: 1, offset: 0 }, { duration: 0, fill: 'both' });
+      }
     });
   }
 
@@ -512,7 +547,10 @@ export class TextMorphDirective {
 
     // Intl.Segmenter may not be in all TS lib typings; use runtime check
     const IntlAny = Intl as any;
-    if (typeof Intl !== 'undefined' && typeof IntlAny.Segmenter !== 'undefined') {
+    if (
+      typeof Intl !== 'undefined' &&
+      typeof IntlAny.Segmenter !== 'undefined'
+    ) {
       const segmenter = new IntlAny.Segmenter(this.resolvedLocale as string, {
         granularity: byWord ? 'word' : 'grapheme',
       });
@@ -602,6 +640,7 @@ export class TextMorphDirective {
   will-change: opacity, transform;
   transform: none;
   opacity: 1;
+  flex-shrink: 0;
 }
 
 [${ATTR_ROOT}][${ATTR_DEBUG}] {

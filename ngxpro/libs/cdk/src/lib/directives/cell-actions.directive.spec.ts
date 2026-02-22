@@ -6,7 +6,7 @@ import { CellActionsDirective } from './cell-actions.directive';
   standalone: true,
   imports: [CellActionsDirective],
   template: `
-    <div ngxproCellActions data-testid="actions">
+    <div nxpCellActions data-testid="actions">
       <button>Edit</button>
       <button>Delete</button>
     </div>
@@ -24,14 +24,18 @@ describe('CellActionsDirective', () => {
   it('should create', () => {
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
-    const element = fixture.nativeElement.querySelector('[data-testid="actions"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="actions"]',
+    );
     expect(element).toBeTruthy();
   });
 
   it('should apply positioning classes', () => {
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
-    const element = fixture.nativeElement.querySelector('[data-testid="actions"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="actions"]',
+    );
 
     expect(element.classList.contains('absolute')).toBe(true);
     expect(element.classList.contains('right-0')).toBe(true);
@@ -41,7 +45,9 @@ describe('CellActionsDirective', () => {
   it('should apply flex layout classes', () => {
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
-    const element = fixture.nativeElement.querySelector('[data-testid="actions"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="actions"]',
+    );
 
     expect(element.classList.contains('flex')).toBe(true);
     expect(element.classList.contains('items-center')).toBe(true);
@@ -51,7 +57,9 @@ describe('CellActionsDirective', () => {
   it('should apply padding to match cell', () => {
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
-    const element = fixture.nativeElement.querySelector('[data-testid="actions"]');
+    const element = fixture.nativeElement.querySelector(
+      '[data-testid="actions"]',
+    );
 
     expect(element.classList.contains('pr-4')).toBe(true);
   });

@@ -15,7 +15,7 @@ export interface NgxproTextMorphOptions {
   debug: boolean;
 }
 
-export const NGXPRO_TEXT_MORPH_DEFAULT_OPTIONS: NgxproTextMorphOptions = {
+export const NXP_TEXT_MORPH_DEFAULT_OPTIONS: NgxproTextMorphOptions = {
   duration: 400,
   ease: 'cubic-bezier(0.19, 1, 0.22, 1)',
   locale: 'en',

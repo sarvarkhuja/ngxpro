@@ -1,51 +1,47 @@
-import {
-  Directive,
-  HostBinding,
-  input,
-} from '@angular/core';
+import { Directive, HostBinding, input } from '@angular/core';
 import { cx } from '../utils/cx';
 
 /**
  * Title directive for creating structured title/subtitle layouts.
  *
  * Provides a flexible container for titles with optional size variants.
- * Works in conjunction with ngxproSubtitle for secondary text.
+ * Works in conjunction with nxpSubtitle for secondary text.
  *
  * @example
  * Basic usage (default size):
  * ```html
- * <div ngxproTitle>
+ * <div nxpTitle>
  *   <h2>Main Title</h2>
- *   <p ngxproSubtitle>Supporting description</p>
+ *   <p nxpSubtitle>Supporting description</p>
  * </div>
  * ```
  *
  * @example
  * With size variant:
  * ```html
- * <div ngxproTitle="s">
+ * <div nxpTitle="s">
  *   <span>Small Title</span>
- *   <span ngxproSubtitle>Caption text</span>
+ *   <span nxpSubtitle>Caption text</span>
  * </div>
  * ```
  *
  * @example
  * Large heading:
  * ```html
- * <div ngxproTitle="l">
+ * <div nxpTitle="l">
  *   <h1>Large Page Title</h1>
- *   <p ngxproSubtitle>Subtitle with more spacing</p>
+ *   <p nxpSubtitle>Subtitle with more spacing</p>
  * </div>
  * ```
  *
  * @example
  * In a cell:
  * ```html
- * <div ngxproCell="m">
+ * <div nxpCell="m">
  *   <img src="avatar.png" class="w-10 h-10 rounded-full">
- *   <div ngxproTitle>
+ *   <div nxpTitle>
  *     <div>Jane Smith</div>
- *     <div ngxproSubtitle>Product Manager</div>
+ *     <div nxpSubtitle>Product Manager</div>
  *   </div>
  * </div>
  * ```
@@ -54,7 +50,7 @@ import { cx } from '../utils/cx';
  * Styling: Tailwind CSS with responsive text sizes
  */
 @Directive({
-  selector: '[ngxproTitle]',
+  selector: '[nxpTitle]',
   standalone: true,
   host: {
     '[attr.data-size]': 'size() || null',
@@ -69,7 +65,7 @@ export class TitleDirective {
    * - '': Default (no specific size, inherits from parent)
    * @default ''
    */
-  readonly size = input<'s' | 'm' | 'l' | ''>('', { alias: 'ngxproTitle' });
+  readonly size = input<'s' | 'm' | 'l' | ''>('', { alias: 'nxpTitle' });
 
   @HostBinding('class')
   protected get hostClasses(): string {
@@ -84,9 +80,6 @@ export class TitleDirective {
       l: 'text-2xl gap-2',
     };
 
-    return cx(
-      baseClasses,
-      size ? sizeClasses[size] : ''
-    );
+    return cx(baseClasses, size ? sizeClasses[size] : '');
   }
 }

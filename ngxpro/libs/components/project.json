@@ -2,7 +2,7 @@
   "name": "components",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/components",
-  "prefix": "ngxpro",
+  "prefix": "nxp",
   "projectType": "library",
   "release": {
     "version": {

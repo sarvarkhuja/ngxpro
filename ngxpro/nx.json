@@ -51,7 +51,7 @@
       "unitTestRunner": "vitest-angular",
       "style": "scss",
       "standalone": true,
-      "prefix": "ngxpro"
+      "prefix": "nxp"
     },
     "@nx/angular:component": {
       "style": "none"

@@ -6,13 +6,7 @@ import { CellDirective } from './cell.directive';
   standalone: true,
   imports: [CellDirective],
   template: `
-    <div
-      ngxproCell="m"
-      [height]="height"
-      data-testid="cell"
-    >
-      Content
-    </div>
+    <div nxpCell="m" [height]="height" data-testid="cell">Content</div>
   `,
 })
 class TestComponent {

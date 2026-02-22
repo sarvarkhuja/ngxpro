@@ -5,9 +5,9 @@ import { FormatService } from '../services/format.service';
  * Pipe to format a date as relative time.
  *
  * @example
- * {{ pastDate | ngxproRelativeTime }} => "2 hours ago"
+ * {{ pastDate | nxpRelativeTime }} => "2 hours ago"
  */
-@Pipe({ name: 'ngxproRelativeTime' })
+@Pipe({ name: 'nxpRelativeTime' })
 export class RelativeTimePipe implements PipeTransform {
   private readonly format = inject(FormatService);
 

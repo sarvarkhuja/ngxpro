@@ -16,11 +16,11 @@ import { cx } from '../utils/cx';
  * @example
  * Basic usage:
  * ```html
- * <div ngxproCell="m">
+ * <div nxpCell="m">
  *   <img src="avatar.png" alt="User" class="w-8 h-8 rounded-full">
- *   <div ngxproTitle>
+ *   <div nxpTitle>
  *     <div>John Doe</div>
- *     <div ngxproSubtitle>Software Engineer</div>
+ *     <div nxpSubtitle>Software Engineer</div>
  *   </div>
  * </div>
  * ```
@@ -28,7 +28,7 @@ import { cx } from '../utils/cx';
  * @example
  * With height modifier:
  * ```html
- * <button ngxproCell="l" [height]="'spacious'">
+ * <button nxpCell="l" [height]="'spacious'">
  *   Content with extra padding
  * </button>
  * ```
@@ -36,7 +36,7 @@ import { cx } from '../utils/cx';
  * @example
  * Compact height:
  * ```html
- * <div ngxproCell="s" [height]="'compact'">
+ * <div nxpCell="s" [height]="'compact'">
  *   Minimal padding
  * </div>
  * ```
@@ -45,7 +45,7 @@ import { cx } from '../utils/cx';
  * Styling: Tailwind CSS with dark mode support
  */
 @Directive({
-  selector: '[ngxproCell]',
+  selector: '[nxpCell]',
   standalone: true,
   host: {
     '[attr.data-size]': 'size()',
@@ -60,7 +60,7 @@ export class CellDirective {
    * - 'l': Large (72px min height, 16px padding)
    * @default 'l'
    */
-  readonly size = input<'s' | 'm' | 'l'>('l', { alias: 'ngxproCell' });
+  readonly size = input<'s' | 'm' | 'l'>('l', { alias: 'nxpCell' });
 
   /**
    * Height mode for vertical spacing.

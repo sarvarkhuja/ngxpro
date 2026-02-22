@@ -10,14 +10,14 @@ import {
  * Directive that automatically focuses the host element after view init.
  *
  * @example
- * <input ngxproAutoFocus />
- * <input [ngxproAutoFocus]="shouldFocus" />
+ * <input nxpAutoFocus />
+ * <input [nxpAutoFocus]="shouldFocus" />
  */
 @Directive({
-  selector: '[ngxproAutoFocus]',
+  selector: '[nxpAutoFocus]',
 })
 export class AutoFocusDirective implements AfterViewInit {
-  readonly enabled = input(true, { alias: 'ngxproAutoFocus' });
+  readonly enabled = input(true, { alias: 'nxpAutoFocus' });
 
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
 

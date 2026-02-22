@@ -1,13 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { NGXPRO_FORMAT_OPTIONS, type NgxproFormatOptions } from '../tokens';
+import { NXP_FORMAT_OPTIONS, type NgxproFormatOptions } from '../tokens';
 
 /**
  * Format service for numbers, currency, and dates.
- * Configurable via NGXPRO_FORMAT_OPTIONS token.
+ * Configurable via NXP_FORMAT_OPTIONS token.
  */
 @Injectable({ providedIn: 'root' })
 export class FormatService {
-  private readonly options = inject(NGXPRO_FORMAT_OPTIONS);
+  private readonly options = inject(NXP_FORMAT_OPTIONS);
 
   /** Format a number with locale-specific separators. */
   formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
@@ -40,7 +40,10 @@ export class FormatService {
   }
 
   /** Format a date. */
-  formatDate(value: Date | string | number, options?: Intl.DateTimeFormatOptions): string {
+  formatDate(
+    value: Date | string | number,
+    options?: Intl.DateTimeFormatOptions,
+  ): string {
     const date = value instanceof Date ? value : new Date(value);
     return new Intl.DateTimeFormat(
       this.options.locale,
@@ -55,13 +58,20 @@ export class FormatService {
     const diffMs = target.getTime() - now;
     const absDiff = Math.abs(diffMs);
 
-    const rtf = new Intl.RelativeTimeFormat(this.options.locale, { numeric: 'auto' });
+    const rtf = new Intl.RelativeTimeFormat(this.options.locale, {
+      numeric: 'auto',
+    });
 
-    if (absDiff < 60_000) return rtf.format(Math.round(diffMs / 1000), 'second');
-    if (absDiff < 3_600_000) return rtf.format(Math.round(diffMs / 60_000), 'minute');
-    if (absDiff < 86_400_000) return rtf.format(Math.round(diffMs / 3_600_000), 'hour');
-    if (absDiff < 2_592_000_000) return rtf.format(Math.round(diffMs / 86_400_000), 'day');
-    if (absDiff < 31_536_000_000) return rtf.format(Math.round(diffMs / 2_592_000_000), 'month');
+    if (absDiff < 60_000)
+      return rtf.format(Math.round(diffMs / 1000), 'second');
+    if (absDiff < 3_600_000)
+      return rtf.format(Math.round(diffMs / 60_000), 'minute');
+    if (absDiff < 86_400_000)
+      return rtf.format(Math.round(diffMs / 3_600_000), 'hour');
+    if (absDiff < 2_592_000_000)
+      return rtf.format(Math.round(diffMs / 86_400_000), 'day');
+    if (absDiff < 31_536_000_000)
+      return rtf.format(Math.round(diffMs / 2_592_000_000), 'month');
     return rtf.format(Math.round(diffMs / 31_536_000_000), 'year');
   }
 }

@@ -4,11 +4,11 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { cx } from '@ngxpro/cdk';
+import { cx } from '@nxp/cdk';
 import { TextMorphDirective } from './text-morph.directive';
 
 @Component({
-  selector: 'ngxpro-text-morph',
+  selector: 'nxp-text-morph',
   standalone: true,
   hostDirectives: [
     {

@@ -18,23 +18,23 @@ import { ItemDirective } from '../../directives/item.directive';
  *
  * @example
  * Basic usage with direct content:
- * <ngxpro-expand [expanded]="isOpen()">
+ * <nxp-expand [expanded]="isOpen()">
  *   <div>Content to expand/collapse</div>
- * </ngxpro-expand>
+ * </nxp-expand>
  *
  * @example
  * Advanced usage with ng-template (allows lazy rendering):
- * <ngxpro-expand [expanded]="isOpen()">
- *   <ng-template ngxproItem>
+ * <nxp-expand [expanded]="isOpen()">
+ *   <ng-template nxpItem>
  *     <div>Lazy loaded content</div>
  *   </ng-template>
- * </ngxpro-expand>
+ * </nxp-expand>
  */
 @Component({
-  selector: 'ngxpro-expand',
+  selector: 'nxp-expand',
   imports: [NgTemplateOutlet],
   template: `
-    <div class="ngxpro-expand-wrapper">
+    <div class="nxp-expand-wrapper">
       @if (expanded() || open()) {
         <ng-container [ngTemplateOutlet]="content() || null" />
       }
@@ -51,7 +51,7 @@ import { ItemDirective } from '../../directives/item.directive';
 })
 export class ExpandComponent implements OnInit {
   /**
-   * Optional content template using ngxproItem directive.
+   * Optional content template using nxpItem directive.
    * Allows for lazy rendering via ng-template.
    */
   protected readonly content = contentChild(ItemDirective, {

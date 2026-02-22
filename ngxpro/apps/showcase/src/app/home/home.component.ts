@@ -6,15 +6,15 @@ import {
   ExpandComponent,
   SubtitleDirective,
   TitleDirective,
-} from '@ngxpro/cdk';
+} from '@nxp/cdk';
 import {
   AccordionComponent,
   AccordionTriggerComponent,
-} from '@ngxpro/components/accordion';
-import { AvatarComponent } from '@ngxpro/components/avatar';
-import { ButtonComponent } from '@ngxpro/components/button';
-import { CardComponent } from '@ngxpro/components/card';
-import { AmountPipe } from '@ngxpro/core';
+} from '@nxp/components/accordion';
+import { AvatarComponent } from '@nxp/components/avatar';
+import { ButtonComponent } from '@nxp/components/button';
+import { CardComponent } from '@nxp/components/card';
+import { AmountPipe } from '@nxp/core';
 
 interface Operation {
   title: string;
@@ -24,7 +24,7 @@ interface Operation {
 }
 
 /**
- * Showcase home component displaying all available ngxpro components.
+ * Showcase home component displaying all available nxp components.
  */
 @Component({
   selector: 'app-home',

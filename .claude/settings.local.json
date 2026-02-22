@@ -16,7 +16,12 @@
       "Bash(npx nx test:*)",
       "Bash(awk:*)",
       "Bash(npx nx serve:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(cd /Users/aki/Documents/GitHub/ngxpro/ngxpro && npx nx typecheck showcase 2>&1 | tail -40)",
+      "Bash(npx tsc --project apps/showcase/tsconfig.app.json --noEmit 2>&1 | head -60)",
+      "Bash(npx tsc --project libs/components/accordion/tsconfig.lib.json --noEmit 2>&1 | head -20 && echo \"DONE\")",
+      "Bash(npx tsc --project libs/components/tsconfig.lib.json --noEmit 2>&1 | head -40)",
+      "Bash(npx tsc --project apps/showcase/tsconfig.app.json --noEmit 2>&1 && echo \"✓ clean\" || echo \"ERRORS ↑\")"
     ]
   }
 }

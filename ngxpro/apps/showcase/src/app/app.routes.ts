@@ -13,4 +13,39 @@ export const appRoutes: Route[] = [
         (m) => m.TextMorphDemoComponent,
       ),
   },
+  {
+    path: 'button',
+    loadComponent: () =>
+      import('./button/button.component').then(
+        (m) => m.ButtonDemoComponent,
+      ),
+  },
+  {
+    path: 'calendar',
+    loadComponent: () =>
+      import('./calendar/calendar-demo.component').then(
+        (m) => m.CalendarDemoComponent,
+      ),
+  },
+  {
+    path: 'calendar-month',
+    loadComponent: () =>
+      import('./calendar-month/calendar-month-demo.component').then(
+        (m) => m.CalendarMonthDemoComponent,
+      ),
+  },
+  {
+    path: 'calendar-range',
+    loadComponent: () =>
+      import('./calendar-range/calendar-range-demo.component').then(
+        (m) => m.CalendarRangeDemoComponent,
+      ),
+  },
+  {
+    path: 'date-inputs',
+    loadComponent: () =>
+      import('./date-inputs/date-inputs-demo.component').then(
+        (m) => m.DateInputsDemoComponent,
+      ),
+  },
 ];

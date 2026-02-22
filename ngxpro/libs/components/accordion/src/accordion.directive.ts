@@ -4,32 +4,31 @@ import { AccordionComponent } from './accordion.component';
 /**
  * Accordion trigger directive for custom accordion content (Taiga pattern).
  *
- * Use with button + ngxpro-expand for flexible accordion items.
+ * Use with button + nxp-expand for flexible accordion items.
  * Pairs with AccordionComponent: each directive matches the expand at the same index.
- * Use ngxproCell, ngxproTitle, ngxproSubtitle for layout (from @ngxpro/cdk).
+ * Use nxpCell, nxpTitle, nxpSubtitle for layout (from @nxp/cdk).
  *
  * @example
- * <ngxpro-accordion>
- *   <button ngxproAccordion ngxproCell="m">
- *     <span ngxproTitle><strong>Group 1</strong></span>
- *     <span ngxproSubtitle>3 operations • Total: $1,234</span>
+ * <nxp-accordion>
+ *   <button nxpAccordion nxpCell="m">
+ *     <span nxpTitle><strong>Group 1</strong></span>
+ *     <span nxpSubtitle>3 operations • Total: $1,234</span>
  *   </button>
- *   <ngxpro-expand>
- *     <div ngxproCell *ngFor="let item of items">...</div>
- *   </ngxpro-expand>
+ *   <nxp-expand>
+ *     <div nxpCell *ngFor="let item of items">...</div>
+ *   </nxp-expand>
  *
- *   <button ngxproAccordion ngxproCell="m">
- *     <span ngxproTitle><strong>Group 2</strong></span>
- *     <span ngxproSubtitle>2 operations</span>
+ *   <button nxpAccordion nxpCell="m">
+ *     <span nxpTitle><strong>Group 2</strong></span>
+ *     <span nxpSubtitle>2 operations</span>
  *   </button>
- *   <ngxpro-expand>
+ *   <nxp-expand>
  *     ...
- *   </ngxpro-expand>
- * </ngxpro-accordion>
+ *   </nxp-expand>
+ * </nxp-accordion>
  */
 @Directive({
-  selector:
-    'button[ngxproAccordion], ngxpro-accordion-trigger[ngxproAccordion]',
+  selector: 'button[nxpAccordion], nxp-accordion-trigger[nxpAccordion]',
   standalone: true,
   host: {
     type: 'button',
@@ -44,7 +43,7 @@ import { AccordionComponent } from './accordion.component';
 export class AccordionDirective {
   private readonly accordion = inject(AccordionComponent, { optional: true });
 
-  /** Whether this accordion item is open. Supports two-way binding via [ngxproAccordion]. */
+  /** Whether this accordion item is open. Supports two-way binding via [nxpAccordion]. */
   readonly open = model<boolean>(false);
 
   @HostListener('click')

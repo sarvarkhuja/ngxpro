@@ -1,5 +1,5 @@
 /**
- * @ngxpro/blocks/kpi-cards
+ * @nxp/blocks/kpi-cards
  * KPI card blocks: MetricCard, StatCard, ComparisonCard, etc.
  */
-export const NGXPRO_KPI_CARDS_ENTRY = '@ngxpro/blocks/kpi-cards';
+export const NXP_KPI_CARDS_ENTRY = '@nxp/blocks/kpi-cards';

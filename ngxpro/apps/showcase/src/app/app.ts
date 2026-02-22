@@ -9,5 +9,5 @@ import { ThemeSwitcherComponent } from './components/theme-switcher.component';
   styleUrl: './app.scss',
 })
 export class App {
-  protected title = 'ngxpro Showcase';
+  protected title = 'nxp Showcase';
 }

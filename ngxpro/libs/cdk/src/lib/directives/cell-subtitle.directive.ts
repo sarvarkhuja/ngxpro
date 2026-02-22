@@ -9,16 +9,16 @@ import { cx } from '../utils/cx';
  *
  * @example
  * ```html
- * <div ngxproTitle>
+ * <div nxpTitle>
  *   <div>Primary Text</div>
- *   <div ngxproSubtitle>Secondary description text</div>
+ *   <div nxpSubtitle>Secondary description text</div>
  * </div>
  * ```
  *
  * @example
  * With icons:
  * ```html
- * <div ngxproSubtitle>
+ * <div nxpSubtitle>
  *   <svg class="w-4 h-4">...</svg>
  *   <span>Status: Active</span>
  * </div>
@@ -28,7 +28,7 @@ import { cx } from '../utils/cx';
  * Styling: Tailwind CSS with dark mode support
  */
 @Directive({
-  selector: '[ngxproSubtitle]',
+  selector: '[nxpSubtitle]',
   standalone: true,
 })
 export class SubtitleDirective {
@@ -36,7 +36,7 @@ export class SubtitleDirective {
   protected get hostClasses(): string {
     return cx(
       'flex items-center gap-1',
-      'text-sm text-gray-600 dark:text-gray-400'
+      'text-sm text-gray-600 dark:text-gray-400',
     );
   }
 }

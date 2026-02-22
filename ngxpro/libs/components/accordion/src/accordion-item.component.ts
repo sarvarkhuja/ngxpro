@@ -7,18 +7,18 @@ import {
   signal,
 } from '@angular/core';
 import { AccordionComponent } from './accordion.component';
-import { cx, ExpandComponent } from '@ngxpro/cdk';
+import { cx, ExpandComponent } from '@nxp/cdk';
 
 /**
  * Individual accordion item with trigger and collapsible content.
  *
  * @example
- * <ngxpro-accordion-item title="Section Title">
+ * <nxp-accordion-item title="Section Title">
  *   <p>Collapsed content goes here.</p>
- * </ngxpro-accordion-item>
+ * </nxp-accordion-item>
  */
 @Component({
-  selector: 'ngxpro-accordion-item',
+  selector: 'nxp-accordion-item',
   imports: [ExpandComponent],
   template: `
     <button
@@ -28,27 +28,24 @@ import { cx, ExpandComponent } from '@ngxpro/cdk';
       [attr.disabled]="disabled() ? true : null"
       [class]="triggerClasses"
     >
-      <span class="text-sm font-medium leading-none text-gray-900 dark:text-gray-50">
+      <span
+        class="text-sm font-medium leading-none text-gray-900 dark:text-gray-50"
+      >
         {{ title() }}
       </span>
-      <svg
-        [class]="iconClasses()"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z" />
-      </svg>
+      <i [class]="iconClasses()" class="ri-add-line" aria-hidden="true"></i>
     </button>
-    <ngxpro-expand [expanded]="expanded()">
-      <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+    <nxp-expand [expanded]="expanded()">
+      <div
+        class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200"
+      >
         <ng-content />
       </div>
-    </ngxpro-expand>
+    </nxp-expand>
   `,
   host: {
-    class: 'block overflow-hidden border-b border-gray-200 dark:border-gray-800 first:mt-0',
+    class:
+      'block overflow-hidden border-b border-gray-200 dark:border-gray-800 first:mt-0',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

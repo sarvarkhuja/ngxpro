@@ -26,7 +26,7 @@ export default [
         'error',
         {
           type: 'attribute',
-          prefix: 'ngxpro',
+          prefix: 'nxp',
           style: 'camelCase',
         },
       ],
@@ -34,7 +34,7 @@ export default [
         'error',
         {
           type: 'element',
-          prefix: 'ngxpro',
+          prefix: 'nxp',
           style: 'kebab-case',
         },
       ],

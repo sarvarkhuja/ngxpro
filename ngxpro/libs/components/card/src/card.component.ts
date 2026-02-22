@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { cx } from '@ngxpro/cdk';
+import { cx } from '@nxp/cdk';
 
 /**
  * Card container component (Tremor-style).
  *
  * @example
- * <ngxpro-card>
+ * <nxp-card>
  *   <h3>Card Title</h3>
  *   <p>Card content</p>
- * </ngxpro-card>
+ * </nxp-card>
  */
 @Component({
-  selector: 'ngxpro-card',
+  selector: 'nxp-card',
   template: `<ng-content />`,
   host: {
     '[class]': 'hostClasses()',

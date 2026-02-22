@@ -1,128 +1,129 @@
 import { Component, inject, computed } from '@angular/core';
-import { ThemeService, type NgxproTheme } from '@ngxpro/core';
-import { ButtonComponent } from '@ngxpro/components/button';
+import {
+  ThemeService,
+  type NgxproTheme,
+  ColorSchemeService,
+  NXP_COLOR_SCHEME_META,
+  NXP_COLOR_SCHEMES,
+  type NgxproColorScheme,
+} from '@nxp/core';
 
 /**
- * Theme switcher component for toggling between light, dark, and system themes.
- * Integrates with ThemeService from @ngxpro/core.
+ * Combined theme + color-scheme switcher for the showcase app.
+ * Shows light/dark/system toggle and a brand-color scheme picker.
  */
 @Component({
   selector: 'app-theme-switcher',
   standalone: true,
-  imports: [ButtonComponent],
   template: `
-    <div class="fixed top-4 right-4 z-50">
-      <div class="flex items-center gap-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-1">
-        <!-- Light Theme Button -->
+    <div class="fixed top-4 right-4 z-50 flex flex-col items-end gap-2">
+
+      <!-- Light / Dark / System toggle -->
+      <div
+        class="flex items-center gap-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-1"
+      >
         <button
-          ngxproButton
-          [variant]="theme() === 'light' ? 'primary' : 'ghost'"
-          size="sm"
+          [class]="modeButtonClass('light')"
           (click)="setTheme('light')"
-          [class]="theme() === 'light' ? 'shadow-sm' : ''"
           aria-label="Switch to light theme"
-          title="Light theme"
+          title="Light"
         >
-          <svg
-            class="w-4 h-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-            />
-          </svg>
+          <i class="ri-sun-line" aria-hidden="true"></i>
         </button>
 
-        <!-- Dark Theme Button -->
         <button
-          ngxproButton
-          [variant]="theme() === 'dark' ? 'primary' : 'ghost'"
-          size="sm"
+          [class]="modeButtonClass('dark')"
           (click)="setTheme('dark')"
-          [class]="theme() === 'dark' ? 'shadow-sm' : ''"
           aria-label="Switch to dark theme"
-          title="Dark theme"
+          title="Dark"
         >
-          <svg
-            class="w-4 h-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-            />
-          </svg>
+          <i class="ri-moon-line" aria-hidden="true"></i>
         </button>
 
-        <!-- System Theme Button -->
         <button
-          ngxproButton
-          [variant]="theme() === 'system' ? 'primary' : 'ghost'"
-          size="sm"
+          [class]="modeButtonClass('system')"
           (click)="setTheme('system')"
-          [class]="theme() === 'system' ? 'shadow-sm' : ''"
           aria-label="Use system theme"
-          title="System theme"
+          title="System"
         >
-          <svg
-            class="w-4 h-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
+          <i class="ri-computer-line" aria-hidden="true"></i>
         </button>
       </div>
 
-      <!-- Theme indicator text (optional, for clarity) -->
-      <div class="text-center mt-2">
-        <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">
-          {{ themeLabel() }}
+      <!-- Color scheme picker -->
+      <div
+        class="flex items-center gap-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 px-2.5 py-2"
+      >
+        @for (s of schemes; track s) {
+          <button
+            [title]="meta[s].label"
+            [attr.aria-label]="'Color scheme: ' + meta[s].label"
+            [attr.aria-pressed]="scheme() === s"
+            (click)="setScheme(s)"
+            class="relative h-5 w-5 rounded-full transition-transform hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+            [style.background]="meta[s].swatch"
+          >
+            @if (scheme() === s) {
+              <!-- Active indicator: white checkmark -->
+              <span
+                class="absolute inset-0 flex items-center justify-center text-white"
+                aria-hidden="true"
+              >
+                <i class="ri-check-line text-[10px] font-bold"></i>
+              </span>
+            }
+          </button>
+        }
+      </div>
+
+      <!-- Active labels -->
+      <div class="text-right">
+        <span class="text-xs text-gray-500 dark:text-gray-400">
+          {{ themeLabel() }} · {{ schemeLabel() }}
         </span>
       </div>
+
     </div>
   `,
   styles: [`
-    :host {
-      display: contents;
-    }
+    :host { display: contents; }
+
+    button i { display: block; font-size: 1rem; line-height: 1; }
   `],
 })
 export class ThemeSwitcherComponent {
   private readonly themeService = inject(ThemeService);
+  private readonly colorSchemeService = inject(ColorSchemeService);
 
   readonly theme = this.themeService.theme;
-  readonly isDark = this.themeService.isDark;
+  readonly scheme = this.colorSchemeService.scheme;
 
-  // Computed signal that reactively updates the theme label
+  readonly schemes = NXP_COLOR_SCHEMES;
+  readonly meta = NXP_COLOR_SCHEME_META;
+
   readonly themeLabel = computed(() => {
-    const themeMap: Record<NgxproTheme, string> = {
-      light: 'Light',
-      dark: 'Dark',
-      system: 'System',
-    };
-    return themeMap[this.theme()];
+    const map: Record<NgxproTheme, string> = { light: 'Light', dark: 'Dark', system: 'System' };
+    return map[this.theme()];
   });
+
+  readonly schemeLabel = computed(() => this.meta[this.scheme()].label);
 
   setTheme(theme: NgxproTheme): void {
     this.themeService.setTheme(theme);
+  }
+
+  setScheme(scheme: NgxproColorScheme): void {
+    this.colorSchemeService.setScheme(scheme);
+  }
+
+  modeButtonClass(mode: NgxproTheme): string {
+    const active = this.theme() === mode;
+    return [
+      'flex items-center justify-center w-8 h-8 rounded-md text-sm transition-colors',
+      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-500',
+      active
+        ? 'bg-brand-500 text-white shadow-sm'
+        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700',
+    ].join(' ');
   }
 }

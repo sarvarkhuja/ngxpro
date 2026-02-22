@@ -1,16 +1,16 @@
 import { InjectionToken, Provider } from '@angular/core';
 import {
   type NgxproTextMorphOptions,
-  NGXPRO_TEXT_MORPH_DEFAULT_OPTIONS,
+  NXP_TEXT_MORPH_DEFAULT_OPTIONS,
 } from './text-morph.types';
 
-export const NGXPRO_TEXT_MORPH_OPTIONS =
-  new InjectionToken<NgxproTextMorphOptions>('NGXPRO_TEXT_MORPH_OPTIONS', {
-    factory: () => NGXPRO_TEXT_MORPH_DEFAULT_OPTIONS,
+export const NXP_TEXT_MORPH_OPTIONS =
+  new InjectionToken<NgxproTextMorphOptions>('NXP_TEXT_MORPH_OPTIONS', {
+    factory: () => NXP_TEXT_MORPH_DEFAULT_OPTIONS,
   });
 
 /**
- * Provides app-wide default options for ngxproTextMorph.
+ * Provides app-wide default options for nxpTextMorph.
  *
  * @example
  * providers: [provideTextMorphOptions({ duration: 600, locale: 'ja' })]
@@ -19,7 +19,7 @@ export function provideTextMorphOptions(
   options: Partial<NgxproTextMorphOptions>,
 ): Provider {
   return {
-    provide: NGXPRO_TEXT_MORPH_OPTIONS,
-    useValue: { ...NGXPRO_TEXT_MORPH_DEFAULT_OPTIONS, ...options },
+    provide: NXP_TEXT_MORPH_OPTIONS,
+    useValue: { ...NXP_TEXT_MORPH_DEFAULT_OPTIONS, ...options },
   };
 }

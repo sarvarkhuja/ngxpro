@@ -7,10 +7,14 @@ import {
   untracked,
 } from '@angular/core';
 import {
-  NGXPRO_AMOUNT_OPTIONS,
+  NXP_AMOUNT_OPTIONS,
   NgxproAmountOptions,
 } from '../tokens/amount-options.token';
-import { AmountAlign, AmountSign, AmountSignSymbol } from '../tokens/amount.types';
+import {
+  AmountAlign,
+  AmountSign,
+  AmountSignSymbol,
+} from '../tokens/amount.types';
 
 /**
  * Character constants for formatting.
@@ -96,34 +100,34 @@ function formatSignSymbol(value: number, sign: AmountSign): AmountSignSymbol {
  * @example
  * Basic usage with default options:
  * ```html
- * {{ 1234.56 | ngxproAmount }}
+ * {{ 1234.56 | nxpAmount }}
  * // Output: "1,234.56" (no currency)
  * ```
  *
  * @example
  * With currency code:
  * ```html
- * {{ 1234.56 | ngxproAmount:'USD' }}
+ * {{ 1234.56 | nxpAmount:'USD' }}
  * // Output: "$1,234.56"
  *
- * {{ 1234.56 | ngxproAmount:'EUR' }}
+ * {{ 1234.56 | nxpAmount:'EUR' }}
  * // Output: "€1,234.56"
  * ```
  *
  * @example
  * With currency alignment:
  * ```html
- * {{ 1234.56 | ngxproAmount:'USD':'start' }}
+ * {{ 1234.56 | nxpAmount:'USD':'start' }}
  * // Output: "$1,234.56"
  *
- * {{ 1234.56 | ngxproAmount:'EUR':'end' }}
+ * {{ 1234.56 | nxpAmount:'EUR':'end' }}
  * // Output: "1,234.56 €"
  * ```
  *
  * @example
  * Negative values:
  * ```html
- * {{ -1234.56 | ngxproAmount:'USD' }}
+ * {{ -1234.56 | nxpAmount:'USD' }}
  * // Output: "−$1,234.56"
  * ```
  *
@@ -132,7 +136,7 @@ function formatSignSymbol(value: number, sign: AmountSign): AmountSignSymbol {
  * ```typescript
  * providers: [
  *   {
- *     provide: NGXPRO_AMOUNT_OPTIONS,
+ *     provide: NXP_AMOUNT_OPTIONS,
  *     useValue: {
  *       currency: 'USD',
  *       currencyAlign: 'start',
@@ -145,17 +149,19 @@ function formatSignSymbol(value: number, sign: AmountSign): AmountSignSymbol {
  * ```
  */
 @Pipe({
-  name: 'ngxproAmount',
+  name: 'nxpAmount',
   standalone: true,
   pure: false, // Required for signal reactivity
 })
 export class AmountPipe implements PipeTransform {
-  private readonly options: NgxproAmountOptions = inject(NGXPRO_AMOUNT_OPTIONS);
+  private readonly options: NgxproAmountOptions = inject(NXP_AMOUNT_OPTIONS);
 
   // Signal-based state for reactive formatting
   private readonly value = signal<number>(0);
   private readonly currency = signal<string>(this.options.currency);
-  private readonly currencyAlign = signal<AmountAlign>(this.options.currencyAlign);
+  private readonly currencyAlign = signal<AmountAlign>(
+    this.options.currencyAlign,
+  );
 
   /**
    * Computed signal that reactively formats the amount based on current state.
@@ -182,8 +188,7 @@ export class AmountPipe implements PipeTransform {
 
     // Determine spacing between currency and value
     const space =
-      currencySymbol &&
-      (currencySymbol.length > 1 || align === 'end')
+      currencySymbol && (currencySymbol.length > 1 || align === 'end')
         ? CHAR_NO_BREAK_SPACE
         : '';
 
