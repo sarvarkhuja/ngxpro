@@ -38,12 +38,13 @@ Set up and maintain the Nx monorepo workspace, build system, CI/CD pipeline, and
 ## Package Structure
 
 ```
-@nxp/cdk          → Low-level utilities (cx, focus, DOM, coercion, observables)
+@nxp/cdk          → Low-level utilities (cx, focus, DOM, coercion, observables); re-exports @taiga-ui/polymorpheus
 @nxp/core         → Services (Theme, Breakpoint, Format), tokens, pipes
 @nxp/components   → Base UI components via secondary entry points (accordion, button, card, input, ...)
 @nxp/blocks       → Composed blocks via secondary entry points (charts, kpi-cards, tables, ...)
-
 ```
+
+**Polymorpheus**: `@taiga-ui/polymorpheus` is a dependency in ngxpro (`package.json`). Taiga-family packages (kit, core, layout, legacy) use it heavily for polymorphic content. Keep it as a (peer or direct) dependency so @nxp/cdk can re-export it and components can use `PolymorpheusContent` / `*polymorpheusOutlet`. See `.claude/POLYMORPHEUS_GUIDE.md`.
 
 ## Your Responsibilities
 

@@ -1,0 +1,223 @@
+<div
+  class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8"
+>
+  <div class="max-w-5xl mx-auto">
+    <!-- Back link -->
+    <a
+      routerLink="/"
+      class="inline-flex items-center text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 mb-6"
+    >
+      &larr; Back to showcase
+    </a>
+
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      Avatar
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-10">
+      User avatars with image, initials fallback, sizes, shapes, badge, labels,
+      and outlines.
+    </p>
+
+    <!-- Basic: initials fallback -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Initials fallback
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        When no <code>src</code> is set or the image fails to load, initials are
+        derived from <code>alt</code>.
+      </p>
+      <div class="flex flex-wrap items-center gap-4">
+        <nxp-avatar alt="John Doe" nxpAutoColor />
+        <nxp-avatar alt="Jane Smith" nxpAutoColor />
+        <nxp-avatar alt="Alice Johnson" nxpAutoColor />
+        <nxp-avatar alt="Bob" nxpAutoColor />
+        <nxp-avatar alt="?" nxpAutoColor />
+      </div>
+    </section>
+
+    <!-- With image -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        With image
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        Provide a <code>src</code> for a photo. A broken URL automatically falls
+        back to initials.
+      </p>
+      <div class="flex flex-wrap items-center gap-4">
+        <nxp-avatar [src]="imageUrl" alt="User with photo" />
+        <nxp-avatar [src]="brokenUrl" alt="Broken image fallback" />
+      </div>
+    </section>
+
+    <!-- Sizes -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Sizes
+      </h2>
+      <div class="flex flex-wrap items-end gap-4">
+        @for (s of sizes; track s) {
+          <nxp-avatar [size]="s" [alt]="'Size ' + s" />
+        }
+      </div>
+    </section>
+
+    <!-- Round vs square -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Round vs square
+      </h2>
+      <div class="flex flex-wrap items-center gap-4">
+        <nxp-avatar alt="Round" [round]="true" />
+        <nxp-avatar alt="Square" [round]="false" />
+        <nxp-avatar [src]="imageUrl" alt="Round photo" [round]="true" />
+        <nxp-avatar [src]="imageUrl" alt="Square photo" [round]="false" />
+      </div>
+    </section>
+
+    <!-- Appearances -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Appearances
+      </h2>
+      <div class="flex flex-wrap items-center gap-4">
+        @for (a of appearances; track a) {
+          <nxp-avatar [appearance]="a" [alt]="a || 'default'" />
+        }
+      </div>
+    </section>
+
+    <!-- With badge -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        With badge
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        Pass <code>badge</code> with Tailwind classes (e.g.
+        <code>bg-green-500</code>) for a status indicator dot.
+      </p>
+      <div class="flex flex-wrap items-center gap-4">
+        <nxp-avatar alt="Online" badge="bg-green-500" />
+        <nxp-avatar alt="Away" badge="bg-amber-500" />
+        <nxp-avatar alt="Offline" badge="bg-gray-400 dark:bg-gray-500" />
+        <nxp-avatar [src]="imageUrl" alt="With photo" badge="bg-green-500" />
+      </div>
+    </section>
+
+    <!-- Avatar stack -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Avatar stack
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        Use <code>nxp-avatar-stack</code> with <code>direction="start"</code> or
+        <code>"end"</code>
+        to overlap avatars into a group.
+      </p>
+      <div class="flex flex-wrap items-center gap-8">
+        <nxp-avatar-stack direction="start">
+          <nxp-avatar alt="User One" />
+          <nxp-avatar alt="User Two" />
+          <nxp-avatar alt="User Three" />
+          <nxp-avatar alt="User Four" />
+        </nxp-avatar-stack>
+        <nxp-avatar-stack direction="end">
+          <nxp-avatar alt="A" />
+          <nxp-avatar alt="B" />
+          <nxp-avatar alt="C" />
+        </nxp-avatar-stack>
+        <!-- Stack with images -->
+        <nxp-avatar-stack direction="end">
+          <nxp-avatar [src]="imageUrl" alt="Photo user" />
+          <nxp-avatar alt="Jane Smith" />
+          <nxp-avatar alt="Bob" appearance="negative" />
+        </nxp-avatar-stack>
+      </div>
+    </section>
+
+    <!-- Labeled avatar -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Labeled avatar
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        Wrap an avatar in <code>nxp-avatar-labeled</code> with a
+        <code>label</code> to show a name or caption below it. Long labels are
+        truncated.
+      </p>
+      <div class="flex flex-wrap items-start gap-6">
+        <nxp-avatar-labeled nxpAutoColor label="John Doe">
+          <nxp-avatar alt="John Doe" />
+        </nxp-avatar-labeled>
+        <nxp-avatar-labeled label="Jane Smith">
+          <nxp-avatar alt="Jane Smith" appearance="negative" />
+        </nxp-avatar-labeled>
+        <nxp-avatar-labeled label="Alice Johnson">
+          <nxp-avatar alt="Alice Johnson" appearance="neutral" />
+        </nxp-avatar-labeled>
+        <nxp-avatar-labeled label="A very long name that truncates">
+          <nxp-avatar alt="Long Name" size="l" />
+        </nxp-avatar-labeled>
+        <nxp-avatar-labeled label="Photo User">
+          <nxp-avatar [src]="imageUrl" alt="Photo User" size="l" />
+        </nxp-avatar-labeled>
+      </div>
+    </section>
+
+    <!-- Auto color -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Auto color
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        Use the <code>nxpAutoColor</code> pipe to generate a deterministic
+        background color from any string (name, ID, email). The same input
+        always produces the same color.
+      </p>
+      <div class="flex flex-wrap items-end gap-4">
+        @for (name of autoColorNames; track name) {
+          <nxp-avatar-labeled [label]="name.split(' ')[0]">
+            <nxp-avatar
+              [alt]="name"
+              [style.background]="name | nxpAutoColor"
+              class="text-gray-700"
+            />
+          </nxp-avatar-labeled>
+        }
+      </div>
+    </section>
+
+    <!-- Avatar outline -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Avatar outline
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        Apply <code>[nxpAvatarOutline]</code> with any CSS color to add a
+        colored ring around the avatar. Useful for selected state or role
+        indicators.
+      </p>
+      <div class="flex flex-wrap items-center gap-6">
+        @for (item of outlineColors; track item.color) {
+          <nxp-avatar-labeled [label]="item.label">
+            <nxp-avatar [alt]="item.label" [nxpAvatarOutline]="item.color" />
+          </nxp-avatar-labeled>
+        }
+        <!-- Default outline (blue) -->
+        <nxp-avatar-labeled label="Default">
+          <nxp-avatar alt="Default" nxpAvatarOutline />
+        </nxp-avatar-labeled>
+        <!-- With image -->
+        <nxp-avatar-labeled label="Active user">
+          <nxp-avatar
+            [src]="imageUrl"
+            alt="Active user"
+            nxpAvatarOutline="#10b981"
+            size="l"
+          />
+        </nxp-avatar-labeled>
+      </div>
+    </section>
+  </div>
+</div>

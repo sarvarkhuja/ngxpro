@@ -14,6 +14,13 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'avatar',
+    loadComponent: () =>
+      import('./avatar/avatar-demo.component').then(
+        (m) => m.AvatarDemoComponent,
+      ),
+  },
+  {
     path: 'button',
     loadComponent: () =>
       import('./button/button.component').then(
@@ -47,5 +54,10 @@ export const appRoutes: Route[] = [
       import('./date-inputs/date-inputs-demo.component').then(
         (m) => m.DateInputsDemoComponent,
       ),
+  },
+  {
+    path: 'icon',
+    loadComponent: () =>
+      import('./icon/icon-demo.component').then((m) => m.IconDemoComponent),
   },
 ];

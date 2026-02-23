@@ -34,6 +34,7 @@ Build and maintain `@nxp/core` — the foundation layer providing services, toke
 - **Package path**: `libs/core/src/`
 - **Import path**: `@nxp/core`
 - **Reference**: `taiga-family/core/` for architecture patterns
+- **Polymorpheus**: `@taiga-ui/polymorpheus` is included in ngxpro and used across taiga-family (layout, dialogs, etc.). When core APIs expose content or template options (e.g. headers, labels, messages), use polymorpheus types and patterns so components stay flexible. See `.claude/POLYMORPHEUS_GUIDE.md`.
 
 ## Current Core Structure
 

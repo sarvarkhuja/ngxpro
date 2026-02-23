@@ -34,6 +34,7 @@ Build and maintain `@nxp/cdk` — the low-level utility layer that all other pac
 - **Package path**: `libs/cdk/src/`
 - **Import path**: `@nxp/cdk`
 - **Reference**: `taiga-family/cdk/` for architecture patterns
+- **Polymorpheus**: `@taiga-ui/polymorpheus` is included in ngxpro and used heavily across `taiga-family/`. When building utilities that support flexible content (e.g. tooltips, overlays, dynamic templates), use polymorpheus patterns; re-export from `@nxp/cdk` so components can import from one place. See `.claude/POLYMORPHEUS_GUIDE.md`.
 
 ## Current CDK Structure
 

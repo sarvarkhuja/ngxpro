@@ -11,5 +11,8 @@
 export const NXP_COMPONENTS_VERSION = '0.0.1';
 
 // Secondary entry points — import via:
+//   import { NxpIconComponent, nxpIconsProvider } from '@nxp/components/icon';
 //   import { CalendarComponent } from '@nxp/components/calendar';
 //   import { CalendarMonthComponent } from '@nxp/components/calendar-month';
+//   import { NxpTextfieldComponent, NxpTextfield } from '@nxp/components/textfield';
+//   import { NxpLabelDirective } from '@nxp/components/label';

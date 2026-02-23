@@ -21,7 +21,11 @@
       "Bash(npx tsc --project apps/showcase/tsconfig.app.json --noEmit 2>&1 | head -60)",
       "Bash(npx tsc --project libs/components/accordion/tsconfig.lib.json --noEmit 2>&1 | head -20 && echo \"DONE\")",
       "Bash(npx tsc --project libs/components/tsconfig.lib.json --noEmit 2>&1 | head -40)",
-      "Bash(npx tsc --project apps/showcase/tsconfig.app.json --noEmit 2>&1 && echo \"✓ clean\" || echo \"ERRORS ↑\")"
+      "Bash(npx tsc --project apps/showcase/tsconfig.app.json --noEmit 2>&1 && echo \"✓ clean\" || echo \"ERRORS ↑\")",
+      "WebSearch",
+      "WebFetch(domain:taiga-ui.dev)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

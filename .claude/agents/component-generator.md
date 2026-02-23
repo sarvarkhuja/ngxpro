@@ -35,7 +35,8 @@ Create base UI components from scratch, combining **Taiga UI architecture patter
 - **Import example**: `import { ButtonComponent } from '@nxp/components/button';`
 - **Taiga reference**: `taiga-family/kit/components/` (architecture patterns)
 - **Tremor reference**: `tremor-main/src/components/` (Tailwind styling patterns)
-- **Dependencies**: `@nxp/cdk` (for cx, focusRing, types), `@nxp/core` (for services)
+- **Dependencies**: `@nxp/cdk` (for cx, focusRing, types, polymorpheus re-exports), `@nxp/core` (for services)
+- **Polymorpheus**: `@taiga-ui/polymorpheus` is included in ngxpro; Taiga kit uses it extensively for flexible content (tabs, dropdowns, toasts, dialogs, tree, pagination, etc.). For any component input that can be string, template, or component, use `PolymorpheusContent<T>` and render with `*polymorpheusOutlet` in the template. See `.claude/POLYMORPHEUS_GUIDE.md`.
 
 ## Workflow for Each Component
 

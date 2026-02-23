@@ -20,7 +20,11 @@ const avatarVariants = tv({
       'transition-all duration-150',
     ],
     image: ['h-full w-full object-cover'],
-    fallback: ['flex h-full w-full items-center justify-center'],
+    fallback: [
+      'flex h-full w-full min-h-0 min-w-0 items-center justify-center',
+      // fallback must have its own background so initials are visible (Taiga: host has background, removed when img present)
+      'font-medium uppercase text-white select-none',
+    ],
     badge: [
       'absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-950',
     ],
@@ -29,45 +33,56 @@ const avatarVariants = tv({
     size: {
       xs: {
         base: 'h-6 w-6 text-xs',
+        fallback: 'text-xs',
         badge: 'h-1.5 w-1.5',
       },
       s: {
         base: 'h-8 w-8 text-xs',
+        fallback: 'text-xs',
         badge: 'h-2 w-2',
       },
       m: {
         base: 'h-10 w-10 text-sm',
+        fallback: 'text-sm',
         badge: 'h-2.5 w-2.5',
       },
       l: {
         base: 'h-12 w-12 text-base',
+        fallback: 'text-base',
         badge: 'h-3 w-3',
       },
       xl: {
         base: 'h-16 w-16 text-lg',
+        fallback: 'text-lg',
         badge: 'h-3.5 w-3.5',
       },
     },
     round: {
       true: {
         base: 'rounded-full',
+        fallback: 'rounded-full',
       },
       false: {
         base: 'rounded-lg',
+        fallback: 'rounded-lg',
       },
     },
     appearance: {
       primary: {
         base: 'bg-blue-500 dark:bg-blue-600',
+        fallback: 'bg-blue-500 dark:bg-blue-600',
       },
       negative: {
         base: 'bg-red-500 dark:bg-red-600',
+        fallback: 'bg-red-500 dark:bg-red-600',
       },
       neutral: {
         base: 'bg-gray-500 dark:bg-gray-600',
+        fallback: 'bg-gray-500 dark:bg-gray-600',
       },
       '': {
         base: 'bg-blue-500 dark:bg-blue-600',
+        fallback: 'bg-blue-500 dark:bg-blue-600',
       },
     },
   },
