@@ -5,3 +5,7 @@ export { SubtitleDirective } from './cell-subtitle.directive';
 export { ClickOutsideDirective } from './click-outside.directive';
 export { ItemDirective } from './item.directive';
 export { TitleDirective } from './title.directive';
+export { NxpActiveZone } from './active-zone.directive';
+export { NxpObscured } from './obscured.directive';
+export { NxpAnimated, NXP_ENTER, NXP_LEAVE } from './animated.directive';
+export { NxpFocusTrap } from './focus-trap.directive';

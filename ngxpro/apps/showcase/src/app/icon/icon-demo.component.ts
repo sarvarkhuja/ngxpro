@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NxpIconComponent } from '@nxp/components/icon';
+import { NxpIconComponent } from '@nxp/cdk/components/icon';
 
 /** Remix Icon class names used in this demo (webfont: ensure remixicon.css is loaded). */
 const REMIX_ICON_NAMES = [

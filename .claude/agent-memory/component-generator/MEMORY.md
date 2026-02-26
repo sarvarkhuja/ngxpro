@@ -24,4 +24,19 @@
 ## Type-Only Imports
 - Use `import type { … }` for types that cross entry-point boundaries to avoid circular bundles
 
+## ng-packagr Secondary Entry Point: Cross-Package Import Rules
+- Importing `@nxp/cdk` in secondary entries of `@nxp/components` works fine
+- Importing `@nxp/core` in secondary entries of `@nxp/components` causes a TypeScript internal crash during partial compilation (ng-packagr TS bug: "Cannot destructure property 'pos' of 'file.referencedFiles[index]'")
+- Root cause: `@nxp/core` imports `@nxp/cdk` internally; the cross-dep chain triggers a TS diagnostic format crash
+- Solution: Tokens needed by `@nxp/components` secondary entries must live in `@nxp/cdk` or be defined locally in the entry point itself
+- See `libs/components/root/src/root.tokens.ts` for the pattern of local token definitions
+
+## viewChild with `read` Option
+- In Angular 21 / ng-packagr partial compilation, `viewChild.required<T>('ref', { read: ViewContainerRef })` fails with TS2353 error
+- Instead, use `inject(ViewContainerRef)` directly inside a component/directive to get its own VCR
+
+## Directives: no changeDetection property
+- `@Directive` does NOT accept a `changeDetection` property — that is `@Component`-only
+- For attribute directives, just omit `changeDetection` entirely; signals are reactive by default
+
 ## Details: see `patterns.md`

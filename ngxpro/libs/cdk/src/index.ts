@@ -4,3 +4,7 @@ export * from './lib/tokens';
 export type * from './lib/types';
 export * from './lib/observables';
 export * from './lib/components';
+export * from './lib/portals';
+export * from './lib/classes';
+export * from './lib/services';
+export * from './lib/constants';

@@ -9,12 +9,12 @@ import {
   signal,
 } from '@angular/core';
 import { cx } from '@nxp/cdk';
-import { CalendarComponent } from '@nxp/components/calendar';
-import type { DisabledHandler, MarkerHandler } from '@nxp/components/calendar';
-import {
-  DataListComponent,
-  OptionDirective,
-} from '@nxp/components/data-list';
+import { CalendarComponent } from 'libs/cdk/src/lib/components/calendar/src';
+import type {
+  DisabledHandler,
+  MarkerHandler,
+} from 'libs/cdk/src/lib/components/calendar/src';
+import { DataListComponent, OptionDirective } from '@nxp/components/data-list';
 import { calculateDisabledHandler } from './calculate-disabled-handler';
 import { computeEffectiveMax, computeEffectiveMin } from './day-caps';
 import { DateRangePeriod } from './date-range-period';
@@ -257,11 +257,11 @@ export class CalendarRangeComponent implements OnInit {
   protected readonly leftMonthIdx = computed(() => this.leftMonth().getMonth());
 
   /** Right calendar is always leftMonth + 1. */
-  protected readonly rightYear = computed(
-    () => addMonths(this.leftMonth(), 1).getFullYear(),
+  protected readonly rightYear = computed(() =>
+    addMonths(this.leftMonth(), 1).getFullYear(),
   );
-  protected readonly rightMonthIdx = computed(
-    () => addMonths(this.leftMonth(), 1).getMonth(),
+  protected readonly rightMonthIdx = computed(() =>
+    addMonths(this.leftMonth(), 1).getMonth(),
   );
 
   /** Merged disabled handler: base + minLength constraint when picking. */
@@ -367,8 +367,6 @@ export class CalendarRangeComponent implements OnInit {
     if (this.activeItem() === item) return true;
     const val = this.value();
     if (!val) return false;
-    return (
-      isSameDay(val[0], item.range[0]) && isSameDay(val[1], item.range[1])
-    );
+    return isSameDay(val[0], item.range[0]) && isSameDay(val[1], item.range[1]);
   }
 }

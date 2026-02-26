@@ -13,8 +13,11 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { cx } from '@nxp/cdk';
-import { CalendarComponent } from '@nxp/components/calendar';
-import type { DisabledHandler, MarkerHandler } from '@nxp/components/calendar';
+import { CalendarComponent } from 'libs/cdk/src/lib/components/calendar/src';
+import type {
+  DisabledHandler,
+  MarkerHandler,
+} from 'libs/cdk/src/lib/components/calendar/src';
 import { formatDate, parseDate } from './date-input.utils';
 
 // ---- Shared style constants ----
@@ -84,8 +87,17 @@ const INPUT_BASE = [
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none select-none"
         aria-hidden="true"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-          <path fill-rule="evenodd" d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z" clip-rule="evenodd"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="h-4 w-4"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
+            clip-rule="evenodd"
+          />
         </svg>
       </span>
 
@@ -155,9 +167,7 @@ export class InputDateComponent implements ControlValueAccessor {
 
   // ------------------------------------------------------------------ computed
 
-  protected readonly inputClass = computed(() =>
-    cx(INPUT_BASE, this.class()),
-  );
+  protected readonly inputClass = computed(() => cx(INPUT_BASE, this.class()));
 
   // ------------------------------------------------------------------ sync value → inputValue
 
@@ -195,7 +205,9 @@ export class InputDateComponent implements ControlValueAccessor {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
-    if (!(this.el.nativeElement as HTMLElement).contains(event.target as Node)) {
+    if (
+      !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
+    ) {
       this.isOpen.set(false);
     }
   }

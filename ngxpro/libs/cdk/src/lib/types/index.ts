@@ -43,3 +43,23 @@ export type BooleanHandler<T> = (item: T) => boolean;
 export type Mapper<TArgs extends readonly unknown[], TResult> = (
   ...args: TArgs
 ) => TResult;
+
+/**
+ * A boolean predicate handler for a given value type.
+ */
+export type NxpBooleanHandler<T> = (value: T) => boolean;
+
+/**
+ * A generic implicit context object (used with *ngTemplateOutlet).
+ */
+export type NxpContext<T> = { readonly $implicit: T };
+
+/**
+ * A 2D point represented as [x, y] tuple.
+ */
+export type NxpPoint = [x: number, y: number];
+
+/**
+ * Vertical direction for dropdowns and overlays.
+ */
+export type NxpVerticalDirection = 'bottom' | 'top';

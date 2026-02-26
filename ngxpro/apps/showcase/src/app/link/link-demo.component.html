@@ -1,0 +1,64 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto">
+    <!-- Back link -->
+    <a routerLink="/" nxpLink variant="brand" class="inline-flex items-center gap-1 mb-6">
+      &larr; Back to showcase
+    </a>
+
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Link</h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-10">
+      Link directive for anchors and buttons. Variants, sizes, and optional underline.
+    </p>
+
+    <!-- Variants -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Variants</h2>
+      <div class="flex flex-wrap items-center gap-4">
+        @for (v of variants; track v) {
+          <a href="#" nxpLink [variant]="v">{{ v }}</a>
+        }
+      </div>
+    </section>
+
+    <!-- Sizes -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Sizes</h2>
+      <div class="flex flex-wrap items-center gap-4">
+        @for (s of sizes; track s) {
+          <a href="#" nxpLink [size]="s">Link {{ s }}</a>
+        }
+      </div>
+    </section>
+
+    <!-- With / without underline -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Underline</h2>
+      <div class="flex flex-wrap items-center gap-4">
+        <a href="#" nxpLink [underline]="true">Underlined link</a>
+        <a href="#" nxpLink [underline]="false">No underline</a>
+      </div>
+    </section>
+
+    <!-- As anchor vs button -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">As anchor and button</h2>
+      <div class="flex flex-wrap items-center gap-4">
+        <a href="/" nxpLink variant="brand">Anchor link</a>
+        <a routerLink="/" nxpLink variant="muted">Router link</a>
+        <button type="button" nxpLink variant="danger">Button as link</button>
+      </div>
+    </section>
+
+    <!-- Inline text -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Inline in text</h2>
+      <p class="text-gray-700 dark:text-gray-300">
+        This is a paragraph with an
+        <a href="#" nxpLink variant="brand" [underline]="true">inline link</a>
+        and another
+        <a href="#" nxpLink variant="muted" [underline]="true">muted link</a>
+        for comparison.
+      </p>
+    </section>
+  </div>
+</div>

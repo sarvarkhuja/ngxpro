@@ -5,7 +5,7 @@ import {
   createDefaultDateRangePeriods,
   DateRangePeriod,
 } from '@nxp/components/calendar-range';
-import type { DisabledHandler } from '@nxp/components/calendar';
+import type { DisabledHandler } from 'libs/cdk/src/lib/components/calendar/src';
 import {
   DataListComponent,
   NxpDataList,
@@ -40,9 +40,12 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
   const today = new Date();
   const sod = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const t = sod(today);
-  const yesterday = new Date(t); yesterday.setDate(t.getDate() - 1);
-  const startOfWeek = new Date(t); startOfWeek.setDate(t.getDate() - ((t.getDay() + 6) % 7));
-  const endOfWeek = new Date(startOfWeek); endOfWeek.setDate(startOfWeek.getDate() + 6);
+  const yesterday = new Date(t);
+  yesterday.setDate(t.getDate() - 1);
+  const startOfWeek = new Date(t);
+  startOfWeek.setDate(t.getDate() - ((t.getDay() + 6) % 7));
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
   const startOfMonth = new Date(t.getFullYear(), t.getMonth(), 1);
   const endOfMonth = new Date(t.getFullYear(), t.getMonth() + 1, 0);
   const startLastMonth = new Date(t.getFullYear(), t.getMonth() - 1, 1);
@@ -559,9 +562,7 @@ export class CalendarRangeDemoComponent {
 
   daysBetween(range: [Date, Date]): number {
     return (
-      Math.round(
-        (range[1].getTime() - range[0].getTime()) / 86_400_000,
-      ) + 1
+      Math.round((range[1].getTime() - range[0].getTime()) / 86_400_000) + 1
     );
   }
 

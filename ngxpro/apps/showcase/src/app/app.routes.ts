@@ -60,4 +60,61 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./icon/icon-demo.component').then((m) => m.IconDemoComponent),
   },
+  {
+    path: 'link',
+    loadComponent: () =>
+      import('./link/link-demo.component').then((m) => m.LinkDemoComponent),
+  },
+  {
+    path: 'input',
+    loadComponent: () =>
+      import('./input/input-demo.component').then((m) => m.InputDemoComponent),
+  },
+  {
+    path: 'textfield',
+    loadComponent: () =>
+      import('./textfield/textfield-demo.component').then(
+        (m) => m.TextfieldDemoComponent,
+      ),
+  },
+  {
+    path: 'radio',
+    loadComponent: () =>
+      import('./radio/radio-demo.component').then((m) => m.RadioDemoComponent),
+  },
+  {
+    path: 'checkbox',
+    loadComponent: () =>
+      import('./checkbox/checkbox-demo.component').then(
+        (m) => m.CheckboxDemoComponent,
+      ),
+  },
+  {
+    path: 'notification',
+    loadComponent: () =>
+      import('./notification/notification-demo.component').then(
+        (m) => m.NotificationDemoComponent,
+      ),
+  },
+  {
+    path: 'alert',
+    loadComponent: () =>
+      import('./alert/alert-demo.component').then(
+        (m) => m.AlertDemoComponent,
+      ),
+  },
+  {
+    path: 'badge',
+    loadComponent: () =>
+      import('./badge/badge-demo.component').then(
+        (m) => m.BadgeDemoComponent,
+      ),
+  },
+  {
+    path: 'block',
+    loadComponent: () =>
+      import('./block/block-demo.component').then(
+        (m) => m.BlockDemoComponent,
+      ),
+  },
 ];

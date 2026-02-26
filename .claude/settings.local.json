@@ -25,7 +25,18 @@
       "WebSearch",
       "WebFetch(domain:taiga-ui.dev)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(cd /Users/aki/Documents/GitHub/ngxpro/ngxpro && npx tsc --project libs/components/tsconfig.lib.json --noEmit 2>&1 | head -50)",
+      "Bash(cd /Users/aki/Documents/GitHub/ngxpro/ngxpro && node_modules/.bin/ngc --project libs/components/tsconfig.lib.json 2>&1 | head -40)",
+      "Bash(cd /Users/aki/Documents/GitHub/ngxpro/ngxpro && npx tsc --project libs/components/tsconfig.lib.json --noEmit 2>&1 | head -20)",
+      "Bash(grep \"@nxp/\" /Users/aki/Documents/GitHub/ngxpro/ngxpro/libs/components/calendar/src/*.ts | grep \"import\" | head -10)",
+      "Bash(grep \"@nxp/\" /Users/aki/Documents/GitHub/ngxpro/ngxpro/libs/components/textfield/src/*.ts | grep \"import\" | head -10)",
+      "Bash(grep \"@nxp/\" /Users/aki/Documents/GitHub/ngxpro/ngxpro/libs/components/text-morph/src/*.ts 2>/dev/null | head -5)",
+      "Bash(cd /Users/aki/Documents/GitHub/ngxpro/ngxpro && npx tsc -p libs/components/tsconfig.lib.json --noEmit 2>&1 | head -40)",
+      "Bash(find /Users/aki/Documents/GitHub/ngxpro/taiga-family/core/portals/dropdown -type f -name \"*.ts\" | xargs basename -a | sort)",
+      "Bash(cat /Users/aki/Documents/GitHub/ngxpro/ngxpro/package.json | python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k: v for k, v in {**d.get\\('dependencies',{}\\), **d.get\\('devDependencies',{}\\)}.items\\(\\) if 'cdk' in k.lower\\(\\) or 'angular' in k.lower\\(\\)}, indent=2\\)\\)\")",
+      "Bash(cat /Users/aki/Documents/GitHub/ngxpro/ngxpro/package.json | python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); deps = {**d.get\\('dependencies',{}\\), **d.get\\('devDependencies',{}\\)}; print\\(json.dumps\\({k:v for k,v in deps.items\\(\\) if 'cdk' in k}, indent=2\\)\\)\")",
+      "Bash(cat /Users/aki/Documents/GitHub/ngxpro/ngxpro/package.json | python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); deps = {**d.get\\('dependencies',{}\\), **d.get\\('devDependencies',{}\\)}; [print\\(k,v\\) for k,v in deps.items\\(\\)]\")"
     ]
   }
 }

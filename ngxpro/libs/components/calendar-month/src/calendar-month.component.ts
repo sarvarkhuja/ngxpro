@@ -8,13 +8,23 @@ import {
   output,
 } from '@angular/core';
 import { cx } from '@nxp/cdk';
-import { CalendarYearComponent } from '@nxp/components/calendar';
+import { CalendarYearComponent } from 'libs/cdk/src/lib/components/calendar/src';
 import { CALENDAR_MONTH_OPTIONS } from './calendar-month.providers';
 
 /** Short month labels (Jan–Dec). */
 export const MONTH_NAMES = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ] as const;
 
 /** A { year, month } coordinate — month is 0-indexed. */
@@ -74,7 +84,11 @@ function toLinear(m: MonthCoord): number {
         />
       } @else {
         <!-- Year navigation header -->
-        <div class="flex items-center justify-between" role="group" [attr.aria-label]="'Year navigation'">
+        <div
+          class="flex items-center justify-between"
+          role="group"
+          [attr.aria-label]="'Year navigation'"
+        >
           <button
             type="button"
             [class]="navBtnClass()"
@@ -121,7 +135,12 @@ function toLinear(m: MonthCoord): number {
                   [class]="monthBtnClass(rangeState, isDisabled, isToday)"
                   [disabled]="isDisabled"
                   [attr.data-range]="rangeState"
-                  [attr.aria-selected]="(rangeState === 'active' || rangeState === 'start' || rangeState === 'end') || null"
+                  [attr.aria-selected]="
+                    rangeState === 'active' ||
+                    rangeState === 'start' ||
+                    rangeState === 'end' ||
+                    null
+                  "
                   [attr.aria-disabled]="isDisabled || null"
                   [attr.aria-label]="MONTH_NAMES[monthIdx] + ' ' + activeYear()"
                   role="gridcell"
@@ -263,9 +282,8 @@ export class CalendarMonthComponent {
       if (max && toLinear(item) > toLinear(max)) return true;
 
       if (isRangePicking && value) {
-        const selectedMonth = 'from' in value
-          ? (value as MonthRange).from
-          : (value as MonthCoord);
+        const selectedMonth =
+          'from' in value ? (value as MonthRange).from : (value as MonthCoord);
         const delta = Math.abs(toLinear(item) - toLinear(selectedMonth));
 
         if (maxLength != null && delta > maxLength) return true;
@@ -310,18 +328,17 @@ export class CalendarMonthComponent {
     }
 
     // Range mode — compute effective range using hoveredItem for preview
-    const from: MonthCoord = 'from' in value
-      ? (value as MonthRange).from
-      : (value as MonthCoord);
-    const to: MonthCoord = 'from' in value
-      ? (value as MonthRange).to
-      : (value as MonthCoord);
+    const from: MonthCoord =
+      'from' in value ? (value as MonthRange).from : (value as MonthCoord);
+    const to: MonthCoord =
+      'from' in value ? (value as MonthRange).to : (value as MonthCoord);
 
     const fromL = toLinear(from);
     const toL = toLinear(to);
-    const hovL = this.isRangePicking() && this.hoveredItem
-      ? toLinear(this.hoveredItem)
-      : null;
+    const hovL =
+      this.isRangePicking() && this.hoveredItem
+        ? toLinear(this.hoveredItem)
+        : null;
 
     const effectiveEnd = hovL ?? toL;
     const minL = Math.min(fromL, effectiveEnd);
