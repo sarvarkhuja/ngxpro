@@ -65,7 +65,11 @@
       "Bash(grep -n \"radio\" /Users/aki/Documents/GitHub/ngxpro/ngxpro/libs/cdk/src/lib/components/checkbox/src/*.ts 2>/dev/null | head -10)",
       "Bash(grep -n \"@nxp/cdk\" /Users/aki/Documents/GitHub/ngxpro/ngxpro/libs/cdk/src/lib/components/checkbox/src/*.ts)",
       "Bash(grep -n \"@nxp/cdk\" /Users/aki/Documents/GitHub/ngxpro/ngxpro/libs/cdk/src/lib/components/calendar/src/*.ts | head -10)",
-      "Bash(grep -n \"from\" /Users/aki/Documents/GitHub/ngxpro/ngxpro/libs/cdk/src/lib/components/icon/src/*.ts)"
+      "Bash(grep -n \"from\" /Users/aki/Documents/GitHub/ngxpro/ngxpro/libs/cdk/src/lib/components/icon/src/*.ts)",
+      "Bash(cd /Users/aki/Documents/GitHub/ngxpro/ngxpro && npx tsc --project tsconfig.base.json --noEmit 2>&1 | grep -i \"input-pin\" | head -20)",
+      "Bash(cd /Users/aki/Documents/GitHub/ngxpro/ngxpro && npx tsc --project tsconfig.base.json --noEmit 2>&1 | head -30)",
+      "Bash(cd /Users/aki/Documents/GitHub/ngxpro/ngxpro && npx tsc --project tsconfig.base.json --noEmit 2>&1 | grep \"input-pin\" | head -20)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

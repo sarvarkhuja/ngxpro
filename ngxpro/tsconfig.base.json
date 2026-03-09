@@ -61,7 +61,10 @@
       "@nxp/fintech": ["libs/fintech/src/index.ts"],
       "@nxp/components/combo-box": ["libs/components/combo-box/src/index.ts"],
       "@nxp/components/select": ["libs/components/select/src/index.ts"],
-      "@nxp/components/multi-select": ["libs/components/multi-select/src/index.ts"]
+      "@nxp/components/multi-select": ["libs/components/multi-select/src/index.ts"],
+      "@nxp/components/input-pin": ["libs/components/input-pin/src/index.ts"],
+      "@nxp/components/drawer": ["libs/components/drawer/src/index.ts"],
+      "@nxp/components/switch": ["libs/components/switch/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,17 +1,16 @@
 import { Component, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { InputMonthComponent } from '@nxp/components/input-month';
-import type { MonthCoord } from '@nxp/components/calendar-month';
+import { NxpInputPinComponent } from '@nxp/components/input-pin';
 
 @Component({
-  selector: 'app-input-month-demo',
+  selector: 'app-input-pin-demo',
   standalone: true,
   imports: [
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    InputMonthComponent,
+    NxpInputPinComponent,
   ],
   template: `
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
@@ -22,12 +21,13 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
             >← Back to home</a
           >
           <h1 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white">
-            Input Month
+            Input PIN
           </h1>
           <p class="mt-2 text-gray-600 dark:text-gray-400">
-            Month picker input with a calendar-month dropdown. The input is
-            read-only — the user selects a month from the grid. Displays the
-            value as "Month YYYY" (e.g. "March 2026").
+            PIN / OTP code input with individual visual cells backed by a single
+            hidden native input. Supports numeric and alphanumeric modes,
+            password masking, configurable length, and full Angular forms
+            integration.
           </p>
         </div>
 
@@ -39,22 +39,23 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
             Basic usage
           </h2>
 
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
             <!-- Signal binding -->
             <div class="space-y-3">
               <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Signal binding
+                Signal binding (6-digit)
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                Click to open the month grid and select a month.
+                Click any cell or use keyboard. Characters auto-advance to the
+                next cell.
               </p>
-              <nxp-input-month
-                [value]="basicMonth()"
-                (valueChange)="basicMonth.set($event)"
+              <nxp-input-pin
+                [length]="6"
+                (valueChange)="basicPin.set($event)"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
-                <code class="font-mono">{{ formatCoord(basicMonth()) }}</code>
+                <code class="font-mono">{{ basicPin() || '(empty)' }}</code>
               </p>
             </div>
 
@@ -66,10 +67,10 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Template-driven forms with two-way binding.
               </p>
-              <nxp-input-month [(ngModel)]="ngModelMonth" />
+              <nxp-input-pin [(ngModel)]="ngModelPin" [length]="4" />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 ngModel:
-                <code class="font-mono">{{ formatCoord(ngModelMonth) }}</code>
+                <code class="font-mono">{{ ngModelPin || '(empty)' }}</code>
               </p>
             </div>
 
@@ -80,139 +81,189 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Works with
-                <code class="font-mono text-xs"
-                  >FormControl&lt;MonthCoord&gt;</code
+                <code class="font-mono text-xs">FormControl&lt;string&gt;</code
                 >.
               </p>
-              <nxp-input-month [formControl]="monthControl" />
+              <nxp-input-pin [formControl]="pinControl" [length]="6" />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Control:
                 <code class="font-mono">{{
-                  formatCoord(monthControl.value)
+                  pinControl.value || '(empty)'
                 }}</code>
+              </p>
+            </div>
+
+            <!-- 4-digit short PIN -->
+            <div class="space-y-3">
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                4-digit PIN
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Shorter length for bank PINs or short codes.
+              </p>
+              <nxp-input-pin
+                [length]="4"
+                (valueChange)="shortPin.set($event)"
+              />
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Value:
+                <code class="font-mono">{{ shortPin() || '(empty)' }}</code>
               </p>
             </div>
           </div>
         </section>
 
-        <!-- Section: Constraints -->
+        <!-- Section: Mask & type -->
         <section class="space-y-8">
           <h2
             class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
           >
-            Constraints
+            Mask & type
           </h2>
 
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <!-- Min / Max bounds -->
+          <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
+            <!-- Password mask (default) -->
             <div class="space-y-3">
               <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Min / Max bounds
+                Password mask (default)
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                Limited to Jan 2025 – Dec 2026. Months outside this range are
-                greyed out.
+                Filled cells show bullets (●) instead of actual characters.
               </p>
-              <nxp-input-month
-                [value]="boundedMonth()"
-                [min]="minMonth"
-                [max]="maxMonth"
-                (valueChange)="boundedMonth.set($event)"
+              <nxp-input-pin
+                [length]="6"
+                mask="password"
+                (valueChange)="maskedPin.set($event)"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
-                <code class="font-mono">{{
-                  formatCoord(boundedMonth())
-                }}</code>
+                <code class="font-mono">{{ maskedPin() || '(empty)' }}</code>
               </p>
             </div>
 
-            <!-- Disabled handler -->
+            <!-- Visible text mask -->
             <div class="space-y-3">
               <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Disabled months
+                Visible text
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                A custom
-                <code class="font-mono text-xs">disabledHandler</code>
-                prevents Q1 months (Jan–Mar) from being selected.
+                <code class="font-mono text-xs">mask="text"</code> shows the
+                actual characters.
               </p>
-              <nxp-input-month
-                [value]="disabledMonth()"
-                [disabledHandler]="isQ1"
-                (valueChange)="disabledMonth.set($event)"
+              <nxp-input-pin
+                [length]="6"
+                mask="text"
+                (valueChange)="visiblePin.set($event)"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
-                <code class="font-mono">{{
-                  formatCoord(disabledMonth())
-                }}</code>
+                <code class="font-mono">{{ visiblePin() || '(empty)' }}</code>
               </p>
             </div>
 
-            <!-- Disabled state -->
+            <!-- Alphanumeric -->
+            <div class="space-y-3">
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Alphanumeric
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                <code class="font-mono text-xs">type="alphanumeric"</code>
+                accepts letters and digits.
+              </p>
+              <nxp-input-pin
+                [length]="6"
+                type="alphanumeric"
+                mask="text"
+                (valueChange)="alphaPin.set($event)"
+              />
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Value:
+                <code class="font-mono">{{ alphaPin() || '(empty)' }}</code>
+              </p>
+            </div>
+
+            <!-- Numeric only (default) -->
+            <div class="space-y-3">
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Numeric only (default)
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                <code class="font-mono text-xs">type="numeric"</code>
+                strips non-digit input automatically.
+              </p>
+              <nxp-input-pin
+                [length]="6"
+                type="numeric"
+                mask="text"
+                (valueChange)="numericPin.set($event)"
+              />
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Value:
+                <code class="font-mono">{{ numericPin() || '(empty)' }}</code>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: States -->
+        <section class="space-y-8">
+          <h2
+            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
+          >
+            States
+          </h2>
+
+          <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Error / invalid -->
+            <div class="space-y-3">
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Error state
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                <code class="font-mono text-xs">[invalid]="true"</code>
+                shows red borders and error ring on all cells.
+              </p>
+              <nxp-input-pin
+                [length]="6"
+                [invalid]="true"
+                mask="text"
+                (valueChange)="errorPin.set($event)"
+              />
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Value:
+                <code class="font-mono">{{ errorPin() || '(empty)' }}</code>
+              </p>
+            </div>
+
+            <!-- Disabled -->
             <div class="space-y-3">
               <h3 class="text-base font-medium text-gray-900 dark:text-white">
                 Disabled state
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                The input is non-interactive when disabled.
+                Non-interactive when disabled. Cells appear muted.
               </p>
-              <nxp-input-month
-                [value]="basicMonth()"
-                [disabled]="true"
-                placeholder="Disabled"
-              />
+              <nxp-input-pin [length]="6" [disabled]="true" />
             </div>
-          </div>
-        </section>
 
-        <!-- Section: Customization -->
-        <section class="space-y-8">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            Customization
-          </h2>
-
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <!-- Custom placeholder -->
             <div class="space-y-3">
               <h3 class="text-base font-medium text-gray-900 dark:text-white">
                 Custom placeholder
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                Override the default "Month YYYY" placeholder.
+                Override the default "·" placeholder character with a dash.
               </p>
-              <nxp-input-month
-                [value]="placeholderMonth()"
-                placeholder="Select billing period…"
-                (valueChange)="placeholderMonth.set($event)"
+              <nxp-input-pin
+                [length]="6"
+                placeholder="-"
+                mask="text"
+                (valueChange)="placeholderPin.set($event)"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
                 <code class="font-mono">{{
-                  formatCoord(placeholderMonth())
-                }}</code>
-              </p>
-            </div>
-
-            <!-- Pre-selected value -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Pre-selected value
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Initial value set to the current month.
-              </p>
-              <nxp-input-month
-                [value]="preselectedMonth()"
-                (valueChange)="preselectedMonth.set($event)"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Value:
-                <code class="font-mono">{{
-                  formatCoord(preselectedMonth())
+                  placeholderPin() || '(empty)'
                 }}</code>
               </p>
             </div>
@@ -243,37 +294,36 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               </thead>
               <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 <tr>
-                  <td class="px-4 py-2 font-mono">value</td>
-                  <td class="px-4 py-2 font-mono">MonthCoord | null</td>
-                  <td class="px-4 py-2 font-mono">null</td>
+                  <td class="px-4 py-2 font-mono">length</td>
+                  <td class="px-4 py-2 font-mono">number</td>
+                  <td class="px-4 py-2 font-mono">6</td>
+                  <td class="px-4 py-2">Number of PIN cells</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-2 font-mono">type</td>
+                  <td class="px-4 py-2 font-mono">
+                    'numeric' | 'alphanumeric'
+                  </td>
+                  <td class="px-4 py-2 font-mono">'numeric'</td>
                   <td class="px-4 py-2">
-                    Currently selected month
-                    (<code class="font-mono text-xs"
-                      >{{ '{' }} year, month {{ '}' }}</code
-                    >)
+                    Restrict to digits only or allow letters
                   </td>
                 </tr>
                 <tr>
-                  <td class="px-4 py-2 font-mono">min</td>
-                  <td class="px-4 py-2 font-mono">MonthCoord | null</td>
-                  <td class="px-4 py-2 font-mono">null</td>
+                  <td class="px-4 py-2 font-mono">mask</td>
+                  <td class="px-4 py-2 font-mono">'password' | 'text'</td>
+                  <td class="px-4 py-2 font-mono">'password'</td>
                   <td class="px-4 py-2">
-                    Minimum selectable month (inclusive)
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">max</td>
-                  <td class="px-4 py-2 font-mono">MonthCoord | null</td>
-                  <td class="px-4 py-2 font-mono">null</td>
-                  <td class="px-4 py-2">
-                    Maximum selectable month (inclusive)
+                    Show bullets or actual characters in cells
                   </td>
                 </tr>
                 <tr>
                   <td class="px-4 py-2 font-mono">placeholder</td>
                   <td class="px-4 py-2 font-mono">string</td>
-                  <td class="px-4 py-2 font-mono">'Month YYYY'</td>
-                  <td class="px-4 py-2">Placeholder text</td>
+                  <td class="px-4 py-2 font-mono">'·'</td>
+                  <td class="px-4 py-2">
+                    Character shown in empty cells
+                  </td>
                 </tr>
                 <tr>
                   <td class="px-4 py-2 font-mono">disabled</td>
@@ -282,21 +332,11 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
                   <td class="px-4 py-2">Whether the input is disabled</td>
                 </tr>
                 <tr>
-                  <td class="px-4 py-2 font-mono">rangeMode</td>
+                  <td class="px-4 py-2 font-mono">invalid</td>
                   <td class="px-4 py-2 font-mono">boolean</td>
                   <td class="px-4 py-2 font-mono">false</td>
                   <td class="px-4 py-2">
-                    Enable month-range selection in dropdown
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">disabledHandler</td>
-                  <td class="px-4 py-2 font-mono">
-                    (m: MonthCoord) =&gt; boolean
-                  </td>
-                  <td class="px-4 py-2 font-mono">null</td>
-                  <td class="px-4 py-2">
-                    Callback to disable individual months
+                    Whether the input shows error styling
                   </td>
                 </tr>
               </tbody>
@@ -319,9 +359,9 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 <tr>
                   <td class="px-4 py-2 font-mono">valueChange</td>
-                  <td class="px-4 py-2 font-mono">MonthCoord | null</td>
+                  <td class="px-4 py-2 font-mono">string</td>
                   <td class="px-4 py-2">
-                    Emitted when the selected month changes
+                    Emitted whenever the PIN value changes
                   </td>
                 </tr>
               </tbody>
@@ -332,32 +372,16 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
     </div>
   `,
 })
-export class InputMonthDemoComponent {
-  private readonly now = new Date();
+export class InputPinDemoComponent {
+  readonly basicPin = signal('');
+  ngModelPin = '';
+  readonly pinControl = new FormControl<string>('');
 
-  readonly basicMonth = signal<MonthCoord | null>(null);
-  ngModelMonth: MonthCoord | null = null;
-  readonly monthControl = new FormControl<MonthCoord | null>(null);
-
-  readonly boundedMonth = signal<MonthCoord | null>(null);
-  readonly disabledMonth = signal<MonthCoord | null>(null);
-  readonly placeholderMonth = signal<MonthCoord | null>(null);
-  readonly preselectedMonth = signal<MonthCoord | null>({
-    year: this.now.getFullYear(),
-    month: this.now.getMonth(),
-  });
-
-  readonly minMonth: MonthCoord = { year: 2025, month: 0 };
-  readonly maxMonth: MonthCoord = { year: 2026, month: 11 };
-
-  readonly isQ1 = (m: MonthCoord): boolean => m.month <= 2;
-
-  formatCoord(m: MonthCoord | null | undefined): string {
-    if (!m) return 'null';
-    const names = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ];
-    return `${names[m.month]} ${m.year}`;
-  }
+  readonly shortPin = signal('');
+  readonly maskedPin = signal('');
+  readonly visiblePin = signal('');
+  readonly alphaPin = signal('');
+  readonly numericPin = signal('');
+  readonly errorPin = signal('');
+  readonly placeholderPin = signal('');
 }

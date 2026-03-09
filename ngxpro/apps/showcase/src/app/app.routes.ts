@@ -77,10 +77,38 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'input-pin',
+    loadComponent: () =>
+      import('./input-pin/input-pin-demo.component').then(
+        (m) => m.InputPinDemoComponent,
+      ),
+  },
+  {
     path: 'date-inputs',
     loadComponent: () =>
       import('./date-inputs/date-inputs-demo.component').then(
         (m) => m.DateInputsDemoComponent,
+      ),
+  },
+  {
+    path: 'dialog',
+    loadComponent: () =>
+      import('./dialog/dialog-demo.component').then(
+        (m) => m.DialogDemoComponent,
+      ),
+  },
+  {
+    path: 'drawer',
+    loadComponent: () =>
+      import('./drawer/drawer-demo.component').then(
+        (m) => m.DrawerDemoComponent,
+      ),
+  },
+  {
+    path: 'dropdown',
+    loadComponent: () =>
+      import('./dropdown/dropdown-demo.component').then(
+        (m) => m.DropdownDemoComponent,
       ),
   },
   {
@@ -129,6 +157,13 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./checkbox/checkbox-demo.component').then(
         (m) => m.CheckboxDemoComponent,
+      ),
+  },
+  {
+    path: 'switch',
+    loadComponent: () =>
+      import('./switch/switch-demo.component').then(
+        (m) => m.SwitchDemoComponent,
       ),
   },
   {

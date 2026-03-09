@@ -36,35 +36,45 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
     @if (context.closable) {
       <button
         type="button"
-        class="absolute top-4 right-4 z-10 p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800"
+        class="absolute top-4 right-4 z-10 inline-flex items-center justify-center rounded-md p-1.5
+               text-gray-400 hover:text-gray-600 hover:bg-gray-100
+               dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-800
+               focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
         (click)="close$.next()"
         aria-label="Close"
       >
-        <span class="sr-only">Close</span>
-        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     }
 
     @if (!primitive && context.label) {
       <header class="mb-4">
-        <h2 [id]="context.id" class="text-lg font-semibold" [innerHTML]="context.label"></h2>
+        <h2 [id]="context.id"
+            class="text-lg font-semibold text-gray-900 dark:text-gray-50"
+            [innerHTML]="context.label"></h2>
       </header>
     }
 
     <ng-container *polymorpheusOutlet="context.content as text; context: context">
       <header class="mb-4">
-        <h2 [id]="context.id" class="text-lg font-semibold" [innerHTML]="context.label"></h2>
+        <h2 [id]="context.id"
+            class="text-lg font-semibold text-gray-900 dark:text-gray-50"
+            [innerHTML]="context.label"></h2>
         @if (text) {
-          <p class="mt-1 text-gray-600 dark:text-gray-400" [innerHTML]="text"></p>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400" [innerHTML]="text"></p>
         }
       </header>
       @if (context.closable || context.dismissible) {
-        <footer class="mt-6 flex justify-end gap-2">
+        <footer class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button
             type="button"
-            class="px-4 py-2 rounded-md bg-primary text-text-on-accent hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+            class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium
+                   bg-blue-600 text-white shadow-sm
+                   hover:bg-blue-700
+                   focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
+                   dark:focus-visible:ring-offset-gray-900 transition-colors"
             (click)="context.$implicit.complete()"
           >
             {{ context.data ?? 'OK' }}
@@ -76,10 +86,27 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Default,
   providers: [NxpDialogCloseService],
+  styles: [`
+    nxp-dialog {
+      width: 37.5rem; /* medium (default) */
+      max-width: calc(100vw - 2rem);
+      max-height: calc(100svh - 4rem);
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+    nxp-dialog[data-size='s'] { width: 25rem; }
+    nxp-dialog[data-size='l'] { width: 50rem; }
+
+    /* When closable, indent header to avoid overlap with the × button */
+    nxp-dialog.nxp-dialog--closable > header {
+      padding-inline-end: 2rem;
+    }
+  `],
   host: {
-    class: 'relative rounded-xl bg-white dark:bg-gray-900 shadow-xl p-6 min-w-[16rem] max-w-[calc(100vw-2rem)]',
+    class: 'relative flex flex-col rounded-xl bg-white dark:bg-[#090E1A] border border-gray-200 dark:border-gray-900 shadow-xl outline-none',
     '[attr.data-appearance]': 'context.appearance',
     '[attr.data-size]': 'context.size',
+    '[class.nxp-dialog--closable]': 'context.closable',
   },
 })
 export class NxpDialogComponent<O, I> {

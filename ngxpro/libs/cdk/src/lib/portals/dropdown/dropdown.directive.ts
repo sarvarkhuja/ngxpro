@@ -22,7 +22,7 @@ import { Subject, throttleTime } from 'rxjs';
 import { nxpZonefreeScheduler } from '../../observables/zone';
 import { nxpAsVehicle, NxpVehicle } from '../../classes/vehicle';
 import type { NxpRectAccessor } from '../../classes/accessors';
-import { NxpPopupService } from '../popup/popup.service';
+import { NxpPortalService } from '../portal.service';
 import { nxpCheckFixedPosition } from '../../utils/check-fixed-position';
 import { nxpInjectElement } from '../../utils/inject-element';
 import { NxpActiveZone } from '../../directives/active-zone.directive';
@@ -57,7 +57,7 @@ export class NxpDropdownDirective
   implements AfterViewChecked, OnDestroy, NxpRectAccessor, NxpVehicle
 {
   private readonly refresh$ = new Subject<void>();
-  private readonly service = inject(NxpPopupService);
+  private readonly service = inject(NxpPortalService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly drivers = toArray(
     inject(NxpDropdownDriver, { self: true, optional: true }),

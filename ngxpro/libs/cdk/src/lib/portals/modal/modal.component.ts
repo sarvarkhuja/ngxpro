@@ -73,8 +73,10 @@ function nxpGetFocused(doc: Document): Element | null {
   imports: [PolymorpheusOutlet],
   template: `
     <div class="nxp-modal-backdrop" aria-hidden="true"></div>
-    <div class="nxp-modal-content">
-      <ng-container *polymorpheusOutlet="component(); context: context" />
+    <div class="nxp-modal-scroll">
+      <div class="nxp-modal-content">
+        <ng-container *polymorpheusOutlet="component(); context: context" />
+      </div>
     </div>
   `,
   encapsulation: ViewEncapsulation.None,
@@ -91,11 +93,8 @@ function nxpGetFocused(doc: Document): Element | null {
       :host {
         position: fixed;
         inset: 0;
-        display: grid;
-        place-items: center;
-        overflow: auto;
-        outline: none;
         z-index: 9999;
+        outline: none;
       }
       :host.nxp-enter {
         animation: nxp-modal-fade 0.2s ease-out;
@@ -106,17 +105,27 @@ function nxpGetFocused(doc: Document): Element | null {
       .nxp-modal-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0 0 0 / 0.4);
-        backdrop-filter: brightness(0.6);
+        background: rgba(0, 0, 0, 0.6);
       }
+      /* Scrollable layer that sits above the backdrop */
+      .nxp-modal-scroll {
+        position: fixed;
+        inset: 0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+      /* Flex wrapper — grows to fill height so the dialog stays centred */
       .nxp-modal-content {
-        position: relative;
-        z-index: 1;
-        margin: 2rem;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
       }
       @keyframes nxp-modal-fade {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from { opacity: 0; transform: scale(0.97) translateY(0.5rem); }
+        to   { opacity: 1; transform: scale(1)    translateY(0); }
       }
     `,
   ],
@@ -128,11 +137,14 @@ export class NxpModalComponent<T> implements OnInit, OnDestroy {
   /**
    * The parent active zone (the zone that was active when this modal opened),
    * resolved to the deepest zone that contained the previously focused element.
+   * Optional because there may be no parent zone at the root level.
    */
-  private readonly parent = findActive(
-    inject(NxpActiveZone, { skipSelf: true }),
-    nxpGetFocused(inject(DOCUMENT)),
-  );
+  private readonly parent = (() => {
+    const parentZone = inject(NxpActiveZone, { skipSelf: true, optional: true });
+    return parentZone
+      ? findActive(parentZone, nxpGetFocused(inject(DOCUMENT)))
+      : null;
+  })();
 
   readonly context = injectContext<NxpPortalContext<T>>();
   readonly component = signal<PolymorpheusContent<NxpPortalContext<T>> | null>(null);
