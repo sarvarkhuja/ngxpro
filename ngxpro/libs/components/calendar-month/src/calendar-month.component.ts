@@ -8,7 +8,7 @@ import {
   output,
 } from '@angular/core';
 import { cx } from '@nxp/cdk';
-import { CalendarYearComponent } from 'libs/cdk/src/lib/components/calendar/src';
+import { CalendarYearComponent } from '@nxp/components/calendar';
 import { CALENDAR_MONTH_OPTIONS } from './calendar-month.providers';
 
 /** Short month labels (Jan–Dec). */
@@ -380,7 +380,7 @@ export class CalendarMonthComponent {
       'text-gray-700 dark:text-gray-300',
       'hover:bg-gray-100 dark:hover:bg-gray-800',
       'disabled:opacity-40 disabled:cursor-not-allowed',
-      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
     );
   }
 
@@ -388,8 +388,8 @@ export class CalendarMonthComponent {
     return cx(
       'text-sm font-semibold transition-colors',
       'text-gray-900 dark:text-gray-50',
-      'hover:text-brand-600 dark:hover:text-brand-400',
-      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+      'hover:text-action',
+      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
     );
   }
 
@@ -409,35 +409,35 @@ export class CalendarMonthComponent {
     if (rangeState === 'active') {
       return cx(
         'h-10 rounded-md text-sm font-medium text-center cursor-pointer transition-colors',
-        'bg-brand-600 text-white dark:bg-brand-500',
-        'hover:bg-brand-700 dark:hover:bg-brand-600',
-        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+        'bg-primary-hover text-text-on-accent',
+        'hover:bg-primary-pressed',
+        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
       );
     }
 
     if (rangeState === 'start') {
       return cx(
         'h-10 rounded-md rounded-r-none text-sm font-medium text-center cursor-pointer transition-colors',
-        'bg-brand-600 text-white dark:bg-brand-500',
-        'hover:bg-brand-700 dark:hover:bg-brand-600',
-        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+        'bg-primary-hover text-text-on-accent',
+        'hover:bg-primary-pressed',
+        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
       );
     }
 
     if (rangeState === 'end') {
       return cx(
         'h-10 rounded-md rounded-l-none text-sm font-medium text-center cursor-pointer transition-colors',
-        'bg-brand-600 text-white dark:bg-brand-500',
-        'hover:bg-brand-700 dark:hover:bg-brand-600',
-        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+        'bg-primary-hover text-text-on-accent',
+        'hover:bg-primary-pressed',
+        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
       );
     }
 
     if (rangeState === 'middle') {
       return cx(
         'h-10 rounded-none text-sm font-medium text-center cursor-pointer transition-colors',
-        'bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-300',
-        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+        'bg-primary/20 text-action',
+        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
       );
     }
 
@@ -445,8 +445,8 @@ export class CalendarMonthComponent {
       'h-10 rounded-md text-sm font-medium text-center cursor-pointer transition-colors',
       'text-gray-700 dark:text-gray-300',
       'hover:bg-gray-100 dark:hover:bg-gray-800',
-      isToday ? 'ring-1 ring-brand-600 dark:ring-brand-400' : '',
-      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+      isToday ? 'ring-1 ring-primary' : '',
+      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
     );
   }
 

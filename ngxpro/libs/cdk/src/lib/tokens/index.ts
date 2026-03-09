@@ -81,3 +81,20 @@ export const NXP_SELECTION_STREAM = new InjectionToken<Observable<unknown>>(
     },
   },
 );
+
+export { NXP_FALLBACK_VALUE, nxpFallbackValueProvider } from './fallback-value';
+export { NXP_ITEMS_HANDLERS, NXP_DEFAULT_ITEMS_HANDLERS, nxpItemsHandlersProvider } from './items-handlers';
+export type { NxpStringHandler, NxpIdentityMatcher, NxpItemsHandlers } from './items-handlers';
+export { NXP_AUXILIARY, nxpAsAuxiliary, nxpInjectAuxiliary } from './auxiliary';
+export { NXP_OPTION_CONTENT, nxpAsOptionContent } from './option-content';
+export { NXP_DATA_LIST_HOST, nxpAsDataListHost } from './data-list';
+export type { NxpDataListHost } from './data-list';
+export { NXP_MULTI_SELECT_TEXTS } from './multi-select';
+export type { NxpMultiSelectTexts } from './multi-select';
+export {
+  NXP_TEXTFIELD_ACCESSOR,
+  nxpAsTextfieldAccessor,
+  NXP_LABEL,
+  NXP_TEXTFIELD,
+} from './textfield';
+export type { NxpTextfieldAccessor } from './textfield';

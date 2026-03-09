@@ -14,8 +14,12 @@ import { NxpDropdownDriver } from './dropdown.driver';
 import { NxpDropdownOpen } from './dropdown-open.directive';
 
 /**
- * Directive that handles all close triggers for a dropdown.
- * Emits nxpDropdownClose when the dropdown should close (via Escape, focus loss, scroll, etc.).
+ * Directive that handles all close triggers for an open dropdown.
+ * Emits `nxpDropdownClose` when the dropdown should close:
+ * - Browser CloseWatcher / Escape key
+ * - Host element scrolled out of the viewport (obscured)
+ * - Focus leaves both the trigger and the dropdown panel (active zone inactive)
+ * - `focusin` fires on the host for an element that is not the trigger
  */
 @Directive()
 export class NxpDropdownClose {
@@ -32,11 +36,12 @@ export class NxpDropdownClose {
           merge(
             nxpCloseWatcher(),
             this.obscured.nxpObscured$.pipe(filter(Boolean)),
-            this.activeZone.nxpActiveZoneChange.pipe(filter((a) => !a)),
+            this.activeZone.nxpActiveZoneChange.pipe(filter((active) => !active)),
             nxpTypedFromEvent(this.el, 'focusin').pipe(
               filter(
                 (event) =>
-                  !this.open.host.contains(event.target as Element | null) || !this.ref(),
+                  !this.open.host.contains(event.target as Element | null) ||
+                  !this.ref(),
               ),
             ),
           ),

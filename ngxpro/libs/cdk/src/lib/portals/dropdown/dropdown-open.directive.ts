@@ -22,15 +22,15 @@ import { NxpDropdownDirective } from './dropdown.directive';
 import { NxpDropdownDriver } from './dropdown.driver';
 import { NxpDropdownClose } from './dropdown-close.directive';
 
-function tuiGetActualTarget(event: Event): Element {
+function nxpGetActualTarget(event: Event): Element {
   return (event.composedPath()[0] as Element) ?? (event.target as Element);
 }
 
-function tuiIsFocusedIn(element: HTMLElement | null | undefined): boolean {
+function nxpIsFocusedIn(element: HTMLElement | null | undefined): boolean {
   return !!element?.matches(':focus-within');
 }
 
-function tuiGetClosestFocusable(opts: {
+function nxpGetClosestFocusable(opts: {
   initial: Element;
   root?: Element;
   previous?: boolean;
@@ -45,19 +45,19 @@ function tuiGetClosestFocusable(opts: {
   return previous ? (all[idx - 1] ?? null) : (all[idx + 1] ?? null);
 }
 
-function tuiIsFocusable(element: Element): boolean {
+function nxpIsFocusable(element: Element): boolean {
   return (element as HTMLElement).tabIndex >= 0;
 }
 
-function tuiIsElementEditable(element: Element): boolean {
+function nxpIsElementEditable(element: Element): boolean {
   return element.matches(
     'input:not([readonly]),textarea:not([readonly]),[contenteditable="true"]',
   );
 }
 
 /**
- * Directive that adds auto open/close behavior to a dropdown host.
- * Handles click-to-toggle, arrow key navigation, and keyboard editing key focus.
+ * Directive that adds auto open/close behaviour to a dropdown host.
+ * Handles click-to-toggle, arrow key navigation, and editing key focus.
  */
 @Directive({
   selector:
@@ -109,11 +109,11 @@ export class NxpDropdownOpen {
     .subscribe((event) => this.onKeydown(event));
 
   public get host(): HTMLElement {
-    const initial = this.dropdownHost()?.nativeElement || this.el;
-    const focusable = tuiIsFocusable(initial)
+    const initial = this.dropdownHost()?.nativeElement ?? this.el;
+    const focusable = nxpIsFocusable(initial)
       ? initial
-      : tuiGetClosestFocusable({ initial, root: this.el });
-    return this.dropdownHost()?.nativeElement || focusable || this.el;
+      : nxpGetClosestFocusable({ initial, root: this.el });
+    return this.dropdownHost()?.nativeElement ?? focusable ?? this.el;
   }
 
   public toggle(open: boolean): void {
@@ -137,22 +137,22 @@ export class NxpDropdownOpen {
   }
 
   private get editable(): boolean {
-    return tuiIsElementEditable(this.host);
+    return nxpIsElementEditable(this.host);
   }
 
   private get focused(): boolean {
-    return tuiIsFocusedIn(this.host) || tuiIsFocusedIn(this.dropdown());
+    return nxpIsFocusedIn(this.host) || nxpIsFocusedIn(this.dropdown());
   }
 
   private onKeydown(event: KeyboardEvent): void {
-    const target = tuiGetActualTarget(event);
+    const target = nxpGetActualTarget(event);
     if (
       !event.defaultPrevented &&
       nxpIsEditingKey(event.key) &&
       this.editable &&
       this.focused &&
       target instanceof HTMLElement &&
-      !tuiIsElementEditable(target)
+      !nxpIsElementEditable(target)
     ) {
       this.host.focus({ preventScroll: true });
     }
@@ -178,7 +178,7 @@ export class NxpDropdownOpen {
     const doc = this.el.ownerDocument;
     const child = root.appendChild(doc.createElement('div'));
     const initial = previous ? child : root;
-    const focusable = tuiGetClosestFocusable({ initial, previous, root });
+    const focusable = nxpGetClosestFocusable({ initial, previous, root });
     child.remove();
     focusable?.focus();
   }

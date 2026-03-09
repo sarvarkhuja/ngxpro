@@ -1,4 +1,4 @@
-import type { DisabledHandler } from 'libs/cdk/src/lib/components/calendar/src';
+import type { DisabledHandler } from '@nxp/components/calendar';
 
 /** Start of day (strip time). */
 function startOfDay(d: Date): Date {

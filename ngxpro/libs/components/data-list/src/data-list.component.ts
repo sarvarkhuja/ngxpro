@@ -113,7 +113,7 @@ export class DataListComponent implements AfterContentChecked {
 
   ngAfterContentChecked(): void {
     const host = this.elRef.nativeElement as HTMLElement;
-    const options = host.querySelectorAll('button[role="option"]');
+    const options = host.querySelectorAll('[role="option"]');
     this.empty.set(options.length === 0);
   }
 
@@ -137,7 +137,7 @@ export class DataListComponent implements AfterContentChecked {
 
     const host = this.elRef.nativeElement as HTMLElement;
     const nodeList = host.querySelectorAll(
-      'button[role="option"]:not([disabled]):not([aria-disabled="true"])',
+      '[role="option"]:not([disabled]):not([aria-disabled="true"])',
     );
     const options = Array.from(nodeList) as HTMLElement[];
 

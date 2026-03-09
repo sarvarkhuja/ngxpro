@@ -1,5 +1,4 @@
 import { InjectionToken } from '@angular/core';
-import type { NgxproColorScheme } from '../services/color-scheme.service';
 
 export interface NgxproFormatOptions {
   readonly locale: string;
@@ -28,18 +27,6 @@ export const NXP_FORMAT_OPTIONS = new InjectionToken<NgxproFormatOptions>(
 export const NXP_ANIMATION_SPEED = new InjectionToken<number>(
   'NXP_ANIMATION_SPEED',
   { factory: () => 200 },
-);
-
-/**
- * Token to override the default color scheme.
- * Provide in app root to set the initial scheme before ColorSchemeService reads localStorage.
- *
- * @example
- * providers: [{ provide: NXP_COLOR_SCHEME, useValue: 'emerald' }]
- */
-export const NXP_COLOR_SCHEME = new InjectionToken<NgxproColorScheme>(
-  'NXP_COLOR_SCHEME',
-  { factory: () => 'blue' as NgxproColorScheme },
 );
 
 // Amount pipe tokens and types

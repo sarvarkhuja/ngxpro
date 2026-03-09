@@ -16,7 +16,7 @@ import { cx } from '@nxp/cdk';
 import type {
   DisabledHandler,
   MarkerHandler,
-} from 'libs/cdk/src/lib/components/calendar/src';
+} from '@nxp/components/calendar';
 import {
   CalendarRangeComponent,
   DateRangePeriod,

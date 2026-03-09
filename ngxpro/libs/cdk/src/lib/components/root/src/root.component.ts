@@ -11,6 +11,7 @@ import { NXP_ANIMATIONS_SPEED, NXP_IS_MOBILE, NXP_REDUCED_MOTION } from './root.
 import { NxpPlatformDirective } from './platform.directive';
 import { NxpVisualViewportDirective } from './visual-viewport.directive';
 import { NxpPopupsComponent } from './popups.component';
+import { NXP_DROPDOWN_COMPONENT, NxpDropdownComponent } from '@nxp/cdk';
 
 @Component({
   selector: 'nxp-root',
@@ -40,6 +41,9 @@ import { NxpPopupsComponent } from './popups.component';
       isolation: isolate;
     }
   `],
+  providers: [
+    { provide: NXP_DROPDOWN_COMPONENT, useValue: NxpDropdownComponent },
+  ],
   hostDirectives: [NxpPlatformDirective, NxpVisualViewportDirective],
   host: {
     class: 'nxp-root',

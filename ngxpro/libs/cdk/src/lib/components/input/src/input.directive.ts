@@ -7,13 +7,15 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { cx, focusInput, hasErrorInput } from '@nxp/cdk';
 import {
+  cx,
+  focusInput,
+  hasErrorInput,
   NXP_TEXTFIELD,
   NXP_TEXTFIELD_ACCESSOR,
   nxpAsTextfieldAccessor,
   type NxpTextfieldAccessor,
-} from 'libs/cdk/src/lib/components/textfield/src';
+} from '@nxp/cdk';
 
 /**
  * Input directive — applies to native `<input>` and `<textarea>` elements.

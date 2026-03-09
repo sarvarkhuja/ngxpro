@@ -115,18 +115,18 @@ export class CalendarYearComponent implements AfterViewInit {
     if (isSelected) {
       return cx(
         'px-2 py-1.5 rounded-md text-sm font-medium text-center',
-        'bg-brand-600 text-white dark:bg-brand-500 dark:text-white',
-        'hover:bg-brand-700 dark:hover:bg-brand-400 cursor-pointer',
-        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+        'bg-primary-hover text-text-on-accent',
+        'hover:bg-primary-pressed cursor-pointer',
+        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
       );
     }
 
     if (isCurrent) {
       return cx(
         'px-2 py-1.5 rounded-md text-sm font-bold text-center',
-        'text-brand-600 dark:text-brand-400',
+        'text-action',
         'hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer',
-        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+        'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
       );
     }
 
@@ -134,7 +134,7 @@ export class CalendarYearComponent implements AfterViewInit {
       'px-2 py-1.5 rounded-md text-sm font-medium text-center',
       'text-gray-700 dark:text-gray-300',
       'hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer',
-      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
     );
   }
 }

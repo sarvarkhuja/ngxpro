@@ -5,11 +5,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { cx } from '@nxp/cdk';
-import {
-  NXP_LABEL,
-  NXP_TEXTFIELD,
-} from 'libs/cdk/src/lib/components/textfield/src';
+import { cx, NXP_LABEL, NXP_TEXTFIELD } from '@nxp/cdk';
 
 /**
  * Label directive (Taiga architecture + Tremor styling).
@@ -89,7 +85,7 @@ export class NxpLabelDirective {
             hasError
               ? 'text-red-500 dark:text-red-400'
               : focused
-                ? 'text-brand-500 dark:text-brand-400'
+                ? 'text-primary'
                 : 'text-gray-500 dark:text-gray-400',
           ]
         : [

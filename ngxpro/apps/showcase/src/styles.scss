@@ -1,139 +1,83 @@
 @use 'tailwindcss';
 @import 'remixicon/fonts/remixicon.css';
+@import './theme.config'; /* ← edit this file to customize the theme */
 
 /* Class-based dark mode: ThemeService adds/removes .dark on <html> */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * ─── Color Scheme System ────────────────────────────────────────────────────
+ * ─── Derived interaction states ────────────────────────────────────────────
  *
- * Runtime-swappable brand colors via CSS custom properties.
- * ColorSchemeService sets `data-scheme="[name]"` on <html>.
+ * hover/pressed are derived from the base via CSS relative color syntax
+ * (OKLCH: same hue & chroma, adjusted lightness). No hardcoded values.
  *
- * Components use Tailwind `brand-*` utilities (bg-brand-500, text-brand-600…)
- * which resolve to the active scheme's palette at runtime.
- *
- * Supported schemes: blue | indigo | violet | rose | orange | emerald | teal
- * ────────────────────────────────────────────────────────────────────────────
+ * Light mode: interactions darken  (l − δ)
+ * Dark mode:  primary hover lightens (l + δ), pressed darkens (l − δ)
+ *             secondary hover/pressed both lighten (l + δ)
+ * ───────────────────────────────────────────────────────────────────────────
  */
 
-/* Register `brand` as a runtime-resolved Tailwind color family */
+:root {
+  --nxp-primary-hover:     oklch(from var(--nxp-primary)   calc(l - 0.08)  c h);
+  --nxp-primary-pressed:   oklch(from var(--nxp-primary)   calc(l - 0.15)  c h);
+  --nxp-secondary-hover:   oklch(from var(--nxp-secondary) calc(l - 0.035) c h);
+  --nxp-secondary-pressed: oklch(from var(--nxp-secondary) calc(l - 0.09)  c h);
+}
+
+.dark {
+  --nxp-primary-hover:     oklch(from var(--nxp-primary)   calc(l + 0.08)  c h);
+  --nxp-primary-pressed:   oklch(from var(--nxp-primary)   calc(l - 0.08)  c h);
+  --nxp-secondary-hover:   oklch(from var(--nxp-secondary) calc(l + 0.07)  c h);
+  --nxp-secondary-pressed: oklch(from var(--nxp-secondary) calc(l + 0.15)  c h);
+}
+
+/* ── Map nxp tokens → Tailwind utility names ── */
 @theme inline {
-  --color-brand-50: var(--nxp-brand-50);
-  --color-brand-100: var(--nxp-brand-100);
-  --color-brand-200: var(--nxp-brand-200);
-  --color-brand-300: var(--nxp-brand-300);
-  --color-brand-400: var(--nxp-brand-400);
-  --color-brand-500: var(--nxp-brand-500);
-  --color-brand-600: var(--nxp-brand-600);
-  --color-brand-700: var(--nxp-brand-700);
-  --color-brand-800: var(--nxp-brand-800);
-  --color-brand-900: var(--nxp-brand-900);
-  --color-brand-950: var(--nxp-brand-950);
-}
+  /* Primary */
+  --color-primary:         var(--nxp-primary);
+  --color-primary-hover:   var(--nxp-primary-hover);
+  --color-primary-pressed: var(--nxp-primary-pressed);
 
-/* ── Blue (default) ── */
-:root,
-[data-scheme='blue'] {
-  --nxp-brand-50: var(--color-blue-50);
-  --nxp-brand-100: var(--color-blue-100);
-  --nxp-brand-200: var(--color-blue-200);
-  --nxp-brand-300: var(--color-blue-300);
-  --nxp-brand-400: var(--color-blue-400);
-  --nxp-brand-500: var(--color-blue-500);
-  --nxp-brand-600: var(--color-blue-600);
-  --nxp-brand-700: var(--color-blue-700);
-  --nxp-brand-800: var(--color-blue-800);
-  --nxp-brand-900: var(--color-blue-900);
-  --nxp-brand-950: var(--color-blue-950);
-}
+  /* Secondary */
+  --color-secondary:         var(--nxp-secondary);
+  --color-secondary-hover:   var(--nxp-secondary-hover);
+  --color-secondary-pressed: var(--nxp-secondary-pressed);
 
-/* ── Indigo ── */
-[data-scheme='indigo'] {
-  --nxp-brand-50: var(--color-indigo-50);
-  --nxp-brand-100: var(--color-indigo-100);
-  --nxp-brand-200: var(--color-indigo-200);
-  --nxp-brand-300: var(--color-indigo-300);
-  --nxp-brand-400: var(--color-indigo-400);
-  --nxp-brand-500: var(--color-indigo-500);
-  --nxp-brand-600: var(--color-indigo-600);
-  --nxp-brand-700: var(--color-indigo-700);
-  --nxp-brand-800: var(--color-indigo-800);
-  --nxp-brand-900: var(--color-indigo-900);
-  --nxp-brand-950: var(--color-indigo-950);
-}
+  /* Backgrounds */
+  --color-bg-base:      var(--nxp-bg-base);
+  --color-bg-base-alt:  var(--nxp-bg-base-alt);
+  --color-bg-neutral-1: var(--nxp-bg-neutral-1);
+  --color-bg-neutral-2: var(--nxp-bg-neutral-2);
 
-/* ── Violet ── */
-[data-scheme='violet'] {
-  --nxp-brand-50: var(--color-violet-50);
-  --nxp-brand-100: var(--color-violet-100);
-  --nxp-brand-200: var(--color-violet-200);
-  --nxp-brand-300: var(--color-violet-300);
-  --nxp-brand-400: var(--color-violet-400);
-  --nxp-brand-500: var(--color-violet-500);
-  --nxp-brand-600: var(--color-violet-600);
-  --nxp-brand-700: var(--color-violet-700);
-  --nxp-brand-800: var(--color-violet-800);
-  --nxp-brand-900: var(--color-violet-900);
-  --nxp-brand-950: var(--color-violet-950);
-}
+  /* Text */
+  --color-text-primary:   var(--nxp-text-primary);
+  --color-text-secondary: var(--nxp-text-secondary);
+  --color-text-tertiary:  var(--nxp-text-tertiary);
+  --color-text-on-accent: var(--nxp-text-on-accent);
+  --color-text-action:    var(--nxp-text-action);
 
-/* ── Rose ── */
-[data-scheme='rose'] {
-  --nxp-brand-50: var(--color-rose-50);
-  --nxp-brand-100: var(--color-rose-100);
-  --nxp-brand-200: var(--color-rose-200);
-  --nxp-brand-300: var(--color-rose-300);
-  --nxp-brand-400: var(--color-rose-400);
-  --nxp-brand-500: var(--color-rose-500);
-  --nxp-brand-600: var(--color-rose-600);
-  --nxp-brand-700: var(--color-rose-700);
-  --nxp-brand-800: var(--color-rose-800);
-  --nxp-brand-900: var(--color-rose-900);
-  --nxp-brand-950: var(--color-rose-950);
-}
+  /* Border */
+  --color-border-normal: var(--nxp-border-normal);
+  --color-border-hover:  var(--nxp-border-hover);
+  --color-border-focus:  var(--nxp-border-focus);
 
-/* ── Orange ── */
-[data-scheme='orange'] {
-  --nxp-brand-50: var(--color-orange-50);
-  --nxp-brand-100: var(--color-orange-100);
-  --nxp-brand-200: var(--color-orange-200);
-  --nxp-brand-300: var(--color-orange-300);
-  --nxp-brand-400: var(--color-orange-400);
-  --nxp-brand-500: var(--color-orange-500);
-  --nxp-brand-600: var(--color-orange-600);
-  --nxp-brand-700: var(--color-orange-700);
-  --nxp-brand-800: var(--color-orange-800);
-  --nxp-brand-900: var(--color-orange-900);
-  --nxp-brand-950: var(--color-orange-950);
-}
+  /* Status */
+  --color-status-negative:      var(--nxp-status-negative);
+  --color-status-positive:      var(--nxp-status-positive);
+  --color-status-warning:       var(--nxp-status-warning);
+  --color-status-info:          var(--nxp-status-info);
+  --color-status-negative-pale: var(--nxp-status-negative-pale);
+  --color-status-positive-pale: var(--nxp-status-positive-pale);
+  --color-status-warning-pale:  var(--nxp-status-warning-pale);
+  --color-status-info-pale:     var(--nxp-status-info-pale);
 
-/* ── Emerald ── */
-[data-scheme='emerald'] {
-  --nxp-brand-50: var(--color-emerald-50);
-  --nxp-brand-100: var(--color-emerald-100);
-  --nxp-brand-200: var(--color-emerald-200);
-  --nxp-brand-300: var(--color-emerald-300);
-  --nxp-brand-400: var(--color-emerald-400);
-  --nxp-brand-500: var(--color-emerald-500);
-  --nxp-brand-600: var(--color-emerald-600);
-  --nxp-brand-700: var(--color-emerald-700);
-  --nxp-brand-800: var(--color-emerald-800);
-  --nxp-brand-900: var(--color-emerald-900);
-  --nxp-brand-950: var(--color-emerald-950);
-}
+  /* Radius */
+  --radius-xs: var(--nxp-radius-xs);
+  --radius-s:  var(--nxp-radius-s);
+  --radius-m:  var(--nxp-radius-m);
+  --radius-l:  var(--nxp-radius-l);
+  --radius-xl: var(--nxp-radius-xl);
 
-/* ── Teal ── */
-[data-scheme='teal'] {
-  --nxp-brand-50: var(--color-teal-50);
-  --nxp-brand-100: var(--color-teal-100);
-  --nxp-brand-200: var(--color-teal-200);
-  --nxp-brand-300: var(--color-teal-300);
-  --nxp-brand-400: var(--color-teal-400);
-  --nxp-brand-500: var(--color-teal-500);
-  --nxp-brand-600: var(--color-teal-600);
-  --nxp-brand-700: var(--color-teal-700);
-  --nxp-brand-800: var(--color-teal-800);
-  --nxp-brand-900: var(--color-teal-900);
-  --nxp-brand-950: var(--color-teal-950);
+  /* Font */
+  --font-sans: var(--nxp-font-sans);
 }

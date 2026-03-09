@@ -1,4 +1,6 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+<div
+  class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8"
+>
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="text-center mb-12">
@@ -6,282 +8,309 @@
         nxp Component Showcase
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400">
-        Production-ready Angular UI library with Taiga architecture + Tremor styling
+        Production-ready Angular UI library with Taiga architecture + Tremor
+        styling
       </p>
     </div>
 
-    <!-- Accordion Section -->
-    <nxp-card class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Accordion</h2>
-
-      <div class="space-y-6">
-        <!-- Multiple Mode (default) -->
-        <div>
-          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Multiple Mode</h3>
-          <nxp-accordion>
-            <nxp-accordion-trigger nxpAccordion nxpCell="m">
-              <div nxpTitle>
-                <h3><strong>What is nxp?</strong></h3>
-                <p nxpSubtitle>Production-ready Angular UI library</p>
-              </div>
-            </nxp-accordion-trigger>
-            <nxp-expand>
-              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
-                nxp is a production-ready Angular UI library built with Taiga architecture patterns
-                and Tremor Tailwind styling. It provides 300+ components and blocks for building modern web applications.
-              </div>
-            </nxp-expand>
-
-            <nxp-accordion-trigger nxpAccordion nxpCell="m">
-              <div nxpTitle>
-                <h3><strong>Key Features</strong></h3>
-                <p nxpSubtitle>Taiga + Tremor patterns</p>
-              </div>
-            </nxp-accordion-trigger>
-            <nxp-expand>
-              <div class="overflow-hidden px-4 pb-4">
-                <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 dark:text-gray-200">
-                  <li>Taiga UI architecture patterns</li>
-                  <li>Tremor Tailwind styling</li>
-                  <li>Light/Dark mode support</li>
-                  <li>Fully responsive and accessible</li>
-                  <li>300+ components and blocks</li>
-                </ul>
-              </div>
-            </nxp-expand>
-
-            <nxp-accordion-trigger nxpAccordion nxpCell="m">
-              <div nxpTitle>
-                <span><strong>Installation</strong></span>
-                <span nxpSubtitle>npm or pnpm</span>
-              </div>
-            </nxp-accordion-trigger>
-            <nxp-expand>
-              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
-                Install nxp using npm or pnpm:
-                <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">npm install @nxp/components</pre>
-              </div>
-            </nxp-expand>
-          </nxp-accordion>
-        </div>
-
-        <!-- Single Mode -->
-        <div>
-          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Single Mode</h3>
-          <nxp-accordion type="single">
-            <nxp-accordion-trigger nxpAccordion nxpCell="m">
-              <div nxpTitle>
-                <span><strong>Section 1</strong></span>
-                <span nxpSubtitle>Only one open at a time</span>
-              </div>
-            </nxp-accordion-trigger>
-            <nxp-expand>
-              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
-                Only one section can be open at a time in single mode.
-              </div>
-            </nxp-expand>
-
-            <nxp-accordion-trigger nxpAccordion nxpCell="m">
-              <div nxpTitle>
-                <span><strong>Section 2</strong></span>
-                <span nxpSubtitle>Click to expand</span>
-              </div>
-            </nxp-accordion-trigger>
-            <nxp-expand>
-              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
-                Opening this section will close the others.
-              </div>
-            </nxp-expand>
-
-            <nxp-accordion-trigger nxpAccordion nxpCell="m">
-              <div nxpTitle>
-                <span><strong>Section 3</strong></span>
-                <span nxpSubtitle>Focused content</span>
-              </div>
-            </nxp-accordion-trigger>
-            <nxp-expand>
-              <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
-                This ensures focused content viewing.
-              </div>
-            </nxp-expand>
-          </nxp-accordion>
-        </div>
-
-        <!-- Custom Accordion (Operations) -->
-        <div>
-          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-            Custom Accordion (Operations)
-          </h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Directive-based accordion with nxpCell, nxpTitle, nxpSubtitle, and default toggle icon.
-          </p>
-          <nxp-accordion type="single" class="max-w-2xl">
-            @for (group of operations | keyvalue; track group.key) {
-              <nxp-accordion-trigger nxpAccordion nxpCell="m">
-                <span nxpTitle>
-                  <strong>{{ group.key }}</strong>
-                  <span nxpSubtitle>
-                    @if (group.value.length; as count) {
-                      {{ count }} operations &bull; Total:
-                      {{ sum(group.value) | nxpAmount:'USD':'start' }}
-                    } @else {
-                      No operations so far
-                    }
-                  </span>
-                </span>
-              </nxp-accordion-trigger>
-              <nxp-expand [style.display]="group.value.length ? null : 'none'">
-                <div class="overflow-hidden px-4 pb-4">
-                @for (operation of group.value; track operation.title) {
-                  <div nxpCell="m" class="border-b border-gray-100 dark:border-gray-800 last:border-b-0">
-                    <nxp-avatar
-                      [appearance]="operation.sum && operation.sum > 0 ? 'primary' : 'negative'"
-                      [alt]="operation.title"
-                    />
-                    <span nxpTitle>
-                      <strong>{{ operation.title }}</strong>
-                      @if (operation.subtitle) {
-                        <span nxpSubtitle>{{ operation.subtitle }}</span>
-                      }
-                    </span>
-                    @if (operation.sum; as s) {
-                      <span
-                        nxpTitle
-                        [class]="s > 0 ? 'text-green-600 dark:text-green-400' : ''"
-                      >
-                        {{ s | nxpAmount:'USD':'start' }}
-                        <span nxpSubtitle>{{ operation.time }}</span>
-                      </span>
-                    } @else {
-                      <button nxpButton appearance="secondary" type="button">
-                        Retry
-                      </button>
-                    }
-                  </div>
-                }
-                </div>
-              </nxp-expand>
-            }
-          </nxp-accordion>
-        </div>
-      </div>
-    </nxp-card>
-
     <!-- Component Demos -->
     <nxp-card class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Component Demos</h2>
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
+        Component Demos
+      </h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <a
           routerLink="/text-morph"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">TextMorph</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Smooth FLIP-based text animation</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            TextMorph
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Smooth FLIP-based text animation
+          </p>
+        </a>
+        <a
+          routerLink="/accordion"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Accordion
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Single/multiple expand, nxpCell, nxpTitle, nxpSubtitle, tabs demo
+          </p>
         </a>
         <a
           routerLink="/avatar"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Avatar</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Image, initials, auto-color, sizes, badge, stack, labeled, outline</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Avatar
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Image, initials, auto-color, sizes, badge, stack, labeled, outline
+          </p>
         </a>
         <a
           routerLink="/button"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Button</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Variants, sizes, loading, disabled, icons</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Button
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Variants, sizes, loading, disabled, icons
+          </p>
         </a>
         <a
           routerLink="/calendar"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Calendar</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Single, range, disabled dates, markers, min/max</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Calendar
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Single, range, disabled dates, markers, min/max
+          </p>
         </a>
         <a
           routerLink="/calendar-month"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Calendar Month</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Month picker, single/range, min/max, disabled</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Calendar Month
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Month picker, single/range, min/max, disabled
+          </p>
         </a>
         <a
           routerLink="/calendar-range"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Calendar Range + DataList</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Dual calendar, presets, NxpDataList, constraints</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Calendar Range + DataList
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Dual calendar, presets, NxpDataList, constraints
+          </p>
+        </a>
+        <a
+          routerLink="/input-chip"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Input Chip
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Type or paste values, comma/space separator, removable and editable
+            chips, unique or duplicates
+          </p>
         </a>
         <a
           routerLink="/icon"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
           <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Icon</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Remix Icons inline SVG, sizes, colors, registry, dark mode</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Remix Icons inline SVG, sizes, colors, registry, dark mode
+          </p>
         </a>
         <a
           routerLink="/link"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
           <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Link</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Anchor and button links, variants, sizes, underline, focus styles</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Anchor and button links, variants, sizes, underline, focus styles
+          </p>
         </a>
         <a
           routerLink="/input"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Input</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Standalone input/textarea, hasError, disabled, reactive forms</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Input
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Standalone input/textarea, hasError, disabled, reactive forms
+          </p>
         </a>
         <a
           routerLink="/textfield"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Textfield</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Floating label, sizes, cleaner, hasError, reactive forms</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Textfield
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Floating label, sizes, cleaner, hasError, reactive forms
+          </p>
         </a>
         <a
           routerLink="/radio"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Radio</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Sizes, colors, disabled, reactive forms, identity matcher, dark mode</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Radio
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Sizes, colors, disabled, reactive forms, identity matcher, dark mode
+          </p>
         </a>
         <a
           routerLink="/checkbox"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Checkbox</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Sizes, colors, indeterminate, disabled, reactive forms, select-all, dark mode</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Checkbox
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Sizes, colors, indeterminate, disabled, reactive forms, select-all,
+            dark mode
+          </p>
         </a>
         <a
           routerLink="/notification"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Notification / Toast</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Programmatic toasts, appearances, positions, auto-close, pause on hover, dark mode</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Notification / Toast
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Programmatic toasts, appearances, positions, auto-close, pause on
+            hover, dark mode
+          </p>
         </a>
         <a
           routerLink="/alert"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Alert Portal</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Portal-based alerts with concurrency limit, queue, NxpAlertDirective, position options</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Alert Portal
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Portal-based alerts with concurrency limit, queue,
+            NxpAlertDirective, position options
+          </p>
         </a>
         <a
           routerLink="/badge"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Badge</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Inline status labels, six appearances, five sizes, dark mode</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Badge
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Inline status labels, six appearances, five sizes, dark mode
+          </p>
         </a>
         <a
           routerLink="/block"
           class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Block</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Selectable card directive for checkbox/radio, five appearances, three sizes, dark mode</p>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Block
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Selectable card directive for checkbox/radio, five appearances,
+            three sizes, dark mode
+          </p>
+        </a>
+        <a
+          routerLink="/tabs"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Tabs</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Horizontal and vertical tabs with underline indicator, sizes,
+            keyboard nav, disabled state
+          </p>
+        </a>
+        <a
+          routerLink="/segmented"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Segmented
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Horizontal and vertical segmented with underline indicator, sizes,
+            keyboard nav, disabled state
+          </p>
+        </a>
+        <a
+          routerLink="/input-date"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Input Date
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Date picker with calendar dropdown, keyboard entry, min/max,
+            disabled dates, markers, forms
+          </p>
+        </a>
+        <a
+          routerLink="/input-date-range"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Input Date Range
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Dual-calendar range picker, preset periods, min/max, length
+            constraints, disabled dates, markers, forms
+          </p>
+        </a>
+        <a
+          routerLink="/input-month"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Input Month
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Month picker with calendar-month dropdown, min/max bounds,
+            disabled months, custom placeholder, forms
+          </p>
+        </a>
+        <a
+          routerLink="/combo-box"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Combo Box
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Searchable dropdown with nxp-textfield, filter-as-you-type, strict
+            or free-text mode
+          </p>
+        </a>
+        <a
+          routerLink="/multi-select"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Multi-Select
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Chip-based multi-value picker, listbox with checkboxes, removable
+            chips, custom stringify
+          </p>
+        </a>
+        <a
+          routerLink="/select"
+          class="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+        >
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+            Select
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Strict dropdown picker. The input is read-only; the user must select
+            from the list.
+          </p>
         </a>
       </div>
     </nxp-card>
@@ -290,7 +319,10 @@
     <div class="text-center mt-12 text-gray-600 dark:text-gray-400">
       <p>Built with Taiga architecture + Tremor styling</p>
       <p class="mt-2 text-sm">
-        <a href="https://github.com/your-repo/nxp" class="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">
+        <a
+          href="https://github.com/your-repo/nxp"
+          class="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+        >
           View on GitHub
         </a>
       </p>

@@ -1,9 +1,10 @@
 import { InjectionToken, type Provider } from '@angular/core';
-import type { NxpRadioOptions } from '@nxp/cdk/components/radio';
 
 export type NxpCheckboxSize = 's' | 'm' | 'l';
 
-export interface NxpCheckboxOptions extends NxpRadioOptions {
+export interface NxpCheckboxOptions {
+  readonly size: NxpCheckboxSize;
+  readonly appearance: 'primary' | 'secondary';
   readonly icons: {
     /**
      * Icon name (or SVG string) shown when the checkbox is checked.

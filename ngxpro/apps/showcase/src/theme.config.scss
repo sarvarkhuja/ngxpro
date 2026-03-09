@@ -1,0 +1,99 @@
+/*
+ * ── NXP Theme Configuration ─────────────────────────────────────────────────
+ *
+ * Edit this file to customize the design system tokens.
+ *
+ * Rules:
+ *   • Only set BASE values here — hover/pressed states are derived
+ *     automatically via OKLCH lightness shifts in styles.scss.
+ *   • Light mode:  hover = base l−0.08,  pressed = base l−0.15
+ *   • Dark mode:   hover = base l+0.08,  pressed = base l−0.08  (primary)
+ *                  hover = base l+0.07,  pressed = base l+0.15  (secondary)
+ *
+ * ────────────────────────────────────────────────────────────────────────────
+ */
+
+/* ── Light mode ── */
+:root {
+  /* Brand — change --nxp-primary to re-skin the entire UI */
+  --nxp-primary:   #3b82f6; /* blue-500 */
+  --nxp-secondary: #f3f4f6; /* gray-100 */
+
+  /* Backgrounds */
+  --nxp-bg-base:      #ffffff;
+  --nxp-bg-base-alt:  #f9fafb;
+  --nxp-bg-neutral-1: #f3f4f6;
+  --nxp-bg-neutral-2: #e5e7eb;
+
+  /* Text */
+  --nxp-text-primary:   #111827;
+  --nxp-text-secondary: #6b7280;
+  --nxp-text-tertiary:  #9ca3af;
+  --nxp-text-on-accent: #ffffff;
+  --nxp-text-action:    #2563eb;
+
+  /* Border */
+  --nxp-border-normal: #e5e7eb;
+  --nxp-border-hover:  #d1d5db;
+  --nxp-border-focus:  #3b82f6;
+
+  /* Status */
+  --nxp-status-negative:      #ef4444;
+  --nxp-status-positive:      #22c55e;
+  --nxp-status-warning:       #f59e0b;
+  --nxp-status-info:          #3b82f6;
+  --nxp-status-negative-pale: #fef2f2;
+  --nxp-status-positive-pale: #f0fdf4;
+  --nxp-status-warning-pale:  #fffbeb;
+  --nxp-status-info-pale:     #eff6ff;
+
+  /* Typography */
+  --nxp-font-sans: 'Manrope', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Radius */
+  --nxp-radius-xs: 0.125rem;
+  --nxp-radius-s:  0.25rem;
+  --nxp-radius-m:  0.5rem;
+  --nxp-radius-l:  0.75rem;
+  --nxp-radius-xl: 1rem;
+
+  /* Duration */
+  --nxp-duration-fast:   100ms;
+  --nxp-duration-normal: 150ms;
+  --nxp-duration-slow:   200ms;
+}
+
+/* ── Dark mode overrides ── */
+.dark {
+  /* Brand — hover/pressed derived lighter in dark (see styles.scss) */
+  --nxp-primary:   #3b82f6; /* same hue, interactions go lighter */
+  --nxp-secondary: #1f2937; /* gray-800, interactions go lighter */
+
+  /* Backgrounds */
+  --nxp-bg-base:      #030712;
+  --nxp-bg-base-alt:  #111827;
+  --nxp-bg-neutral-1: #1f2937;
+  --nxp-bg-neutral-2: #374151;
+
+  /* Text */
+  --nxp-text-primary:   #f9fafb;
+  --nxp-text-secondary: #9ca3af;
+  --nxp-text-tertiary:  #6b7280;
+  --nxp-text-on-accent: #ffffff;
+  --nxp-text-action:    #60a5fa;
+
+  /* Border */
+  --nxp-border-normal: #1f2937;
+  --nxp-border-hover:  #374151;
+  --nxp-border-focus:  #3b82f6;
+
+  /* Status */
+  --nxp-status-negative:      #ef4444;
+  --nxp-status-positive:      #22c55e;
+  --nxp-status-warning:       #f59e0b;
+  --nxp-status-info:          #3b82f6;
+  --nxp-status-negative-pale: #1c0a0a;
+  --nxp-status-positive-pale: #052e16;
+  --nxp-status-warning-pale:  #1c1504;
+  --nxp-status-info-pale:     #0c1929;
+}

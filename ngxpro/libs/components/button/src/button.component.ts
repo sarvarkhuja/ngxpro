@@ -15,7 +15,7 @@ const buttonVariants = tv({
       // transition
       'transition-colors duration-150',
       // focus
-      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
       // disabled
       'disabled:pointer-events-none disabled:opacity-50',
     ],
@@ -27,9 +27,8 @@ const buttonVariants = tv({
       primary: {
         base: [
           'border-transparent',
-          'bg-brand-500 text-white',
-          'hover:bg-brand-600 dark:hover:bg-brand-400',
-          'dark:bg-brand-500 dark:text-white',
+          'bg-primary text-text-on-accent',
+          'hover:bg-primary-hover',
         ],
       },
       secondary: {

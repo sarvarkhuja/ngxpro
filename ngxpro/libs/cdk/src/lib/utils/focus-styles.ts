@@ -1,21 +1,21 @@
 /**
  * Reusable focus ring styles (Tremor pattern).
- * Uses `brand-*` color tokens — responds to the active color scheme.
+ * Uses semantic nxp-* design tokens that auto-switch in dark mode.
  * Use with cx() for consistent focus styling across components.
  */
 export const focusRing = [
   'outline outline-offset-2 outline-0 focus-visible:outline-2',
-  'outline-brand-500 dark:outline-brand-500',
+  'outline-border-focus',
 ] as const;
 
 /**
  * Focus styles for input elements (Tremor pattern).
- * Uses `brand-*` color tokens — responds to the active color scheme.
+ * Uses semantic nxp-* design tokens that auto-switch in dark mode.
  */
 export const focusInput = [
   'focus:ring-2',
-  'focus:ring-brand-200 dark:focus:ring-brand-700/30',
-  'focus:border-brand-500 dark:focus:border-brand-700',
+  'focus:ring-primary/30',
+  'focus:border-primary',
 ] as const;
 
 /**

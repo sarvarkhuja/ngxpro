@@ -15,7 +15,7 @@ import { cx } from '@nxp/cdk';
 export const linkVariants = tv({
   base: [
     'inline-flex items-center gap-1 font-medium transition-colors duration-150',
-    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
     'disabled:pointer-events-none disabled:opacity-50',
   ],
   variants: {
@@ -25,7 +25,7 @@ export const linkVariants = tv({
       muted:
         'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
       brand:
-        'text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300',
+        'text-action hover:text-primary-pressed',
       danger:
         'text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400',
     },

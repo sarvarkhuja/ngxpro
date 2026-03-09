@@ -64,7 +64,7 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
         <footer class="mt-6 flex justify-end gap-2">
           <button
             type="button"
-            class="px-4 py-2 rounded-md bg-brand-500 text-white hover:bg-brand-600 dark:bg-brand-400 dark:hover:bg-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            class="px-4 py-2 rounded-md bg-primary text-text-on-accent hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
             (click)="context.$implicit.complete()"
           >
             {{ context.data ?? 'OK' }}

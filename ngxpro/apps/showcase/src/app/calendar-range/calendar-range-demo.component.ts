@@ -128,7 +128,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
         <!-- ── Hero ───────────────────────────────────────────────────────── -->
         <div class="space-y-3">
           <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-400 border border-brand-200 dark:border-brand-800">
+            <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-primary/10 text-action border border-primary/30">
               @nxp/components/calendar-range
             </span>
             <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
@@ -287,9 +287,9 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
                 </p>
               </div>
               @if (basicRange()) {
-                <div class="rounded-lg border border-brand-200 dark:border-brand-800 bg-brand-50 dark:bg-brand-950 p-4 space-y-1">
-                  <p class="text-xs font-medium text-brand-600 dark:text-brand-400 uppercase tracking-wide">Duration</p>
-                  <p class="text-lg font-bold text-brand-700 dark:text-brand-300">
+                <div class="rounded-lg border border-primary/30 bg-primary/10 p-4 space-y-1">
+                  <p class="text-xs font-medium text-action uppercase tracking-wide">Duration</p>
+                  <p class="text-lg font-bold text-action">
                     {{ daysBetween(basicRange()!) }} days
                   </p>
                 </div>
@@ -311,7 +311,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
           <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
               Preset periods
-              <span class="ml-2 text-sm font-normal text-brand-600 dark:text-brand-400 align-middle">
+              <span class="ml-2 text-sm font-normal text-action align-middle">
                 uses NxpDataList
               </span>
             </h2>

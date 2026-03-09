@@ -16,7 +16,7 @@ const SIZE_CLASSES: Record<NxpBlockSize, string> = {
 const APPEARANCE_CLASSES: Record<NxpBlockAppearance, string> = {
   outline: 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
   filled:  'border-transparent bg-gray-100 dark:bg-gray-800',
-  primary: 'border-blue-500/30 bg-blue-50 dark:border-blue-400/30 dark:bg-blue-950/30',
+  primary: 'border-primary/30 bg-primary/10',
   success: 'border-green-500/30 bg-green-50 dark:border-green-400/30 dark:bg-green-950/30',
   danger:  'border-red-500/30 bg-red-50 dark:border-red-400/30 dark:bg-red-950/30',
 };
@@ -72,10 +72,13 @@ export class NxpBlockDirective {
     const disabled = !!this.control()?.disabled;
     return cx(
       'relative flex cursor-pointer select-none items-start gap-3 rounded-lg border transition-all duration-150',
-      'focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:ring-offset-1',
+      // focus ring
+      'focus-within:ring-2 focus-within:ring-primary/30 focus-within:ring-offset-1',
+      // checked state — card highlights when the nested input is checked/selected
+      '[&:has(input:checked)]:border-primary [&:has(input:checked)]:bg-primary/10',
       SIZE_CLASSES[this.size()],
       APPEARANCE_CLASSES[this.appearance()],
-      !disabled && 'hover:border-blue-400 hover:bg-blue-50/50 dark:hover:border-blue-500 dark:hover:bg-blue-950/20',
+      !disabled && 'hover:border-primary hover:bg-primary/8',
       disabled && 'cursor-not-allowed opacity-50',
       this.class(),
     );

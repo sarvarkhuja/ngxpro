@@ -9,11 +9,11 @@ import {
   signal,
 } from '@angular/core';
 import { cx } from '@nxp/cdk';
-import { CalendarComponent } from 'libs/cdk/src/lib/components/calendar/src';
+import { CalendarComponent } from '@nxp/components/calendar';
 import type {
   DisabledHandler,
   MarkerHandler,
-} from 'libs/cdk/src/lib/components/calendar/src';
+} from '@nxp/components/calendar';
 import { DataListComponent, OptionDirective } from '@nxp/components/data-list';
 import { calculateDisabledHandler } from './calculate-disabled-handler';
 import { computeEffectiveMax, computeEffectiveMin } from './day-caps';

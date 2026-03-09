@@ -1,17 +1,11 @@
 import { InjectionToken, type Type } from '@angular/core';
-import { type NxpDropdownComponent } from './dropdown.component';
+
+export { NXP_DROPDOWN_CONTEXT } from './dropdown-context.token';
 
 /**
  * Token providing the component class used to render dropdowns.
- * Override to use a custom dropdown component.
+ * Provided by NxpRootComponent. Override to use a custom dropdown.
  */
-export const NXP_DROPDOWN_COMPONENT = new InjectionToken<Type<NxpDropdownComponent>>(
+export const NXP_DROPDOWN_COMPONENT = new InjectionToken<Type<unknown>>(
   ngDevMode ? 'NXP_DROPDOWN_COMPONENT' : '',
-);
-
-/**
- * Token providing additional context data for the dropdown component.
- */
-export const NXP_DROPDOWN_CONTEXT = new InjectionToken<Record<string, unknown>>(
-  ngDevMode ? 'NXP_DROPDOWN_CONTEXT' : '',
 );

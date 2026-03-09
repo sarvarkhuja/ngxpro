@@ -77,12 +77,12 @@ export class OptionDirective {
       'transition-colors duration-100 select-none',
       // Focus ring
       'outline-none focus-visible:outline focus-visible:outline-2',
-      'focus-visible:outline-offset-1 focus-visible:outline-brand-500',
+      'focus-visible:outline-offset-1 focus-visible:outline-border-focus',
       // Size padding
       sizing[s] ?? sizing['md'],
       // State: active vs default
       active
-        ? 'bg-brand-600 text-white dark:bg-brand-500 dark:text-white'
+        ? 'bg-primary-hover text-text-on-accent'
         : [
             'text-gray-700 dark:text-gray-300',
             'hover:bg-gray-100 dark:hover:bg-gray-800',

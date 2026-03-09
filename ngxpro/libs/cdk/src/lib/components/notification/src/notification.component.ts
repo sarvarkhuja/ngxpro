@@ -20,11 +20,9 @@ import {
   timer,
 } from 'rxjs';
 import { cx } from '@nxp/cdk';
-import { NxpIconComponent } from '@nxp/cdk/components/icon';
 import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
 import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
 import type { NxpNotificationOptions } from './notification.options';
-import type { NxpIconOptions } from '@nxp/cdk/components/icon';
 
 // ── Size helpers ─────────────────────────────────────────────────────────────
 
@@ -34,10 +32,10 @@ const sizeClasses: Record<NxpNotificationOptions['size'], string> = {
   l: 'p-5 gap-3 text-base min-w-[360px] max-w-md',
 };
 
-const iconSizeMap: Record<NxpNotificationOptions['size'], NxpIconOptions['size']> = {
-  s: 'sm',
-  m: 'md',
-  l: 'lg',
+const iconSizeMap: Record<NxpNotificationOptions['size'], string> = {
+  s: 'text-base',
+  m: 'text-xl',
+  l: 'text-2xl',
 };
 
 // ── Appearance color helpers (Tailwind data-attribute selectors) ──────────────
@@ -87,7 +85,7 @@ const ICON_MAP: Record<string, string> = {
 @Component({
   selector: 'nxp-notification',
   standalone: true,
-  imports: [NxpIconComponent, PolymorpheusOutlet],
+  imports: [PolymorpheusOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     role: 'alert',
@@ -97,12 +95,10 @@ const ICON_MAP: Record<string, string> = {
   template: `
     <!-- Icon column -->
     @if (resolvedIcon()) {
-      <nxp-icon
-        [icon]="resolvedIcon()"
-        [size]="resolvedIconSize()"
-        [class]="iconClasses()"
+      <i
+        [class]="resolvedIcon() + ' ' + resolvedIconSize() + ' ' + iconClasses()"
         aria-hidden="true"
-      />
+      ></i>
     }
 
     <!-- Text column -->
@@ -161,7 +157,7 @@ export class NxpNotificationComponent implements OnInit {
     return ic;
   });
 
-  readonly resolvedIconSize = computed<NxpIconOptions['size']>(
+  readonly resolvedIconSize = computed<string>(
     () => iconSizeMap[this.size()],
   );
 

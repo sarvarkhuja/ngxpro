@@ -29,3 +29,6 @@ export const NXP_TRUE_HANDLER = (): true => true;
 
 /** A handler that always returns false. */
 export const NXP_FALSE_HANDLER = (): false => false;
+
+export { NXP_STRICT_MATCHER, NXP_DEFAULT_MATCHER } from './matchers';
+export type { NxpStringMatcher } from './matchers';

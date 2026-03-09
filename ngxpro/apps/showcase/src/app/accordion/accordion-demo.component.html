@@ -1,0 +1,180 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto">
+    <a
+      routerLink="/"
+      class="inline-flex items-center gap-1 mb-6 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+    >
+      &larr; Back to showcase
+    </a>
+
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Accordion</h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-10">
+      Single and multiple expand modes, directive-based triggers with nxpCell, nxpTitle, nxpSubtitle.
+      Use tabs below to switch between demos.
+    </p>
+
+    <nxp-tabs
+      [activeItemIndex]="accordionTab()"
+      (activeItemIndexChange)="accordionTab.set($event)"
+    >
+      <button nxpTab class="px-4 py-3">Multiple</button>
+      <button nxpTab class="px-4 py-3">Single</button>
+      <button nxpTab class="px-4 py-3">Operations</button>
+    </nxp-tabs>
+
+    <div class="mt-4">
+      @switch (accordionTab()) {
+        @case (0) {
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">Multiple Mode</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Default: multiple sections can be open at once.</p>
+            <nxp-accordion>
+              <nxp-accordion-trigger nxpAccordion nxpCell="m">
+                <div nxpTitle>
+                  <h3><strong>What is nxp?</strong></h3>
+                  <p nxpSubtitle>Production-ready Angular UI library</p>
+                </div>
+              </nxp-accordion-trigger>
+              <nxp-expand>
+                <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                  nxp is a production-ready Angular UI library built with Taiga architecture patterns
+                  and Tremor Tailwind styling. It provides 300+ components and blocks for building modern web applications.
+                </div>
+              </nxp-expand>
+
+              <nxp-accordion-trigger nxpAccordion nxpCell="m">
+                <div nxpTitle>
+                  <h3><strong>Key Features</strong></h3>
+                  <p nxpSubtitle>Taiga + Tremor patterns</p>
+                </div>
+              </nxp-accordion-trigger>
+              <nxp-expand>
+                <div class="overflow-hidden px-4 pb-4">
+                  <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 dark:text-gray-200">
+                    <li>Taiga UI architecture patterns</li>
+                    <li>Tremor Tailwind styling</li>
+                    <li>Light/Dark mode support</li>
+                    <li>Fully responsive and accessible</li>
+                    <li>300+ components and blocks</li>
+                  </ul>
+                </div>
+              </nxp-expand>
+
+              <nxp-accordion-trigger nxpAccordion nxpCell="m">
+                <div nxpTitle>
+                  <span><strong>Installation</strong></span>
+                  <span nxpSubtitle>npm or pnpm</span>
+                </div>
+              </nxp-accordion-trigger>
+              <nxp-expand>
+                <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                  Install nxp using npm or pnpm:
+                  <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">npm install @nxp/components</pre>
+                </div>
+              </nxp-expand>
+            </nxp-accordion>
+          </div>
+        }
+        @case (1) {
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">Single Mode</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Only one section open at a time.</p>
+            <nxp-accordion type="single">
+              <nxp-accordion-trigger nxpAccordion nxpCell="m">
+                <div nxpTitle>
+                  <span><strong>Section 1</strong></span>
+                  <span nxpSubtitle>Only one open at a time</span>
+                </div>
+              </nxp-accordion-trigger>
+              <nxp-expand>
+                <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                  Only one section can be open at a time in single mode.
+                </div>
+              </nxp-expand>
+
+              <nxp-accordion-trigger nxpAccordion nxpCell="m">
+                <div nxpTitle>
+                  <span><strong>Section 2</strong></span>
+                  <span nxpSubtitle>Click to expand</span>
+                </div>
+              </nxp-accordion-trigger>
+              <nxp-expand>
+                <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                  Opening this section will close the others.
+                </div>
+              </nxp-expand>
+
+              <nxp-accordion-trigger nxpAccordion nxpCell="m">
+                <div nxpTitle>
+                  <span><strong>Section 3</strong></span>
+                  <span nxpSubtitle>Focused content</span>
+                </div>
+              </nxp-accordion-trigger>
+              <nxp-expand>
+                <div class="overflow-hidden px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
+                  This ensures focused content viewing.
+                </div>
+              </nxp-expand>
+            </nxp-accordion>
+          </div>
+        }
+        @case (2) {
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">Custom Accordion (Operations)</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Directive-based accordion with nxpCell, nxpTitle, nxpSubtitle, and default toggle icon.
+            </p>
+            <nxp-accordion type="single" class="max-w-2xl">
+              @for (group of operations | keyvalue; track group.key) {
+                <nxp-accordion-trigger nxpAccordion nxpCell="m">
+                  <span nxpTitle>
+                    <strong>{{ group.key }}</strong>
+                    <span nxpSubtitle>
+                      @if (group.value.length; as count) {
+                        {{ count }} operations &bull; Total:
+                        {{ sum(group.value) | nxpAmount:'USD':'start' }}
+                      } @else {
+                        No operations so far
+                      }
+                    </span>
+                  </span>
+                </nxp-accordion-trigger>
+                <nxp-expand [style.display]="group.value.length ? null : 'none'">
+                  <div class="overflow-hidden px-4 pb-4">
+                  @for (operation of group.value; track operation.title) {
+                    <div nxpCell="m" class="border-b border-gray-100 dark:border-gray-800 last:border-b-0">
+                      <nxp-avatar
+                        [appearance]="operation.sum && operation.sum > 0 ? 'primary' : 'negative'"
+                        [alt]="operation.title"
+                      />
+                      <span nxpTitle>
+                        <strong>{{ operation.title }}</strong>
+                        @if (operation.subtitle) {
+                          <span nxpSubtitle>{{ operation.subtitle }}</span>
+                        }
+                      </span>
+                      @if (operation.sum; as s) {
+                        <span
+                          nxpTitle
+                          [class]="s > 0 ? 'text-green-600 dark:text-green-400' : ''"
+                        >
+                          {{ s | nxpAmount:'USD':'start' }}
+                          <span nxpSubtitle>{{ operation.time }}</span>
+                        </span>
+                      } @else {
+                        <button nxpButton appearance="secondary" type="button">
+                          Retry
+                        </button>
+                      }
+                    </div>
+                  }
+                  </div>
+                </nxp-expand>
+              }
+            </nxp-accordion>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

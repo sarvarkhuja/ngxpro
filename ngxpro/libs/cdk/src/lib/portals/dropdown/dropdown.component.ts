@@ -23,7 +23,7 @@ import { NxpPositionService } from '../../services/position.service';
 import { NxpVisualViewportService } from '../../services/visual-viewport.service';
 import { NXP_VIEWPORT } from '../../tokens';
 import { NxpDropdownDirective } from './dropdown.directive';
-import { NXP_DROPDOWN_CONTEXT } from './dropdown.providers';
+import { NXP_DROPDOWN_CONTEXT } from './dropdown-context.token';
 import { NXP_DROPDOWN_OPTIONS } from './dropdown-options.directive';
 import { NxpDropdownPosition } from './dropdown-position.directive';
 

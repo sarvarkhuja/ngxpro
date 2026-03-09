@@ -238,7 +238,7 @@ export class CalendarSheetComponent {
 
     // Also handle hover preview when one end is already selected
     if (state === 'middle') {
-      return 'bg-brand-50 dark:bg-brand-950/40';
+      return 'bg-primary/10';
     }
     return '';
   }
@@ -254,7 +254,7 @@ export class CalendarSheetComponent {
       'relative h-8 w-8 rounded-md',
       'text-sm font-medium text-center',
       'transition-colors duration-100',
-      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+      'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
     ];
 
     if (disabled) {
@@ -266,15 +266,15 @@ export class CalendarSheetComponent {
     }
 
     if (state === 'active') {
-      return cx(...base, 'bg-brand-600 text-white dark:bg-brand-500 dark:text-white hover:bg-brand-700 dark:hover:bg-brand-400 cursor-pointer');
+      return cx(...base, 'bg-primary-hover text-text-on-accent hover:bg-primary-pressed cursor-pointer');
     }
 
     if (state === 'start' || state === 'end') {
-      return cx(...base, 'bg-brand-600 text-white dark:bg-brand-500 dark:text-white hover:bg-brand-700 dark:hover:bg-brand-400 cursor-pointer');
+      return cx(...base, 'bg-primary-hover text-text-on-accent hover:bg-primary-pressed cursor-pointer');
     }
 
     if (state === 'middle') {
-      return cx(...base, 'bg-transparent text-brand-700 dark:text-brand-300 rounded-none cursor-pointer hover:bg-brand-100 dark:hover:bg-brand-900/60');
+      return cx(...base, 'bg-transparent text-action rounded-none cursor-pointer hover:bg-primary/20');
     }
 
     if (adjacent) {
@@ -284,7 +284,7 @@ export class CalendarSheetComponent {
     if (today) {
       const textColor = weekend
         ? 'font-bold text-red-600 dark:text-red-400'
-        : 'font-bold text-brand-600 dark:text-brand-400';
+        : 'font-bold text-action';
       return cx(...base, textColor, 'hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer');
     }
 

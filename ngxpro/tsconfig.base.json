@@ -41,19 +41,27 @@
       "@nxp/cdk/components/radio": ["libs/cdk/src/lib/components/radio/src/index.ts"],
       "@nxp/components/badge": ["libs/components/badge/src/index.ts"],
       "@nxp/components/block": ["libs/components/block/src/index.ts"],
+      "@nxp/components/tabs": ["libs/components/tabs/src/index.ts"],
+      "@nxp/components/segmented": ["libs/components/segmented/src/index.ts"],
+      "@nxp/components/chip": ["libs/components/chip/src/index.ts"],
+      "@nxp/components/input-chip": ["libs/components/input-chip/src/index.ts"],
       "@nxp/components/notification": ["libs/components/notification/src/index.ts"],
       "@nxp/cdk/components/root": ["libs/cdk/src/lib/components/root/src/index.ts"],
       "@nxp/cdk/components/notification": ["libs/cdk/src/lib/components/notification/src/index.ts"],
       "@nxp/cdk/components/dropdown": ["libs/cdk/src/lib/components/dropdown/src/index.ts"],
-
+      
       "@nxp/cdk/components/textfield": ["libs/cdk/src/lib/components/textfield/src/index.ts"],
       "@nxp/cdk/components/label": ["libs/cdk/src/lib/components/label/src/index.ts"],
       "@nxp/cdk/components/input": ["libs/cdk/src/lib/components/input/src/index.ts"],
+      "@nxp/cdk/components/calendar": ["libs/cdk/src/lib/components/calendar/src/index.ts"],
       "@nxp/blocks": ["libs/blocks/src/index.ts"],
       "@nxp/blocks/charts": ["libs/blocks/charts/src/index.ts"],
       "@nxp/blocks/kpi-cards": ["libs/blocks/kpi-cards/src/index.ts"],
       "@nxp/blocks/tables": ["libs/blocks/tables/src/index.ts"],
-      "@nxp/fintech": ["libs/fintech/src/index.ts"]
+      "@nxp/fintech": ["libs/fintech/src/index.ts"],
+      "@nxp/components/combo-box": ["libs/components/combo-box/src/index.ts"],
+      "@nxp/components/select": ["libs/components/select/src/index.ts"],
+      "@nxp/components/multi-select": ["libs/components/multi-select/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -110,7 +110,7 @@ export class CalendarHeaderComponent {
     'hover:bg-gray-100 dark:hover:bg-gray-800',
     'disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none',
     'transition-colors duration-150',
-    'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+    'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
   );
 
   protected readonly labelBtnClass = cx(
@@ -119,6 +119,6 @@ export class CalendarHeaderComponent {
     'rounded-md px-2 py-1',
     'hover:bg-gray-100 dark:hover:bg-gray-800',
     'transition-colors duration-150',
-    'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
+    'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
   );
 }

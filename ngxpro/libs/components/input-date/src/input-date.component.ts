@@ -13,11 +13,11 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { cx } from '@nxp/cdk';
-import { CalendarComponent } from 'libs/cdk/src/lib/components/calendar/src';
+import { CalendarComponent } from '@nxp/components/calendar';
 import type {
   DisabledHandler,
   MarkerHandler,
-} from 'libs/cdk/src/lib/components/calendar/src';
+} from '@nxp/components/calendar';
 import { formatDate, parseDate } from './date-input.utils';
 
 // ---- Shared style constants ----

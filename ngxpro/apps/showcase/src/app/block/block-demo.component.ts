@@ -32,7 +32,7 @@ import {
           <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Three sizes: s, m, l. All with outline appearance.</p>
           <div class="flex flex-col gap-3 max-w-sm">
             @for (s of sizes; track s) {
-              <label nxpBlock [size]="s" [formControl]="sizeControls[s]">
+              <label nxpBlock [size]="s">
                 <input type="checkbox" class="mt-0.5 rounded text-blue-600" [formControl]="sizeControls[s]" />
                 <span class="flex flex-col">
                   <span class="font-medium text-gray-900 dark:text-white">Size {{ s }}</span>
@@ -53,7 +53,7 @@ import {
           <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Five semantic appearances at size m.</p>
           <div class="flex flex-col gap-3 max-w-sm">
             @for (a of appearances; track a) {
-              <label nxpBlock size="m" [appearance]="a" [formControl]="appearanceControls[a]">
+              <label nxpBlock size="m" [appearance]="a">
                 <input type="checkbox" class="mt-0.5 rounded text-blue-600" [formControl]="appearanceControls[a]" />
                 <span class="flex flex-col">
                   <span class="font-medium text-gray-900 dark:text-white capitalize">{{ a }}</span>
@@ -100,14 +100,14 @@ import {
             Disabled state is mirrored automatically from a nested <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">NgControl</code>.
           </p>
           <div class="flex flex-col gap-3 max-w-sm">
-            <label nxpBlock size="m" [formControl]="disabledControl">
+            <label nxpBlock size="m">
               <input type="checkbox" class="mt-0.5 rounded" [formControl]="disabledControl" />
               <span class="flex flex-col">
                 <span class="font-medium text-gray-900 dark:text-white">Disabled option</span>
                 <span class="text-gray-500 dark:text-gray-400">This block is not interactive</span>
               </span>
             </label>
-            <label nxpBlock size="m" appearance="primary" [formControl]="disabledCheckedControl">
+            <label nxpBlock size="m" appearance="primary">
               <input type="checkbox" class="mt-0.5 rounded" [formControl]="disabledCheckedControl" />
               <span class="flex flex-col">
                 <span class="font-medium text-gray-900 dark:text-white">Disabled + checked</span>
@@ -167,7 +167,7 @@ export class BlockDemoComponent {
   readonly appearanceDescriptions: Record<NxpBlockAppearance, string> = {
     outline: 'Default bordered style',
     filled:  'Subtle filled background',
-    primary: 'Blue tint, selection intent',
+    primary: 'Brand tint, selection intent',
     success: 'Green tint, positive option',
     danger:  'Red tint, destructive or warning',
   };

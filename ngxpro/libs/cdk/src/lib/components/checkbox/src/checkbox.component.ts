@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { cx } from '@nxp/cdk';
-import { NXP_RADIO_OPTIONS } from '@nxp/cdk/components/radio';
 import { NXP_CHECKBOX_OPTIONS } from './checkbox.options';
 
 export type NxpCheckboxSize = 's' | 'm' | 'l';
@@ -54,14 +53,7 @@ const DASH_SVG = `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www
   selector: 'input[type="checkbox"][nxpCheckbox]',
   standalone: true,
   template: '',
-  providers: [
-    // Override NXP_RADIO_OPTIONS so any options-aware base logic reads
-    // the checkbox-specific defaults (size, appearance, icons).
-    {
-      provide: NXP_RADIO_OPTIONS,
-      useExisting: NXP_CHECKBOX_OPTIONS,
-    },
-  ],
+  providers: [],
   host: {
     '[class]': 'hostClasses()',
     '[style.background-image]': 'backgroundImage()',
