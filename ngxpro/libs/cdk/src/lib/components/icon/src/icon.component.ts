@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { cx } from '../../../utils/cx';
+import { cx } from '@nxp/cdk';
 import { NXP_ICON_OPTIONS, type NxpIconOptions } from './icon.options';
 import { NXP_ICON_RESOLVER } from './icon-resolver.token';
 

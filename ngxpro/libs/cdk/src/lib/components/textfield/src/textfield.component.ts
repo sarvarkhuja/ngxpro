@@ -16,17 +16,18 @@ import {
   nxpAsDataListHost,
   NXP_TEXTFIELD_ACCESSOR,
   nxpAsTextfieldAccessor,
-  NXP_LABEL,
   NXP_TEXTFIELD,
   type NxpTextfieldAccessor,
 } from '@nxp/cdk';
-import { NXP_TEXTFIELD_OPTIONS, type NxpTextfieldSize } from './textfield.options';
+import {
+  NXP_TEXTFIELD_OPTIONS,
+  type NxpTextfieldSize,
+} from './textfield.options';
 
 @Component({
   selector: 'nxp-textfield',
   standalone: true,
   template: `
-    <ng-content select="label[nxpLabel]" />
     <ng-content select="input[nxpInput], textarea[nxpInput]" />
     @if (showCleaner()) {
       <button
@@ -45,7 +46,11 @@ import { NXP_TEXTFIELD_OPTIONS, type NxpTextfieldSize } from './textfield.option
           stroke-width="2.5"
           aria-hidden="true"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </button>
     }
@@ -71,16 +76,20 @@ import { NXP_TEXTFIELD_OPTIONS, type NxpTextfieldSize } from './textfield.option
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NxpTextfieldComponent implements NxpDataListHost, NxpTextfieldAccessor {
+export class NxpTextfieldComponent
+  implements NxpDataListHost, NxpTextfieldAccessor
+{
   private static _idCounter = 0;
   private readonly _autoId = `nxp-tf-${++NxpTextfieldComponent._idCounter}`;
 
-  protected readonly accessorEl = contentChild(NXP_TEXTFIELD_ACCESSOR, { read: ElementRef });
+  protected readonly accessorEl = contentChild(NXP_TEXTFIELD_ACCESSOR, {
+    read: ElementRef,
+  });
 
   /** The real accessor (e.g. NxpSelectDirective) projected as content. */
-  readonly accessor = contentChild<NxpTextfieldAccessor>(NXP_TEXTFIELD_ACCESSOR);
-
-  protected readonly labelToken = contentChild(NXP_LABEL);
+  readonly accessor = contentChild<NxpTextfieldAccessor>(
+    NXP_TEXTFIELD_ACCESSOR,
+  );
 
   readonly options = inject(NXP_TEXTFIELD_OPTIONS);
   readonly focused = signal(false);
@@ -114,11 +123,9 @@ export class NxpTextfieldComponent implements NxpDataListHost, NxpTextfieldAcces
     return v != null && v !== '';
   });
 
-  readonly hasValueOrFocused = computed(() => this.hasValue() || this.focused());
-
-  readonly hasLabel = computed(() => !!this.labelToken());
-
-  readonly showCleaner = computed(() => this.options.cleaner() && this.hasValue());
+  readonly showCleaner = computed(
+    () => this.options.cleaner() && this.hasValue(),
+  );
 
   get id(): string {
     return this.accessorEl()?.nativeElement?.id ?? this._autoId;
@@ -133,7 +140,8 @@ export class NxpTextfieldComponent implements NxpDataListHost, NxpTextfieldAcces
       this.effectiveSize() === 'md' && 'h-10',
       this.effectiveSize() === 'lg' && 'h-12',
       'has-[input:disabled]:opacity-60 has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-gray-50 dark:has-[input:disabled]:bg-gray-900',
-      this.focused() && !this.hasError() && ['ring-2 ring-primary/30', 'border-primary'],
+      this.focused() &&
+        !this.hasError() && ['ring-2 ring-primary/30', 'border-primary'],
       this.hasError() && [
         'ring-2 ring-red-200 dark:ring-red-700/30',
         'border-red-500 dark:border-red-700',

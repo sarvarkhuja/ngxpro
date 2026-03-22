@@ -30,9 +30,7 @@ export const appRoutes: Route[] = [
   {
     path: 'button',
     loadComponent: () =>
-      import('./button/button.component').then(
-        (m) => m.ButtonDemoComponent,
-      ),
+      import('./button/button.component').then((m) => m.ButtonDemoComponent),
   },
   {
     path: 'calendar',
@@ -176,30 +174,22 @@ export const appRoutes: Route[] = [
   {
     path: 'alert',
     loadComponent: () =>
-      import('./alert/alert-demo.component').then(
-        (m) => m.AlertDemoComponent,
-      ),
+      import('./alert/alert-demo.component').then((m) => m.AlertDemoComponent),
   },
   {
     path: 'badge',
     loadComponent: () =>
-      import('./badge/badge-demo.component').then(
-        (m) => m.BadgeDemoComponent,
-      ),
+      import('./badge/badge-demo.component').then((m) => m.BadgeDemoComponent),
   },
   {
     path: 'block',
     loadComponent: () =>
-      import('./block/block-demo.component').then(
-        (m) => m.BlockDemoComponent,
-      ),
+      import('./block/block-demo.component').then((m) => m.BlockDemoComponent),
   },
   {
     path: 'tabs',
     loadComponent: () =>
-      import('./tabs/tabs-demo.component').then(
-        (m) => m.TabsDemoComponent,
-      ),
+      import('./tabs/tabs-demo.component').then((m) => m.TabsDemoComponent),
   },
   {
     path: 'segmented',
@@ -220,6 +210,27 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./select/select-demo.component').then(
         (m) => m.SelectDemoComponent,
+      ),
+  },
+  {
+    path: 'stepper',
+    loadComponent: () =>
+      import('./stepper/stepper-demo.component').then(
+        (m) => m.StepperDemoComponent,
+      ),
+  },
+  {
+    path: 'tooltip',
+    loadComponent: () =>
+      import('./tooltip/tooltip-demo.component').then(
+        (m) => m.TooltipDemoComponent,
+      ),
+  },
+  {
+    path: 'textarea',
+    loadComponent: () =>
+      import('./textarea/textarea-demo.component').then(
+        (m) => m.TextareaDemoComponent,
       ),
   },
 ];

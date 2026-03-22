@@ -1,0 +1,259 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto space-y-12">
+
+    <!-- Header -->
+    <div>
+      <a
+        routerLink="/"
+        class="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
+      >&larr; Back to home</a>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Tooltip</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Portal-based tooltip with hover and touch support. Supports all four
+        directions, three sizes, dark/light appearances, and polymorphic content.
+      </p>
+      <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+        Backed by <code class="font-mono text-xs">NxpTooltipDirective</code> from
+        <code class="font-mono text-xs">@nxp/components/tooltip</code>.
+      </p>
+    </div>
+
+    <!-- Playground -->
+    <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+      <header class="space-y-1">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Playground</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Hover the trigger to see the tooltip. Adjust direction, size, and appearance.
+        </p>
+      </header>
+
+      <div class="grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-start">
+        <!-- Trigger -->
+        <div class="flex items-center justify-center min-h-32 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900/40">
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            [nxpTooltip]="'Tooltip content goes here'"
+            [nxpTooltipDirection]="playgroundDirection()"
+            [nxpTooltipSize]="playgroundSize()"
+            [nxpTooltipAppearance]="playgroundAppearance()"
+            [nxpTooltipDisabled]="playgroundDisabled()"
+            [nxpTooltipShowDelay]="playgroundShowDelay()"
+            [nxpTooltipHideDelay]="playgroundHideDelay()"
+          >
+            Hover me
+          </button>
+        </div>
+
+        <!-- Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-gray-600 dark:text-gray-300">
+
+          <div class="space-y-2">
+            <div class="font-semibold text-gray-800 dark:text-gray-100">Direction</div>
+            <div class="flex flex-wrap gap-2">
+              @for (dir of directions; track dir) {
+                <button
+                  type="button"
+                  class="rounded-full border px-3 py-1 transition-colors"
+                  [class.bg-blue-50]="playgroundDirection() === dir"
+                  [class.dark:bg-blue-900]="playgroundDirection() === dir"
+                  [class.border-blue-500]="playgroundDirection() === dir"
+                  [class.text-blue-700]="playgroundDirection() === dir"
+                  [class.dark:text-blue-300]="playgroundDirection() === dir"
+                  [class.border-gray-300]="playgroundDirection() !== dir"
+                  [class.dark:border-gray-600]="playgroundDirection() !== dir"
+                  [class.text-gray-700]="playgroundDirection() !== dir"
+                  [class.dark:text-gray-300]="playgroundDirection() !== dir"
+                  (click)="playgroundDirection.set(dir)"
+                >{{ dir }}</button>
+              }
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="font-semibold text-gray-800 dark:text-gray-100">Size</div>
+            <div class="flex flex-wrap gap-2">
+              @for (size of sizes; track size) {
+                <button
+                  type="button"
+                  class="rounded-full border px-3 py-1 transition-colors"
+                  [class.bg-blue-50]="playgroundSize() === size"
+                  [class.dark:bg-blue-900]="playgroundSize() === size"
+                  [class.border-blue-500]="playgroundSize() === size"
+                  [class.text-blue-700]="playgroundSize() === size"
+                  [class.dark:text-blue-300]="playgroundSize() === size"
+                  [class.border-gray-300]="playgroundSize() !== size"
+                  [class.dark:border-gray-600]="playgroundSize() !== size"
+                  [class.text-gray-700]="playgroundSize() !== size"
+                  [class.dark:text-gray-300]="playgroundSize() !== size"
+                  (click)="playgroundSize.set(size)"
+                >{{ size }}</button>
+              }
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="font-semibold text-gray-800 dark:text-gray-100">Appearance</div>
+            <div class="flex flex-wrap gap-2">
+              @for (ap of appearances; track ap) {
+                <button
+                  type="button"
+                  class="rounded-full border px-3 py-1 transition-colors"
+                  [class.bg-blue-50]="playgroundAppearance() === ap"
+                  [class.dark:bg-blue-900]="playgroundAppearance() === ap"
+                  [class.border-blue-500]="playgroundAppearance() === ap"
+                  [class.text-blue-700]="playgroundAppearance() === ap"
+                  [class.dark:text-blue-300]="playgroundAppearance() === ap"
+                  [class.border-gray-300]="playgroundAppearance() !== ap"
+                  [class.dark:border-gray-600]="playgroundAppearance() !== ap"
+                  [class.text-gray-700]="playgroundAppearance() !== ap"
+                  [class.dark:text-gray-300]="playgroundAppearance() !== ap"
+                  (click)="playgroundAppearance.set(ap)"
+                >{{ ap }}</button>
+              }
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="font-semibold text-gray-800 dark:text-gray-100">Disabled</div>
+            <label class="inline-flex items-center gap-2">
+              <input
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                [checked]="playgroundDisabled()"
+                (change)="playgroundDisabled.set($any($event.target).checked)"
+              />
+              <span>Disable tooltip</span>
+            </label>
+          </div>
+
+          <div class="space-y-2">
+            <div class="font-semibold text-gray-800 dark:text-gray-100">Delays (ms)</div>
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="w-20 text-gray-500">Show</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="2000"
+                  class="block w-20 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-2 py-1 text-xs text-gray-800 dark:text-gray-100"
+                  [value]="playgroundShowDelay()"
+                  (input)="playgroundShowDelay.set(+$any($event.target).value)"
+                />
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-20 text-gray-500">Hide</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="2000"
+                  class="block w-20 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-2 py-1 text-xs text-gray-800 dark:text-gray-100"
+                  [value]="playgroundHideDelay()"
+                  (input)="playgroundHideDelay.set(+$any($event.target).value)"
+                />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Direction examples -->
+    <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <header class="space-y-1">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">All directions</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Hover each button to see the tooltip open in the specified direction.
+          The tooltip auto-flips when it would overflow the viewport.
+        </p>
+      </header>
+
+      <div class="flex flex-wrap gap-4 items-center justify-center py-6">
+        @for (dir of directions; track dir) {
+          <button
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-100 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800"
+            [nxpTooltip]="dir + ' tooltip'"
+            [nxpTooltipDirection]="dir"
+          >{{ dir }}</button>
+        }
+      </div>
+    </section>
+
+    <!-- Tooltip icon -->
+    <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <header class="space-y-1">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Tooltip icon</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          <code class="font-mono text-xs">nxp-tooltip-icon</code> renders a small
+          info icon with the tooltip built in. Great for inline help text.
+        </p>
+      </header>
+
+      <div class="flex flex-wrap gap-6 items-center py-2">
+        <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          Password strength
+          <nxp-tooltip-icon [nxpTooltip]="'Use at least 8 characters with a mix of letters, numbers, and symbols.'" />
+        </div>
+
+        <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          Billing address
+          <nxp-tooltip-icon
+            [nxpTooltip]="'Your billing address must match the address on file with your bank.'"
+            nxpTooltipDirection="right"
+            nxpTooltipAppearance="light"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Appearance examples -->
+    <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <header class="space-y-1">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Appearances</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Dark (default) and light appearances with automatic dark mode support.
+        </p>
+      </header>
+
+      <div class="flex flex-wrap gap-4 items-center py-4">
+        <button
+          type="button"
+          class="inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-100 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800"
+          [nxpTooltip]="'Dark appearance (default)'"
+          nxpTooltipAppearance="dark"
+        >Dark</button>
+
+        <button
+          type="button"
+          class="inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-100 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800"
+          [nxpTooltip]="'Light appearance with border'"
+          nxpTooltipAppearance="light"
+        >Light</button>
+      </div>
+    </section>
+
+    <!-- Size examples -->
+    <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <header class="space-y-1">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Sizes</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Three sizes for different information densities.
+        </p>
+      </header>
+
+      <div class="flex flex-wrap gap-4 items-center py-4">
+        @for (size of sizes; track size) {
+          <button
+            type="button"
+            class="inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-100 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800"
+            [nxpTooltip]="'Size: ' + size"
+            [nxpTooltipSize]="size"
+          >{{ size }}</button>
+        }
+      </div>
+    </section>
+
+  </div>
+</div>
