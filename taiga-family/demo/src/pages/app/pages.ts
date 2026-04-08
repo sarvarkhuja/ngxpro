@@ -264,8 +264,7 @@ export const pages: DocRoutePages = [
                 section: 'Components',
                 title: 'Calendar',
                 keywords:
-                    'календарь, форма, день, неделя, месяц, год, дата, calendar, датапикер, datepicker' +
-                    'date, day, week, month, year',
+                    'календарь, форма, день, неделя, месяц, год, дата, calendar, датапикер, datepicker, date, day, week, month, year',
                 route: DemoRoute.Calendar,
             },
             {
@@ -346,8 +345,7 @@ export const pages: DocRoutePages = [
                 section: 'Components',
                 title: 'Preview',
                 keywords:
-                    'popup, dialog, диалог, попап, модалка, modal, просмотр, превью, предпросмотр, ' +
-                    'предпоказ, показ, pdf, jpg, png, viewer, файл',
+                    'popup, dialog, диалог, попап, модалка, modal, просмотр, превью, предпросмотр, предпоказ, показ, pdf, jpg, png, viewer, файл',
                 route: DemoRoute.Preview,
             },
         ],
@@ -360,16 +358,14 @@ export const pages: DocRoutePages = [
                 section: 'Components',
                 title: 'DataList',
                 keywords:
-                    'контекст, выпадашка, дропдаун, меню, Context, ContextMenu, option,' +
-                    'optGroup, опции, tuiOption, варианты, dropdown, menu',
+                    'контекст, выпадашка, дропдаун, меню, Context, ContextMenu, option, optGroup, опции, tuiOption, варианты, dropdown, menu',
                 route: DemoRoute.DataList,
             },
             {
                 section: 'Components',
                 title: 'DataListWrapper',
                 keywords:
-                    'контекст, выпадашка, дропдаун, меню, Context, ContextMenu, option,' +
-                    'optGroup, опции, tuiOption, варианты, dropdown, menu',
+                    'контекст, выпадашка, дропдаун, меню, Context, ContextMenu, option, optGroup, опции, tuiOption, варианты, dropdown, menu',
                 route: DemoRoute.DataListWrapper,
             },
             {
@@ -521,6 +517,12 @@ export const pages: DocRoutePages = [
         subPages: [
             {
                 section: 'Components',
+                title: 'BottomSheet',
+                keywords: 'mobile, dialog, popup, map, details, шторка, sheet',
+                route: DemoRoute.BottomSheet,
+            },
+            {
+                section: 'Components',
                 title: 'MobileCalendar',
                 keywords:
                     'календарь, день, неделя, месяц, год, дата, calendar, datapicker, data, picker',
@@ -538,7 +540,7 @@ export const pages: DocRoutePages = [
                 title: 'SwipeActions',
                 keywords: 'swipe, action, свайп, card, действие',
                 route: DemoRoute.SwipeActions,
-                meta: {version: '1.1.0'},
+                meta: {figmaVersion: '1.1.0'},
             },
         ],
     },
@@ -561,6 +563,12 @@ export const pages: DocRoutePages = [
         keywords: 'pager, точка, dot',
         route: DemoRoute.Pager,
         meta: {figmaVersion: '1.1.0'},
+    },
+    {
+        section: 'Components',
+        title: 'Popout',
+        keywords: 'portal, window, pip, picture-in-picture, popup, новая вкладка',
+        route: DemoRoute.Popout,
     },
     {
         section: 'Components',
@@ -606,9 +614,9 @@ export const pages: DocRoutePages = [
     },
     {
         section: 'Components',
-        title: 'BottomSheet',
-        keywords: 'mobile, dialog, popup, map, details, шторка, sheet',
-        route: DemoRoute.BottomSheet,
+        title: 'ShrinkWrap',
+        keywords: 'balance, wrap, перенос, tight, pretty',
+        route: DemoRoute.ShrinkWrap,
     },
     {
         section: 'Components',
@@ -680,23 +688,29 @@ export const pages: DocRoutePages = [
     },
     {
         section: 'Components',
+        title: 'Timeline',
+        keywords: 'row, column, week, day, event, order',
+        route: DemoRoute.Timeline,
+    },
+    {
+        section: 'Components',
         title: 'Tree',
         keywords: 'tree, view, multi, recursive, folders, рекурсия, дерево, папки',
         route: DemoRoute.Tree,
     },
     {
-        section: 'Form',
-        title: 'Form',
-        keywords: 'форма, поле, кнопка, группировка, группа',
-        route: DemoRoute.Form,
-        meta: {scheme: 'beaver', name: 'form'},
+        section: 'Components',
+        title: 'Counter',
+        keywords: 'кнопка, button, counter, счетчик',
+        route: DemoRoute.Counter,
+        meta: {name: 'tui-counter'},
     },
     {
-        section: 'Form',
+        section: 'Components',
         title: 'Buttons',
         subPages: [
             {
-                section: 'Form',
+                section: 'Components',
                 title: 'Button',
                 keywords: 'кнопка, button, icon-button, иконка',
                 route: DemoRoute.Button,
@@ -706,26 +720,33 @@ export const pages: DocRoutePages = [
                 ],
             },
             {
-                section: 'Form',
+                section: 'Components',
                 title: 'ButtonX',
                 keywords: 'кнопка, button, close, закрыть',
                 route: DemoRoute.ButtonX,
                 meta: {name: 'tui-button-close'},
             },
             {
-                section: 'Form',
+                section: 'Components',
                 title: 'ButtonGroup',
                 keywords: 'кнопка, button, group, группа',
                 route: DemoRoute.ButtonGroup,
                 meta: {name: 'tui-button-group-card'},
             },
             {
-                section: 'Form',
+                section: 'Components',
                 title: 'ButtonSelect',
                 keywords: 'кнопка, button, select, multiselect',
                 route: DemoRoute.ButtonSelect,
             },
         ],
+    },
+    {
+        section: 'Form',
+        title: 'Form',
+        keywords: 'форма, поле, кнопка, группировка, группа',
+        route: DemoRoute.Form,
+        meta: {scheme: 'beaver', name: 'form'},
     },
     {
         section: 'Form',
@@ -778,16 +799,14 @@ export const pages: DocRoutePages = [
                 section: 'Form',
                 title: 'InputDate',
                 keywords:
-                    'поле, инпут, форма, ввод, input, календарь, день, ' +
-                    'неделя, месяц, год, дата, calendar',
+                    'поле, инпут, форма, ввод, input, календарь, день, неделя, месяц, год, дата, calendar',
                 route: DemoRoute.InputDate,
             },
             {
                 section: 'Form',
                 title: 'InputDateMulti',
                 keywords:
-                    'поле, инпут, форма, ввод, input, календарь, день, ' +
-                    'неделя, месяц, год, дата, calendar, multiple',
+                    'поле, инпут, форма, ввод, input, календарь, день, неделя, месяц, год, дата, calendar, multiple',
                 route: DemoRoute.InputDateMulti,
             },
             {
@@ -800,8 +819,7 @@ export const pages: DocRoutePages = [
                 section: 'Form',
                 title: 'InputDateTime',
                 keywords:
-                    'поле, инпут, форма, ввод, input, календарь, день, ' +
-                    'неделя, месяц, год, дата, calendar, время, часы, минуты, секунды, мс',
+                    'поле, инпут, форма, ввод, input, календарь, день, неделя, месяц, год, дата, calendar, время, часы, минуты, секунды, мс',
                 route: DemoRoute.InputDateTime,
             },
             {
@@ -1033,7 +1051,8 @@ export const pages: DocRoutePages = [
     {
         section: 'Layout',
         title: 'Slides',
-        keywords: 'слайды, слайдер, slider, carousel, карусель, слайд, slide, swiper',
+        keywords:
+            'слайды, слайдер, slider, carousel, карусель, слайд, slide, swiper, scroll',
         route: DemoRoute.Slides,
     },
     {
@@ -1368,8 +1387,7 @@ export const pages: DocRoutePages = [
                 section: 'Tools',
                 title: 'TextfieldController',
                 keywords:
-                    'контроллер, ввод, параметры, настройка, cleaner, autocomplete, exampleText, inputMode, ' +
-                    'inputMode, labelOutside, size, type, нативные, инпут',
+                    'контроллер, ввод, параметры, настройка, cleaner, autocomplete, exampleText, inputMode, inputMode, labelOutside, size, type, нативные, инпут',
                 route: DemoRoute.TextfieldController,
             },
             {
@@ -1429,6 +1447,12 @@ export const pages: DocRoutePages = [
                     'верстка, markup, скелетон, loader, загрузка, skeleton, shimmer',
                 route: DemoRoute.Skeleton,
                 meta: {figmaVersion: '1.2.0'},
+            },
+            {
+                section: 'Tools',
+                title: 'Truncate',
+                keywords: 'truncate, middle, ellipsis, обрезка, по середине',
+                route: DemoRoute.Truncate,
             },
         ],
     },
@@ -1493,7 +1517,7 @@ export const pages: DocRoutePages = [
                 keywords:
                     'amount, money, деньги, сумма, количество, cash, копейки, рубли, доллары, евро',
                 route: DemoRoute.Amount,
-                meta: {scheme: 'taiga', version: '1.1.1'},
+                meta: {scheme: 'taiga', figmaVersion: '1.1.1'},
             },
             {
                 section: 'Tools',

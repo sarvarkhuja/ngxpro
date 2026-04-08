@@ -72,6 +72,11 @@ export const ROUTES: Routes = [
         loadChildren: async () => import('../components/dialog-routable/routes'),
     }),
     route({
+        path: DemoRoute.Popout,
+        title: 'Popout',
+        loadComponent: async () => import('../components/popout'),
+    }),
+    route({
         path: DemoRoute.Portals,
         title: 'Portals',
         loadComponent: async () => import('../customization/portals'),
@@ -194,7 +199,7 @@ export const ROUTES: Routes = [
     }),
     route({
         path: DemoRoute.Comment,
-        loadComponent: async () => import('../directives/comment'),
+        loadComponent: async () => import('../components/comment'),
         title: 'Comment',
     }),
     route({
@@ -261,6 +266,11 @@ export const ROUTES: Routes = [
         path: DemoRoute.ButtonGroup,
         title: 'ButtonGroup',
         loadComponent: async () => import('../components/button-group'),
+    }),
+    route({
+        path: DemoRoute.Counter,
+        title: 'Counter',
+        loadComponent: async () => import('../components/counter'),
     }),
     route({
         path: DemoRoute.ButtonSelect,
@@ -588,6 +598,11 @@ export const ROUTES: Routes = [
         title: 'Slides',
     }),
     route({
+        path: DemoRoute.ShrinkWrap,
+        loadComponent: async () => import('../components/shrink-wrap'),
+        title: 'ShrinkWrap',
+    }),
+    route({
         path: DemoRoute.Status,
         loadComponent: async () => import('../components/status'),
         title: 'Status',
@@ -672,6 +687,11 @@ export const ROUTES: Routes = [
         path: DemoRoute.Tiles,
         loadComponent: async () => import('../components/tiles'),
         title: 'Tiles',
+    }),
+    route({
+        path: DemoRoute.Timeline,
+        loadComponent: async () => import('../components/timeline'),
+        title: 'Timeline',
     }),
     route({
         path: DemoRoute.Switch,
@@ -876,6 +896,11 @@ export const ROUTES: Routes = [
         path: DemoRoute.Touchable,
         loadComponent: async () => import('../directives/touchable'),
         title: 'Touchable',
+    }),
+    route({
+        path: DemoRoute.Truncate,
+        loadComponent: async () => import('../directives/truncate'),
+        title: 'Truncate',
     }),
     route({
         path: DemoRoute.Validator,

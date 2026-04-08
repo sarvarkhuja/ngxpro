@@ -1,0 +1,20 @@
+{
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "name": "demo-cypress",
+    "implicitDependencies": ["demo"],
+    "prefix": "app",
+    "projectType": "application",
+    "sourceRoot": "projects/{projectName}",
+    "targets": {
+        "component-test": {
+            "executor": "@nx/cypress:cypress",
+            "options": {
+                "browser": "chrome",
+                "cypressConfig": "{projectRoot}/cypress.config.ts",
+                "devServerTarget": "demo:build",
+                "skipServe": true,
+                "testingType": "component"
+            }
+        }
+    }
+}

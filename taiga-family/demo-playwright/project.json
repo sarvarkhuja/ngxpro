@@ -1,0 +1,29 @@
+{
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "name": "demo-playwright",
+    "prefix": "app",
+    "projectType": "application",
+    "sourceRoot": "projects/{projectName}",
+    "targets": {
+        "e2e": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "playwright test --config {projectRoot}/playwright.config.ts",
+                "forwardAllArgs": true
+            }
+        },
+        "e2e-ui": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "playwright test --config {projectRoot}/playwright.config.ts --ui --debug --update-snapshots",
+                "forwardAllArgs": true
+            }
+        },
+        "type-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc -p projects/demo-playwright/tsconfig.playwright.json"
+            }
+        }
+    }
+}

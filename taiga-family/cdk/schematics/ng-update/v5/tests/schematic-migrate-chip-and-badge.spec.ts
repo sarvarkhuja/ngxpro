@@ -2,51 +2,61 @@ import {join} from 'node:path';
 
 import {resetActiveProject} from 'ng-morph';
 
-import {runMigration} from '../../../utils/run-migration';
-
-const collection = join(__dirname, '../../../migration.json');
+import {createMigration} from '../../../utils/run-migration';
 
 describe('ng-update chip and badge selectors', () => {
-    async function migrate(template: string): Promise<string> {
-        const {template: result} = await runMigration({
-            template,
-            collection,
-            component: `
-                import {Component} from '@angular/core';
-
-                @Component({
-                    templateUrl: './test.html',
-                })
-                export class Test {}
-            `,
-        });
-
-        return result;
-    }
-
-    it('replaces tui-chip with span and tuiChip directive', async () => {
-        expect(await migrate('<tui-chip></tui-chip>')).toEqual('<span tuiChip></span>');
+    const migrate = createMigration({
+        collection: join(__dirname, '../../../migration.json'),
     });
 
-    it('preserves attributes on tui-chip', async () => {
-        expect(
-            await migrate('<tui-chip appearance="primary" size="s">Content</tui-chip>'),
-        ).toEqual('<span tuiChip appearance="primary" size="s">Content</span>');
-    });
+    it(
+        'replaces tui-chip with span and tuiChip directive',
+        migrate({template: '<tui-chip></tui-chip>'}),
+    );
 
-    it('replaces tui-badge with span and tuiBadge directive', async () => {
-        expect(await migrate('<tui-badge></tui-badge>')).toEqual(
-            '<span tuiBadge></span>',
-        );
-    });
+    it(
+        'preserves attributes on tui-chip',
+        migrate({template: '<tui-chip appearance="primary" size="s">Content</tui-chip>'}),
+    );
 
-    it('preserves attributes and content on tui-badge', async () => {
-        expect(
-            await migrate(
+    it(
+        'replaces tui-badge with span and tuiBadge directive',
+        migrate({template: '<tui-badge></tui-badge>'}),
+    );
+
+    it(
+        'replaces nav[tuiStepper] with tui-stepper directive',
+        migrate({template: '<nav tuiStepper></nav>'}),
+    );
+
+    it(
+        'preserves attributes and content on tui-badge',
+        migrate({
+            template:
                 '<tui-badge appearance="neutral" size="s"><span>1</span></tui-badge>',
-            ),
-        ).toEqual('<span tuiBadge appearance="neutral" size="s"><span>1</span></span>');
-    });
+        }),
+    );
+
+    it(
+        'migrates deprecated appearances for tui-badge',
+        migrate({
+            template: /* HTML */ `
+                <tui-badge
+                    appearance="error"
+                    size="s"
+                >
+                    <span>1</span>
+                </tui-badge>
+                <tui-badge appearance="success" />
+                <tui-badge [appearance]="'error'"></tui-badge>
+                <tui-badge [appearance]="computedAppearance">123</tui-badge>
+                <button
+                    tuiIconButton
+                    [appearance]="'icon'"
+                ></button>
+            `,
+        }),
+    );
 
     afterEach(() => resetActiveProject());
 });

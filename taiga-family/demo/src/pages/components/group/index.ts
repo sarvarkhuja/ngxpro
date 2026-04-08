@@ -14,15 +14,22 @@ export default class Page {
     protected rounded = true;
     protected collapsed = false;
 
+    protected readonly examples = [
+        'Inputs',
+        'ButtonGroup',
+        'Vertical group',
+        'Directive',
+    ];
+
     protected readonly orientationVariants: readonly TuiOrientation[] = [
         'horizontal',
         'vertical',
     ];
 
-    protected orientation: TuiOrientation = this.orientationVariants[0]!;
+    protected orientation = this.orientationVariants[0]!;
 
     protected readonly sizeVariants: readonly TuiSizeL[] = ['m', 'l'];
 
-    protected size: TuiSizeL = this.sizeVariants[1]!;
+    protected size = this.sizeVariants[1]!;
     protected readonly routes = DemoRoute;
 }

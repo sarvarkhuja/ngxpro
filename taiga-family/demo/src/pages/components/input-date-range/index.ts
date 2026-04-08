@@ -9,8 +9,12 @@ import {TuiDocTextfield} from '@demo/components/textfield';
 import {changeDetection} from '@demo/emulate/change-detection';
 import {TuiDemo} from '@demo/utils';
 import {TUI_FIRST_DAY, TUI_LAST_DAY, TuiDay, type TuiDayLike} from '@taiga-ui/cdk';
-import {TuiDropdown, TuiInput} from '@taiga-ui/core';
-import {TuiInputDateRange} from '@taiga-ui/kit';
+import {TuiDropdown, TuiInput, type TuiSizeL, type TuiSizeS} from '@taiga-ui/core';
+import {
+    tuiCreateDefaultDayRangePeriods,
+    type TuiDayRangePeriod,
+    TuiInputDateRange,
+} from '@taiga-ui/kit';
 
 @Component({
     imports: [
@@ -32,6 +36,16 @@ import {TuiInputDateRange} from '@taiga-ui/kit';
 export default class Example {
     protected readonly control = new FormControl();
 
+    public readonly examples = [
+        'Basic',
+        'DataList',
+        'Validation',
+        'Value transformer',
+        'Format',
+        'Mobile',
+        'Limits',
+    ];
+
     protected readonly dates = [
         TUI_FIRST_DAY,
         TuiDay.currentLocal(),
@@ -40,10 +54,18 @@ export default class Example {
         TUI_LAST_DAY,
     ] as const;
 
+    protected readonly sizeVariants: ReadonlyArray<TuiSizeL | TuiSizeS> = ['s', 'm', 'l'];
+    protected listSize = this.sizeVariants[2]!;
+
+    protected readonly items = tuiCreateDefaultDayRangePeriods();
+
     protected min = this.dates[0];
     protected max = this.dates[4];
 
     protected readonly limits = [{day: 3}, {day: 5}] as const;
+
+    protected readonly periodListItems = [null, this.items];
+    protected selectedPeriodList: readonly TuiDayRangePeriod[] | null = null;
 
     protected minLength: TuiDayLike | null = null;
     protected maxLength: TuiDayLike | null = null;

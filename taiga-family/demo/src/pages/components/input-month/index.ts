@@ -38,6 +38,17 @@ const TAIGA_V4 = new TuiDay(2024, 7, 9);
 export default class PageComponent {
     protected readonly routes = DemoRoute;
     protected readonly control = new FormControl(null);
+
+    public readonly examples = [
+        'Basic',
+        'Form control value',
+        'Textfield customization',
+        'Dropdown customization',
+        'Selected value customization',
+        'Native picker',
+        'Range mode',
+    ];
+
     protected readonly monthVariants = [
         TuiDay.currentLocal().append({year: -100, month: -1}),
         TuiDay.currentLocal().append({year: -10, month: -1}),
@@ -62,7 +73,7 @@ export default class PageComponent {
 
     protected min: TuiMonth | null = null;
     protected max: TuiMonth | null = null;
-    protected year: TuiYear = this.yearVariants[0];
+    protected year = this.yearVariants[0];
     protected disabledItemHandler: TuiBooleanHandler<TuiMonth> =
         this.disabledItemHandlerVariants[0];
 }

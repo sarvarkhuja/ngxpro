@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NxpTextarea } from '@nxp/components/textarea';
 import { CommonModule } from '@angular/common';
 import { NxpLabelDirective } from '@nxp/cdk/components/label';
+import { NxpTextfieldComponent } from '@nxp/cdk/components/textfield';
+import { NxpTextareaComponent } from 'libs/components/textarea/src/textarea.component';
+import { NxpTextareaLimitDirective } from 'libs/components/textarea/src/textarea.directive';
 
 @Component({
   selector: 'app-textarea-demo',
@@ -13,9 +15,11 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    ...NxpTextarea,
     CommonModule,
+    NxpTextareaComponent,
+    NxpTextareaLimitDirective,
     NxpLabelDirective,
+    NxpTextfieldComponent,
   ],
   template: `
     <!-- Sticky header -->
@@ -55,10 +59,12 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
           </h2>
           <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
             An auto-resizing textarea that grows between a configurable minimum
-            and maximum number of rows. Works standalone or inside
-            <code class="font-mono text-sm">nxp-textfield</code> for floating
-            labels. Supports character limits, error states, disabled state, and
-            Angular reactive forms.
+            and maximum number of rows. Demos use
+            <code class="font-mono text-sm">nxp-textfield</code> with
+            <code class="font-mono text-sm">class="h-auto"</code> so the wrapper
+            grows with the control, plus
+            <code class="font-mono text-sm">label[nxpLabel]</code>. Supports
+            character limits, error states, disabled state, and Angular forms.
           </p>
         </section>
 
@@ -69,32 +75,36 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
               Basic usage
             </h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Standalone
-              <code class="font-mono text-xs">textarea[nxpTextarea]</code>
-              auto-resizes between 2 and 6 rows by default.
+              <code class="font-mono text-xs">textarea[nxpTextarea]</code> inside
+              <code class="font-mono text-xs">nxp-textfield</code> auto-resizes
+              between 2 and 6 rows by default.
             </p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            <!-- Standalone basic -->
+            <!-- Basic -->
             <div
               class="rounded-xl border border-gray-200 dark:border-gray-800
                      bg-white dark:bg-gray-950 p-6 space-y-4"
             >
               <div>
                 <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                  Standalone
+                  Basic
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Auto-resizes as you type. Scrolls after 6 rows.
                 </p>
               </div>
-              <textarea
-                nxpTextarea
-                placeholder="Start typing..."
-                [(ngModel)]="basicValue"
-              ></textarea>
+              <nxp-textfield class="h-auto">
+                <label nxpLabel for="textarea-basic">Message</label>
+                <textarea
+                  nxpTextarea
+                  id="textarea-basic"
+                  placeholder="Start typing..."
+                  [(ngModel)]="basicValue"
+                ></textarea>
+              </nxp-textfield>
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Length: {{ basicValue.length }} chars
               </p>
@@ -114,32 +124,34 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
                   — at least 3 rows, scrolls after 10.
                 </p>
               </div>
-              <textarea
-                nxpTextarea
-                [min]="3"
-                [max]="10"
-                placeholder="More room to write..."
-                [(ngModel)]="customRowsValue"
-              ></textarea>
+              <nxp-textfield class="h-auto">
+                <label nxpLabel for="textarea-custom-rows">Long form</label>
+                <textarea
+                  nxpTextarea
+                  id="textarea-custom-rows"
+                  [min]="3"
+                  [max]="10"
+                  placeholder="More room to write..."
+                  [(ngModel)]="customRowsValue"
+                ></textarea>
+              </nxp-textfield>
             </div>
 
           </div>
         </section>
 
-        <!-- Section: Inside nxp-textfield -->
+        <!-- Section: Floating label & error -->
         <section class="space-y-6">
           <div>
             <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
-              Inside nxp-textfield
+              Floating label &amp; error
             </h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Combine with
-              <code class="font-mono text-xs">nxp-textfield</code> and
-              <code class="font-mono text-xs">label[nxpLabel]</code> for floating
-              labels and consistent styling. Add
-              <code class="font-mono text-xs">class="h-auto"</code> to
-              <code class="font-mono text-xs">nxp-textfield</code> so it
-              auto-sizes with the textarea.
+              Use <code class="font-mono text-xs">placeholder=" "</code> with
+              <code class="font-mono text-xs">nxp-textfield</code> for a floating
+              label treatment. Set
+              <code class="font-mono text-xs">[hasError]</code> on the textfield
+              for the error ring.
             </p>
           </div>
 
@@ -161,7 +173,12 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
               </div>
               <nxp-textfield class="h-auto">
                 <label nxpLabel for="description">Description</label>
-                <textarea nxpTextarea placeholder=" " [(ngModel)]="floatingValue"></textarea>
+                <textarea
+                  nxpTextarea
+                  id="description"
+                  placeholder=" "
+                  [(ngModel)]="floatingValue"
+                ></textarea>
               </nxp-textfield>
             </div>
 
@@ -220,12 +237,16 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
                   when limit is exceeded.
                 </p>
               </div>
-              <textarea
-                nxpTextarea
-                [limit]="200"
-                placeholder="Type a message (max 200 chars)..."
-                [(ngModel)]="limitValue"
-              ></textarea>
+              <nxp-textfield class="h-auto">
+                <label nxpLabel for="textarea-limit-200">Message</label>
+                <textarea
+                  nxpTextarea
+                  id="textarea-limit-200"
+                  [limit]="200"
+                  placeholder="Type a message (max 200 chars)..."
+                  [(ngModel)]="limitValue"
+                ></textarea>
+              </nxp-textfield>
             </div>
 
             <!-- Short 50 char limit -->
@@ -242,12 +263,16 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
                   go over.
                 </p>
               </div>
-              <textarea
-                nxpTextarea
-                [limit]="50"
-                placeholder="Short message..."
-                [(ngModel)]="shortLimitValue"
-              ></textarea>
+              <nxp-textfield class="h-auto">
+                <label nxpLabel for="textarea-limit-50">Short message</label>
+                <textarea
+                  nxpTextarea
+                  id="textarea-limit-50"
+                  [limit]="50"
+                  placeholder="Short message..."
+                  [(ngModel)]="shortLimitValue"
+                ></textarea>
+              </nxp-textfield>
             </div>
 
           </div>
@@ -266,29 +291,28 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            <!-- Standalone error -->
+            <!-- Error -->
             <div
               class="rounded-xl border border-gray-200 dark:border-gray-800
                      bg-white dark:bg-gray-950 p-6 space-y-4"
             >
               <div>
                 <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                  Error state (standalone)
+                  Error state
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Use <code class="font-mono text-xs">[hasError]="true"</code>
-                  on the standalone textarea.
+                  Use <code class="font-mono text-xs">[hasError]="true"</code> on
+                  <code class="font-mono text-xs">nxp-textfield</code>.
                 </p>
               </div>
-              <label nxpLabel class="block text-sm font-medium text-gray-900 dark:text-gray-50 mb-1.5">
-                Message
+              <nxp-textfield class="h-auto" [hasError]="true">
+                <label nxpLabel for="textarea-state-error">Message</label>
                 <textarea
                   nxpTextarea
-                  [hasError]="true"
+                  id="textarea-state-error"
                   placeholder="Something went wrong..."
-                  class="mt-1.5"
                 ></textarea>
-              </label>
+              </nxp-textfield>
               <p class="text-xs text-red-500 mt-1">This field has an error.</p>
             </div>
 
@@ -307,15 +331,15 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
                   applies the disabled styling.
                 </p>
               </div>
-              <label class="block text-sm font-medium text-gray-900 dark:text-gray-50 mb-1.5">
-                Read-only note
+              <nxp-textfield class="h-auto">
+                <label nxpLabel for="textarea-disabled">Read-only note</label>
                 <textarea
                   nxpTextarea
+                  id="textarea-disabled"
                   disabled
                   placeholder="This textarea is disabled..."
-                  class="mt-1.5"
                 >This content cannot be edited.</textarea>
-              </label>
+              </nxp-textfield>
             </div>
 
           </div>
@@ -350,15 +374,15 @@ import { NxpLabelDirective } from '@nxp/cdk/components/label';
                   <code class="font-mono text-xs">[formControl]="ctrl"</code>.
                 </p>
               </div>
-              <label class="block text-sm font-medium text-gray-900 dark:text-gray-50 mb-1.5">
-                Comments
+              <nxp-textfield class="h-auto">
+                <label nxpLabel for="textarea-comments">Comments</label>
                 <textarea
                   nxpTextarea
+                  id="textarea-comments"
                   [formControl]="formCtrl"
                   placeholder="Write your comments..."
-                  class="mt-1.5"
                 ></textarea>
-              </label>
+              </nxp-textfield>
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value: <code class="font-mono">{{ formCtrl.value | json }}</code>
               </p>

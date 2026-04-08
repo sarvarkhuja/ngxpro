@@ -36,7 +36,17 @@ export default class PageComponent {
     protected readonly routes = DemoRoute;
     protected readonly control = new FormControl([0, 10]);
 
-    protected readonly suffixVariants: Array<[string, string]> = [
+    public readonly examples = [
+        'Override number format',
+        'Affixes',
+        'Visual segments + labels for ticks',
+        'Custom value content',
+        'KeySteps',
+        'Quantum',
+        'Using negative values with hidden minus sign',
+    ];
+
+    protected readonly suffixVariants = [
         ['$', '$'],
         ['€', '€'],
         [' ₽', ' ₽'],

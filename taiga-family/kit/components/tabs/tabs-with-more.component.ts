@@ -62,6 +62,7 @@ export class TuiTabsWithMore implements AfterViewChecked, AfterViewInit {
     protected readonly sync = effect(() => {
         this.activeItemIndex();
         this.maxIndex = this.getMaxIndex();
+        this.open = false;
     });
 
     public open = false;
@@ -117,10 +118,7 @@ export class TuiTabsWithMore implements AfterViewChecked, AfterViewInit {
     }
 
     protected get activeElement(): HTMLElement | null {
-        const {tabs} = this;
-        const activeElement = tabs.find((tab) => tab.classList.contains('_active'));
-
-        return activeElement || null;
+        return this.tabs.find((tab) => tab.classList.contains('_active')) ?? null;
     }
 
     protected get isMoreAlone(): boolean {
@@ -174,15 +172,13 @@ export class TuiTabsWithMore implements AfterViewChecked, AfterViewInit {
         wrapper: HTMLElement,
         previous: boolean,
     ): void {
-        const button: HTMLButtonElement = event.target as HTMLButtonElement;
+        const button = event.target as HTMLButtonElement;
         const target = tuiGetClosestFocusable({initial: button, root: wrapper, previous});
 
         if (target) {
             target.focus();
         }
     }
-
-    // TODO drop comment after fix issue: https://github.com/typescript-eslint/typescript-eslint/issues/11771
 
     private get margin(): number {
         return this.size() === 'l' ? 24 : 16;

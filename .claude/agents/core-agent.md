@@ -29,6 +29,26 @@ Build and maintain `@nxp/core` — the foundation layer providing services, toke
 - `.claude/POLYMORPHEUS_GUIDE.md`
 - `.claude/POLYMORPHEUS_INTEGRATION_SUMMARY.md`
 
+## Style & Animation Inspiration: fluidfunctionalizm
+
+Alongside Taiga (architecture) and Tremor (styling), ngxpro now uses a third vendored reference tree: **`fluidfunctionalizm/`** — a Next.js + Tailwind v4 + Framer Motion component system with a refined animation language and modern neutral aesthetic.
+
+**Translation rule**: fluidfunctionalizm is React/Framer Motion. You must **study its patterns and reimplement in Angular** (Angular animations API, CSS transitions, `tailwind-variants`, signals). **Never import from `fluidfunctionalizm/` and never copy its code verbatim.**
+
+**Animation language** — three spring tiers from `fluidfunctionalizm/registry/default/lib/springs.ts` and `fluidfunctionalizm/animation-guidelines.md`:
+
+| Tier       | Duration | Bounce | Use for                                          |
+|------------|----------|--------|--------------------------------------------------|
+| `fast`     | 80ms     | 0      | Checkboxes, radios, toggles, tabs, chips         |
+| `moderate` | 160ms    | 0.15   | Dropdowns, tooltips, toasts, switches            |
+| `slow`     | 240ms    | 0.15   | Modals, drawers, sheets, large expansions        |
+
+**Golden rule**: exit animations are faster than enter animations — signals finality, keeps the UI responsive.
+
+**Visual aesthetic** — neutral minimal palette, class-based dark mode via CSS custom properties, 1px subtle borders, focus rings (not heavy outlines), minimal shadows, Inter font with balanced text wrapping. See `fluidfunctionalizm/app/globals.css` for the palette and `fluidfunctionalizm/registry/default/button.tsx` for CVA-style variant patterns (ngxpro equivalent: `tv()` from `tailwind-variants`).
+
+**Role-specific guidance (Core)**: when defining `NXP_ANIMATION_SPEED` and related animation tokens in `libs/core/src/lib/tokens/`, use the fluidfunctionalizm spring tiers (`fast` 80ms / `moderate` 160ms / `slow` 240ms, bounce 0 / 0.15 / 0.15) as the default values. `ThemeService` should follow fluidfunctionalizm's class-based dark mode pattern driven by CSS custom properties on `:root` and `.dark` — mirror the palette structure in `fluidfunctionalizm/app/globals.css` (neutral grays + focus blue `#6B97FF`). Keep tokens semantic (`--nxp-bg`, `--nxp-fg`, `--nxp-border`, `--nxp-focus`) rather than hex literals.
+
 ## Project Context
 
 - **Package path**: `libs/core/src/`

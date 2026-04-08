@@ -17,6 +17,7 @@ import {
   NXP_TEXTFIELD_ACCESSOR,
   nxpAsTextfieldAccessor,
   NXP_TEXTFIELD,
+  NXP_LABEL,
   type NxpTextfieldAccessor,
 } from '@nxp/cdk';
 import {
@@ -28,6 +29,7 @@ import {
   selector: 'nxp-textfield',
   standalone: true,
   template: `
+    <ng-content select="label[nxpLabel]" />
     <ng-content select="input[nxpInput], textarea[nxpInput]" />
     @if (showCleaner()) {
       <button
@@ -87,9 +89,13 @@ export class NxpTextfieldComponent
   });
 
   /** The real accessor (e.g. NxpSelectDirective) projected as content. */
-  readonly accessor = contentChild<NxpTextfieldAccessor>(
-    NXP_TEXTFIELD_ACCESSOR,
-  );
+  readonly accessor = contentChild<NxpTextfieldAccessor>(NXP_TEXTFIELD_ACCESSOR);
+
+  /** Detects a projected label[nxpLabel] child. */
+  protected readonly labelToken = contentChild(NXP_LABEL);
+
+  /** True when a label is projected — switches to form-field mode (vertical stack). */
+  readonly hasLabel = computed(() => !!this.labelToken());
 
   readonly options = inject(NXP_TEXTFIELD_OPTIONS);
   readonly focused = signal(false);
@@ -131,8 +137,21 @@ export class NxpTextfieldComponent
     return this.accessorEl()?.nativeElement?.id ?? this._autoId;
   }
 
-  protected readonly hostClasses = computed(() =>
-    cx(
+  protected readonly hostClasses = computed(() => {
+    if (this.hasLabel()) {
+      // ── Form-field mode ─────────────────────────────────────────────────
+      // Vertical stack: label on top, full-styled input below.
+      // The wrapper has no border/bg — the projected input provides its own.
+      return cx(
+        'flex flex-col gap-1.5',
+        this.class(),
+      );
+    }
+
+    // ── Box mode ────────────────────────────────────────────────────────
+    // Styled border wrapper for select, combo-box, date, etc.
+    // The projected input is transparent; the wrapper provides border/bg.
+    return cx(
       'relative block overflow-hidden rounded-md border transition-colors duration-150',
       'bg-white dark:bg-gray-950',
       'border-gray-300 dark:border-gray-800',
@@ -140,15 +159,11 @@ export class NxpTextfieldComponent
       this.effectiveSize() === 'md' && 'h-10',
       this.effectiveSize() === 'lg' && 'h-12',
       'has-[input:disabled]:opacity-60 has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-gray-50 dark:has-[input:disabled]:bg-gray-900',
-      this.focused() &&
-        !this.hasError() && ['ring-2 ring-primary/30', 'border-primary'],
-      this.hasError() && [
-        'ring-2 ring-red-200 dark:ring-red-700/30',
-        'border-red-500 dark:border-red-700',
-      ],
+      this.focused() && !this.hasError() && 'ring-2 ring-primary/30 border-primary',
+      this.hasError() && 'ring-2 ring-red-200 dark:ring-red-700/30 border-red-500 dark:border-red-700',
       this.class(),
-    ),
-  );
+    );
+  });
 
   // ------------------------------------------------------------------ NxpDataListHost
 

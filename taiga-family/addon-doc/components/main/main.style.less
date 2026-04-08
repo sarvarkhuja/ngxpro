@@ -13,7 +13,6 @@ tui-doc-main {
 // prevent override styles
 // inside editor code block
 code:not(pre code) {
-    /* stylelint-disable-next-line */
     &:not(.hljs):not([class*='language-']) {
         .transition(background);
 
@@ -27,13 +26,16 @@ code:not(pre code) {
         outline: 1px solid var(--tui-border-hover);
         font-size: 0.75rem;
         padding: 0 0.3125rem;
-        margin: 0.125rem 0.1875rem;
-        //noinspection CssInvalidPropertyValue
+        margin: 0 0.1875rem;
         text-wrap: wrap;
 
         a & {
             color: var(--tui-text-action);
         }
+    }
+
+    tui-textfield & {
+        line-height: 1.25rem;
     }
 }
 
@@ -49,10 +51,11 @@ a:focus code {
 
 tui-doc-navigation.tui-doc-navigation {
     position: fixed;
-    top: 4.125rem;
-    bottom: 0;
+    inset-block-end: 0;
+    inset-block-start: 4.125rem;
     inline-size: @sidebar-width;
     box-sizing: border-box;
+    background: var(--tui-background-base);
 
     &::before,
     &::after {
@@ -89,12 +92,6 @@ tui-doc-navigation.tui-doc-navigation {
 
 .tui-doc-outlet + * {
     display: block;
-}
-
-button.tui-doc-switch-direction,
-button.tui-doc-dark-mode-switch {
-    margin-inline-start: 1rem;
-    background: var(--tui-background-base);
 }
 
 // highlightjs custom theme

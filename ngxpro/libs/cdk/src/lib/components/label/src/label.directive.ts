@@ -1,5 +1,5 @@
 import { Directive, computed, input } from '@angular/core';
-import { cx } from '@nxp/cdk';
+import { cx, NXP_LABEL } from '@nxp/cdk';
 
 /**
  * Label directive (Tremor styling).
@@ -11,6 +11,7 @@ import { cx } from '@nxp/cdk';
 @Directive({
   selector: 'label[nxpLabel]',
   standalone: true,
+  providers: [{ provide: NXP_LABEL, useExisting: NxpLabelDirective }],
   host: {
     '[class]': 'classes()',
     '[attr.aria-disabled]': 'disabled() || null',

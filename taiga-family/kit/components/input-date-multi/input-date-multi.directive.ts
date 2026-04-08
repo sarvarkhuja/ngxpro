@@ -5,7 +5,7 @@ import {tuiAsControl} from '@taiga-ui/cdk/classes';
 import {DATE_FILLER_LENGTH, TuiDay, TuiMonth} from '@taiga-ui/cdk/date-time';
 import {tuiFallbackValueProvider} from '@taiga-ui/cdk/tokens';
 import {tuiDirectiveBinding} from '@taiga-ui/cdk/utils/di';
-import {tuiArrayToggle} from '@taiga-ui/cdk/utils/miscellaneous';
+import {tuiArrayToggle, tuiSetSignal} from '@taiga-ui/cdk/utils/miscellaneous';
 import {TuiCalendar} from '@taiga-ui/core/components/calendar';
 import {
     tuiAsTextfieldAccessor,
@@ -84,11 +84,12 @@ export class TuiInputDateMultiDirective extends TuiInputChipDirective<TuiDay> {
     public readonly max = input<TuiDay | null>(this.dateOptions.max);
 
     protected processCalendar(calendar: TuiCalendar): void {
-        calendar.value = this.value();
-        calendar.min = this.min();
-        calendar.max = this.max();
-        calendar.month =
-            this.value()?.[this.value().length - 1] ?? TuiMonth.currentLocal();
+        tuiSetSignal(calendar.value, this.value());
+        tuiSetSignal(calendar.min, this.min());
+        tuiSetSignal(calendar.max, this.max());
+        calendar.month.set(
+            this.value()?.[this.value().length - 1] ?? TuiMonth.currentLocal(),
+        );
     }
 
     protected onClick(): void {

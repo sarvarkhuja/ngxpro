@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, viewChild} from '@angular/core';
 import {changeDetection} from '@demo/emulate/change-detection';
 import {DemoRoute} from '@demo/routes';
 import {TuiDemo} from '@demo/utils';
@@ -12,12 +12,18 @@ import {type PolymorpheusContent} from '@taiga-ui/polymorpheus';
     changeDetection,
 })
 export default class Page {
-    @ViewChild('textTemplate')
-    protected readonly textTemplate: PolymorpheusContent;
+    protected readonly textTemplate = viewChild<PolymorpheusContent>('textTemplate');
 
     protected readonly routes = DemoRoute;
 
-    protected showLoader = true;
+    protected readonly examples = [
+        'With inherited background color',
+        'With content overlay',
+        'Options',
+        'Custom stroke width',
+    ];
+
+    protected loading = true;
 
     protected inheritColor = false;
 
@@ -36,7 +42,7 @@ export default class Page {
 
     protected selectedTemplate = '';
 
-    protected readonly textVariants: string[] = ['', 'template', 'string'];
+    protected readonly textVariants = ['', 'template', 'string'];
 
     protected get template(): PolymorpheusContent {
         switch (this.selectedTemplate) {
@@ -44,7 +50,7 @@ export default class Page {
                 return 'string';
             }
             case 'template': {
-                return this.textTemplate || '';
+                return this.textTemplate() || '';
             }
             default: {
                 return '';

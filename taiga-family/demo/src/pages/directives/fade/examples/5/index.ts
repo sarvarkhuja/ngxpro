@@ -6,7 +6,6 @@ import {TuiTextfield} from '@taiga-ui/core';
 import {TuiInputChip} from '@taiga-ui/kit';
 
 @Component({
-    standalone: true,
     imports: [FormsModule, TuiInputChip, TuiTextfield],
     templateUrl: './index.html',
     styleUrl: './index.less',
@@ -14,5 +13,5 @@ import {TuiInputChip} from '@taiga-ui/kit';
     changeDetection,
 })
 export default class Example {
-    protected value: string[] = ['3', '4', '5', 'Compartmentalization'];
+    protected value = ['3', '4', '5', 'Compartmentalization'];
 }

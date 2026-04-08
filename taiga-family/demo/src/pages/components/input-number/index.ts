@@ -30,6 +30,7 @@ import {TuiInputNumber} from '@taiga-ui/kit';
 })
 export default class PageComponent {
     protected readonly routes = DemoRoute;
+
     protected readonly control = new FormControl(null, Validators.required);
     protected readonly maxVariants: readonly number[] = [
         Number.MAX_SAFE_INTEGER,

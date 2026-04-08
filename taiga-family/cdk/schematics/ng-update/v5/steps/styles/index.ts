@@ -1,22 +1,25 @@
-import {getActiveProject, saveActiveProject} from 'ng-morph';
+import {getSourceFiles, saveActiveProject} from 'ng-morph';
 
-import {ALL_STYLE_FILES} from '../../../../constants';
+import {ALL_STYLE_FILES, PROJECT_JSON_FILES} from '../../../../constants';
+import {addStyleComments} from './add-comments';
+import {migrateImports} from './migrate-imports';
+
+const ACTIONS = [
+    migrateImports,
+    addStyleComments,
+    (file: string) =>
+        file.replaceAll(/tui-slider-ticks-labels\([^)]*\)/g, 'tui-slider-ticks-labels()'),
+] as const;
 
 export function migrateStyles(): void {
-    getActiveProject()
-        ?.getSourceFiles(ALL_STYLE_FILES)
-        .forEach((sourceFile) => {
-            sourceFile.replaceWithText(
-                sourceFile
-                    .getFullText()
-                    .replaceAll(
-                        '@taiga-ui/core/styles/taiga-ui-local',
-                        '@taiga-ui/styles/utils',
-                    )
-                    .replaceAll('@taiga-ui/core/styles/', '@taiga-ui/styles/')
-                    .replaceAll('@taiga-ui/kit/styles/', '@taiga-ui/styles/'),
-            );
-        });
+    getSourceFiles([...ALL_STYLE_FILES, ...PROJECT_JSON_FILES]).forEach((sourceFile) => {
+        sourceFile.replaceWithText(
+            ACTIONS.reduce(
+                (content, action) => action(content),
+                sourceFile.getFullText(),
+            ),
+        );
+    });
 
     saveActiveProject();
 }

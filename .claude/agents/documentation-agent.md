@@ -30,6 +30,26 @@ Generate comprehensive, developer-friendly documentation for every component, bl
 - `.claude/POLYMORPHEUS_GUIDE.md`
 - `.claude/POLYMORPHEUS_INTEGRATION_SUMMARY.md`
 
+## Style & Animation Inspiration: fluidfunctionalizm
+
+Alongside Taiga (architecture) and Tremor (styling), ngxpro now uses a third vendored reference tree: **`fluidfunctionalizm/`** — a Next.js + Tailwind v4 + Framer Motion component system with a refined animation language and modern neutral aesthetic.
+
+**Translation rule**: fluidfunctionalizm is React/Framer Motion. You must **study its patterns and reimplement in Angular** (Angular animations API, CSS transitions, `tailwind-variants`, signals). **Never import from `fluidfunctionalizm/` and never copy its code verbatim.**
+
+**Animation language** — three spring tiers from `fluidfunctionalizm/registry/default/lib/springs.ts` and `fluidfunctionalizm/animation-guidelines.md`:
+
+| Tier       | Duration | Bounce | Use for                                          |
+|------------|----------|--------|--------------------------------------------------|
+| `fast`     | 80ms     | 0      | Checkboxes, radios, toggles, tabs, chips         |
+| `moderate` | 160ms    | 0.15   | Dropdowns, tooltips, toasts, switches            |
+| `slow`     | 240ms    | 0.15   | Modals, drawers, sheets, large expansions        |
+
+**Golden rule**: exit animations are faster than enter animations — signals finality, keeps the UI responsive.
+
+**Visual aesthetic** — neutral minimal palette, class-based dark mode via CSS custom properties, 1px subtle borders, focus rings (not heavy outlines), minimal shadows, Inter font with balanced text wrapping. See `fluidfunctionalizm/app/globals.css` for the palette and `fluidfunctionalizm/registry/default/button.tsx` for CVA-style variant patterns (ngxpro equivalent: `tv()` from `tailwind-variants`).
+
+**Role-specific guidance (Documentation)**: when writing Storybook stories, README examples, and the showcase site, showcase **both light and dark mode** with the fluidfunctionalizm-inspired neutral palette (the default theme). Document the animation spring tier (`fast`/`moderate`/`slow`) each component uses in its props/behavior table so consumers understand the timing contract. Reference `fluidfunctionalizm/component-documentation-guidelines.md` for doc-page structure inspiration: interactive preview → installation → usage → props table → accessibility notes. Keep example code minimal — let visual restraint speak.
+
 ## Documentation Structure Per Component
 
 ### README.md Template

@@ -1,17 +1,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import {getFoldersToScan, getPagesPath} from './paths';
+
 export interface ComponentHeader {
     header: string | null;
     package: string | null;
     type: string | null;
     deprecated: boolean;
 }
-
-const PAGES_PATH = path.resolve(process.cwd(), 'projects/demo/src/pages');
-
-// child folders of the main `pages` folder from which the content will be taken
-const FOLDERS_TO_SCAN = ['components', 'directives', 'tokens', 'customization', 'pipes'];
 
 export async function fileExists(filePath: string): Promise<boolean> {
     try {
@@ -168,7 +165,8 @@ export function getComponentApiFromTable(content: string): string {
         return '';
     }
 
-    const rows: string[] = [];
+    const inputRows: string[] = [];
+    const outputRows: string[] = [];
 
     for (const row of apiRows) {
         const nameMatch = /name="([^"]+)"/i.exec(row);
@@ -180,15 +178,33 @@ export function getComponentApiFromTable(content: string): string {
             const type = typeMatch[1]?.trim();
             const description = descriptionMatch?.[1] ? descriptionMatch[1].trim() : '—';
 
-            rows.push(`| ${name} | \`${type}\` | ${description} |`);
+            // Check if it's an output (event): prioritize name starting with '(',
+            // then fall back to EventEmitter when it's not an input ('[').
+            const isOutput =
+                name?.startsWith('(') ||
+                (name?.startsWith('[') === false && type?.includes('EventEmitter'));
+
+            const rowContent = `| ${name} | \`${type}\` | ${description} |`;
+
+            if (isOutput) {
+                outputRows.push(rowContent);
+            } else {
+                inputRows.push(rowContent);
+            }
         }
     }
 
-    if (rows.length === 0) {
-        return '';
+    let result = '';
+
+    if (inputRows.length > 0) {
+        result += `\n### API - Inputs\n\n| Property | Type | Description |\n|----------|-----|----------|\n${inputRows.join('\n')}`;
     }
 
-    return `\n### API\n\n| Property | Type | Description |\n|----------|-----|----------|\n${rows.join('\n')}`;
+    if (outputRows.length > 0) {
+        result += `\n\n### API - Outputs\n\n| Event | Type | Description |\n|-------|------|-------------|\n${outputRows.join('\n')}`;
+    }
+
+    return result;
 }
 
 // parse API properties from tui-doc-documentation
@@ -209,7 +225,8 @@ export function getComponentApiFromTemplates(content: string): string {
         return '';
     }
 
-    const rows: string[] = [];
+    const inputRows: string[] = [];
+    const outputRows: string[] = [];
 
     for (const row of templateRows) {
         const nameMatch = /documentationPropertyName="([^"]+)"/i.exec(row);
@@ -226,15 +243,31 @@ export function getComponentApiFromTemplates(content: string): string {
 
             description = description.replaceAll(/\s+/g, ' ');
 
-            rows.push(`| ${name} | \`${type}\` | ${description} |`);
+            // Check if it's an output (event)
+            const isOutput =
+                name?.startsWith('[') === false && type?.includes('EventEmitter');
+
+            const rowContent = `| ${name} | \`${type}\` | ${description} |`;
+
+            if (isOutput) {
+                outputRows.push(rowContent);
+            } else {
+                inputRows.push(rowContent);
+            }
         }
     }
 
-    if (rows.length === 0) {
-        return '';
+    let result = '';
+
+    if (inputRows.length > 0) {
+        result += `\n### API - Inputs\n\n| Property | Type | Description |\n|----------|-----|----------|\n${inputRows.join('\n')}`;
     }
 
-    return `\n### API\n\n| Property | Type | Description |\n|----------|-----|----------|\n${rows.join('\n')}`;
+    if (outputRows.length > 0) {
+        result += `\n\n### API - Outputs\n\n| Event | Type | Description |\n|-------|------|-------------|\n${outputRows.join('\n')}`;
+    }
+
+    return result;
 }
 
 // parse example index.ts and index.less files
@@ -325,6 +358,7 @@ export async function getUsageExamples(
         name: string;
         html: string;
         ts: string;
+        less: string;
         heading: string;
         description: string;
     }> = [];
@@ -340,6 +374,7 @@ export async function getUsageExamples(
             const exampleFolder = path.join(examplesPath, entry.name);
             const htmlPath = path.join(exampleFolder, 'index.html');
             const tsPath = path.join(exampleFolder, 'index.ts');
+            const lessPath = path.join(exampleFolder, 'index.less');
 
             // Skip import folder as it's handled separately
             if (entry.name === 'import') {
@@ -348,6 +383,7 @@ export async function getUsageExamples(
 
             let html = '';
             let ts = '';
+            let less = '';
 
             if (await fileExists(htmlPath)) {
                 html = await fs.readFile(htmlPath, 'utf-8');
@@ -357,7 +393,11 @@ export async function getUsageExamples(
                 ts = await fs.readFile(tsPath, 'utf-8');
             }
 
-            if (html || ts) {
+            if (await fileExists(lessPath)) {
+                less = await fs.readFile(lessPath, 'utf-8');
+            }
+
+            if (html || ts || less) {
                 const exampleInfo = exampleDescriptions[entry.name] || {
                     heading: `Example ${entry.name}`,
                     description: '',
@@ -367,6 +407,7 @@ export async function getUsageExamples(
                     name: entry.name,
                     html: html.trim(),
                     ts: ts.trim(),
+                    less: less.trim(),
                     heading: exampleInfo.heading,
                     description: exampleInfo.description,
                 });
@@ -410,6 +451,10 @@ export async function getUsageExamples(
 
         if (example.ts) {
             result += `\n**TypeScript:**\n\`\`\`ts\n${example.ts}\n\`\`\``;
+        }
+
+        if (example.less) {
+            result += `\n**LESS:**\n\`\`\`less\n${example.less}\n\`\`\``;
         }
 
         result += '\n';
@@ -521,7 +566,7 @@ export function extractExampleDescriptions(
                     // Convert kebab-case to Title Case
                     heading = idMatch[1]
                         .split('-')
-                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                        .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
                         .join(' ');
                 }
             }
@@ -622,13 +667,13 @@ export async function getAllFolders(): Promise<string[]> {
         }
     }
 
-    for (const subFolder of FOLDERS_TO_SCAN) {
-        const dirPath = path.join(PAGES_PATH, subFolder);
+    for (const subFolder of getFoldersToScan()) {
+        const dirPath = path.join(getPagesPath(), subFolder);
 
         if (await fileExists(dirPath)) {
             await scanDir(dirPath, 0);
         } else {
-            console.warn(`Folder ${subFolder} not found in ${PAGES_PATH}`);
+            console.warn(`Folder ${subFolder} not found in ${getPagesPath()}`);
         }
     }
 
@@ -662,9 +707,13 @@ export async function getMarkdownFiles(startPath: string): Promise<string[]> {
 }
 
 // parse markdown files content
-export async function processMarkdownFile(filePath: string): Promise<string> {
+export async function processMarkdownFile(
+    filePath: string,
+    headingLevel = 1,
+): Promise<string> {
     const content = await fs.readFile(filePath, 'utf-8');
-    const title = `# ${path.basename(filePath)}`;
+    const normalizedHeadingLevel = Math.max(1, headingLevel);
+    const title = `${'#'.repeat(normalizedHeadingLevel)} ${path.basename(filePath)}`;
 
     // Clean up the content for better formatting
     const cleanContent = content

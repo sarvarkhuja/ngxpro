@@ -1,13 +1,14 @@
-@import '@taiga-ui/styles/utils.less';
+@import '../utils.less';
 
 tui-textfield:where(*&) {
     .scrollbar-hidden();
     .transition(color);
 
-    --t-height: var(--tui-height-l);
+    --t-height: calc(var(--tui-height-l) + 2.5 * var(--t-label) * var(--tui-font-offset));
     --t-padding: var(--tui-padding-l);
+    --t-label: 0;
     --t-label-y: -0.75rem;
-    --t-label-font: var(--tui-typography-body-s);
+    --t-label-font: var(--tui-typography-ui-s);
     --t-end: ~'0px';
     --t-start: ~'0px';
     --t-side: ~'0px';
@@ -22,7 +23,6 @@ tui-textfield:where(*&) {
     padding: 0 var(--t-padding);
     border-radius: var(--tui-radius-l);
     font: var(--tui-typography-ui-m);
-    line-height: 1.25rem;
     box-sizing: border-box;
     isolation: isolate;
 
@@ -101,7 +101,6 @@ tui-textfield:where(*&) {
 
         border-radius: var(--tui-radius-m);
         font: var(--tui-typography-ui-s);
-        line-height: 1rem;
 
         &[data-icon-start] {
             --t-start: 1.5rem;
@@ -132,15 +131,14 @@ tui-textfield:where(*&) {
     }
 
     &[data-size='m'] {
-        --t-height: var(--tui-height-m);
+        --t-height: calc(var(--tui-height-m) + 2.5 * var(--t-label) * var(--tui-font-offset));
         --t-padding: var(--tui-padding-m);
-        --t-label-font: var(--tui-typography-body-xs);
+        --t-label-font: var(--tui-typography-ui-xs);
         --t-label-y: -0.5625rem;
         --t-max: 0.125rem;
 
         border-radius: var(--tui-radius-m);
         font: var(--tui-typography-ui-s);
-        line-height: 1rem;
 
         &[data-icon-start] {
             --t-start: 2.125rem;
@@ -164,10 +162,6 @@ tui-textfield:where(*&) {
         }
     }
 
-    &[data-size='l'] {
-        --t-label: -0.7rem;
-    }
-
     &:is(._disabled, [data-state='disabled']) {
         pointer-events: none;
         opacity: var(--tui-disabled-opacity);
@@ -182,9 +176,12 @@ tui-textfield:where(*&) {
     }
 
     &._with-label {
+        --t-label: 1;
+
         & > .t-template,
         .t-filler,
         [tuiInput] {
+            inset-block-end: 0;
             padding-block-start: calc(var(--t-height) / 3);
             padding-block-end: 0;
         }
@@ -204,10 +201,9 @@ tui-textfield:where(*&) {
     .t-filler,
     [tuiInput] {
         position: absolute;
-        inset-block-start: 0;
         inset-inline: 0;
         inline-size: auto;
-        block-size: 100%;
+        block-size: var(--t-height);
         appearance: none;
         background: none;
         font: inherit;
@@ -253,8 +249,7 @@ tui-textfield:where(*&) {
         [tuiLabel],
         &:not(tui-textfield) ~ [tuiLabel] {
             font: var(--t-label-font);
-            line-height: var(--t-height);
-            transform: translateY(var(--t-label-y));
+            transform: translateY(calc(var(--t-label-y) - var(--tui-font-offset) / 2));
         }
     }
 
@@ -265,12 +260,18 @@ tui-textfield:where(*&) {
 
         position: relative;
         display: block;
+        max-inline-size: calc(100% - var(--t-start));
         flex: 1;
         align-self: flex-start;
-        font-size: inherit;
+        font: inherit;
         user-select: none;
-        line-height: var(--t-height);
+        padding: calc(var(--t-height) / 2 - 0.625em) 0;
+        line-height: 1.25 !important;
         transition-duration: inherit;
+
+        + .t-content {
+            margin-inline-start: 0;
+        }
     }
 
     [tuiLabel],
@@ -354,8 +355,7 @@ tui-textfield:where(*&) {
             [tuiLabel] {
                 color: var(--tui-text-primary) !important;
                 font: var(--t-label-font);
-                line-height: var(--t-height);
-                transform: translateY(var(--t-label-y));
+                transform: translateY(calc(var(--t-label-y) - var(--tui-font-offset) / 2));
             }
         });
     }

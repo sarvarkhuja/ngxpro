@@ -1,0 +1,259 @@
+import {DemoRoute} from '@demo/routes';
+import {
+    TuiCalendarMonthPO,
+    TuiDocumentationPagePO,
+    tuiGoto,
+    TuiInputMonthPO,
+} from '@demo-playwright/utils';
+import {expect, type Locator, test} from '@playwright/test';
+
+import {TUI_PLAYWRIGHT_MOBILE} from '../../../playwright.options';
+
+const {describe, beforeEach} = test;
+
+describe('InputMonth', () => {
+    let example: Locator;
+    let inputMonth: TuiInputMonthPO;
+
+    describe('API', () => {
+        beforeEach(({page}) => {
+            example = new TuiDocumentationPagePO(page).demo;
+            inputMonth = new TuiInputMonthPO(
+                example.locator('tui-textfield:has([tuiInputMonth])'),
+            );
+        });
+
+        describe('dropdown', () => {
+            test('opens on click for NOT readonly input', async ({page}) => {
+                await tuiGoto(page, `${DemoRoute.InputMonth}/API?readOnly=false`);
+
+                await expect(inputMonth.calendar).not.toBeAttached();
+                await inputMonth.textfield.click();
+                await expect(inputMonth.calendar).toBeAttached();
+            });
+
+            test('does NOT open on click for readonly input', async ({page}) => {
+                await tuiGoto(page, `${DemoRoute.InputMonth}/API?readOnly=true`);
+
+                await expect(inputMonth.calendar).not.toBeAttached();
+                await inputMonth.textfield.click();
+                await expect(inputMonth.calendar).not.toBeAttached();
+            });
+
+            test('does NOT open on click for disabled input', async ({page}) => {
+                await tuiGoto(page, `${DemoRoute.InputMonth}/API?disabled=true`);
+
+                await expect(inputMonth.calendar).not.toBeAttached();
+                // eslint-disable-next-line playwright/no-force-option
+                await inputMonth.textfield.click({force: true});
+                await expect(inputMonth.calendar).not.toBeAttached();
+            });
+
+            test('closes dropdown on the second click on the textfield', async ({
+                page,
+            }) => {
+                await tuiGoto(page, `${DemoRoute.InputMonth}/API`);
+
+                await inputMonth.textfield.click();
+                await expect(inputMonth.calendar).toBeAttached();
+                await inputMonth.textfield.click();
+                await expect(inputMonth.calendar).not.toBeAttached();
+            });
+
+            test('closes on Esc', async ({page}) => {
+                await tuiGoto(page, `${DemoRoute.InputMonth}/API`);
+
+                await inputMonth.textfield.click();
+                await expect(inputMonth.calendar).toBeAttached();
+                await page.keyboard.press('Escape');
+                await expect(inputMonth.calendar).not.toBeAttached();
+            });
+
+            test('opens dropdown after click on textfield cleaner', async ({page}) => {
+                await tuiGoto(page, `${DemoRoute.InputMonth}/API`);
+
+                await inputMonth.textfield.click();
+
+                const calendarMonth = new TuiCalendarMonthPO(inputMonth.calendar);
+
+                await calendarMonth.month.nth(8).click();
+                await expect(inputMonth.textfield).toHaveValue('September 2020');
+                await expect(inputMonth.calendar).not.toBeAttached();
+
+                await inputMonth.cleaner.click();
+                await expect(inputMonth.textfield).toHaveValue('');
+                await expect(inputMonth.calendar).toBeAttached();
+            });
+
+            test('opens dropdown on click on calendar icon (disabled=false&readOnly=false)', async ({
+                page,
+            }) => {
+                await tuiGoto(
+                    page,
+                    `${DemoRoute.InputMonth}/API?disabled=false&readOnly=false`,
+                );
+
+                await expect(inputMonth.calendar).not.toBeAttached();
+
+                await inputMonth.clickOnIcon();
+                await expect(inputMonth.calendar).toBeAttached();
+            });
+
+            test('does NOT open dropdown on click on calendar icon for disabled input', async ({
+                page,
+            }) => {
+                await tuiGoto(
+                    page,
+                    `${DemoRoute.InputMonth}/API?disabled=true&readOnly=false`,
+                );
+
+                await expect(inputMonth.calendar).not.toBeAttached();
+
+                await inputMonth.clickOnIcon({force: true});
+                await expect(inputMonth.calendar).not.toBeAttached();
+            });
+
+            test('does NOT open dropdown on click on calendar icon for readonly input', async ({
+                page,
+            }) => {
+                await tuiGoto(
+                    page,
+                    `${DemoRoute.InputMonth}/API?disabled=false&readOnly=true`,
+                );
+
+                await expect(inputMonth.calendar).not.toBeAttached();
+
+                await inputMonth.clickOnIcon();
+                await expect(inputMonth.calendar).not.toBeAttached();
+            });
+
+            describe('with enabled native picker', () => {
+                test.use(TUI_PLAYWRIGHT_MOBILE);
+
+                beforeEach(async ({page}) => {
+                    await tuiGoto(page, DemoRoute.InputMonth);
+                    example = new TuiDocumentationPagePO(page).getExample(
+                        '#native-picker',
+                    );
+                    inputMonth = new TuiInputMonthPO(
+                        example.locator('tui-textfield:has([tuiInputMonth])'),
+                    );
+                });
+
+                test('does NOT open desktop dropdown on click', async () => {
+                    await inputMonth.host.click();
+                    await expect(inputMonth.calendar).not.toBeAttached();
+                });
+
+                test('does NOT open desktop dropdown on cleaner click', async () => {
+                    await inputMonth.host.click();
+                    await inputMonth.nativePicker.fill('2025-04');
+                    await expect(inputMonth.textfield).toHaveValue('April 2025');
+                    await expect(inputMonth.calendar).not.toBeAttached();
+
+                    await inputMonth.cleaner.click();
+                    await expect(inputMonth.textfield).toHaveValue('');
+                    await expect(inputMonth.calendar).not.toBeAttached();
+                });
+
+                test('does NOT open desktop dropdown on calendar icon click', async () => {
+                    await inputMonth.clickOnIcon();
+                    await expect(inputMonth.calendar).not.toBeAttached();
+                });
+            });
+        });
+    });
+
+    describe('Examples', () => {
+        beforeEach(async ({page}) => {
+            await tuiGoto(page, DemoRoute.InputMonth);
+        });
+
+        describe('Dropdown customization', () => {
+            let dropdown!: Locator;
+
+            beforeEach(({page}) => {
+                example = new TuiDocumentationPagePO(page).getExample(
+                    '#dropdown-customization',
+                );
+                inputMonth = new TuiInputMonthPO(
+                    example.locator('tui-textfield:has([tuiInputMonth])'),
+                );
+                dropdown = page.locator('tui-dropdown');
+            });
+
+            test('displays custom option on dropdown', async () => {
+                await inputMonth.textfield.click();
+
+                await expect
+                    .soft(dropdown)
+                    .toHaveScreenshot('input-month-with-dropdown-customization.png');
+            });
+
+            test('closes dropdown after click on custom option', async () => {
+                await inputMonth.textfield.click();
+                await expect(inputMonth.calendar).toBeAttached();
+
+                await dropdown.locator('button', {hasText: "My wife's birthday"}).click();
+                await expect(inputMonth.calendar).not.toBeAttached();
+                await expect(inputMonth.textfield).toHaveValue('March 1998');
+            });
+        });
+
+        describe('Month range', () => {
+            beforeEach(({page}) => {
+                example = new TuiDocumentationPagePO(page).getExample('#range-mode');
+                inputMonth = new TuiInputMonthPO(
+                    example.locator('tui-textfield:has([tuiInputMonthRange])'),
+                );
+            });
+
+            test('range select', async () => {
+                await inputMonth.textfield.click();
+
+                const calendarMonth = new TuiCalendarMonthPO(inputMonth.calendar);
+
+                await calendarMonth.month.nth(1).click();
+                await calendarMonth.month.nth(4).click();
+
+                await expect(inputMonth.textfield).toHaveValue(
+                    'February 2020 – May 2020',
+                );
+                await expect(inputMonth.calendar).not.toBeAttached();
+            });
+
+            test('disabled items', async () => {
+                await inputMonth.textfield.click();
+
+                const calendarMonth = new TuiCalendarMonthPO(inputMonth.calendar);
+
+                await calendarMonth.month.nth(1).click();
+                await expect(async () => {
+                    await calendarMonth.month.nth(3).click();
+                }).rejects.toThrow();
+
+                await expect(inputMonth.textfield).toHaveValue('');
+                await expect(example).toHaveScreenshot(
+                    'input-month-range-disabled-items.png',
+                );
+            });
+        });
+
+        describe('Native picker', () => {
+            test.use(TUI_PLAYWRIGHT_MOBILE);
+
+            beforeEach(async ({page}) => {
+                await tuiGoto(page, DemoRoute.InputMonth);
+                example = new TuiDocumentationPagePO(page).getExample('#native-picker');
+                inputMonth = new TuiInputMonthPO(
+                    example.locator('tui-textfield:has([tuiInputMonth])'),
+                );
+            });
+
+            test('is clickable', async () => {
+                await inputMonth.nativePicker.click();
+                await expect(inputMonth.nativePicker).toBeFocused();
+            });
+        });
+    });
+});

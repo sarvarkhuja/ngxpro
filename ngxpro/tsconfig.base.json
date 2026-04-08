@@ -32,6 +32,7 @@
       "@nxp/components/input-month": ["libs/components/input-month/src/index.ts"],
       "@nxp/components/text-morph": ["libs/components/text-morph/src/index.ts"],
       "@nxp/cdk/components/icon": ["libs/cdk/src/lib/components/icon/src/index.ts"],
+      "@nxp/cdk/components/copy": ["libs/cdk/src/lib/components/copy/src/index.ts"],
       "@nxp/components/checkbox": ["libs/components/checkbox/src/index.ts"],
       "@nxp/components/radio": ["libs/components/radio/src/index.ts"],
       "@nxp/components/textfield": ["libs/components/textfield/src/index.ts"],

@@ -17,4 +17,4 @@ export { nxpIsEditingKey } from './editing-key';
 export { nxpCheckFixedPosition } from './check-fixed-position';
 export { nxpGetWordRange } from './get-word-range';
 export { nxpSanitizeText } from './sanitize-text';
-export { nxpGetClipboardDataText } from './clipboard';
+export { nxpGetClipboardDataText, nxpWriteToClipboard } from './clipboard';

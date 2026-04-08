@@ -10,7 +10,7 @@ import {TuiSlider, TuiTitle} from '@taiga-ui/core';
 })
 export default class Page {
     protected readonly examples = [
-        'Thumb radius',
+        'Size',
         'Colors',
         'Segments',
         'Disabled',
@@ -19,13 +19,7 @@ export default class Page {
         'Vertical',
     ];
 
-    protected readonly segmentsVariants: Array<number[] | number> = [
-        1,
-        5,
-        3,
-        [0.2, 0.5],
-        [0.1, 0.3],
-    ];
+    protected readonly segmentsVariants = [1, 5, 3, [0.2, 0.5], [0.1, 0.3]];
 
     protected readonly control = new FormControl(1);
 

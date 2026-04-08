@@ -1,0 +1,53 @@
+import {type TuiDocRoutePage, type TuiDocRoutePages} from '@taiga-ui/addon-doc';
+
+// Knip problem
+// noinspection ES6PreferShortImport
+import {DemoRoute} from '../../demo/src/pages/app/demo-routes';
+
+function flatPages(pages: TuiDocRoutePages): readonly TuiDocRoutePage[] {
+    return pages.reduce(
+        (prev: readonly TuiDocRoutePage[], next) => [
+            ...prev,
+            ...('subPages' in next ? next.subPages : [next]),
+        ],
+        [],
+    );
+}
+
+export const EXCLUDED_SECTIONS = [
+    'Documentation',
+    'Foundations',
+    'Tools',
+    'Testing',
+    'Icons',
+];
+
+export const EXCLUDED_ROUTES = [
+    DemoRoute.GettingStarted,
+    DemoRoute.I18N,
+    DemoRoute.Preview, // no need take screenshot of buttons
+    DemoRoute.Dialog, // just buttons
+    DemoRoute.DialogRoutable, // just buttons
+    DemoRoute.SheetDialog, // just buttons
+    DemoRoute.Error,
+    DemoRoute.MobileCalendar, // TODO: flaky test, need investigate
+];
+
+export function tuiGetDemoPathsForE2E(
+    pages: TuiDocRoutePages,
+    exclusionSection: string[] = EXCLUDED_SECTIONS,
+    exclusionRoutes: string[] = EXCLUDED_ROUTES,
+): string[] {
+    return Array.from(
+        new Set(
+            flatPages(pages)
+                .filter(
+                    (page) =>
+                        !exclusionSection.includes(page.section!) &&
+                        !exclusionRoutes.includes(page.route) &&
+                        !page.route.includes('://'),
+                )
+                .map(({route}) => route),
+        ),
+    );
+}

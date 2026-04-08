@@ -23,7 +23,7 @@ export default class Page {
         'xxl',
     ];
 
-    protected size: TuiSizeXS | TuiSizeXXL = this.sizeVariants[2]!;
+    protected size = this.sizeVariants[2]!;
 
     protected readonly colorVariants: readonly string[] = [
         'var(--tui-background-accent-1)',
@@ -34,4 +34,14 @@ export default class Page {
     ];
 
     protected color = this.colorVariants[0]!;
+
+    protected readonly examples = [
+        'Basic',
+        'Multicolor',
+        'Sizes',
+        'With label',
+        'Stacked progress bars',
+        'Indeterminate',
+        'Customizable corners',
+    ];
 }

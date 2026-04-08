@@ -29,6 +29,26 @@ Create base UI components from scratch, combining **Taiga UI architecture patter
 - `.claude/POLYMORPHEUS_GUIDE.md`
 - `.claude/POLYMORPHEUS_INTEGRATION_SUMMARY.md`
 
+## Style & Animation Inspiration: fluidfunctionalizm
+
+Alongside Taiga (architecture) and Tremor (styling), ngxpro now uses a third vendored reference tree: **`fluidfunctionalizm/`** — a Next.js + Tailwind v4 + Framer Motion component system with a refined animation language and modern neutral aesthetic.
+
+**Translation rule**: fluidfunctionalizm is React/Framer Motion. You must **study its patterns and reimplement in Angular** (Angular animations API, CSS transitions, `tailwind-variants`, signals). **Never import from `fluidfunctionalizm/` and never copy its code verbatim.**
+
+**Animation language** — three spring tiers from `fluidfunctionalizm/registry/default/lib/springs.ts` and `fluidfunctionalizm/animation-guidelines.md`:
+
+| Tier       | Duration | Bounce | Use for                                          |
+|------------|----------|--------|--------------------------------------------------|
+| `fast`     | 80ms     | 0      | Checkboxes, radios, toggles, tabs, chips         |
+| `moderate` | 160ms    | 0.15   | Dropdowns, tooltips, toasts, switches            |
+| `slow`     | 240ms    | 0.15   | Modals, drawers, sheets, large expansions        |
+
+**Golden rule**: exit animations are faster than enter animations — signals finality, keeps the UI responsive.
+
+**Visual aesthetic** — neutral minimal palette, class-based dark mode via CSS custom properties, 1px subtle borders, focus rings (not heavy outlines), minimal shadows, Inter font with balanced text wrapping. See `fluidfunctionalizm/app/globals.css` for the palette and `fluidfunctionalizm/registry/default/button.tsx` for CVA-style variant patterns (ngxpro equivalent: `tv()` from `tailwind-variants`).
+
+**Role-specific guidance (Component Generator)**: for every base component, pick an appropriate spring tier for open/close/toggle transitions (checkbox → `fast`, dropdown/tooltip → `moderate`, dialog/sheet → `slow`) and consume the shared constants from `@nxp/cdk`. Study the matching component in `fluidfunctionalizm/registry/default/` before implementing (e.g., `button.tsx`, `switch.tsx`, `accordion.tsx`) to absorb aesthetic cues: neutral palette, focus ring over heavy borders, stroke-width transitions on icon hover, CVA-style compound variants (implemented via `tv()`). Always make exit animations faster than enter.
+
 ## Project Context
 
 - **Package path**: `libs/components/`

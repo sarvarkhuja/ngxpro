@@ -28,7 +28,10 @@ import { NXP_TEXTAREA_OPTIONS } from './textarea.options';
  * <textarea nxpTextarea [min]="3" [max]="8" placeholder="Enter text..."></textarea>
  * ```
  *
- * Inside nxp-textfield (add `class="h-auto"` to textfield for auto-sizing):
+ * Inside nxp-textfield with a label (form-field mode), the textarea keeps its
+ * own border like Tremor Textarea. For box-only textfields (no label), the
+ * wrapper supplies the chrome — the textarea stays borderless.
+ *
  * ```html
  * <nxp-textfield class="h-auto">
  *   <label nxpLabel>Description</label>
@@ -83,7 +86,7 @@ export class NxpTextareaComponent implements NxpTextfieldAccessor, OnInit {
   // Line height: Tailwind's `leading-normal` is 1.5 (24px at 16px base)
   // Vertical padding: py-2 = 0.5rem top + 0.5rem bottom
   private readonly LINE_HEIGHT_REM = 1.5;
-  private readonly PADDING_V_REM = 1.0; // py-2 top+bottom = 0.5 + 0.5
+  private readonly PADDING_V_REM = 0.75;
 
   setValue(value: unknown | null): void {
     this.el.focus();
@@ -98,33 +101,37 @@ export class NxpTextareaComponent implements NxpTextfieldAccessor, OnInit {
   }
 
   readonly hostClasses = computed(() => {
-    if (this.textfield) {
+    if (this.textfield && !this.textfield.hasLabel()) {
       return cx(
-        // When inside nxp-textfield, fill width and remove border/bg (textfield provides them)
+        // Box-mode textfield (no label): wrapper border/bg; textarea is transparent
         'block w-full bg-transparent border-0 outline-none ring-0',
         'text-gray-900 dark:text-gray-50 sm:text-sm',
         'placeholder:text-gray-400 dark:placeholder:text-gray-500',
         'disabled:cursor-not-allowed',
-        'px-3 py-2',
+        'px-3 py-1.5',
         'resize-none overflow-auto',
         'whitespace-pre-wrap break-words',
         this.class(),
       );
     }
 
-    // Standalone: full styled
+    const textfieldError =
+      !!this.textfield?.hasLabel() && this.textfield.hasError();
+    const showError = this.hasError() || textfieldError;
+
+    // Standalone OR form-field textfield (with label) — Tremor Textarea.tsx
     return cx(
-      'block w-full appearance-none rounded-md border px-3 py-2 shadow-sm outline-none transition sm:text-sm',
+      'flex min-h-[4rem] w-full rounded-md border px-3 py-1.5 shadow-xs outline-hidden transition-colors sm:text-sm',
+      'text-gray-900 dark:text-gray-50',
       'border-gray-300 dark:border-gray-800',
       'bg-white dark:bg-gray-950',
-      'text-gray-900 dark:text-gray-50',
       'placeholder:text-gray-400 dark:placeholder:text-gray-500',
-      'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400',
-      'dark:disabled:bg-gray-800 dark:disabled:text-gray-500',
+      'disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-300',
+      'dark:disabled:border-gray-700 dark:disabled:bg-gray-800 dark:disabled:text-gray-500',
       'resize-none overflow-auto',
       'whitespace-pre-wrap break-words',
       ...focusInput,
-      ...(this.hasError() ? hasErrorInput : []),
+      ...(showError ? hasErrorInput : []),
       this.class(),
     );
   });

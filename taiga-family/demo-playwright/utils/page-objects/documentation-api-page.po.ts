@@ -1,0 +1,130 @@
+import {expect, type Locator, type Page} from '@playwright/test';
+
+import {tuiHideElement, tuiRemoveElement} from '../hide-element';
+import {waitIcons} from '../wait-icons';
+import {waitStableState} from '../wait-stable-state';
+
+export class TuiDocumentationApiPagePO {
+    private readonly loadedIcons = new Set<string>();
+
+    public readonly examples = this.page.locator('tui-doc-example');
+    public readonly demo = this.page.locator('tui-doc-demo > .t-wrapper');
+    public readonly value = this.page.locator('tui-doc-demo > tui-expand pre');
+
+    constructor(protected readonly page: Page) {}
+
+    public async waitStableState(): Promise<void> {
+        if ((await this.demo.all()).length) {
+            await waitStableState(this.demo);
+        } else if ((await this.examples.all()).length) {
+            for (const example of await this.examples.all()) {
+                await waitStableState(example);
+            }
+        }
+    }
+
+    public async hideNotifications(): Promise<void> {
+        const notifications = await this.page
+            .locator('tui-popups tui-notification-alert')
+            .all();
+
+        for (const notification of notifications) {
+            await tuiHideElement(notification);
+        }
+    }
+
+    public async hideHeader(): Promise<void> {
+        const headers = await this.page.locator('[tuiDocHeader]').all();
+
+        for (const header of headers) {
+            await tuiRemoveElement(header);
+        }
+    }
+
+    public async hideScrollbars(): Promise<void> {
+        const bars = await this.page.locator('tui-scroll-controls .t-bar').all();
+
+        for (const bar of bars) {
+            await tuiHideElement(bar);
+        }
+    }
+
+    public async hideContent(): Promise<void> {
+        await this.hideScrollbars();
+        await this.hideHeader();
+
+        return tuiHideElement(this.page.locator('tui-doc-page'));
+    }
+
+    public async hideDocumentation(): Promise<void> {
+        const documentations = await this.page
+            .locator('tui-doc-documentation, [tuiDocApi]')
+            .all();
+
+        for (const documentation of documentations) {
+            await tuiHideElement(documentation);
+        }
+    }
+
+    public async hideNavigation(): Promise<void> {
+        return tuiHideElement(this.page.locator('tui-doc-navigation'));
+    }
+
+    public async prepareBeforeScreenshot(): Promise<void> {
+        await this.hideDocumentation();
+        await this.hideNavigation();
+        await this.hideNotifications();
+        await this.hideScrollbars();
+
+        if ((await this.demo.all()).length) {
+            await this.demo.evaluate((el) => el.scrollIntoView());
+            await expect(this.demo).toBeInViewport();
+        }
+    }
+
+    public getRow(rowName: string): Locator {
+        return this.page.locator(
+            `.t-table .t-row:has-text("${rowName}"), [tuiDocApi] tr:has-text("${rowName}")`,
+        );
+    }
+
+    public async getRows(): Promise<Locator[]> {
+        return this.page.locator('[tuiDocApiItem]').all();
+    }
+
+    public async getSelect(row: Locator): Promise<Locator | null> {
+        return (
+            ((await row.locator('[tuiSelect], [tuiSelectLike]').all()) ?? [])?.[0] ?? null
+        );
+    }
+
+    public async getNameProperty(row: Locator): Promise<string> {
+        return decodeURI((await row.locator('code.t-name').textContent())?.trim() ?? '');
+    }
+
+    public async getOptions(): Promise<Locator[]> {
+        return this.page.locator('tui-data-list-wrapper [tuiOption]').all();
+    }
+
+    public async focusOnBody(): Promise<void> {
+        await this.page.locator('body').click({position: {x: 0, y: 0}});
+    }
+
+    public async getCleaner(select: Locator): Promise<Locator | null> {
+        return (
+            ((await select
+                .locator('[automation-id="tui-primitive-textfield__cleaner"]')
+                .all()) ?? [])?.[0] ?? null
+        );
+    }
+
+    public async getToggle(row: Locator): Promise<Locator | null> {
+        return ((await row.locator('input[tuiSwitch]').all()) ?? [])?.[0] ?? null;
+    }
+
+    public async waitTuiIcons(): Promise<void> {
+        const icons = await this.page.locator('tui-icon').all();
+
+        await waitIcons({page: this.page, icons, cache: this.loadedIcons});
+    }
+}
