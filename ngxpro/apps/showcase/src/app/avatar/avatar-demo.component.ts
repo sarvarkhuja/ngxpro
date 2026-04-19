@@ -17,7 +17,7 @@ import {
 })
 export class AvatarDemoComponent {
   readonly sizes: AvatarSize[] = ['xs', 's', 'm', 'l', 'xl'];
-  readonly appearances: AvatarAppearance[] = ['primary', 'negative', 'neutral', ''];
+  readonly appearances: AvatarAppearance[] = ['primary', 'negative', 'neutral'];
 
   readonly outlineColors = [
     { color: '#3b82f6', label: 'Blue' },

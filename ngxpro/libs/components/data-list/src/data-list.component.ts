@@ -1,19 +1,25 @@
 import {
-  AfterContentChecked,
+  AfterViewChecked,
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  inject,
+  computed,
   input,
+  model,
   signal,
 } from '@angular/core';
-import { cx } from '@nxp/cdk';
+import {
+  cx,
+  NxpAnimatedProximityBase,
+  type NxpItemRect,
+} from '@nxp/cdk';
 
 /**
- * DataList — accessible listbox container.
+ * DataList — accessible listbox container with animated proximity-hover.
  *
  * Wraps a list of `<button nxpOption>` or `<div nxpOptGroup>` children in a
  * `role="listbox"` container with:
+ * - **Animated indicators**: Selected background, hover background, focus ring
+ *   driven by pointer proximity (extends `NxpAnimatedProximityBase`).
  * - **Keyboard navigation**: Arrow / Home / End keys move focus between options.
  * - **Empty state**: Placeholder when no options are projected.
  * - **Size variants**: Readable by child `[nxpOption]` via direct parent injection.
@@ -29,23 +35,12 @@ import { cx } from '@nxp/cdk';
  *
  * @example
  * <!-- With preset periods (CalendarRange use-case) -->
- * <nxp-data-list emptyLabel="No presets" size="sm">
- *   @for (item of periods; track item.label) {
- *     <button nxpOption [selected]="isActive(item)" (click)="select(item)">
+ * <nxp-data-list emptyLabel="No presets" size="sm" [(selectedIndex)]="activeIdx">
+ *   @for (item of periods; track item.label; let i = $index) {
+ *     <button nxpOption [selected]="isActive(item)" (click)="select(item, i)">
  *       {{ item.label }}
  *     </button>
  *   }
- * </nxp-data-list>
- *
- * @example
- * <!-- With opt-groups -->
- * <nxp-data-list>
- *   <div nxpOptGroup label="Quick picks">
- *     <button nxpOption>Today</button>
- *   </div>
- *   <div nxpOptGroup label="Ranges">
- *     <button nxpOption>Last 7 days</button>
- *   </div>
  * </nxp-data-list>
  */
 @Component({
@@ -57,6 +52,10 @@ import { cx } from '@nxp/cdk';
     '[attr.aria-label]': 'label() || null',
     '[class]': 'hostClass()',
     '(keydown)': 'onKeydown($event)',
+    '(mousemove)': 'onMouseMove($event)',
+    '(mouseleave)': 'onMouseLeave()',
+    '(focusin)': 'onFocusIn($event)',
+    '(focusout)': 'onFocusOut()',
   },
   template: `
     <ng-content />
@@ -64,17 +63,55 @@ import { cx } from '@nxp/cdk';
     @if (empty()) {
       <span
         class="flex items-center justify-center px-3 py-5 text-sm text-gray-400 dark:text-gray-600 select-none"
-        aria-selected="false"
-        aria-disabled="true"
-        role="option"
+        role="presentation"
       >
         {{ emptyLabel() }}
       </span>
     }
+
+    <!-- Active/selected background overlay -->
+    @if (selectedRect(); as r) {
+      <div
+        class="absolute pointer-events-none rounded-lg bg-neutral-900/[0.06] dark:bg-white/[0.08]"
+        [style.left.px]="r.left"
+        [style.top.px]="r.top"
+        [style.width.px]="r.width"
+        [style.height.px]="r.height"
+        [style.opacity]="isHoveringOther() ? 0.8 : 1"
+        [style.transition]="segmentTransition"
+      ></div>
+    }
+
+    <!-- Hover background overlay (all hovered items including selected) -->
+    @if (hoverRect(); as h) {
+      <div
+        class="absolute pointer-events-none rounded-lg bg-neutral-900/[0.04] dark:bg-white/[0.05]"
+        [style.left.px]="h.left"
+        [style.top.px]="h.top"
+        [style.width.px]="h.width"
+        [style.height.px]="h.height"
+        [style.transition]="hoverTransition"
+      ></div>
+    }
+
+    <!-- Focus ring overlay -->
+    @if (focusRect(); as f) {
+      <div
+        class="absolute pointer-events-none z-20 rounded-lg border border-[#6B97FF]"
+        [style.left.px]="f.left - 2"
+        [style.top.px]="f.top - 2"
+        [style.width.px]="f.width + 4"
+        [style.height.px]="f.height + 4"
+        [style.transition]="hoverTransition"
+      ></div>
+    }
   `,
 })
-export class DataListComponent implements AfterContentChecked {
-  private readonly elRef = inject(ElementRef);
+export class DataListComponent
+  extends NxpAnimatedProximityBase
+  implements AfterViewChecked
+{
+  protected readonly axis = 'y' as const;
 
   // ------------------------------------------------------------------ inputs
 
@@ -99,22 +136,79 @@ export class DataListComponent implements AfterContentChecked {
   /** Additional CSS classes merged onto the host element. */
   readonly class = input<string>('');
 
+  /** Index of the currently selected option (two-way bindable). */
+  readonly selectedIndex = model<number | null>(null);
+
   // ------------------------------------------------------------------ state
 
-  /** True when no `button[role="option"]` children are found in the DOM. */
+  /** True when no projected `button[nxpOption]` children are found in the DOM. */
   protected readonly empty = signal(false);
+
+  /**
+   * Auto-derived selected index from whichever option has `aria-selected="true"`.
+   * Falls back to the explicit `selectedIndex` model when set.
+   * This mirrors how `NxpNavComponent` derives `checkedIndex` from children.
+   */
+  private readonly derivedSelectedIndex = signal<number | null>(null);
+
+  /** Effective selected index: explicit model takes priority, then auto-derived. */
+  private readonly effectiveSelectedIndex = computed<number | null>(() =>
+    this.selectedIndex() ?? this.derivedSelectedIndex(),
+  );
+
+  /** Rect of the selected item for the active overlay. */
+  protected readonly selectedRect = computed<NxpItemRect | null>(() => {
+    const idx = this.effectiveSelectedIndex();
+    return idx == null ? null : this.itemRects()[idx] ?? null;
+  });
 
   // ------------------------------------------------------------------ host class
 
   protected readonly hostClass = () =>
-    cx('flex flex-col gap-0.5 min-w-[9rem]', this.class());
+    cx('relative flex flex-col gap-0.5 min-w-[9rem] select-none', this.class());
+
+  // ------------------------------------------------------------------ public API for children
+
+  /** Whether the given element is the currently hovered item. */
+  isItemHovered(el: HTMLElement): boolean {
+    const idx = this.hoveredIndex();
+    if (idx === null) return false;
+    const items = this.getItems();
+    return items[idx] === el;
+  }
+
+  // ------------------------------------------------------------------ base hooks
+
+  protected override resolveActiveIndex(): number | null {
+    return this.effectiveSelectedIndex();
+  }
+
+  protected override getItems(): readonly HTMLElement[] {
+    const options = this.hostEl.querySelectorAll(
+      '[role="option"]:not([aria-disabled="true"])',
+    );
+    return Array.from(options) as HTMLElement[];
+  }
 
   // ------------------------------------------------------------------ lifecycle
 
-  ngAfterContentChecked(): void {
-    const host = this.elRef.nativeElement as HTMLElement;
-    const options = host.querySelectorAll('[role="option"]');
-    this.empty.set(options.length === 0);
+  ngAfterViewChecked(): void {
+    this.syncIfItemCountChanged();
+
+    // Count only projected nxpOption buttons — NOT the empty-state placeholder.
+    const projected = this.hostEl.querySelectorAll('button[nxpOption]');
+    this.empty.set(projected.length === 0);
+
+    // Auto-derive selected index from whichever option has aria-selected="true".
+    // This lets consumers just use [selected] on nxpOption without needing
+    // to also bind [(selectedIndex)] on the data-list.
+    if (this.selectedIndex() == null) {
+      const items = this.getItems();
+      const idx = items.findIndex(
+        (el) => el.getAttribute('aria-selected') === 'true',
+      );
+      this.derivedSelectedIndex.set(idx === -1 ? null : idx);
+    }
   }
 
   // ------------------------------------------------------------------ keyboard navigation
@@ -135,11 +229,7 @@ export class DataListComponent implements AfterContentChecked {
       return;
     }
 
-    const host = this.elRef.nativeElement as HTMLElement;
-    const nodeList = host.querySelectorAll(
-      '[role="option"]:not([disabled]):not([aria-disabled="true"])',
-    );
-    const options = Array.from(nodeList) as HTMLElement[];
+    const options = this.getItems();
 
     if (!options.length) return;
 

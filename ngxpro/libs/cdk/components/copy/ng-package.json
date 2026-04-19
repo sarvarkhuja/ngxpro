@@ -1,0 +1,5 @@
+{
+  "lib": {
+    "entryFile": "../../src/lib/components/copy/src/index.ts"
+  }
+}

@@ -8,7 +8,6 @@ import {
 import type { DisabledHandler } from 'libs/cdk/src/lib/components/calendar/src';
 import {
   DataListComponent,
-  NxpDataList,
   OptionDirective,
   OptGroupDirective,
 } from '@nxp/components/data-list';
@@ -84,17 +83,16 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
 }
 
 /**
- * Full showcase demo for CalendarRange + DataList.
+ * Full showcase demo for CalendarRange.
  *
  * Sections:
- *  1. DataList standalone — keyboard nav, sizes, groups, empty state
- *  2. Basic range picker — two calendars side-by-side
- *  3. Preset periods sidebar — DataList integration
- *  4. Grouped presets — OptGroup inside DataList
- *  5. Min / Max bounds (±30 days)
- *  6. Min / Max range length (3 – 14 days)
- *  7. Disabled weekends
- *  8. Custom marker handler
+ *  1. Basic range picker — two calendars side-by-side
+ *  2. Preset periods sidebar — DataList integration
+ *  3. Grouped presets — OptGroup inside DataList
+ *  4. Min / Max bounds (±30 days)
+ *  5. Min / Max range length (3 – 14 days)
+ *  6. Disabled weekends
+ *  7. Presets + bounds combined
  */
 @Component({
   selector: 'app-calendar-range-demo',
@@ -119,7 +117,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
         </a>
         <span class="text-gray-300 dark:text-gray-700">|</span>
         <h1 class="text-sm font-semibold text-gray-900 dark:text-white">
-          Calendar Range + DataList
+          Calendar Range
         </h1>
       </div>
 
@@ -127,136 +125,20 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
 
         <!-- ── Hero ───────────────────────────────────────────────────────── -->
         <div class="space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-primary/10 text-action border border-primary/30">
-              @nxp/components/calendar-range
-            </span>
-            <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-              @nxp/components/data-list
-            </span>
-          </div>
+          <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-primary/10 text-action border border-primary/30">
+            @nxp/components/calendar-range
+          </span>
           <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
-            Calendar Range &amp; DataList
+            Calendar Range
           </h1>
           <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl">
             Dual-calendar date-range picker with hover preview, keyboard navigation,
-            preset periods via <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">NxpDataList</code>,
-            and min / max constraints.
+            preset periods, and min / max constraints.
           </p>
         </div>
 
         <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 1 — DataList standalone                               -->
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <section class="space-y-8">
-          <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">DataList</h2>
-            <p class="mt-1 text-gray-500 dark:text-gray-400">
-              <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">nxp-data-list</code> +
-              <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">button[nxpOption]</code> +
-              <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">[nxpOptGroup]</code>
-              — the @nxp equivalent of Taiga UI's <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">TuiDataList</code>.
-              Role <code class="text-sm font-mono">listbox</code> on the container, role <code class="text-sm font-mono">option</code> on each button.
-              Arrow / Home / End keys navigate without a mouse.
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
-            <!-- Size: sm -->
-            <div class="space-y-3">
-              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Size <code class="font-mono">sm</code>
-              </h3>
-              <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3">
-                <nxp-data-list size="sm" label="Compact list">
-                  <button nxpOption [selected]="dl1() === 'a'" (click)="dl1.set('a')">Option A</button>
-                  <button nxpOption [selected]="dl1() === 'b'" (click)="dl1.set('b')">Option B</button>
-                  <button nxpOption [selected]="dl1() === 'c'" (click)="dl1.set('c')">Option C</button>
-                  <button nxpOption [disabled]="true">Disabled</button>
-                </nxp-data-list>
-              </div>
-              <p class="text-xs text-gray-400">Selected: <strong>{{ dl1() ?? '—' }}</strong></p>
-            </div>
-
-            <!-- Size: md (default) -->
-            <div class="space-y-3">
-              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Size <code class="font-mono">md</code> (default)
-              </h3>
-              <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3">
-                <nxp-data-list label="Default list">
-                  <button nxpOption [selected]="dl2() === 'x'" (click)="dl2.set('x')">Option X</button>
-                  <button nxpOption [selected]="dl2() === 'y'" (click)="dl2.set('y')">Option Y</button>
-                  <button nxpOption [selected]="dl2() === 'z'" (click)="dl2.set('z')">Option Z</button>
-                </nxp-data-list>
-              </div>
-              <p class="text-xs text-gray-400">Selected: <strong>{{ dl2() ?? '—' }}</strong></p>
-            </div>
-
-            <!-- Size: lg -->
-            <div class="space-y-3">
-              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Size <code class="font-mono">lg</code>
-              </h3>
-              <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3">
-                <nxp-data-list size="lg" label="Large list">
-                  <button nxpOption [selected]="dl3() === '1'" (click)="dl3.set('1')">Item 1</button>
-                  <button nxpOption [selected]="dl3() === '2'" (click)="dl3.set('2')">Item 2</button>
-                  <button nxpOption [selected]="dl3() === '3'" (click)="dl3.set('3')">Item 3</button>
-                </nxp-data-list>
-              </div>
-              <p class="text-xs text-gray-400">Selected: <strong>{{ dl3() ?? '—' }}</strong></p>
-            </div>
-
-            <!-- Empty state -->
-            <div class="space-y-3">
-              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Empty state</h3>
-              <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3">
-                <nxp-data-list emptyLabel="No options available" />
-              </div>
-              <p class="text-xs text-gray-400">Shown when no options are projected.</p>
-            </div>
-
-          </div>
-
-          <!-- Grouped options via OptGroup -->
-          <div class="space-y-3">
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-              With <code class="font-mono">[nxpOptGroup]</code> — grouped options
-            </h3>
-            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 inline-flex">
-              <nxp-data-list label="Grouped options" size="sm">
-                <div nxpOptGroup label="Fruits">
-                  <button nxpOption [selected]="dlGroup() === 'apple'" (click)="dlGroup.set('apple')">Apple</button>
-                  <button nxpOption [selected]="dlGroup() === 'banana'" (click)="dlGroup.set('banana')">Banana</button>
-                  <button nxpOption [selected]="dlGroup() === 'cherry'" (click)="dlGroup.set('cherry')">Cherry</button>
-                </div>
-                <div nxpOptGroup label="Vegetables">
-                  <button nxpOption [selected]="dlGroup() === 'carrot'" (click)="dlGroup.set('carrot')">Carrot</button>
-                  <button nxpOption [selected]="dlGroup() === 'pea'" (click)="dlGroup.set('pea')">Pea</button>
-                </div>
-                <div nxpOptGroup label="Grains">
-                  <button nxpOption [disabled]="true">Wheat (unavailable)</button>
-                  <button nxpOption [selected]="dlGroup() === 'rice'" (click)="dlGroup.set('rice')">Rice</button>
-                </div>
-              </nxp-data-list>
-              <div class="ml-6 flex items-start pt-2">
-                <div class="text-sm space-y-1">
-                  <p class="text-gray-500 dark:text-gray-400 text-xs">Selected:</p>
-                  <p class="font-semibold text-gray-900 dark:text-white">{{ dlGroup() ?? '—' }}</p>
-                  <p class="text-xs text-gray-400 mt-4">
-                    Use ↑ ↓ keys to navigate.<br>
-                    Home / End jump to first / last.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 2 — Basic range picker                                -->
+        <!--  SECTION 1 — Basic range picker                                -->
         <!-- ════════════════════════════════════════════════════════════════ -->
         <section class="space-y-6">
           <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
@@ -524,12 +406,6 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
   `,
 })
 export class CalendarRangeDemoComponent {
-  // ------------------------------------------------------------------ DataList demos
-  readonly dl1 = signal<string | null>(null);
-  readonly dl2 = signal<string | null>(null);
-  readonly dl3 = signal<string | null>(null);
-  readonly dlGroup = signal<string | null>(null);
-
   // ------------------------------------------------------------------ CalendarRange demos
   readonly basicRange = signal<[Date, Date] | null>(null);
   readonly presetsRange = signal<[Date, Date] | null>(null);

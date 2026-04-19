@@ -54,6 +54,13 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'data-list',
+    loadComponent: () =>
+      import('./data-list/data-list-demo.component').then(
+        (m) => m.DataListDemoComponent,
+      ),
+  },
+  {
     path: 'input-date',
     loadComponent: () =>
       import('./input-date/input-date-demo.component').then(
@@ -227,10 +234,29 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'menu',
+    loadComponent: () =>
+      import('./menu/menu-demo.component').then((m) => m.MenuDemoComponent),
+  },
+  {
     path: 'textarea',
     loadComponent: () =>
       import('./textarea/textarea-demo.component').then(
         (m) => m.TextareaDemoComponent,
+      ),
+  },
+  {
+    path: 'slider',
+    loadComponent: () =>
+      import('./slider/slider-demo.component').then(
+        (m) => m.SliderDemoComponent,
+      ),
+  },
+  {
+    path: 'range',
+    loadComponent: () =>
+      import('./range/range-demo.component').then(
+        (m) => m.RangeDemoComponent,
       ),
   },
 ];

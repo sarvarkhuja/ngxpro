@@ -18,6 +18,17 @@ import { NxpTooltipComponent, NXP_TOOLTIP_HOST } from './tooltip.component';
 import type { NxpTooltipHost } from './tooltip.component';
 import type { NxpTooltipSize } from './tooltip.types';
 
+/** Slide offset per direction for exit animation (mirrors component enter offsets). */
+const SLIDE_OFFSET = {
+  top: { x: 0, y: 4 },
+  bottom: { x: 0, y: -4 },
+  left: { x: 4, y: 0 },
+  right: { x: -4, y: 0 },
+} as const;
+
+/** Exit animation duration — fast linear fade matching framer-motion `{ duration: 0.1 }`. */
+const EXIT_DURATION_MS = 100;
+
 /**
  * Main tooltip directive. Attach to any element to give it a tooltip.
  *
@@ -53,8 +64,11 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
   private readonly injector = inject(INJECTOR);
   private readonly cdr = inject(ChangeDetectorRef);
   private componentRef: ComponentRef<NxpTooltipComponent> | null = null;
+  /** Ref being animated out — kept so we can destroy it if show() interrupts the exit. */
+  private exitingRef: ComponentRef<NxpTooltipComponent> | null = null;
   private showTimer: ReturnType<typeof setTimeout> | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | null = null;
+  private exitTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** The tooltip content — string, TemplateRef, or PolymorpheusComponent. */
   readonly nxpTooltip = input<PolymorpheusContent<NxpContext<void>>>('');
@@ -120,6 +134,13 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
   }
 
   show(): void {
+    // Cancel any in-progress exit animation and destroy the orphaned ref
+    if (this.exitTimer !== null) {
+      clearTimeout(this.exitTimer);
+      this.exitTimer = null;
+      this.exitingRef?.destroy();
+      this.exitingRef = null;
+    }
     if (this.componentRef || !this.nxpTooltip()) return;
 
     // Merge per-instance direction/align into the options so NxpTooltipPosition reads them
@@ -156,15 +177,49 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
   }
 
   hide(): void {
-    if (!this.componentRef) return;
-    this.componentRef.destroy();
-    this.componentRef = null;
-    this.cdr.markForCheck();
+    this.hideAnimated();
   }
 
   ngOnDestroy(): void {
     this.clearTimers();
-    this.hide();
+    // On directive teardown, destroy immediately — no exit animation
+    this.destroyTooltip();
+  }
+
+  private hideAnimated(): void {
+    if (!this.componentRef) return;
+    const ref = this.componentRef;
+    this.componentRef = null;
+    this.exitingRef = ref;
+
+    // Asymmetric exit: quick 100ms linear fade-out before destroying
+    const el = ref.location.nativeElement as HTMLElement;
+    const direction = ref.instance.resolvedDirection ?? this.nxpTooltipDirection() ?? 'top';
+    const slideOffset = SLIDE_OFFSET[direction as keyof typeof SLIDE_OFFSET] ?? SLIDE_OFFSET.top;
+
+    el.style.transition = `opacity ${EXIT_DURATION_MS}ms linear, transform ${EXIT_DURATION_MS}ms linear`;
+    el.style.opacity = '0';
+    el.style.transform = `translate(${slideOffset.x}px, ${slideOffset.y}px)`;
+
+    this.exitTimer = setTimeout(() => {
+      this.exitTimer = null;
+      this.exitingRef = null;
+      ref.destroy();
+      this.cdr.markForCheck();
+    }, EXIT_DURATION_MS);
+  }
+
+  private destroyTooltip(): void {
+    if (this.exitTimer !== null) {
+      clearTimeout(this.exitTimer);
+      this.exitTimer = null;
+    }
+    this.exitingRef?.destroy();
+    this.exitingRef = null;
+    if (this.componentRef) {
+      this.componentRef.destroy();
+      this.componentRef = null;
+    }
   }
 
   private clearTimers(): void {

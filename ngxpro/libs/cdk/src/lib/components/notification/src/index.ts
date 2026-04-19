@@ -9,4 +9,5 @@ export {
 export {
   NxpNotificationService,
   type NxpNotification,
+  type NxpNotificationState,
 } from './notification.service';

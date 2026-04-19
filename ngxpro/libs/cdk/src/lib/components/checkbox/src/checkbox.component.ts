@@ -1,198 +1,289 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DoCheck,
-  ElementRef,
-  OnInit,
+  ViewEncapsulation,
   computed,
+  forwardRef,
   inject,
   input,
+  model,
   signal,
 } from '@angular/core';
-import { NgControl } from '@angular/forms';
-import { cx } from '@nxp/cdk';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { cx } from '../../../utils';
+import { NXP_SPRING_FAST, NXP_SPRING_FAST_EXIT } from '../../../constants';
 import { NXP_CHECKBOX_OPTIONS } from './checkbox.options';
 
 export type NxpCheckboxSize = 's' | 'm' | 'l';
 export type NxpCheckboxColor = 'primary' | 'secondary' | 'danger';
 
-// SVG checkmark — white check path on transparent background
-const CHECK_SVG = `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 8l3.5 3.5L13 4' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`;
+// Checkmark path "M6 12L10 16L18 8" total stroke length (measured)
+const CHECK_PATH_LENGTH = 24.8;
 
-// SVG dash — white horizontal line for indeterminate
-const DASH_SVG = `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 8h8' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")`;
+// Indeterminate dash path "M6 12H18" length
+const DASH_PATH_LENGTH = 12;
+
+// CSS transition strings
+const FAST_IN = `${NXP_SPRING_FAST.duration}ms ${NXP_SPRING_FAST.easing}`;
+const FAST_OUT = `${NXP_SPRING_FAST_EXIT.duration}ms ${NXP_SPRING_FAST_EXIT.easing}`;
+
+// Size → pixel dimension mapping
+const SIZE_PX: Record<NxpCheckboxSize, number> = { s: 16, m: 18, l: 22 };
+const SIZE_RADIUS: Record<NxpCheckboxSize, string> = {
+  s: '4px',
+  m: '5px',
+  l: '6px',
+};
 
 /**
- * Checkbox input directive — applies to native `<input type="checkbox">` elements.
+ * Checkbox component with animated SVG checkmark.
  *
- * Extends the radio visual/size/color pattern with checkbox-specific styling:
- * rounded corners instead of round, checkmark via CSS background-image, and
- * indeterminate state support.
- *
- * Integrates with Angular Reactive Forms via the built-in CheckboxControlValueAccessor.
- * Use with `formControl`, `formControlName`, or `[(ngModel)]`.
+ * Uses a hidden native `<input>` for a11y + form submission, and renders a
+ * visual box with stroke-dashoffset animation for check-in (80ms) / check-out (40ms).
  *
  * @example
- * <!-- Basic checkbox -->
- * <input type="checkbox" nxpCheckbox />
+ * <!-- Basic -->
+ * <nxp-checkbox [(checked)]="agreed" />
  *
  * @example
  * <!-- With reactive forms -->
- * <input type="checkbox" nxpCheckbox [formControl]="agreedCtrl" />
+ * <nxp-checkbox [formControl]="agreedCtrl" />
  *
  * @example
- * <!-- Size and color variants -->
- * <input type="checkbox" nxpCheckbox size="l" color="danger" />
+ * <!-- Size and color -->
+ * <nxp-checkbox size="l" color="danger" [(checked)]="flag" />
  *
  * @example
- * <!-- Indeterminate state (set via template ref) -->
- * <input type="checkbox" nxpCheckbox #cbx (change)="..." />
- * <!-- ngAfterViewInit: cbx.nativeElement.indeterminate = true -->
+ * <!-- Indeterminate -->
+ * <nxp-checkbox [indeterminate]="true" />
  */
 @Component({
-  selector: 'input[type="checkbox"][nxpCheckbox]',
+  selector: 'nxp-checkbox',
   standalone: true,
-  template: '',
-  providers: [],
+  template: `
+    <!-- Hidden native input for a11y + form participation -->
+    <input
+      type="checkbox"
+      class="sr-only"
+      [checked]="checked()"
+      [disabled]="disabled()"
+      [indeterminate]="indeterminate()"
+      (change)="onNativeChange($event)"
+      (focus)="focused.set(true)"
+      (blur)="focused.set(false); onTouched()"
+    />
+
+    <!-- Visual checkbox box -->
+    <div
+      [class]="boxClasses()"
+      [style.width.px]="sizePx()"
+      [style.height.px]="sizePx()"
+      [style.border-radius]="borderRadius()"
+      (click)="toggle($event)"
+      (keydown.space)="toggle($event)"
+      (keydown.enter)="toggle($event)"
+      (mouseenter)="hovered.set(true)"
+      (mouseleave)="hovered.set(false)"
+    >
+      <!-- Checkmark SVG -->
+      <svg
+        class="absolute inset-0"
+        [attr.width]="sizePx()"
+        [attr.height]="sizePx()"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        @if (!indeterminate()) {
+          <path
+            d="M6 12L10 16L18 8"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            [style.stroke-dasharray]="CHECK_PATH_LENGTH"
+            [style.stroke-dashoffset]="checkOffset()"
+            [style.transition]="pathTransition()"
+          />
+        }
+        @if (indeterminate()) {
+          <path
+            d="M6 12H18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            [style.stroke-dasharray]="DASH_PATH_LENGTH"
+            [style.stroke-dashoffset]="dashOffset()"
+            [style.transition]="pathTransition()"
+          />
+        }
+      </svg>
+    </div>
+
+    <!-- Projected label content -->
+    <ng-content />
+  `,
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
-    '[style.background-image]': 'backgroundImage()',
-    '[style.background-size]': 'hasIcon() ? "100% 100%" : null',
-    '[style.background-position]': 'hasIcon() ? "center" : null',
-    '[style.background-repeat]': 'hasIcon() ? "no-repeat" : null',
-    '[attr.data-size]': 'size()',
-    '[attr.data-color]': 'color()',
-    '[class.nxp-checkbox]': 'true',
-    '[class.nxp-checkbox--indeterminate]': 'isIndeterminate()',
-    '[disabled]': 'isDisabled()',
+    '[attr.data-disabled]': 'disabled() || null',
+    role: 'presentation',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NxpCheckboxComponent),
+      multi: true,
+    },
+  ],
 })
-export class NxpCheckboxComponent implements OnInit, DoCheck {
+export class NxpCheckboxComponent implements ControlValueAccessor {
   private readonly options = inject(NXP_CHECKBOX_OPTIONS);
-  private readonly control = inject(NgControl, {
-    self: true,
-    optional: true,
-  });
-  private readonly el = inject<ElementRef<HTMLInputElement>>(ElementRef);
 
-  /** Size of the checkbox. Defaults to option value ('m'). */
+  // ── Public inputs ──
+  readonly checked = model(false);
+  readonly indeterminate = model(false);
+  readonly disabledInput = input(false, { alias: 'disabled' });
   readonly size = input<NxpCheckboxSize>(this.options.size as NxpCheckboxSize);
-
-  /** Color variant. Controls border and checked fill color. */
   readonly color = input<NxpCheckboxColor>('primary');
-
-  /** Additional CSS classes. */
   readonly class = input<string>('');
 
-  /** Tracks disabled state derived from NgControl or the native disabled attribute. */
-  readonly isDisabled = signal(false);
+  // CVA disabled state
+  private readonly cvaDisabled = signal(false);
+  readonly disabled = computed(() => this.disabledInput() || this.cvaDisabled());
 
-  /** Tracks indeterminate state from the native element. */
-  readonly isIndeterminate = signal(false);
+  // ── Internal state ──
+  readonly hovered = signal(false);
+  readonly focused = signal(false);
 
-  /** Tracks checked state from the native element (needed for background-image). */
-  readonly isChecked = signal(false);
+  // Track whether we've had at least one user interaction (skip animation on initial render)
+  private hasInteracted = false;
 
-  ngOnInit(): void {
-    this.isDisabled.set(this.control?.disabled ?? false);
-  }
+  // ── Constants exposed to template ──
+  protected readonly CHECK_PATH_LENGTH = CHECK_PATH_LENGTH;
+  protected readonly DASH_PATH_LENGTH = DASH_PATH_LENGTH;
 
-  ngDoCheck(): void {
-    this.isDisabled.set(this.control?.disabled ?? false);
-    this.isIndeterminate.set(this.el.nativeElement.indeterminate);
-    this.isChecked.set(this.el.nativeElement.checked);
-  }
+  // ── CVA callbacks ──
+  private onChange: (value: boolean) => void = () => {
+    /* noop */
+  };
+  onTouched: () => void = () => {
+    /* noop */
+  };
 
-  /** Whether to show a background icon (checked or indeterminate). */
-  readonly hasIcon = computed(() => this.isChecked() || this.isIndeterminate());
+  // ── Computed values ──
 
-  /**
-   * CSS background-image value for the checkmark or indeterminate dash.
-   * Returns null when unchecked so the browser default (none) applies.
-   */
-  readonly backgroundImage = computed(() => {
-    if (this.isIndeterminate()) {
-      return DASH_SVG;
-    }
-    if (this.isChecked()) {
-      return CHECK_SVG;
-    }
-    return null;
+  readonly sizePx = computed(() => SIZE_PX[this.size()]);
+  readonly borderRadius = computed(() => SIZE_RADIUS[this.size()]);
+
+  /** stroke-dashoffset for the checkmark: 0 = fully drawn, CHECK_PATH_LENGTH = hidden */
+  readonly checkOffset = computed(() =>
+    this.checked() && !this.indeterminate() ? 0 : CHECK_PATH_LENGTH,
+  );
+
+  /** stroke-dashoffset for the indeterminate dash */
+  readonly dashOffset = computed(() => (this.indeterminate() ? 0 : DASH_PATH_LENGTH));
+
+  /** CSS transition for stroke-dashoffset — asymmetric in/out */
+  readonly pathTransition = computed(() => {
+    if (!this.hasInteracted) return 'none';
+    const timing = this.checked() || this.indeterminate() ? FAST_IN : FAST_OUT;
+    return `stroke-dashoffset ${timing}`;
   });
 
-  readonly hostClasses = computed(() => {
-    const size = this.size();
+  readonly boxClasses = computed(() => {
     const color = this.color();
-    const indeterminate = this.isIndeterminate();
+    const isChecked = this.checked();
+    const isIndeterminate = this.indeterminate();
+    const isFilled = isChecked || isIndeterminate;
 
     return cx(
-      // Reset browser appearance
-      'appearance-none cursor-pointer',
-      // Shape — square with rounded corners (key difference from radio's rounded-full)
-      'rounded border-2',
-      // Transition
-      'transition-all duration-150',
-      // Focus
-      'outline-none',
-      'focus-visible:ring-2 focus-visible:ring-offset-2',
+      // Layout
+      'relative shrink-0 cursor-pointer',
+      // Border
+      'border-[1.5px] border-solid',
+      'transition-all duration-[80ms]',
+
       // Disabled
-      'disabled:opacity-50 disabled:cursor-not-allowed',
-      'dark:disabled:opacity-40',
+      this.disabled() && 'opacity-50 cursor-not-allowed',
 
-      // Size variants
-      size === 's' && 'size-4',
-      size === 'm' && 'size-5',
-      size === 'l' && 'size-6',
+      // Focus ring
+      this.focused() && 'ring-2 ring-offset-2',
+      this.focused() && color === 'primary' && 'ring-blue-500',
+      this.focused() && color === 'secondary' && 'ring-gray-500',
+      this.focused() && color === 'danger' && 'ring-red-500',
 
-      // Primary color
-      color === 'primary' && [
-        // Unchecked + non-indeterminate state
-        !indeterminate && [
-          'border-gray-300 dark:border-gray-600',
-          'bg-white dark:bg-gray-800',
-          'checked:border-blue-600 dark:checked:border-blue-400',
-          'checked:bg-blue-600 dark:checked:bg-blue-400',
-        ],
-        // Indeterminate overrides to filled state
-        indeterminate && [
-          'border-blue-600 dark:border-blue-400',
-          'bg-blue-600 dark:bg-blue-400',
-        ],
-        'focus-visible:ring-blue-500',
+      // ── Color: unchecked ──
+      !isFilled && 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800',
+      !isFilled && this.hovered() && 'border-neutral-400 dark:border-neutral-500',
+
+      // ── Color: filled (checked or indeterminate) ──
+      // Primary
+      isFilled && color === 'primary' && [
+        'border-blue-600 bg-blue-600 text-white',
+        'dark:border-blue-400 dark:bg-blue-400 dark:text-gray-900',
+      ],
+      // Secondary
+      isFilled && color === 'secondary' && [
+        'border-gray-600 bg-gray-600 text-white',
+        'dark:border-gray-400 dark:bg-gray-400 dark:text-gray-900',
+      ],
+      // Danger
+      isFilled && color === 'danger' && [
+        'border-red-600 bg-red-600 text-white',
+        'dark:border-red-400 dark:bg-red-400 dark:text-gray-900',
       ],
 
-      // Secondary color
-      color === 'secondary' && [
-        !indeterminate && [
-          'border-gray-300 dark:border-gray-600',
-          'bg-white dark:bg-gray-800',
-          'checked:border-gray-600 dark:checked:border-gray-400',
-          'checked:bg-gray-600 dark:checked:bg-gray-400',
-        ],
-        indeterminate && [
-          'border-gray-600 dark:border-gray-400',
-          'bg-gray-600 dark:bg-gray-400',
-        ],
-        'focus-visible:ring-gray-500',
-      ],
-
-      // Danger color
-      color === 'danger' && [
-        !indeterminate && [
-          'border-red-300 dark:border-red-600',
-          'bg-white dark:bg-gray-800',
-          'checked:border-red-600 dark:checked:border-red-400',
-          'checked:bg-red-600 dark:checked:bg-red-400',
-        ],
-        indeterminate && [
-          'border-red-600 dark:border-red-400',
-          'bg-red-600 dark:bg-red-400',
-        ],
-        'focus-visible:ring-red-500',
-      ],
-
-      this.class(),
+      // Unchecked text color (invisible checkmark, but needs a value)
+      !isFilled && 'text-transparent',
     );
   });
+
+  readonly hostClasses = computed(() =>
+    cx(
+      'inline-flex items-center gap-2 select-none',
+      this.disabled() ? 'cursor-not-allowed' : 'cursor-pointer',
+      this.class(),
+    ),
+  );
+
+  // ── Event handlers ──
+
+  onNativeChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.hasInteracted = true;
+    this.indeterminate.set(false);
+    this.checked.set(target.checked);
+    this.onChange(target.checked);
+  }
+
+  toggle(event: Event): void {
+    event.preventDefault();
+    if (this.disabled()) return;
+    this.hasInteracted = true;
+    this.indeterminate.set(false);
+    const newValue = !this.checked();
+    this.checked.set(newValue);
+    this.onChange(newValue);
+    this.onTouched();
+  }
+
+  // ── ControlValueAccessor ──
+
+  writeValue(value: boolean): void {
+    this.checked.set(!!value);
+  }
+
+  registerOnChange(fn: (value: boolean) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.cvaDisabled.set(isDisabled);
+  }
 }

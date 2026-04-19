@@ -84,7 +84,8 @@ export class NxpTabsDirective implements AfterViewChecked {
     tabs.forEach((el) => {
       const active = el === activeElement;
       el.classList.toggle('_active', active);
-      el.classList.toggle('text-action', active);
+      el.classList.toggle('text-gray-900', active);
+      el.classList.toggle('dark:text-gray-100', active);
       el.classList.toggle('font-semibold', active);
       el.classList.toggle('text-gray-500', !active);
       el.classList.toggle('dark:text-gray-400', !active);

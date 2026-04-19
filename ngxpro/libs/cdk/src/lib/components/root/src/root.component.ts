@@ -11,7 +11,7 @@ import { NXP_ANIMATIONS_SPEED, NXP_IS_MOBILE, NXP_REDUCED_MOTION } from './root.
 import { NxpPlatformDirective } from './platform.directive';
 import { NxpVisualViewportDirective } from './visual-viewport.directive';
 import { NxpPopupsComponent } from './popups.component';
-import { NXP_DROPDOWN_COMPONENT, NxpDropdownComponent } from '@nxp/cdk';
+import { NXP_DROPDOWN_COMPONENT, NxpDropdownComponent } from '../../../portals';
 
 @Component({
   selector: 'nxp-root',

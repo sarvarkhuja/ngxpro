@@ -54,7 +54,7 @@
       "@nxp/cdk/components/root": ["libs/cdk/src/lib/components/root/src/index.ts"],
       "@nxp/cdk/components/notification": ["libs/cdk/src/lib/components/notification/src/index.ts"],
       "@nxp/cdk/components/dropdown": ["libs/cdk/src/lib/components/dropdown/src/index.ts"],
-      
+
       "@nxp/cdk/components/textfield": ["libs/cdk/src/lib/components/textfield/src/index.ts"],
       "@nxp/cdk/components/label": ["libs/cdk/src/lib/components/label/src/index.ts"],
       "@nxp/cdk/components/input": ["libs/cdk/src/lib/components/input/src/index.ts"],
@@ -69,7 +69,9 @@
       "@nxp/components/multi-select": ["libs/components/multi-select/src/index.ts"],
       "@nxp/components/input-pin": ["libs/components/input-pin/src/index.ts"],
       "@nxp/components/drawer": ["libs/components/drawer/src/index.ts"],
-      "@nxp/components/switch": ["libs/components/switch/src/index.ts"]
+      "@nxp/components/switch": ["libs/components/switch/src/index.ts"],
+      "@nxp/components/menu": ["libs/components/menu/src/index.ts"],
+      "@nxp/components/range": ["libs/components/range/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

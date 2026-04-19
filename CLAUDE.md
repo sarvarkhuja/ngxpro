@@ -8,7 +8,6 @@ This repo contains the Nx workspace plus vendored reference sources:
 
 - `ngxpro/` — **the actual Nx workspace** (Angular 21.1 + Nx 22.5 + Tailwind v4). All build/test/lint commands must be run from this directory.
 - `taiga-family/` — vendored Taiga UI source, read-only. Used **only for studying architecture patterns** (CDK utilities, component composition, DI tokens). Do **not** import from it, do **not** copy its styling.
-- `tremor-main/` (if present) — vendored Tremor source for studying **Tailwind class patterns and dark mode**.
 - `fluidfunctionalizm/` — vendored Next.js + Tailwind v4 + Framer Motion reference, read-only. Used **only for studying animation language and modern neutral aesthetic** — the three spring tiers (`fast`/`moderate`/`slow`), enter/exit asymmetry, CSS custom property palette, CVA-style variants. Patterns must be **reimplemented in Angular idioms** (Angular animations API, CSS transitions, `tailwind-variants`, signals). Do **not** import from it, do **not** copy its code.
 - `.claude/` — project rules, agent specs, and the detailed project brief (`.claude/CLAUDE.md`). Read `.claude/CLAUDE.md` for the full mission/architecture doc; this file is the short operational companion.
 

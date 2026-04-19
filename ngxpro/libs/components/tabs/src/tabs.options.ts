@@ -4,12 +4,10 @@ export type NxpTabsSize = 'sm' | 'md' | 'lg';
 
 export interface NxpTabsOptions {
   readonly size: NxpTabsSize;
-  readonly underline: boolean;
 }
 
 export const NXP_TABS_DEFAULT_OPTIONS: NxpTabsOptions = {
   size: 'md',
-  underline: true,
 };
 
 export const NXP_TABS_OPTIONS = new InjectionToken<NxpTabsOptions>(

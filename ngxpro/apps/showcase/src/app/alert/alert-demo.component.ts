@@ -1,126 +1,207 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TitleCasePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import type { NxpPositionOptions } from '@nxp/cdk';
-import { AlertPushService } from './alert-push.service';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationService,
+  type NxpNotificationOptions,
+} from 'libs/cdk/src/lib/components/notification/src';
 
 @Component({
   selector: 'app-alert-demo',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, TitleCasePipe, NxpNotificationHostComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <!-- Portal host — renders all active toasts -->
+    <nxp-notification-host />
+
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-4xl mx-auto space-y-10">
+
         <!-- Header -->
         <div>
-          <a
-            routerLink="/"
-            class="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
-          >
+          <a routerLink="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block">
             &larr; Back to home
           </a>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-            Alert Portal
-          </h1>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Alert Portal</h1>
           <p class="mt-2 text-gray-600 dark:text-gray-400">
-            Portal-based alerts with concurrency limit (3) and queue.
-            Uses <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">NxpAlertService</code>,
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">NxpAlertDirective</code>,
-            and <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">NxpPositionOptions</code>.
+            Sonner-style toast alerts with slide-in/out, compressed stack, hover-expand, swipe-to-dismiss.
           </p>
         </div>
 
-        <!-- Position: block + inline -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
-        >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Positions
-          </h2>
+        <!-- ── Appearance variants ──────────────────────────────── -->
+        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Appearance Variants</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Alerts stack with concurrency 3. Extra alerts wait in queue.
+            Each appearance maps to a distinct colour palette (border, background, icon).
           </p>
           <div class="flex flex-wrap gap-3">
-            @for (pos of positions; track pos.key) {
+            @for (app of appearances; track app) {
               <button
                 type="button"
-                (click)="showAt(pos)"
-                class="px-4 py-2 rounded-md text-sm font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors"
+                (click)="showAppearance(app)"
+                [class]="appearanceBtnClass(app)"
               >
-                {{ pos.label }}
+                {{ app | titlecase }}
               </button>
             }
           </div>
         </section>
 
-        <!-- Queue demo -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
-        >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Queue (concurrency 3)
-          </h2>
+        <!-- ── Positions ─────────────────────────────────────────── -->
+        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Positions</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Rapidly open 6 alerts — only 3 show at once; the rest queue and appear as others close.
+            Alerts can appear at any of the six edge/center positions.
           </p>
-          <button
-            type="button"
-            (click)="showMany()"
-            class="px-4 py-2 rounded-md text-sm font-medium bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-800 transition-colors"
-          >
-            Show 6 alerts
-          </button>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            @for (pos of positions; track pos) {
+              <button
+                type="button"
+                (click)="showPosition(pos)"
+                class="px-3 py-2 rounded-md text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors"
+              >
+                {{ pos }}
+              </button>
+            }
+          </div>
         </section>
 
-        <!-- Simple message -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
-        >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Simple message
-          </h2>
-          <button
-            type="button"
-            (click)="showSimple()"
-            class="px-4 py-2 rounded-md text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
-          >
-            Show alert
-          </button>
+        <!-- ── Stack demo ────────────────────────────────────────── -->
+        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Stack (Sonner-style)</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Rapidly open multiple alerts — they compress into a stack.
+            Hover to expand, swipe or click close to dismiss.
+          </p>
+          <div class="flex gap-3">
+            <button
+              type="button"
+              (click)="showStack()"
+              class="px-4 py-2 rounded-md text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
+            >
+              Stack 5 alerts
+            </button>
+            <button
+              type="button"
+              (click)="dismissAll()"
+              class="px-4 py-2 rounded-md text-sm font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
+            >
+              Dismiss all
+            </button>
+          </div>
         </section>
+
+        <!-- ── Auto-close timing ─────────────────────────────────── -->
+        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Auto-close Timing</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Hover over an alert to pause the auto-close timer. It resumes on mouse-leave.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <button
+              type="button"
+              (click)="showAutoClose(2000)"
+              class="px-4 py-2 rounded-md text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+            >
+              2 seconds
+            </button>
+            <button
+              type="button"
+              (click)="showAutoClose(10000)"
+              class="px-4 py-2 rounded-md text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+            >
+              10 seconds
+            </button>
+            <button
+              type="button"
+              (click)="showAutoClose(false)"
+              class="px-4 py-2 rounded-md text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              No auto-close
+            </button>
+          </div>
+        </section>
+
       </div>
     </div>
   `,
 })
 export class AlertDemoComponent {
-  protected readonly service = inject(AlertPushService);
+  protected readonly service = inject(NxpNotificationService);
+  private counter = 0;
 
-  protected readonly positions: { key: Partial<NxpPositionOptions>; label: string }[] = [
-    { key: { block: 'start', inline: 'end' }, label: 'Top right' },
-    { key: { block: 'start', inline: 'start' }, label: 'Top left' },
-    { key: { block: 'start', inline: 'center' }, label: 'Top center' },
-    { key: { block: 'end', inline: 'end' }, label: 'Bottom right' },
-    { key: { block: 'end', inline: 'start' }, label: 'Bottom left' },
-    { key: { block: 'end', inline: 'center' }, label: 'Bottom center' },
+  protected readonly appearances: NxpNotificationOptions['appearance'][] = [
+    'info', 'success', 'warning', 'error', 'neutral',
   ];
 
-  showAt(pos: { key: Partial<NxpPositionOptions>; label: string }): void {
-    this.service
-      .open(`Alert at ${pos.label}`, pos.key)
-      .subscribe();
+  protected readonly positions: NxpNotificationOptions['position'][] = [
+    'top-right', 'top-left', 'bottom-right', 'bottom-left', 'top-center', 'bottom-center',
+  ];
+
+  showAppearance(appearance: NxpNotificationOptions['appearance']): void {
+    this.counter++;
+    const labelMap: Record<NxpNotificationOptions['appearance'], string> = {
+      info: 'Information',
+      success: 'All done!',
+      warning: 'Heads up',
+      error: 'Something went wrong',
+      neutral: 'Notice',
+    };
+    this.service.open(`Alert #${this.counter} — this is a ${appearance} alert.`, {
+      appearance,
+      label: labelMap[appearance],
+    });
   }
 
-  showMany(): void {
-    for (let i = 1; i <= 6; i++) {
-      this.service
-        .open(`Alert #${i} — closes in a few seconds`, {
-          block: 'start',
-          inline: 'end',
-        })
-        .subscribe();
+  showPosition(position: NxpNotificationOptions['position']): void {
+    this.counter++;
+    this.service.open(`Alert #${this.counter} at ${position}`, {
+      appearance: 'info',
+      label: position,
+      position,
+    });
+  }
+
+  showStack(): void {
+    const appearances = ['info', 'success', 'warning', 'error', 'neutral'] as const;
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        this.counter++;
+        this.service.open(`Stack item #${this.counter} — hover to expand`, {
+          appearance: appearances[i],
+          label: `Alert ${i + 1}`,
+          autoClose: 10000,
+        });
+      }, i * 150);
     }
   }
 
-  showSimple(): void {
-    this.service.open('Hello from the alert portal!').subscribe();
+  showAutoClose(autoClose: number | false): void {
+    this.counter++;
+    const msg = autoClose === false
+      ? 'This alert will not auto-close. Dismiss it manually.'
+      : `This alert closes in ${autoClose / 1000}s. Hover to pause.`;
+    this.service.open(msg, {
+      appearance: 'info',
+      label: autoClose === false ? 'Persistent' : `Auto-close: ${autoClose / 1000}s`,
+      autoClose,
+    });
+  }
+
+  dismissAll(): void {
+    this.service.dismissAll();
+  }
+
+  appearanceBtnClass(appearance: NxpNotificationOptions['appearance']): string {
+    const map: Record<NxpNotificationOptions['appearance'], string> = {
+      info: 'px-4 py-2 rounded-md text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors',
+      success: 'px-4 py-2 rounded-md text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800 transition-colors',
+      warning: 'px-4 py-2 rounded-md text-sm font-medium bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-800 transition-colors',
+      error: 'px-4 py-2 rounded-md text-sm font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-800 transition-colors',
+      neutral: 'px-4 py-2 rounded-md text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors',
+    };
+    return map[appearance];
   }
 }

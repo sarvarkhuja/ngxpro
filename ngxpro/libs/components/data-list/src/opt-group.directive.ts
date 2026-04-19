@@ -31,7 +31,7 @@ export class OptGroupDirective {
 
   protected readonly hostClass = cx(
     'flex flex-col gap-0.5',
-    'border-t border-gray-100 dark:border-gray-800',
+    'border-t border-neutral-200 dark:border-neutral-800',
     'pt-1 mt-1 first:border-t-0 first:pt-0 first:mt-0',
   );
 }

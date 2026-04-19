@@ -1,4 +1,5 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -19,10 +20,12 @@ import {
   takeUntil,
   timer,
 } from 'rxjs';
-import { cx } from '@nxp/cdk';
+import { cx } from '../../../utils';
 import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
 import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
 import type { NxpNotificationOptions } from './notification.options';
+import { NxpNotificationService, type NxpNotificationState } from './notification.service';
+import { NxpSwipeDismiss } from '../../../directives/swipe-dismiss.directive';
 
 // ── Size helpers ─────────────────────────────────────────────────────────────
 
@@ -38,8 +41,7 @@ const iconSizeMap: Record<NxpNotificationOptions['size'], string> = {
   l: 'text-2xl',
 };
 
-// ── Appearance color helpers (Tailwind data-attribute selectors) ──────────────
-// Applied on the host so every child can inherit focus/border colouring.
+// ── Appearance color helpers ──────────────────────────────────────────────────
 
 const appearanceHostClasses: Record<NxpNotificationOptions['appearance'], string> = {
   info: [
@@ -87,10 +89,36 @@ const ICON_MAP: Record<string, string> = {
   standalone: true,
   imports: [PolymorpheusOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: NxpSwipeDismiss,
+      inputs: ['swipeDirections', 'swipeThreshold'],
+      outputs: ['swipeDismissed'],
+    },
+  ],
   host: {
-    role: 'alert',
+    'role': 'alert',
     'aria-live': 'polite',
+    // Static attributes — set once, not re-evaluated on CD
+    'data-nxp-toast': '',
+    'data-swipe-out': 'false',
     '[class]': 'hostClasses()',
+    // Sonner data attributes — drive CSS animations
+    '[attr.data-mounted]': 'isMountedOrRemoving()',
+    '[attr.data-removed]': 'notificationState() === "removing"',
+    '[attr.data-front]': 'isFront()',
+    '[attr.data-visible]': 'isVisible()',
+    '[attr.data-expanded]': 'expanded()',
+    '[attr.data-y-position]': 'yPosition()',
+    '[attr.data-x-position]': 'xPosition()',
+    '[attr.data-index]': 'toastIndex()',
+    // CSS custom properties — drive layout calculations
+    '[style.--index]': 'toastIndex()',
+    '[style.--toasts-before]': 'toastsBefore()',
+    '[style.--z-index]': '1000 - toastIndex()',
+    '[style.z-index]': '1000 - toastIndex()',
+    '[style.--offset]': 'toastOffset() + "px"',
+    '[style.--initial-height]': 'initialHeight + "px"',
   },
   template: `
     <!-- Icon column -->
@@ -139,14 +167,40 @@ export class NxpNotificationComponent implements OnInit {
   readonly closable = input<boolean>(true);
   readonly autoClose = input<number | false>(5000);
 
+  // ── Stack context inputs (from host) ──────────────────────────────────────
+
+  readonly toastIndex = input(0);
+  readonly toastsBefore = input(0);
+  readonly isFront = input(true);
+  readonly isVisible = input(true);
+  readonly expanded = input(false);
+  readonly toastOffset = input(0);
+  readonly yPosition = input<'top' | 'bottom'>('top');
+  readonly xPosition = input<'left' | 'right' | 'center'>('right');
+  readonly notificationState = input<NxpNotificationState>('mounting');
+  readonly notificationId = input('');
+
   // ── Outputs ─────────────────────────────────────────────────────────────────
 
   readonly dismissed = output<void>();
+  readonly heightMeasured = output<number>();
 
   // ── Infrastructure ───────────────────────────────────────────────────────────
 
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly notificationService = inject(NxpNotificationService);
+
+  /** Measured height (set after first render). */
+  initialHeight = 0;
+
+  // ── Computed helpers ──────────────────────────────────────────────────────
+
+  /** data-mounted is true once mounted OR when removing (so exit animation works). */
+  readonly isMountedOrRemoving = computed(() => {
+    const state = this.notificationState();
+    return state === 'mounted' || state === 'removing';
+  });
 
   // ── Computed: icon resolution ─────────────────────────────────────────────
 
@@ -167,8 +221,8 @@ export class NxpNotificationComponent implements OnInit {
     cx(
       // layout
       'relative flex items-start rounded-lg border shadow-lg',
-      // transitions
-      'transition-all duration-200',
+      // width to fill container
+      'w-[var(--width,356px)]',
       // size
       sizeClasses[this.size()],
       // appearance
@@ -210,6 +264,24 @@ export class NxpNotificationComponent implements OnInit {
       this.size() === 'l' && 'h-6 w-6 text-base',
     ),
   );
+
+  constructor() {
+    // Measure height after first render, emit to host, and mark as mounted
+    afterNextRender(() => {
+      const rect = this.el.nativeElement.getBoundingClientRect();
+      this.initialHeight = rect.height;
+      this.heightMeasured.emit(rect.height);
+      // Mark as mounted to trigger enter animation
+      const id = this.notificationId();
+      if (id) {
+        this.notificationService.setMounted(id);
+      }
+    });
+
+    // Wire swipe-dismiss to dismissed output
+    const swipeDismiss = inject(NxpSwipeDismiss);
+    swipeDismiss.swipeDismissed.subscribe(() => this.dismissed.emit());
+  }
 
   // ── Auto-close (Taiga pattern: pause on mouseenter, resume on mouseleave) ───
 

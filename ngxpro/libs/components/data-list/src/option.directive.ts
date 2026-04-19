@@ -1,4 +1,4 @@
-import { computed, Directive, inject, input } from '@angular/core';
+import { computed, Directive, ElementRef, inject, input } from '@angular/core';
 import { cx } from '@nxp/cdk';
 import { DataListComponent } from './data-list.component';
 
@@ -44,6 +44,9 @@ export class OptionDirective {
    */
   private readonly list = inject(DataListComponent, { optional: true });
 
+  /** Host element reference — used to check hover state against parent. */
+  private readonly elRef = inject(ElementRef<HTMLElement>);
+
   // ------------------------------------------------------------------ inputs
 
   /** Whether the option is currently selected. Sets `aria-selected`. */
@@ -63,6 +66,7 @@ export class OptionDirective {
   protected readonly classes = computed(() => {
     const s = this.size() ?? this.list?.size() ?? 'md';
     const active = this.selected();
+    const hovered = this.list?.isItemHovered(this.elRef.nativeElement) ?? false;
     const off = this.disabled();
 
     const sizing: Record<string, string> = {
@@ -72,21 +76,21 @@ export class OptionDirective {
     };
 
     return cx(
-      // Layout
-      'flex w-full items-center gap-2 rounded-md font-medium text-left',
-      'transition-colors duration-100 select-none',
-      // Focus ring
+      // Layout — z-10 so text sits above the animated overlays
+      'relative z-10 flex w-full items-center gap-2.5 rounded-lg font-medium text-left',
+      'transition-[color,font-variation-settings] duration-100 select-none',
+      // Focus ring — keep as accessibility fallback
       'outline-none focus-visible:outline focus-visible:outline-2',
       'focus-visible:outline-offset-1 focus-visible:outline-border-focus',
       // Size padding
       sizing[s] ?? sizing['md'],
-      // State: active vs default
+      // Text color — foreground for selected or hovered, muted otherwise.
+      // Font weight is semibold only for selected (not hover).
       active
-        ? 'bg-primary-hover text-text-on-accent'
-        : [
-            'text-gray-700 dark:text-gray-300',
-            'hover:bg-gray-100 dark:hover:bg-gray-800',
-          ],
+        ? 'text-neutral-900 dark:text-neutral-100'
+        : hovered
+          ? 'text-neutral-900 dark:text-neutral-100'
+          : 'text-neutral-500 dark:text-neutral-400',
       // Disabled
       off && 'opacity-40 cursor-not-allowed pointer-events-none',
     );

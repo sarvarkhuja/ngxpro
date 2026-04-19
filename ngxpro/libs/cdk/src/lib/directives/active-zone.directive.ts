@@ -1,5 +1,12 @@
 import { DOCUMENT } from '@angular/common';
-import { Directive, EventEmitter, inject, Input, OnDestroy, Output } from '@angular/core';
+import {
+  Directive,
+  EventEmitter,
+  inject,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 import { nxpInjectElement } from '../utils/inject-element';
 
 /**
@@ -51,7 +58,8 @@ export class NxpActiveZone implements OnDestroy {
   contains(element: Element | null): boolean {
     return (
       !!element &&
-      (this.el.contains(element) || [...this.children].some((z) => z.contains(element)))
+      (this.el.contains(element) ||
+        [...this.children].some((z) => z.contains(element)))
     );
   }
 

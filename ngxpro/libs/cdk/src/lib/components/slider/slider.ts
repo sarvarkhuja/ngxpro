@@ -1,6 +1,8 @@
 import { NxpSliderReadonly } from './helpers/slider-readonly.directive';
 import { NxpSliderThumbLabel } from './helpers/slider-thumb-label.component';
 import { NxpSliderComponent } from './slider.component';
+import { NxpSliderComfortableComponent } from './slider-comfortable.component';
+import { NxpSliderVisualComponent } from './slider-visual.component';
 
 /**
  * All directives and components that make up the NxpSlider CDK primitive.
@@ -18,4 +20,6 @@ export const NxpSlider = [
   NxpSliderComponent,
   NxpSliderThumbLabel,
   NxpSliderReadonly,
+  NxpSliderVisualComponent,
+  NxpSliderComfortableComponent,
 ] as const;

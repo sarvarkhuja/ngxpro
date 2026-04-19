@@ -1,3 +1,4 @@
+import { NxpBadgeComponent } from './badge.component';
 import { NxpBadgeDirective } from './badge.directive';
 
 /**
@@ -12,4 +13,4 @@ import { NxpBadgeDirective } from './badge.directive';
  * })
  * ```
  */
-export const NxpBadge = [NxpBadgeDirective] as const;
+export const NxpBadge = [NxpBadgeComponent, NxpBadgeDirective] as const;

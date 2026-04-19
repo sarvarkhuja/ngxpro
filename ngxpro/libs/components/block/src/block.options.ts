@@ -31,3 +31,6 @@ export function nxpBlockOptionsProvider(
     useValue: { ...NXP_BLOCK_DEFAULT_OPTIONS, ...options },
   };
 }
+
+/** Presence token provided by `NxpBlockGroupComponent`. */
+export const NXP_BLOCK_GROUP = new InjectionToken<unknown>('NXP_BLOCK_GROUP');

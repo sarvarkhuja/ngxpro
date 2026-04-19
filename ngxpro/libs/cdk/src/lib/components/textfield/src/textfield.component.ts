@@ -8,22 +8,15 @@ import {
   input,
   signal,
 } from '@angular/core';
-import {
-  cx,
-  NxpDropdownDirective,
-  NxpDropdownOpen,
-  NxpDataListHost,
-  nxpAsDataListHost,
-  NXP_TEXTFIELD_ACCESSOR,
-  nxpAsTextfieldAccessor,
-  NXP_TEXTFIELD,
-  NXP_LABEL,
-  type NxpTextfieldAccessor,
-} from '@nxp/cdk';
+
 import {
   NXP_TEXTFIELD_OPTIONS,
   type NxpTextfieldSize,
 } from './textfield.options';
+import { cx } from 'tailwind-variants';
+import { NxpDropdownDirective, NxpDropdownOpen } from '../../../portals';
+import { nxpAsDataListHost, NxpDataListHost } from '../../../tokens';
+import { NXP_TEXTFIELD, nxpAsTextfieldAccessor, NxpTextfieldAccessor, NXP_TEXTFIELD_ACCESSOR, NXP_LABEL } from './textfield-accessor';
 
 @Component({
   selector: 'nxp-textfield',

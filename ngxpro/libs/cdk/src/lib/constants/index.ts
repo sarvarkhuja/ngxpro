@@ -32,3 +32,17 @@ export const NXP_FALSE_HANDLER = (): false => false;
 
 export { NXP_STRICT_MATCHER, NXP_DEFAULT_MATCHER } from './matchers';
 export type { NxpStringMatcher } from './matchers';
+export {
+  NXP_SPRING_MODERATE,
+  NXP_SPRING_FAST,
+  NXP_SPRING_FAST_EXIT,
+  NXP_OPACITY_FAST_MS,
+  nxpBuildTransition,
+  NXP_TOAST_ENTER,
+  NXP_TOAST_EXIT,
+  NXP_TOAST_GAP,
+  NXP_VISIBLE_TOASTS,
+  NXP_SWIPE_THRESHOLD,
+  NXP_TIME_BEFORE_UNMOUNT,
+} from './motion';
+export type { NxpSpringSpec } from './motion';

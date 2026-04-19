@@ -50,7 +50,7 @@ export const NXP_TAB_ACTIVATE = 'nxp-tab-activate';
     '[attr.disabled]': 'disabled() || null',
     // Base layout classes — active/inactive colors managed by NxpTabsDirective.markTabAsActive()
     class:
-      'relative inline-flex items-center gap-2 whitespace-nowrap cursor-pointer select-none ' +
+      'relative z-10 inline-flex items-center gap-2 whitespace-nowrap cursor-pointer select-none ' +
       'transition-colors duration-150 ' +
       'focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 ' +
       'text-gray-500 hover:text-gray-700 ' +

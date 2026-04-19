@@ -1,4 +1,4 @@
-import { Directive, inject, model, HostListener } from '@angular/core';
+import { Directive, ElementRef, inject, model, HostListener } from '@angular/core';
 import { AccordionComponent } from './accordion.component';
 
 /**
@@ -17,31 +17,21 @@ import { AccordionComponent } from './accordion.component';
  *   <nxp-expand>
  *     <div nxpCell *ngFor="let item of items">...</div>
  *   </nxp-expand>
- *
- *   <button nxpAccordion nxpCell="m">
- *     <span nxpTitle><strong>Group 2</strong></span>
- *     <span nxpSubtitle>2 operations</span>
- *   </button>
- *   <nxp-expand>
- *     ...
- *   </nxp-expand>
  * </nxp-accordion>
  */
 @Directive({
   selector: 'button[nxpAccordion], nxp-accordion-trigger[nxpAccordion]',
   standalone: true,
   host: {
-    type: 'button',
     '[attr.aria-expanded]': 'open()',
     '[class._open]': 'open()',
-    '[class.border-b]': 'true',
-    '[class.block]': 'true',
-    '[class.border-gray-200]': 'true',
-    '[class.dark\\:border-gray-800]': 'true',
   },
 })
 export class AccordionDirective {
   private readonly accordion = inject(AccordionComponent, { optional: true });
+
+  /** The host DOM element (used by AccordionComponent for rect measurement). */
+  public readonly hostEl: HTMLElement = inject(ElementRef<HTMLElement>).nativeElement;
 
   /** Whether this accordion item is open. Supports two-way binding via [nxpAccordion]. */
   readonly open = model<boolean>(false);

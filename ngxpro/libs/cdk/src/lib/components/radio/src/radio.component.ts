@@ -10,8 +10,9 @@ import {
   signal,
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
-import { cx } from '@nxp/cdk';
+
 import { NXP_RADIO_OPTIONS } from './radio.options';
+import { cx } from '../../../utils/cx';
 
 export type NxpRadioSize = 's' | 'm' | 'l';
 export type NxpRadioColor = 'primary' | 'secondary' | 'danger';

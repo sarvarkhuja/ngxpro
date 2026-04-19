@@ -7,10 +7,10 @@ export interface NxpAvatarOptions {
   appearance: AvatarAppearance;
 }
 
-export const NXP_AVATAR_DEFAULT_OPTIONS: NxpAvatarOptions = {
+const NXP_AVATAR_DEFAULT_OPTIONS: NxpAvatarOptions = {
   size: 'm',
   round: true,
-  appearance: '',
+  appearance: 'primary',
 };
 
 export const NXP_AVATAR_OPTIONS = new InjectionToken<NxpAvatarOptions>(

@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  ViewChild,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import {
   FormControl,
@@ -23,150 +16,196 @@ import {
 @Component({
   selector: 'app-checkbox-demo',
   standalone: true,
-  imports: [JsonPipe, FormsModule, ReactiveFormsModule, RouterModule, ...NxpCheckbox],
+  imports: [
+    JsonPipe,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    ...NxpCheckbox,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div
+      class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8"
+    >
       <div class="max-w-4xl mx-auto space-y-10">
-
         <!-- Header -->
         <div>
-          <a routerLink="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block">
+          <a
+            routerLink="/"
+            class="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
+          >
             &larr; Back to home
           </a>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Checkbox</h1>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+            Checkbox
+          </h1>
           <p class="mt-2 text-gray-600 dark:text-gray-400">
-            Native checkbox input styled with Tailwind. Supports checked, unchecked, and
-            indeterminate states. Integrates with Angular Reactive Forms via the built-in
-            <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded">CheckboxControlValueAccessor</code>.
+            Animated checkbox component with stroke-dashoffset checkmark
+            animation. Supports checked, unchecked, and indeterminate states.
+            Integrates with Angular Reactive Forms via
+            <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+              >ControlValueAccessor</code
+            >.
           </p>
         </div>
 
-        <!-- ── Sizes ──────────────────────────────────────────────── -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Sizes</h2>
+        <!-- Sizes -->
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Sizes
+          </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Use the <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">size</code> input:
-            <code>s</code>, <code>m</code> (default), <code>l</code>.
+            Use the
+            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">size</code>
+            input: <code>s</code>, <code>m</code> (default), <code>l</code>.
           </p>
           <div class="flex flex-wrap items-center gap-8">
             @for (s of sizes; track s) {
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  nxpCheckbox
-                  [size]="s"
-                  checked
-                />
-                <span class="text-sm text-gray-700 dark:text-gray-300 capitalize">{{ s }}</span>
-              </label>
+              <nxp-checkbox [size]="s" [checked]="true">
+                <span
+                  class="text-sm text-gray-700 dark:text-gray-300 capitalize"
+                  >{{ s }}</span
+                >
+              </nxp-checkbox>
             }
           </div>
           <div class="flex flex-wrap items-center gap-8">
             @for (s of sizes; track s) {
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  nxpCheckbox
-                  [size]="s"
-                />
-                <span class="text-sm text-gray-500 dark:text-gray-400 capitalize">{{ s }} (unchecked)</span>
-              </label>
+              <nxp-checkbox [size]="s">
+                <span
+                  class="text-sm text-gray-500 dark:text-gray-400 capitalize"
+                  >{{ s }} (unchecked)</span
+                >
+              </nxp-checkbox>
             }
           </div>
         </section>
 
-        <!-- ── Color Variants ─────────────────────────────────────── -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Color Variants</h2>
+        <!-- Color Variants -->
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Color Variants
+          </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Use the <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">color</code> input:
-            <code>primary</code>, <code>secondary</code>, <code>danger</code>.
+            Use the
+            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">color</code>
+            input: <code>primary</code>, <code>secondary</code>,
+            <code>danger</code>.
           </p>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             @for (color of colors; track color) {
               <div class="space-y-3">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ color }}</p>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" nxpCheckbox [color]="color" checked />
-                  <span class="text-sm text-gray-700 dark:text-gray-300">Checked</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" nxpCheckbox [color]="color" />
-                  <span class="text-sm text-gray-700 dark:text-gray-300">Unchecked</span>
-                </label>
+                <p
+                  class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                >
+                  {{ color }}
+                </p>
+                <nxp-checkbox [color]="color" [checked]="true">
+                  <span class="text-sm text-gray-700 dark:text-gray-300"
+                    >Checked</span
+                  >
+                </nxp-checkbox>
+                <nxp-checkbox [color]="color">
+                  <span class="text-sm text-gray-700 dark:text-gray-300"
+                    >Unchecked</span
+                  >
+                </nxp-checkbox>
               </div>
             }
           </div>
         </section>
 
-        <!-- ── Indeterminate State ─────────────────────────────────── -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Indeterminate State</h2>
+        <!-- Indeterminate State -->
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Indeterminate State
+          </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Set <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">el.indeterminate = true</code>
-            on the native element. The checkbox shows a dash icon and adopts the filled color of its variant.
+            Set
+            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded"
+              >[indeterminate]="true"</code
+            >
+            to show a dash icon with the filled color variant.
           </p>
           <div class="flex flex-wrap gap-8">
             @for (color of colors; track color) {
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  nxpCheckbox
-                  [color]="color"
-                  #indetermRef
-                />
-                <span class="text-sm text-gray-700 dark:text-gray-300 capitalize">{{ color }} indeterminate</span>
-              </label>
+              <nxp-checkbox [color]="color" [indeterminate]="true">
+                <span
+                  class="text-sm text-gray-700 dark:text-gray-300 capitalize"
+                  >{{ color }} indeterminate</span
+                >
+              </nxp-checkbox>
             }
           </div>
-          <p class="text-xs text-gray-400 dark:text-gray-500">
-            Indeterminate state is set programmatically via <code>ngAfterViewInit</code>.
-          </p>
         </section>
 
-        <!-- ── Disabled State ─────────────────────────────────────── -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Disabled State</h2>
+        <!-- Disabled State -->
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Disabled State
+          </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
             Disabled checkboxes show reduced opacity and a not-allowed cursor.
-            Set via the native <code>disabled</code> attribute or by disabling a <code>FormControl</code>.
+            Set via the <code>disabled</code> input or by disabling a
+            <code>FormControl</code>.
           </p>
           <div class="flex flex-wrap gap-6">
-            <label class="flex items-center gap-2 cursor-not-allowed">
-              <input type="checkbox" nxpCheckbox disabled />
-              <span class="text-sm text-gray-400 dark:text-gray-500">Disabled unchecked</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-not-allowed">
-              <input type="checkbox" nxpCheckbox disabled checked />
-              <span class="text-sm text-gray-400 dark:text-gray-500">Disabled checked</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-not-allowed">
-              <input type="checkbox" nxpCheckbox color="danger" disabled checked />
-              <span class="text-sm text-gray-400 dark:text-gray-500">Danger disabled checked</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-not-allowed">
-              <input type="checkbox" nxpCheckbox color="secondary" disabled />
-              <span class="text-sm text-gray-400 dark:text-gray-500">Secondary disabled</span>
-            </label>
+            <nxp-checkbox [disabled]="true">
+              <span class="text-sm text-gray-400 dark:text-gray-500"
+                >Disabled unchecked</span
+              >
+            </nxp-checkbox>
+            <nxp-checkbox [disabled]="true" [checked]="true">
+              <span class="text-sm text-gray-400 dark:text-gray-500"
+                >Disabled checked</span
+              >
+            </nxp-checkbox>
+            <nxp-checkbox color="danger" [disabled]="true" [checked]="true">
+              <span class="text-sm text-gray-400 dark:text-gray-500"
+                >Danger disabled checked</span
+              >
+            </nxp-checkbox>
+            <nxp-checkbox color="secondary" [disabled]="true">
+              <span class="text-sm text-gray-400 dark:text-gray-500"
+                >Secondary disabled</span
+              >
+            </nxp-checkbox>
           </div>
         </section>
 
-        <!-- ── Reactive Forms — Single Boolean ───────────────────── -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Reactive Forms — Boolean Control</h2>
+        <!-- Reactive Forms — Single Boolean -->
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Reactive Forms — Boolean Control
+          </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Bind a <code>FormControl&lt;boolean&gt;</code> directly. Angular's built-in
-            <code>CheckboxControlValueAccessor</code> handles the two-way binding.
+            Bind a <code>FormControl&lt;boolean&gt;</code> directly via
+            <code>ControlValueAccessor</code>.
           </p>
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" nxpCheckbox [formControl]="agreedCtrl" />
+          <nxp-checkbox [formControl]="agreedCtrl">
             <span class="text-sm text-gray-700 dark:text-gray-300">
               I agree to the
-              <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">terms and conditions</a>
+              <a
+                href="#"
+                class="text-blue-600 dark:text-blue-400 hover:underline"
+                >terms and conditions</a
+              >
             </span>
-          </label>
-          <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-xs font-mono text-gray-600 dark:text-gray-400">
+          </nxp-checkbox>
+          <div
+            class="p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-xs font-mono text-gray-600 dark:text-gray-400"
+          >
             agreedCtrl.value = <strong>{{ agreedCtrl.value }}</strong>
           </div>
           <div class="flex gap-2">
@@ -194,95 +233,86 @@ import {
           </div>
         </section>
 
-        <!-- ── Select-All Pattern ─────────────────────────────────── -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Select-All Pattern</h2>
+        <!-- Select-All Pattern -->
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Select-All Pattern
+          </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            A "select all" checkbox uses the indeterminate state when some (but not all) items are selected.
-            Individual checkboxes use <code>FormGroup</code> controls.
+            A "select all" checkbox uses the indeterminate state when some (but
+            not all) items are selected.
           </p>
-
-          <!-- Select-all checkbox -->
-          <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
-            <label class="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                nxpCheckbox
-                size="m"
-                #selectAll
-                [checked]="allChecked()"
-                (change)="toggleAll($any($event.target).checked)"
-              />
-              <span class="text-sm font-medium text-gray-900 dark:text-white">
-                Select all
-                <span class="ml-1 text-xs text-gray-500 dark:text-gray-400 font-normal">
-                  ({{ checkedCount() }} / {{ features.length }} selected)
-                </span>
-              </span>
-            </label>
-          </div>
 
           <!-- Individual items -->
           <div class="space-y-3">
             @for (feature of features; track feature.id) {
-              <label class="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  nxpCheckbox
-                  size="m"
-                  [formControl]="getFeatureControl(feature.id)"
-                  class="mt-0.5"
-                />
+              <nxp-checkbox
+                size="m"
+                [formControl]="getFeatureControl(feature.id)"
+              >
                 <div>
-                  <p class="text-sm font-medium text-gray-900 dark:text-white">{{ feature.label }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">{{ feature.description }}</p>
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">
+                    {{ feature.label }}
+                  </p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    {{ feature.description }}
+                  </p>
                 </div>
-              </label>
+              </nxp-checkbox>
             }
           </div>
 
-          <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-xs font-mono text-gray-600 dark:text-gray-400">
-            featuresForm.value = <strong>{{ featuresForm.value | json }}</strong>
+          <div
+            class="p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-xs font-mono text-gray-600 dark:text-gray-400"
+          >
+            featuresForm.value =
+            <strong>{{ featuresForm.value | json }}</strong>
           </div>
         </section>
 
-        <!-- ── Dark Mode Panel ─────────────────────────────────────── -->
-        <section class="bg-gray-900 rounded-xl border border-gray-700 p-6 space-y-4">
+        <!-- Dark Mode Panel -->
+        <section
+          class="bg-gray-900 rounded-xl border border-gray-700 p-6 space-y-4"
+        >
           <h2 class="text-lg font-semibold text-white">Dark Mode</h2>
           <p class="text-sm text-gray-400">
-            All color variants and states rendered on a dark background. Each checkbox
-            automatically adapts to its dark mode variant.
+            All color variants and states rendered on a dark background.
           </p>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             @for (color of colors; track color) {
               <div class="space-y-3">
-                <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">{{ color }}</p>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" nxpCheckbox [color]="color" checked />
+                <p
+                  class="text-xs font-medium text-gray-400 uppercase tracking-wide"
+                >
+                  {{ color }}
+                </p>
+                <nxp-checkbox [color]="color" [checked]="true">
                   <span class="text-sm text-gray-300">Checked</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" nxpCheckbox [color]="color" />
+                </nxp-checkbox>
+                <nxp-checkbox [color]="color">
                   <span class="text-sm text-gray-300">Unchecked</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-not-allowed">
-                  <input type="checkbox" nxpCheckbox [color]="color" checked disabled />
+                </nxp-checkbox>
+                <nxp-checkbox
+                  [color]="color"
+                  [checked]="true"
+                  [disabled]="true"
+                >
                   <span class="text-sm text-gray-500">Disabled checked</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-not-allowed">
-                  <input type="checkbox" nxpCheckbox [color]="color" disabled />
+                </nxp-checkbox>
+                <nxp-checkbox [color]="color" [disabled]="true">
                   <span class="text-sm text-gray-500">Disabled</span>
-                </label>
+                </nxp-checkbox>
               </div>
             }
           </div>
         </section>
-
       </div>
     </div>
   `,
 })
-export class CheckboxDemoComponent implements AfterViewInit {
+export class CheckboxDemoComponent {
   readonly sizes: NxpCheckboxSize[] = ['s', 'm', 'l'];
   readonly colors: NxpCheckboxColor[] = ['primary', 'secondary', 'danger'];
 
@@ -315,33 +345,20 @@ export class CheckboxDemoComponent implements AfterViewInit {
 
   readonly featuresForm = new FormGroup(
     Object.fromEntries(
-      this.features.map((f) => [f.id, new FormControl<boolean>(false, { nonNullable: true })]),
+      this.features.map((f) => [
+        f.id,
+        new FormControl<boolean>(false, { nonNullable: true }),
+      ]),
     ),
   );
 
-  // Query the three indeterminate checkboxes rendered in the indeterminate section
-  @ViewChild('selectAll') private readonly selectAllRef!: ElementRef<HTMLInputElement>;
+  readonly checkedCount = signal(0);
+  readonly allChecked = signal(false);
+  readonly someChecked = signal(false);
 
-  // Keep track of which indeterminate checkboxes to set after view init
-  // We use ViewChildren via a QueryList-free approach — grab them by querying
-  // all nxpCheckbox inputs with the indetermRef ref below.
-  // Because multiple #indetermRef refs cannot be accessed with a single @ViewChild,
-  // we rely on ElementRef of the section and query children directly.
-  private indetermElements: HTMLInputElement[] = [];
-
-  ngAfterViewInit(): void {
-    // Set the select-all indeterminate state based on initial state (all false = not indeterminate)
-    this.updateSelectAllIndeterminate();
-
-    // Find all checkboxes that we rendered in the indeterminate section.
-    // Since template refs can only handle one per ref name, we access them
-    // by querying via the native DOM from the host element.
-    const all = document.querySelectorAll<HTMLInputElement>(
-      'app-checkbox-demo section:nth-of-type(3) input[type="checkbox"]',
-    );
-    this.indetermElements = Array.from(all);
-    this.indetermElements.forEach((el) => {
-      el.indeterminate = true;
+  constructor() {
+    this.featuresForm.valueChanges.subscribe(() => {
+      this.updateSelectAllState();
     });
   }
 
@@ -349,36 +366,11 @@ export class CheckboxDemoComponent implements AfterViewInit {
     return this.featuresForm.get(id) as FormControl<boolean>;
   }
 
-  readonly checkedCount = signal(0);
-  readonly allChecked = signal(false);
-
-  constructor() {
-    // React to featuresForm changes to update select-all state
-    this.featuresForm.valueChanges.subscribe(() => {
-      this.updateSelectAllIndeterminate();
-      const values = Object.values(this.featuresForm.value) as boolean[];
-      const count = values.filter(Boolean).length;
-      this.checkedCount.set(count);
-      this.allChecked.set(count === this.features.length);
-    });
-  }
-
-  private updateSelectAllIndeterminate(): void {
+  private updateSelectAllState(): void {
     const values = Object.values(this.featuresForm.value) as boolean[];
     const count = values.filter(Boolean).length;
     this.checkedCount.set(count);
     this.allChecked.set(count === this.features.length);
-
-    if (this.selectAllRef) {
-      const el = this.selectAllRef.nativeElement;
-      el.indeterminate = count > 0 && count < this.features.length;
-      // Trigger ngDoCheck by dispatching a change event is not needed —
-      // the NxpCheckboxComponent's ngDoCheck polls indeterminate each cycle.
-    }
-  }
-
-  toggleAll(checked: boolean): void {
-    const patch = Object.fromEntries(this.features.map((f) => [f.id, checked]));
-    this.featuresForm.patchValue(patch);
+    this.someChecked.set(count > 0 && count < this.features.length);
   }
 }

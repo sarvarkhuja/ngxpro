@@ -1,18 +1,11 @@
 import { KeyValuePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import {
-  CellDirective,
-  ExpandComponent,
-  SubtitleDirective,
-  TitleDirective,
-} from '@nxp/cdk';
+import { ExpandComponent } from '@nxp/cdk';
 import {
   AccordionComponent,
   AccordionTriggerComponent,
 } from '@nxp/components/accordion';
-import { AvatarComponent } from '@nxp/components/avatar';
-import { ButtonComponent } from '@nxp/components/button';
 import { NxpTabs } from '@nxp/components/tabs';
 import { AmountPipe } from '@nxp/core';
 
@@ -33,13 +26,8 @@ interface Operation {
     AccordionComponent,
     AccordionTriggerComponent,
     AmountPipe,
-    AvatarComponent,
-    ButtonComponent,
-    CellDirective,
     ExpandComponent,
     NxpTabs,
-    SubtitleDirective,
-    TitleDirective,
   ],
   templateUrl: './accordion-demo.component.html',
 })

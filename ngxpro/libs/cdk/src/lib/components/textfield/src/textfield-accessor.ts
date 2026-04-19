@@ -5,5 +5,5 @@ export {
   nxpAsTextfieldAccessor,
   NXP_LABEL,
   NXP_TEXTFIELD,
-} from '@nxp/cdk';
-export type { NxpTextfieldAccessor } from '@nxp/cdk';
+} from '../../../tokens';
+export type { NxpTextfieldAccessor } from '../../../tokens';

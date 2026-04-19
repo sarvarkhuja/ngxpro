@@ -16,6 +16,7 @@ import {
   nxpKeyStepValueToPercentage,
   nxpPercentageToKeyStepValue,
 } from './helpers/key-steps';
+import { noop } from 'rxjs';
 
 /**
  * Low-level CDK slider component applied as an attribute directive on a native
@@ -131,10 +132,10 @@ export class NxpSliderComponent implements ControlValueAccessor, OnInit {
   // ---------------------------------------------------------------------------
 
   /** @internal */
-  _onChange: (value: number) => void = () => {};
+  _onChange: (value: number) => void = noop;
 
   /** @internal */
-  _onTouched: () => void = () => {};
+  _onTouched: () => void = noop;
 
   // ---------------------------------------------------------------------------
   // Lifecycle

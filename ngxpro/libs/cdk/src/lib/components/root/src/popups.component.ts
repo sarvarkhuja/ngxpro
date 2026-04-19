@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { NxpPortalService, NxpPortals } from '@nxp/cdk';
+
 import { NxpPopupService } from './popup.service';
+import { NxpPortalService, NxpPortals } from '../../../portals';
 
 @Component({
   selector: 'nxp-popups',
@@ -15,7 +16,7 @@ import { NxpPopupService } from './popup.service';
       inset: 0;
       z-index: 9000;
       display: grid;
-      grid-template-rows: repeat(9, min-content) 1fr;
+      grid-template-rows: repeat(9, min-content) 1fr repeat(5, min-content);
       pointer-events: none;
       overflow: hidden;
       overflow-wrap: break-word;
@@ -56,6 +57,66 @@ import { NxpPopupService } from './popup.service';
     nxp-popups > [data-block='end']:nth-of-type(3) { grid-row: 13; }
     nxp-popups > [data-block='end']:nth-of-type(4) { grid-row: 14; }
     nxp-popups > [data-block='end']:nth-of-type(5) { grid-row: 15; }
+
+    /* ── Alert enter/exit animations (Sonner-style) ─────────────────────── */
+
+    /* Enter: slide in from block edge */
+    nxp-popups > .nxp-enter[data-block='start'] {
+      animation: nxp-slide-in-top 400ms cubic-bezier(0.21, 1.02, 0.73, 1) both;
+    }
+    nxp-popups > .nxp-enter[data-block='end'] {
+      animation: nxp-slide-in-bottom 400ms cubic-bezier(0.21, 1.02, 0.73, 1) both;
+    }
+
+    /* Exit: slide out + fade */
+    nxp-popups > .nxp-leave[data-block='start'] {
+      animation: nxp-slide-out-top 200ms ease-out both;
+    }
+    nxp-popups > .nxp-leave[data-block='end'] {
+      animation: nxp-slide-out-bottom 200ms ease-out both;
+    }
+
+    /* Swipe-out override: follow swipe direction */
+    nxp-popups > [data-swipe-out][data-swipe-direction='left'] {
+      animation: nxp-swipe-out-left 200ms ease-out both;
+    }
+    nxp-popups > [data-swipe-out][data-swipe-direction='right'] {
+      animation: nxp-swipe-out-right 200ms ease-out both;
+    }
+
+    @keyframes nxp-slide-in-top {
+      from { opacity: 0; transform: translateY(-100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes nxp-slide-in-bottom {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes nxp-slide-out-top {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-100%); }
+    }
+    @keyframes nxp-slide-out-bottom {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(100%); }
+    }
+    @keyframes nxp-swipe-out-left {
+      from { opacity: 1; transform: translateX(var(--swipe-amount-x, 0)); }
+      to   { opacity: 0; transform: translateX(calc(var(--swipe-amount-x, 0) - 100%)); }
+    }
+    @keyframes nxp-swipe-out-right {
+      from { opacity: 1; transform: translateX(var(--swipe-amount-x, 0)); }
+      to   { opacity: 0; transform: translateX(calc(var(--swipe-amount-x, 0) + 100%)); }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion) {
+      nxp-popups > .nxp-enter,
+      nxp-popups > .nxp-leave,
+      nxp-popups > [data-swipe-out] {
+        animation: none !important;
+      }
+    }
   `],
 })
 export class NxpPopupsComponent extends NxpPortals {}

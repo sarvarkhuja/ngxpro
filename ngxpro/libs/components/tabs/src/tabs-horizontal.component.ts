@@ -2,52 +2,56 @@ import {
   AfterViewChecked,
   ChangeDetectionStrategy,
   Component,
-  inject,
-  input,
-  signal,
 } from '@angular/core';
-import { NXP_TABS_OPTIONS } from './tabs.options';
 import { NxpTabsDirective } from './tabs.directive';
+import { NxpTabsAnimatedBase } from './tabs-animated-base';
 
 /**
- * Horizontal tabs container.
- *
- * Renders a horizontal tab bar with an optional animated underline indicator.
- * Use `[activeItemIndex]` for two-way binding on the active tab.
+ * Horizontal tabs container with animated segment (pill) indicator.
  *
  * @example
  * <nxp-tabs [(activeItemIndex)]="activeTab">
  *   <button nxpTab>Overview</button>
  *   <button nxpTab>Analytics</button>
- *   <button nxpTab>Settings</button>
  * </nxp-tabs>
- *
- * @example
- * <!-- No underline indicator -->
- * <nxp-tabs [underline]="false" size="lg">
- *   <button nxpTab>Tab A</button>
- *   <button nxpTab>Tab B</button>
- * </nxp-tabs>
- *
- * @example
- * <!-- With tab panels -->
- * <nxp-tabs [(activeItemIndex)]="tab">
- *   <button nxpTab>Profile</button>
- *   <button nxpTab>Billing</button>
- * </nxp-tabs>
- * @if (tab === 0) { <div>Profile content</div> }
- * @if (tab === 1) { <div>Billing content</div> }
  */
 @Component({
   selector: 'nxp-tabs:not([vertical])',
   standalone: true,
   template: `
     <ng-content />
-    @if (underline()) {
+
+    @if (activeRect(); as r) {
       <div
-        class="absolute bottom-0 h-0.5 bg-primary-hover transition-all duration-200 pointer-events-none"
-        [style.left.px]="underlineLeft()"
-        [style.width.px]="underlineWidth()"
+        class="absolute pointer-events-none rounded-md bg-white dark:bg-gray-800 shadow-sm dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+        [style.left.px]="r.left"
+        [style.top.px]="r.top"
+        [style.width.px]="r.width"
+        [style.height.px]="r.height"
+        [style.opacity]="isHoveringOther() ? 0.85 : 1"
+        [style.transition]="segmentTransition"
+      ></div>
+    }
+    @if (isHoveringOther()) {
+      @if (hoverRect(); as h) {
+        <div
+          class="absolute pointer-events-none rounded-md bg-gray-200/60 dark:bg-gray-700/40"
+          [style.left.px]="h.left"
+          [style.top.px]="h.top"
+          [style.width.px]="h.width"
+          [style.height.px]="h.height"
+          [style.transition]="hoverTransition"
+        ></div>
+      }
+    }
+    @if (focusRect(); as f) {
+      <div
+        class="absolute pointer-events-none z-20 rounded-md border border-blue-500"
+        [style.left.px]="f.left - 2"
+        [style.top.px]="f.top - 2"
+        [style.width.px]="f.width + 4"
+        [style.height.px]="f.height + 4"
+        [style.transition]="hoverTransition"
       ></div>
     }
   `,
@@ -60,34 +64,30 @@ import { NxpTabsDirective } from './tabs.directive';
     },
   ],
   host: {
-    class: 'relative flex flex-row overflow-x-auto border-b border-gray-200 dark:border-gray-700',
+    class:
+      'relative flex flex-row overflow-x-auto rounded-lg bg-gray-100 dark:bg-gray-800 p-1 gap-1',
     '(keydown.arrowRight.prevent)': 'onKeyDownArrow($event.target, 1)',
     '(keydown.arrowLeft.prevent)': 'onKeyDownArrow($event.target, -1)',
+    '(mousemove)': 'onMouseMove($event)',
+    '(mouseleave)': 'onMouseLeave()',
+    '(focusin)': 'onFocusIn($event)',
+    '(focusout)': 'onFocusOut()',
+    '(nxp-tab-activate)': 'onTabActivate($event)',
   },
 })
-export class NxpTabsHorizontal implements AfterViewChecked {
-  private readonly tabs = inject(NxpTabsDirective);
-  private readonly options = inject(NXP_TABS_OPTIONS);
-
-  /** Show an animated underline indicator beneath the active tab. */
-  readonly underline = input(this.options.underline);
-
-  protected readonly underlineLeft = signal(0);
-  protected readonly underlineWidth = signal(0);
+export class NxpTabsHorizontal
+  extends NxpTabsAnimatedBase
+  implements AfterViewChecked
+{
+  protected readonly axis = 'x' as const;
 
   ngAfterViewChecked(): void {
-    this.refresh();
+    this.syncIfTabCountChanged();
   }
 
   protected onKeyDownArrow(current: EventTarget | null, step: number): void {
     if (current instanceof HTMLElement) {
-      this.tabs.moveFocus(current, step);
+      this.tabsDirective.moveFocus(current, step);
     }
-  }
-
-  private refresh(): void {
-    const { activeElement } = this.tabs;
-    this.underlineLeft.set(activeElement?.offsetLeft ?? 0);
-    this.underlineWidth.set(activeElement?.offsetWidth ?? 0);
   }
 }

@@ -18,3 +18,5 @@ export { nxpCheckFixedPosition } from './check-fixed-position';
 export { nxpGetWordRange } from './get-word-range';
 export { nxpSanitizeText } from './sanitize-text';
 export { nxpGetClipboardDataText, nxpWriteToClipboard } from './clipboard';
+export { nxpMeasureItems, nxpFindProximityIndex } from './proximity-hover';
+export type { NxpItemRect } from './proximity-hover';

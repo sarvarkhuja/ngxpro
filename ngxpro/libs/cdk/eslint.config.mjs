@@ -21,6 +21,13 @@ export default [
   ...nx.configs['flat/angular-template'],
 
   {
+    files: ['**/*.ts'],
+    rules: {
+      '@angular-eslint/no-input-rename': 'off',
+      '@angular-eslint/no-output-rename': 'off',
+    },
+  },
+  {
     files: ['**/*.html'],
     // Override or add rules here
     rules: {},

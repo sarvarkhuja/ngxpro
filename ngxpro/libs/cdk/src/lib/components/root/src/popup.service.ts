@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NxpPortalService } from '@nxp/cdk';
+import { NxpPortalService } from '../../../portals';
 
 @Injectable({ providedIn: 'root' })
 export class NxpPopupService extends NxpPortalService {}

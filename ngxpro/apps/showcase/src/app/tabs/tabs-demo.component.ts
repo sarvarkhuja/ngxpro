@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NxpIconComponent } from '@nxp/cdk/components/icon';
-import { NxpTabs, NxpTabsSize } from '@nxp/components/tabs';
+import { NxpTabs, type NxpTabsSize } from '@nxp/components/tabs';
 
 @Component({
   selector: 'app-tabs-demo',
@@ -26,8 +26,8 @@ import { NxpTabs, NxpTabsSize } from '@nxp/components/tabs';
           Tabs
         </h1>
         <p class="text-gray-600 dark:text-gray-400 mb-10">
-          Horizontal and vertical tab containers with an animated underline
-          indicator. Use
+          Horizontal and vertical tab containers with an animated segment
+          (pill) indicator. Use
           <code
             class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded"
             >[(activeItemIndex)]</code
@@ -36,13 +36,13 @@ import { NxpTabs, NxpTabsSize } from '@nxp/components/tabs';
           keys) is supported.
         </p>
 
-        <!-- Horizontal tabs  with underline -->
+        <!-- Horizontal tabs -->
         <section class="mb-12">
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">
             Horizontal (default)
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Horizontal tabs with animated underline indicator. Tab panels shown
+            Horizontal tabs with animated segment indicator. Tab panels shown
             below.
           </p>
           <pre>{{ horizontalTab() | json }}</pre>
@@ -78,30 +78,6 @@ import { NxpTabs, NxpTabsSize } from '@nxp/components/tabs';
               }
             }
           </div>
-        </section>
-
-        <!-- Horizontal without underline -->
-        <section class="mb-12">
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">
-            Without underline
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Set
-            <code
-              class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded"
-              >[underline]="false"</code
-            >
-            to hide the animated indicator.
-          </p>
-          <nxp-tabs
-            [underline]="false"
-            [activeItemIndex]="plainTab()"
-            (activeItemIndexChange)="plainTab.set($event)"
-          >
-            <button nxpTab class="px-4 py-3">Tab A</button>
-            <button nxpTab class="px-4 py-3">Tab B</button>
-            <button nxpTab class="px-4 py-3">Tab C</button>
-          </nxp-tabs>
         </section>
 
         <!-- Size variants -->
@@ -380,7 +356,6 @@ import { NxpTabs, NxpTabsSize } from '@nxp/components/tabs';
 })
 export class TabsDemoComponent {
   readonly horizontalTab = signal(0);
-  readonly plainTab = signal(0);
   readonly verticalTab = signal(0);
   readonly disabledExampleTab = signal(0);
   readonly iconTab = signal(0);
