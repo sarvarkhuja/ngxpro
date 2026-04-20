@@ -1,0 +1,8 @@
+export { TextMorphDirective } from './text-morph.directive';
+export { TextMorphComponent } from './text-morph.component';
+export {
+  NXP_TEXT_MORPH_OPTIONS,
+  provideTextMorphOptions,
+} from './text-morph.options';
+export type { NgxproTextMorphOptions } from './text-morph.types';
+export { NXP_TEXT_MORPH_DEFAULT_OPTIONS } from './text-morph.types';
