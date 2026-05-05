@@ -97,10 +97,10 @@ function nxpGetFocused(doc: Document): Element | null {
         outline: none;
       }
       :host.nxp-enter {
-        animation: nxp-modal-fade 0.2s ease-out;
+        animation: nxp-modal-fade 0.2s cubic-bezier(0.23, 1, 0.32, 1);
       }
       :host.nxp-leave {
-        animation: nxp-modal-fade 0.15s ease-in reverse;
+        animation: nxp-modal-fade 0.15s cubic-bezier(0.4, 0, 1, 1) reverse;
       }
       .nxp-modal-backdrop {
         position: fixed;
@@ -126,6 +126,19 @@ function nxpGetFocused(doc: Document): Element | null {
       @keyframes nxp-modal-fade {
         from { opacity: 0; transform: scale(0.97) translateY(0.5rem); }
         to   { opacity: 1; transform: scale(1)    translateY(0); }
+      }
+      @keyframes nxp-modal-fade-opacity {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        :host.nxp-enter,
+        :host.nxp-leave {
+          animation: nxp-modal-fade-opacity 0.15s linear;
+        }
+        :host.nxp-leave {
+          animation-direction: reverse;
+        }
       }
     `,
   ],

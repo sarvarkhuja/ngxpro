@@ -1,5 +1,5 @@
 import { Directive, HostListener, inject, input } from '@angular/core';
-import { NXP_WINDOW } from '@nxp/cdk';
+import { NXP_WINDOW } from '../../../tokens';
 
 /**
  * Transformer applied to selected text before it hits the clipboard.

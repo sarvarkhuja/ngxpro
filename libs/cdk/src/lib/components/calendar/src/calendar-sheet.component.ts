@@ -6,7 +6,7 @@ import {
   model,
   output,
 } from '@angular/core';
-import { cx, dayCellVariants } from '@nxp/cdk';
+import { dayCellVariants } from '../../../utils';
 import { CalendarSheetPipe } from './calendar-sheet.pipe';
 import type { DayRange, DisabledHandler, MarkerHandler, WeekStart } from './calendar.types';
 
@@ -41,11 +41,10 @@ function startOfDay(d: Date): Date {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarSheetPipe],
   template: `
-    <!-- Week-day header row -->
-    <div class="grid grid-cols-7 mb-1" role="row">
+    <div class="grid grid-cols-7 mb-1.5" role="row">
       @for (label of weekdayLabels(); track label) {
         <div
-          class="h-8 flex items-center justify-center text-xs font-medium text-text-tertiary select-none"
+          class="h-7 flex items-center justify-center text-[11px] font-medium tracking-wide uppercase text-text-tertiary select-none"
           role="columnheader"
           [attr.aria-label]="label"
         >
@@ -54,8 +53,7 @@ function startOfDay(d: Date): Date {
       }
     </div>
 
-    <!-- Day grid: 6 rows × 7 cols -->
-    <div role="grid" [attr.aria-label]="gridLabel()">
+    <div role="grid" [attr.aria-label]="gridLabel()" class="grid gap-y-0.5">
       @for (week of (year() | calendarSheet:month():weekStart()); track $index) {
         <div class="grid grid-cols-7" role="row">
           @for (day of week; track day.getTime()) {
@@ -78,11 +76,13 @@ function startOfDay(d: Date): Date {
                 (focus)="hoveredDayChange.emit(day)"
                 (blur)="hoveredDayChange.emit(null)"
               >
-                {{ day.getDate() }}
+                <span class="tabular-nums">{{ day.getDate() }}</span>
 
-                <!-- Dot markers -->
                 @if (markers(day).length > 0) {
-                  <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 flex gap-0.5">
+                  <span
+                    class="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5"
+                    aria-hidden="true"
+                  >
                     @for (color of markers(day); track $index) {
                       <span
                         class="h-1 w-1 rounded-full"
@@ -100,52 +100,20 @@ function startOfDay(d: Date): Date {
   `,
 })
 export class CalendarSheetComponent {
-  /** Currently viewed year. */
   readonly year = input.required<number>();
-
-  /** Currently viewed month (0–11). */
   readonly month = input.required<number>();
-
-  /**
-   * Selected value — can be:
-   * - null / undefined     → nothing selected
-   * - Date                 → single selection
-   * - [Date, Date]         → range selection (start + end)
-   * - Date[]               → multi selection
-   */
   readonly value = input<Date | [Date, Date] | Date[] | null>(null);
-
-  /** Currently hovered date (used for range preview). */
   readonly hoveredDay = model<Date | null>(null);
-
-  /** First day of the week. 0 = Sun, 1 = Mon (default). */
   readonly weekStart = input<WeekStart>(1);
-
-  /** Optional handler to disable individual dates. */
   readonly disabledHandler = input<DisabledHandler | null>(null);
-
-  /** Optional handler to add dot markers to dates. */
   readonly markerHandler = input<MarkerHandler | null>(null);
-
-  /** Whether to show days from the previous/next month. */
   readonly showAdjacent = input<boolean>(true);
-
-  /** Whether the component is in range-selection mode. */
   readonly rangeMode = input<boolean>(false);
-
-  /** Minimum selectable date. */
   readonly min = input<Date | null>(null);
-
-  /** Maximum selectable date. */
   readonly max = input<Date | null>(null);
 
-  /** Emitted when the user clicks a (non-disabled) day. */
   readonly dayClick = output<Date>();
-
-  /** Emitted when the hovered day changes (null on mouse-leave). */
   readonly hoveredDayChange = output<Date | null>();
-
-  // ------------------------------------------------------------------ helpers
 
   protected readonly weekdayLabels = computed(() => {
     const ws = this.weekStart();
@@ -156,7 +124,6 @@ export class CalendarSheetComponent {
     () => `Calendar — ${this.year()}-${String(this.month() + 1).padStart(2, '0')}`,
   );
 
-  /** Returns dot-marker colors for the given date. */
   protected markers(day: Date): string[] {
     const handler = this.markerHandler();
     return handler ? handler(day) : [];
@@ -166,12 +133,10 @@ export class CalendarSheetComponent {
     return isToday(day);
   }
 
-  /** Whether the day belongs to a different month than the viewed month. */
   protected isAdjacent(day: Date): boolean {
     return day.getMonth() !== this.month();
   }
 
-  /** Whether the day is a Saturday (6) or Sunday (0). */
   protected isWeekend(day: Date): boolean {
     const dow = day.getDay();
     return dow === 0 || dow === 6;
@@ -193,7 +158,6 @@ export class CalendarSheetComponent {
     return this.rangeState(day) !== null;
   }
 
-  /** Computes the range state for a given day. */
   protected rangeState(day: Date): DayRange {
     const val = this.value();
     if (!val) return null;
@@ -202,7 +166,6 @@ export class CalendarSheetComponent {
       return isSameDay(day, val) ? 'active' : null;
     }
 
-    // Range: [Date, Date]
     if (
       Array.isArray(val) &&
       val.length === 2 &&
@@ -219,7 +182,6 @@ export class CalendarSheetComponent {
       return null;
     }
 
-    // Multi: Date[]
     if (Array.isArray(val)) {
       return (val as Date[]).some((v) => isSameDay(day, v)) ? 'active' : null;
     }
@@ -229,16 +191,15 @@ export class CalendarSheetComponent {
 
   /**
    * Wrapper class for the range-middle background strip.
-   * Applied on the gridcell wrapper (not the button) so the blue strip
-   * extends edge-to-edge while the button itself keeps a rounded shape.
+   * Extends edge-to-edge with rounded corners on the start/end cells.
    */
   protected rangeBgClass(day: Date): string {
     if (!this.rangeMode()) return '';
     const state = this.rangeState(day);
 
-    if (state === 'middle') {
-      return 'bg-primary/10';
-    }
+    if (state === 'middle') return 'bg-primary/12';
+    if (state === 'start') return 'bg-primary/12 rounded-l-lg';
+    if (state === 'end') return 'bg-primary/12 rounded-r-lg';
     return '';
   }
 
@@ -249,25 +210,17 @@ export class CalendarSheetComponent {
     const weekend = this.isWeekend(day);
     const rangeState = this.rangeState(day);
 
-    if (disabled) {
-      return dayCellVariants({ state: 'disabled' });
-    }
+    if (disabled) return dayCellVariants({ state: 'disabled' });
 
     if (!this.showAdjacent() && adjacent) {
       return dayCellVariants({ state: 'invisible' });
     }
 
-    if (rangeState === 'active') {
-      return dayCellVariants({ state: 'active' });
-    }
-
+    if (rangeState === 'active') return dayCellVariants({ state: 'active' });
     if (rangeState === 'start' || rangeState === 'end') {
       return dayCellVariants({ state: 'startEnd' });
     }
-
-    if (rangeState === 'middle') {
-      return dayCellVariants({ state: 'middle' });
-    }
+    if (rangeState === 'middle') return dayCellVariants({ state: 'middle' });
 
     return dayCellVariants({ state: 'default', adjacent, today, weekend });
   }

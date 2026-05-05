@@ -24,11 +24,24 @@ export const NXP_SPRING_FAST: NxpSpringSpec = {
   easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
 } as const;
 
-/** Fast exit spring — asymmetric exit for check/uncheck animations. */
+/**
+ * Fast exit spring — asymmetric exit for check/uncheck animations.
+ * Uses Material's "acceleration" curve (same shape as ease-in but sharper) —
+ * avoids ease-in which feels sluggish on UI entries and exits.
+ */
 export const NXP_SPRING_FAST_EXIT: NxpSpringSpec = {
   duration: 40,
-  easing: 'ease-in',
+  easing: 'cubic-bezier(0.4, 0, 1, 1)',
 } as const;
+
+/** Strong ease-out — punchy settle, recommended default for enters. */
+export const NXP_EASE_OUT_STRONG = 'cubic-bezier(0.23, 1, 0.32, 1)';
+
+/** Strong ease-in-out — used for bi-directional transitions (accordion, menu). */
+export const NXP_EASE_IN_OUT_STRONG = 'cubic-bezier(0.77, 0, 0.175, 1)';
+
+/** Drawer curve — iOS-style slide with gentle decel. */
+export const NXP_EASE_DRAWER = 'cubic-bezier(0.32, 0.72, 0, 1)';
 
 /** Fast opacity fade (e.g. active segment dimming when hovering another tab). */
 export const NXP_OPACITY_FAST_MS = 80;

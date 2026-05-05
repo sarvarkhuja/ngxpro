@@ -78,13 +78,31 @@ function addMonths(date: Date, n: number): Date {
       role="group"
       aria-label="Date range picker"
     >
-      <!-- Left calendar -->
-      <div class="p-4">
+      <nxp-calendar
+        class="!rounded-none !border-0 !shadow-none"
+        [rangeMode]="true"
+        [value]="displayValue()"
+        [year]="leftYear()"
+        [month]="leftMonthIdx()"
+        [min]="effectiveMin()"
+        [max]="effectiveMax()"
+        [disabledHandler]="computedDisabledHandler()"
+        [markerHandler]="markerHandler()"
+        [showAdjacent]="false"
+        [(hoveredDay)]="hoveredDay"
+        (dayClick)="onDayClick($event)"
+        (monthChange)="onLeftCalendarMonthChange($event)"
+      />
+
+      @if (!items().length) {
+        <div class="w-px bg-border-normal/70 self-stretch" aria-hidden="true"></div>
+
         <nxp-calendar
+          class="!rounded-none !border-0 !shadow-none"
           [rangeMode]="true"
           [value]="displayValue()"
-          [year]="leftYear()"
-          [month]="leftMonthIdx()"
+          [year]="rightYear()"
+          [month]="rightMonthIdx()"
           [min]="effectiveMin()"
           [max]="effectiveMax()"
           [disabledHandler]="computedDisabledHandler()"
@@ -92,38 +110,12 @@ function addMonths(date: Date, n: number): Date {
           [showAdjacent]="false"
           [(hoveredDay)]="hoveredDay"
           (dayClick)="onDayClick($event)"
-          (monthChange)="onLeftCalendarMonthChange($event)"
+          (monthChange)="onRightCalendarMonthChange($event)"
         />
-      </div>
-
-      <!-- Divider (shown when rendering two calendars side-by-side) -->
-      @if (!items().length) {
-        <div class="w-px bg-border-normal self-stretch"></div>
       }
 
-      <!-- Right calendar (month+1) — shown only when no sidebar items -->
-      @if (!items().length) {
-        <div class="p-4">
-          <nxp-calendar
-            [rangeMode]="true"
-            [value]="displayValue()"
-            [year]="rightYear()"
-            [month]="rightMonthIdx()"
-            [min]="effectiveMin()"
-            [max]="effectiveMax()"
-            [disabledHandler]="computedDisabledHandler()"
-            [markerHandler]="markerHandler()"
-            [showAdjacent]="false"
-            [(hoveredDay)]="hoveredDay"
-            (dayClick)="onDayClick($event)"
-            (monthChange)="onRightCalendarMonthChange($event)"
-          />
-        </div>
-      }
-
-      <!-- Divider before preset sidebar -->
       @if (items().length) {
-        <div class="w-px bg-border-normal self-stretch"></div>
+        <div class="w-px bg-border-normal/70 self-stretch" aria-hidden="true"></div>
       }
 
       <!--

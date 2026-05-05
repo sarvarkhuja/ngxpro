@@ -5,7 +5,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { cx, navButtonClass } from '@nxp/cdk';
+import { cx, navButtonClass } from '../../../utils';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -24,8 +24,7 @@ const MONTH_NAMES = [
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex items-center justify-between px-1 pb-2">
-      <!-- Previous month button -->
+    <div class="flex items-center justify-between gap-1 pb-3">
       <button
         type="button"
         [class]="navBtnClass"
@@ -33,20 +32,18 @@ const MONTH_NAMES = [
         [attr.aria-label]="'Go to previous month'"
         (click)="prevClick.emit()"
       >
-        <i class="ri-arrow-left-s-line h-4 w-4" aria-hidden="true"></i>
+        <i class="ri-arrow-left-s-line text-base leading-none" aria-hidden="true"></i>
       </button>
 
-      <!-- Month / Year label — click to open year picker -->
       <button
         type="button"
         [class]="labelBtnClass"
         [attr.aria-label]="'Select year, currently ' + monthName() + ' ' + year()"
         (click)="yearLabelClick.emit()"
       >
-        {{ monthName() }} {{ year() }}
+        <span class="tabular-nums">{{ monthName() }} {{ year() }}</span>
       </button>
 
-      <!-- Next month button -->
       <button
         type="button"
         [class]="navBtnClass"
@@ -54,31 +51,19 @@ const MONTH_NAMES = [
         [attr.aria-label]="'Go to next month'"
         (click)="nextClick.emit()"
       >
-        <i class="ri-arrow-right-s-line h-4 w-4" aria-hidden="true"></i>
+        <i class="ri-arrow-right-s-line text-base leading-none" aria-hidden="true"></i>
       </button>
     </div>
   `,
 })
 export class CalendarHeaderComponent {
-  /** Currently viewed month (0–11). */
   readonly month = input.required<number>();
-
-  /** Currently viewed year (e.g. 2025). */
   readonly year = input.required<number>();
-
-  /** Optional minimum date — disables the prev button when at the min month. */
   readonly min = input<Date | null>(null);
-
-  /** Optional maximum date — disables the next button when at the max month. */
   readonly max = input<Date | null>(null);
 
-  /** Fired when the user clicks the left arrow. */
   readonly prevClick = output<void>();
-
-  /** Fired when the user clicks the right arrow. */
   readonly nextClick = output<void>();
-
-  /** Fired when the user clicks the month/year label (switch to year view). */
   readonly yearLabelClick = output<void>();
 
   protected readonly monthName = computed(() => MONTH_NAMES[this.month()]);
@@ -106,11 +91,13 @@ export class CalendarHeaderComponent {
   protected readonly navBtnClass = navButtonClass;
 
   protected readonly labelBtnClass = cx(
-    'flex-1 text-center text-sm font-semibold',
-    'text-text-primary',
-    'rounded-md px-2 py-1',
+    'flex-1 flex items-center justify-center',
+    'h-8 px-2 rounded-lg',
+    'text-sm font-semibold text-text-primary',
     'hover:bg-bg-neutral-1',
-    'transition-all duration-[80ms]',
-    'outline-none focus-visible:ring-1 focus-visible:ring-[#6B97FF]',
+    'transition-[background-color,color,transform] duration-150',
+    '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
+    'active:scale-[0.98]',
+    'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
   );
 }

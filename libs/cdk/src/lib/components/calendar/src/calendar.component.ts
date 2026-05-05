@@ -9,7 +9,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { cx, calendarContainerClass } from '@nxp/cdk';
+import { cx, calendarContainerClass } from '../../../utils';
 import { CalendarHeaderComponent } from './calendar-header.component';
 import { CalendarSheetComponent } from './calendar-sheet.component';
 import { CalendarYearComponent } from './calendar-year.component';
@@ -179,7 +179,7 @@ export class CalendarComponent implements OnInit {
   });
 
   protected readonly containerClass = computed(() =>
-    cx(calendarContainerClass, 'flex-col gap-0 p-4', this.class()),
+    cx(calendarContainerClass, 'flex-col gap-0 p-4 w-[20rem]', this.class()),
   );
 
   // ------------------------------------------------------------------ lifecycle

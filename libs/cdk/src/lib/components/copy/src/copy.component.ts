@@ -10,7 +10,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { tv, type VariantProps } from 'tailwind-variants';
-import { cx, nxpWriteToClipboard, NXP_DOCUMENT } from '@nxp/cdk';
+import { cx, nxpWriteToClipboard } from '../../../utils';
+import { NXP_DOCUMENT } from '../../../tokens';
 import { NXP_COPY_OPTIONS } from './copy.options';
 
 // ---------------------------------------------------------------------------

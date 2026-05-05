@@ -2,31 +2,34 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
+  ElementRef,
   forwardRef,
-  inject,
   input,
   model,
-  ViewEncapsulation,
+  signal,
+  viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
   clamp,
   round,
-  NxpSlider,
-  NxpKeySteps,
+  type NxpKeySteps,
   NXP_FLOATING_PRECISION,
   nxpKeyStepValueToPercentage,
   nxpPercentageToKeyStepValue,
 } from '@nxp/cdk';
-import { NXP_RANGE_OPTIONS, type NxpRangeSize } from './range.options';
-import { NxpRangeChange } from './range-change.directive';
+
+const THUMB_SIZE = 20;
+const THUMB_SIZE_REST = 16;
+const TRACK_BG_HEIGHT = 18;
+const DOT_SIZE = 4;
+const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
 
 @Component({
   selector: 'nxp-range',
   standalone: true,
-  imports: [...NxpSlider],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -34,282 +37,307 @@ import { NxpRangeChange } from './range-change.directive';
       multi: true,
     },
   ],
-  hostDirectives: [
-    {
-      directive: NxpRangeChange,
-      outputs: ['activeThumbChange'],
-    },
-  ],
   host: {
-    '[style.--nxp-range-start.%]': 'thumbPercents()[0]',
-    '[style.--nxp-range-end.%]': 'thumbPercents()[1]',
-    '[attr.data-size]': 'size()',
-    '[attr.data-segments]': 'segments()',
     '[class.nxp-range-disabled]': 'disabled()',
-    '(keydown.arrowRight)': 'changeByStep(1, $any($event))',
-    '(keydown.arrowUp)': 'changeByStep(1, $any($event))',
-    '(keydown.arrowLeft)': 'changeByStep(-1, $any($event))',
-    '(keydown.arrowDown)': 'changeByStep(-1, $any($event))',
+    '[class.nxp-range-themed]': 'themeColor()',
   },
   template: `
-    <div class="nxp-range-track">
+    <div class="nxp-range-track-area">
+      <div
+        #trackEl
+        class="nxp-range-track"
+        [class.nxp-range-dragging]="isPressed()"
+        [style.height.px]="THUMB_SIZE + 16"
+        (pointerenter)="isHovered.set(true)"
+        (pointerleave)="isHovered.set(false)"
+        (pointerdown)="onPointerDown($event)"
+        (pointermove)="onPointerMove($event)"
+        (pointerup)="onPointerUp($event)"
+      >
+        <div
+          class="nxp-range-track-bg"
+          [style.left.px]="TRACK_INSET"
+          [style.right.px]="TRACK_INSET"
+          [style.top.px]="8 + (THUMB_SIZE - TRACK_BG_HEIGHT) / 2"
+          [style.height.px]="TRACK_BG_HEIGHT"
+        >
+          <div
+            class="nxp-range-fill"
+            [style.left]="fillLeft()"
+            [style.width]="fillWidth()"
+          ></div>
+        </div>
+
+        @if (showSteps() && stepDots().length > 0) {
+          <div
+            class="nxp-range-dots-container"
+            [style.top.px]="8 + (THUMB_SIZE - TRACK_BG_HEIGHT) / 2"
+            [style.height.px]="TRACK_BG_HEIGHT"
+          >
+            @for (dot of stepDots(); track dot.value) {
+              <div
+                class="nxp-range-dot-wrapper"
+                [style.left]="
+                  'calc(' +
+                  THUMB_SIZE / 2 +
+                  'px + ' +
+                  dot.percent +
+                  ' * (100% - ' +
+                  THUMB_SIZE +
+                  'px))'
+                "
+              >
+                <div
+                  class="nxp-range-dot"
+                  [class.nxp-range-dot-hidden]="
+                    dot.percent >= startRatio() && dot.percent <= endRatio()
+                  "
+                  [class.nxp-range-dot-hovered]="isHovered()"
+                ></div>
+              </div>
+            }
+          </div>
+        }
+
+        <div
+          class="nxp-range-thumb-outer"
+          [style.left]="thumbStartLeft()"
+          [style.top.px]="8"
+        >
+          <span class="nxp-range-thumb"></span>
+          @if (focusedThumb() === 0) {
+            <span class="nxp-range-focus-ring"></span>
+          }
+        </div>
+        <div
+          class="nxp-range-thumb-outer"
+          [style.left]="thumbEndLeft()"
+          [style.top.px]="8"
+        >
+          <span class="nxp-range-thumb"></span>
+          @if (focusedThumb() === 1) {
+            <span class="nxp-range-focus-ring"></span>
+          }
+        </div>
+      </div>
+
       <input
+        #nativeStart
         type="range"
-        nxpSlider
-        [readonly]="true"
-        tabindex="0"
+        class="nxp-range-native-input"
         [attr.min]="effectiveMin()"
         [attr.max]="effectiveMax()"
         [attr.step]="effectiveStep()"
-        [attr.aria-label]="'Range start'"
-        [attr.aria-valuemin]="min()"
-        [attr.aria-valuemax]="max()"
-        [attr.aria-valuenow]="value()[0]"
         [value]="nativeValues()[0]"
         [disabled]="disabled()"
+        [attr.aria-label]="(label() ?? 'Range') + ' start'"
+        [attr.aria-valuenow]="value()[0]"
+        [attr.aria-valuemin]="min()"
+        [attr.aria-valuemax]="max()"
+        (input)="onNativeInput(0, $event)"
+        (focus)="focusedThumb.set(0)"
+        (blur)="onNativeBlur($event)"
       />
       <input
+        #nativeEnd
         type="range"
-        nxpSlider
-        [readonly]="true"
-        tabindex="0"
+        class="nxp-range-native-input"
         [attr.min]="effectiveMin()"
         [attr.max]="effectiveMax()"
         [attr.step]="effectiveStep()"
-        [attr.aria-label]="'Range end'"
-        [attr.aria-valuemin]="min()"
-        [attr.aria-valuemax]="max()"
-        [attr.aria-valuenow]="value()[1]"
         [value]="nativeValues()[1]"
         [disabled]="disabled()"
+        [attr.aria-label]="(label() ?? 'Range') + ' end'"
+        [attr.aria-valuenow]="value()[1]"
+        [attr.aria-valuemin]="min()"
+        [attr.aria-valuemax]="max()"
+        (input)="onNativeInput(1, $event)"
+        (focus)="focusedThumb.set(1)"
+        (blur)="onNativeBlur($event)"
       />
     </div>
   `,
-  styles: [
-    `
-      /* ── Host layout ── */
-      nxp-range {
-        display: block;
-        position: relative;
-        user-select: none;
-        touch-action: none;
-        outline: none;
-      }
+  styles: `
+    :host {
+      display: block;
+      width: 100%;
+      overflow: visible;
+      user-select: none;
+      touch-action: none;
+    }
+    :host.nxp-range-disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
 
-      nxp-range.nxp-range-disabled {
-        opacity: 0.5;
-        pointer-events: none;
-      }
+    .nxp-range-track-area {
+      position: relative;
+      width: 100%;
+      overflow: visible;
+    }
 
-      /* ── Track ── */
-      .nxp-range-track {
-        position: relative;
-        width: 100%;
-        border-radius: 9999px;
-        background-color: rgb(229 231 235); /* gray-200 */
-      }
+    .nxp-range-track {
+      position: relative;
+      width: 100%;
+      cursor: ew-resize;
+      padding: 8px 0;
+    }
 
-      :is(.dark) .nxp-range-track {
-        background-color: rgb(55 65 81); /* gray-700 */
-      }
+    .nxp-range-track-bg {
+      position: absolute;
+      border: 1px solid var(--nxp-border, rgb(229 231 235));
+      overflow: hidden;
+      border-radius: 9999px;
+      background: transparent;
+    }
+    :host-context(.dark) .nxp-range-track-bg {
+      border-color: var(--nxp-border, rgb(55 65 81));
+    }
 
-      /* ── Fill (between thumbs) ── */
-      .nxp-range-track::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: var(--nxp-range-start);
-        right: calc(100% - var(--nxp-range-end));
-        border-radius: 9999px;
-        background-color: rgb(37 99 235); /* blue-600 */
-        pointer-events: none;
-      }
+    .nxp-range-fill {
+      position: absolute;
+      height: 100%;
+      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 12%, transparent);
+      transition: left 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
+                  width 160ms cubic-bezier(0.22, 1.2, 0.36, 1);
+    }
+    :host-context(.dark) .nxp-range-fill {
+      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 12%, transparent);
+    }
+    .nxp-range-dragging .nxp-range-fill {
+      transition: none;
+    }
 
-      :is(.dark) .nxp-range-track::before {
-        background-color: rgb(96 165 250); /* blue-400 */
-      }
+    .nxp-range-dots-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      pointer-events: none;
+    }
+    .nxp-range-dot-wrapper {
+      position: absolute;
+      top: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 0;
+      height: 0;
+    }
+    .nxp-range-dot {
+      width: ${DOT_SIZE}px;
+      height: ${DOT_SIZE}px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+      background: var(--nxp-muted-fg, rgb(156 163 175));
+      opacity: 0.3;
+      transition: width 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
+                  height 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
+                  opacity 80ms linear;
+    }
+    .nxp-range-dot-hovered {
+      width: ${DOT_SIZE * 1.25}px;
+      height: ${DOT_SIZE * 1.25}px;
+    }
+    .nxp-range-dot-hidden {
+      opacity: 0;
+    }
 
-      /* ── Tick marks (segments > 1) ── */
-      nxp-range[data-segments]:not([data-segments="1"]) .nxp-range-track::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 9999px;
-        background: repeating-linear-gradient(
-          to right,
-          transparent,
-          transparent calc(100% / var(--nxp-segments, 1) - 1px),
-          rgb(255 255 255 / 0.4) calc(100% / var(--nxp-segments, 1) - 1px),
-          rgb(255 255 255 / 0.4) calc(100% / var(--nxp-segments, 1))
-        );
-        pointer-events: none;
-      }
+    .nxp-range-thumb-outer {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: ${THUMB_SIZE}px;
+      height: ${THUMB_SIZE}px;
+      pointer-events: none;
+      z-index: 10;
+      transition: left 160ms cubic-bezier(0.22, 1.2, 0.36, 1);
+    }
+    .nxp-range-dragging .nxp-range-thumb-outer {
+      transition: none;
+    }
+    .nxp-range-thumb {
+      display: block;
+      width: ${THUMB_SIZE_REST}px;
+      height: ${THUMB_SIZE_REST}px;
+      border-radius: 9999px;
+      background: white;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    .nxp-range-focus-ring {
+      position: absolute;
+      width: ${THUMB_SIZE + 4}px;
+      height: ${THUMB_SIZE + 4}px;
+      border-radius: 9999px;
+      border: 1px solid #6B97FF;
+      pointer-events: none;
+    }
 
-      /* ── Hidden native inputs layered over track ── */
-      .nxp-range-track input[type='range'] {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        transform: translateY(-50%);
-        background: transparent;
-        appearance: none;
-        pointer-events: none;
-        outline: none;
-        z-index: 1;
-      }
+    .nxp-range-native-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      height: ${THUMB_SIZE}px;
+    }
 
-      .nxp-range-track input[type='range']::-webkit-slider-runnable-track {
-        appearance: none;
-        background: transparent;
-        height: 0;
-      }
-
-      .nxp-range-track input[type='range']::-moz-range-track {
-        appearance: none;
-        background: transparent;
-        height: 0;
-      }
-
-      /* ── Thumb (webkit) ── */
-      .nxp-range-track input[type='range']::-webkit-slider-thumb {
-        appearance: none;
-        pointer-events: auto;
-        cursor: pointer;
-        border-radius: 50%;
-        border: 2px solid rgb(37 99 235);
-        background: white;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-        transition: box-shadow 150ms ease, transform 150ms ease;
-      }
-
-      :is(.dark) .nxp-range-track input[type='range']::-webkit-slider-thumb {
-        border-color: rgb(96 165 250);
-        background: rgb(30 41 59); /* slate-800 */
-      }
-
-      .nxp-range-track input[type='range']:focus-visible::-webkit-slider-thumb {
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.45);
-      }
-
-      .nxp-range-track input[type='range']::-webkit-slider-thumb:hover {
-        transform: scale(1.15);
-      }
-
-      /* ── Thumb (Firefox) ── */
-      .nxp-range-track input[type='range']::-moz-range-thumb {
-        appearance: none;
-        pointer-events: auto;
-        cursor: pointer;
-        border-radius: 50%;
-        border: 2px solid rgb(37 99 235);
-        background: white;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-        transition: box-shadow 150ms ease, transform 150ms ease;
-      }
-
-      :is(.dark) .nxp-range-track input[type='range']::-moz-range-thumb {
-        border-color: rgb(96 165 250);
-        background: rgb(30 41 59);
-      }
-
-      .nxp-range-track input[type='range']:focus-visible::-moz-range-thumb {
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.45);
-      }
-
-      /* ── Size: small ── */
-      nxp-range[data-size='s'] .nxp-range-track {
-        height: 4px;
-      }
-      nxp-range[data-size='s'] .nxp-range-track input[type='range'] {
-        height: 4px;
-      }
-      nxp-range[data-size='s'] .nxp-range-track input[type='range']::-webkit-slider-thumb {
-        width: 12px;
-        height: 12px;
-        margin-top: -4px;
-      }
-      nxp-range[data-size='s'] .nxp-range-track input[type='range']::-moz-range-thumb {
-        width: 8px;
-        height: 8px;
-      }
-
-      /* ── Size: medium ── */
-      nxp-range[data-size='m'] .nxp-range-track {
-        height: 6px;
-      }
-      nxp-range[data-size='m'] .nxp-range-track input[type='range'] {
-        height: 6px;
-      }
-      nxp-range[data-size='m'] .nxp-range-track input[type='range']::-webkit-slider-thumb {
-        width: 16px;
-        height: 16px;
-        margin-top: -5px;
-      }
-      nxp-range[data-size='m'] .nxp-range-track input[type='range']::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
-      }
-
-      /* ── Size: large ── */
-      nxp-range[data-size='l'] .nxp-range-track {
-        height: 8px;
-      }
-      nxp-range[data-size='l'] .nxp-range-track input[type='range'] {
-        height: 8px;
-      }
-      nxp-range[data-size='l'] .nxp-range-track input[type='range']::-webkit-slider-thumb {
-        width: 20px;
-        height: 20px;
-        margin-top: -6px;
-      }
-      nxp-range[data-size='l'] .nxp-range-track input[type='range']::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-      }
-
-      /* ── Disabled thumbs ── */
-      nxp-range.nxp-range-disabled .nxp-range-track input[type='range']::-webkit-slider-thumb {
-        cursor: not-allowed;
-      }
-      nxp-range.nxp-range-disabled .nxp-range-track input[type='range']::-moz-range-thumb {
-        cursor: not-allowed;
-      }
-    `,
-  ],
+    /* --- Theme color mode --- */
+    :host.nxp-range-themed .nxp-range-fill {
+      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 25%, transparent);
+    }
+    :host-context(.dark):host.nxp-range-themed .nxp-range-fill,
+    :host.nxp-range-themed:host-context(.dark) .nxp-range-fill {
+      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 30%, transparent);
+    }
+    :host.nxp-range-themed .nxp-range-thumb {
+      background: var(--nxp-primary, #3b82f6);
+      box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+    }
+    :host.nxp-range-themed .nxp-range-focus-ring {
+      border-color: var(--nxp-primary, #3b82f6);
+    }
+    :host.nxp-range-themed .nxp-range-track-bg {
+      border-color: color-mix(in srgb, var(--nxp-primary, #3b82f6) 30%, var(--nxp-border, rgb(229 231 235)));
+    }
+    :host.nxp-range-themed .nxp-range-dot {
+      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 40%, var(--nxp-muted-fg, rgb(156 163 175)));
+    }
+  `,
 })
 export class NxpRangeComponent implements ControlValueAccessor {
-  private readonly options = inject(NXP_RANGE_OPTIONS);
-
-  // ── Inputs ──
+  protected readonly THUMB_SIZE = THUMB_SIZE;
+  protected readonly TRACK_BG_HEIGHT = TRACK_BG_HEIGHT;
+  protected readonly TRACK_INSET = TRACK_INSET;
 
   readonly min = input(0);
   readonly max = input(100);
   readonly step = input(1);
-  readonly segments = input(1);
   readonly keySteps = input<NxpKeySteps | undefined>(undefined);
   readonly margin = input(0);
   readonly limit = input(Infinity);
-  readonly size = input<NxpRangeSize>(this.options.size);
+  readonly showSteps = input(false);
+  readonly themeColor = input(false);
+  readonly label = input<string | undefined>(undefined);
   readonly disabled = model(false);
   readonly value = model<[number, number]>([0, 0]);
 
-  // ── Computed ──
+  private readonly trackElRef = viewChild<ElementRef<HTMLDivElement>>('trackEl');
+  private readonly nativeStartRef = viewChild<ElementRef<HTMLInputElement>>('nativeStart');
+  private readonly nativeEndRef = viewChild<ElementRef<HTMLInputElement>>('nativeEnd');
 
-  readonly computedKeySteps = computed<NxpKeySteps>(() => {
-    return (
-      this.keySteps() ?? [
+  readonly isHovered = signal(false);
+  readonly isPressed = signal(false);
+  readonly focusedThumb = signal<0 | 1 | null>(null);
+  private activeThumb: 0 | 1 = 0;
+
+  readonly computedKeySteps = computed<NxpKeySteps>(
+    () =>
+      this.keySteps() ??
+      ([
         [0, this.min()],
         [100, this.max()],
-      ] as NxpKeySteps
-    );
-  });
+      ] as NxpKeySteps),
+  );
 
   readonly thumbPercents = computed(() => {
     const [start, end] = this.value();
@@ -317,6 +345,48 @@ export class NxpRangeComponent implements ControlValueAccessor {
       nxpKeyStepValueToPercentage(start, this.computedKeySteps()),
       nxpKeyStepValueToPercentage(end, this.computedKeySteps()),
     ] as [number, number];
+  });
+
+  readonly startRatio = computed(() =>
+    Math.max(0, Math.min(1, this.thumbPercents()[0] / 100)),
+  );
+  readonly endRatio = computed(() =>
+    Math.max(0, Math.min(1, this.thumbPercents()[1] / 100)),
+  );
+
+  readonly thumbStartLeft = computed(() => {
+    const r = this.startRatio();
+    return `calc(${r * 100}% - ${r * THUMB_SIZE}px)`;
+  });
+  readonly thumbEndLeft = computed(() => {
+    const r = this.endRatio();
+    return `calc(${r * 100}% - ${r * THUMB_SIZE}px)`;
+  });
+
+  readonly fillLeft = computed(() => {
+    const r = this.startRatio();
+    return `calc(${r * 100}% + ${THUMB_SIZE / 2 - r * THUMB_SIZE}px)`;
+  });
+  readonly fillWidth = computed(() => {
+    const s = this.startRatio();
+    const e = this.endRatio();
+    const span = Math.max(0, e - s);
+    return `calc(${span * 100}% + ${-span * THUMB_SIZE}px)`;
+  });
+
+  readonly stepDots = computed(() => {
+    if (!this.showSteps() || this.keySteps()) return [];
+    const mn = this.min();
+    const mx = this.max();
+    const s = this.step();
+    const range = mx - mn;
+    if (range <= 0 || s <= 0) return [];
+    const count = Math.round(range / s) + 1;
+    return Array.from({ length: count }, (_, i) => {
+      const v = mn + i * s;
+      const percent = (v - mn) / range;
+      return { value: v, percent };
+    });
   });
 
   readonly effectiveMin = computed(() => (this.keySteps() ? 0 : this.min()));
@@ -330,24 +400,42 @@ export class NxpRangeComponent implements ControlValueAccessor {
   readonly nativeValues = computed(() => {
     const [start, end] = this.value();
     const steps = this.keySteps();
-
     if (steps) {
       const total = this.totalSteps();
       return [
-        round((nxpKeyStepValueToPercentage(start, this.computedKeySteps()) / 100) * total, 0),
-        round((nxpKeyStepValueToPercentage(end, this.computedKeySteps()) / 100) * total, 0),
+        round(
+          (nxpKeyStepValueToPercentage(start, this.computedKeySteps()) / 100) *
+            total,
+          0,
+        ),
+        round(
+          (nxpKeyStepValueToPercentage(end, this.computedKeySteps()) / 100) *
+            total,
+          0,
+        ),
       ] as [number, number];
     }
-
     return [
       clamp(start, this.min(), this.max()),
       clamp(end, this.min(), this.max()),
     ] as [number, number];
   });
 
-  private readonly totalSteps = computed(() => Math.round(100 / (this.step() || 1)));
+  private readonly totalSteps = computed(() =>
+    Math.round(100 / (this.step() || 1)),
+  );
 
-  // ── CVA plumbing ──
+  constructor() {
+    effect(() => {
+      const [s, e] = this.nativeValues();
+      const startEl = this.nativeStartRef()?.nativeElement;
+      const endEl = this.nativeEndRef()?.nativeElement;
+      if (startEl) startEl.value = String(s);
+      if (endEl) endEl.value = String(e);
+    });
+  }
+
+  // ── ControlValueAccessor ──
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onChange: (value: [number, number]) => void = () => {};
@@ -370,7 +458,91 @@ export class NxpRangeComponent implements ControlValueAccessor {
     this.disabled.set(isDisabled);
   }
 
-  // ── Public API (used by NxpRangeChange directive) ──
+  // ── Pointer handlers ──
+
+  protected onPointerDown(event: PointerEvent): void {
+    if (this.disabled()) return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    event.preventDefault();
+
+    const trackEl = this.trackElRef()?.nativeElement;
+    if (!trackEl) return;
+
+    const trackRect = trackEl.getBoundingClientRect();
+    const fraction = this.fractionFromClientX(event.clientX, trackRect);
+    const candidate = this.toValue(fraction);
+    const isEnd = this.decideThumb(candidate);
+    this.activeThumb = isEnd ? 1 : 0;
+    this.isPressed.set(true);
+
+    trackEl.setPointerCapture(event.pointerId);
+    this.processValue(candidate, isEnd);
+
+    const nativeRef = isEnd ? this.nativeEndRef() : this.nativeStartRef();
+    nativeRef?.nativeElement.focus();
+  }
+
+  protected onPointerMove(event: PointerEvent): void {
+    if (!this.isPressed()) return;
+    event.stopPropagation();
+    const trackEl = this.trackElRef()?.nativeElement;
+    if (!trackEl) return;
+    const trackRect = trackEl.getBoundingClientRect();
+    const fraction = this.fractionFromClientX(event.clientX, trackRect);
+    this.processValue(this.toValue(fraction), this.activeThumb === 1);
+  }
+
+  protected onPointerUp(event: PointerEvent): void {
+    if (!this.isPressed()) return;
+    this.isPressed.set(false);
+    const trackEl = this.trackElRef()?.nativeElement;
+    if (trackEl && trackEl.hasPointerCapture(event.pointerId)) {
+      trackEl.releasePointerCapture(event.pointerId);
+    }
+    this.onTouched();
+  }
+
+  // ── Native input (keyboard) ──
+
+  protected onNativeInput(thumbIndex: 0 | 1, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const raw = Number(input.value);
+    const real = this.keySteps()
+      ? nxpPercentageToKeyStepValue(
+          (raw / this.totalSteps()) * 100,
+          this.computedKeySteps(),
+        )
+      : raw;
+    this.processValue(real, thumbIndex === 1);
+  }
+
+  protected onNativeBlur(event: FocusEvent): void {
+    const next = event.relatedTarget as HTMLElement | null;
+    const startEl = this.nativeStartRef()?.nativeElement;
+    const endEl = this.nativeEndRef()?.nativeElement;
+    if (next !== startEl && next !== endEl) {
+      this.focusedThumb.set(null);
+      this.onTouched();
+    }
+  }
+
+  // ── Helpers ──
+
+  private fractionFromClientX(clientX: number, trackRect: DOMRect): number {
+    const localX = clientX - trackRect.left - THUMB_SIZE / 2;
+    const usable = trackRect.width - THUMB_SIZE;
+    if (usable <= 0) return 0;
+    return Math.max(0, Math.min(1, localX / usable));
+  }
+
+  private decideThumb(candidateValue: number): boolean {
+    const [start, end] = this.value();
+    if (candidateValue > end) return true;
+    if (candidateValue < start) return false;
+    const dStart = Math.abs(candidateValue - start);
+    const dEnd = Math.abs(candidateValue - end);
+    return dEnd < dStart;
+  }
 
   /**
    * Converts a fraction (0–1) to a real domain value using key steps.
@@ -382,8 +554,6 @@ export class NxpRangeComponent implements ControlValueAccessor {
 
   /**
    * Applies constraint logic (margin, limit) and updates the value tuple.
-   * @param newValue - The candidate real domain value
-   * @param isEnd - Whether this targets the end (right) thumb
    */
   processValue(newValue: number, isEnd: boolean): void {
     const [start, end] = this.value();
@@ -397,10 +567,12 @@ export class NxpRangeComponent implements ControlValueAccessor {
       NXP_FLOATING_PRECISION,
     );
 
-    // Snap to step
     const s = this.step();
     if (s > 0 && !this.keySteps()) {
-      clamped = round(Math.round((clamped - minVal) / s) * s + minVal, NXP_FLOATING_PRECISION);
+      clamped = round(
+        Math.round((clamped - minVal) / s) * s + minVal,
+        NXP_FLOATING_PRECISION,
+      );
       clamped = clamp(clamped, minVal, maxVal);
     }
 
@@ -409,56 +581,24 @@ export class NxpRangeComponent implements ControlValueAccessor {
 
     if (isEnd) {
       newEnd = clamped;
-      // Enforce margin
-      if (newEnd - newStart < marginVal) {
-        newEnd = newStart + marginVal;
-      }
-      // Enforce limit
+      if (newEnd - newStart < marginVal) newEnd = newStart + marginVal;
       if (limitVal < Infinity && newEnd - newStart > limitVal) {
         newEnd = newStart + limitVal;
       }
       newEnd = clamp(newEnd, minVal, maxVal);
     } else {
       newStart = clamped;
-      // Enforce margin
-      if (newEnd - newStart < marginVal) {
-        newStart = newEnd - marginVal;
-      }
-      // Enforce limit
+      if (newEnd - newStart < marginVal) newStart = newEnd - marginVal;
       if (limitVal < Infinity && newEnd - newStart > limitVal) {
         newStart = newEnd - limitVal;
       }
       newStart = clamp(newStart, minVal, maxVal);
     }
 
-    const updated: [number, number] = [newStart, newEnd];
-
-    if (updated[0] !== start || updated[1] !== end) {
+    if (newStart !== start || newEnd !== end) {
+      const updated: [number, number] = [newStart, newEnd];
       this.value.set(updated);
       this.onChange(updated);
-      this.onTouched();
     }
-  }
-
-  /**
-   * Keyboard navigation — moves the focused thumb by one step.
-   */
-  changeByStep(coefficient: number, event: KeyboardEvent): void {
-    if (this.disabled()) return;
-
-    event.preventDefault();
-
-    const target = event.target as HTMLElement;
-    const inputs = (event.currentTarget as HTMLElement).querySelectorAll(
-      'input[type="range"]',
-    );
-    const isEnd = target === inputs[1];
-
-    const s = this.step();
-    const [start, end] = this.value();
-    const currentValue = isEnd ? end : start;
-    const newValue = currentValue + s * coefficient;
-
-    this.processValue(newValue, isEnd);
   }
 }

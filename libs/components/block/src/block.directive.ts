@@ -86,7 +86,12 @@ export class NxpBlockDirective {
     const disabled = !!this.control()?.disabled;
     const inGroup = !!this.blockGroup;
     return cx(
-      'relative flex cursor-pointer select-none items-start gap-3 rounded-lg border transition-all duration-150',
+      'relative flex cursor-pointer select-none items-start gap-3 rounded-lg border',
+      // Colour-only transition. Safe because border/bg flips are driven by
+      // `:has(input:checked)` at the CSS level — the nested radio/checkbox
+      // reads native state via `:checked`/`peer-checked`, so there is no
+      // Angular-driven class mismatch between first paint and CVA writeValue.
+      'transition-[background-color,border-color,box-shadow] duration-150 ease-out',
       // When inside a group, the overlay handles hover/focus/checked — just lift content above overlays
       inGroup && 'z-10',
       // Standalone: block handles its own hover/focus/checked styles

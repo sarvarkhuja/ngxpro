@@ -19,7 +19,6 @@
       "@nxp/core": ["libs/core/src/index.ts"],
       "@nxp/components": ["libs/components/src/index.ts"],
       "@nxp/components/accordion": ["libs/components/accordion/src/index.ts"],
-      "@nxp/components/avatar": ["libs/components/avatar/src/index.ts"],
       "@nxp/components/button": ["libs/components/button/src/index.ts"],
       "@nxp/components/card": ["libs/components/card/src/index.ts"],
       "@nxp/components/data-list": ["libs/components/data-list/src/index.ts"],

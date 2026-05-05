@@ -1,9 +1,6 @@
 import { Directive, OnDestroy, inject, signal } from '@angular/core';
-import {
-  NXP_DOCUMENT,
-  NXP_TEXTFIELD,
-  nxpWriteToClipboard,
-} from '@nxp/cdk';
+import { NXP_DOCUMENT, NXP_TEXTFIELD } from '../../../tokens';
+import { nxpWriteToClipboard } from '../../../utils';
 import { NXP_COPY_OPTIONS } from './copy.options';
 
 /**

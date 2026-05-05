@@ -6,7 +6,7 @@ import {
   OptionDirective,
   OptGroupDirective,
 } from '@nxp/components/data-list';
-import { NxpCheckboxComponent } from '@nxp/cdk/components/checkbox';
+import { NxpCheckboxDirective } from '@nxp/cdk/components/checkbox';
 
 // ------------------------------------------------------------------ types
 
@@ -30,7 +30,7 @@ interface Permission {
     DataListComponent,
     OptionDirective,
     OptGroupDirective,
-    NxpCheckboxComponent,
+    NxpCheckboxDirective,
   ],
   template: `
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900">

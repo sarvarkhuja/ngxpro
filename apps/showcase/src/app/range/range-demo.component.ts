@@ -2,7 +2,7 @@ import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NxpRangeComponent, type NxpRangeSize, type NxpKeySteps } from '@nxp/components/range';
+import { NxpRangeComponent, type NxpKeySteps } from '@nxp/components/range';
 
 @Component({
   selector: 'app-range-demo',
@@ -35,7 +35,10 @@ import { NxpRangeComponent, type NxpRangeSize, type NxpKeySteps } from '@nxp/com
             Dual-thumb range slider
             <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
               >nxp-range</code
-            >. Supports key steps, segments, constraints, and form binding.
+            >. Styled to match
+            <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+              >nxp-slider-visual</code
+            >.
           </p>
         </div>
 
@@ -55,54 +58,57 @@ import { NxpRangeComponent, type NxpRangeSize, type NxpKeySteps } from '@nxp/com
           </p>
         </section>
 
-        <!-- Sizes -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-6"
-        >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Sizes
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Use the
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">size</code>
-            input: <code>s</code>, <code>m</code> (default), <code>l</code>.
-          </p>
-          @for (s of sizes; track s) {
-            <div class="space-y-2">
-              <p
-                class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
-              >
-                {{ s }}
-              </p>
-              <nxp-range [size]="s" [(ngModel)]="sizeValues[s]" />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                {{ sizeValues[s] | json }}
-              </p>
-            </div>
-          }
-        </section>
-
-        <!-- Segments -->
+        <!-- Step dots -->
         <section
           class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
         >
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Segments
+            Step dots
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Use
+            Pass
             <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded"
-              >segments</code
+              >showSteps</code
             >
-            to show tick marks on the track.
+            with a coarse
+            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">step</code>
+            to render dots along the track.
           </p>
           <nxp-range
-            [segments]="5"
-            [step]="20"
-            [(ngModel)]="segmentedValue"
+            [showSteps]="true"
+            [step]="10"
+            [(ngModel)]="steppedValue"
           />
           <p class="text-xs text-gray-500 dark:text-gray-400">
-            Value: {{ segmentedValue | json }}
+            Value: {{ steppedValue | json }}
+          </p>
+        </section>
+
+        <!-- Theme color -->
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Theme color
+          </h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded"
+              >themeColor</code
+            >
+            switches the fill, thumb, and focus ring to the primary theme color.
+          </p>
+          <nxp-range [themeColor]="true" [(ngModel)]="themedValue" />
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            Value: {{ themedValue | json }}
+          </p>
+          <nxp-range
+            [themeColor]="true"
+            [showSteps]="true"
+            [step]="10"
+            [(ngModel)]="themedSteppedValue"
+          />
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            Value: {{ themedSteppedValue | json }}
           </p>
         </section>
 
@@ -144,10 +150,7 @@ import { NxpRangeComponent, type NxpRangeSize, type NxpKeySteps } from '@nxp/com
               <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
                 Margin = 10
               </p>
-              <nxp-range
-                [margin]="10"
-                [(ngModel)]="marginValue"
-              />
+              <nxp-range [margin]="10" [(ngModel)]="marginValue" />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 {{ marginValue | json }}
               </p>
@@ -156,10 +159,7 @@ import { NxpRangeComponent, type NxpRangeSize, type NxpKeySteps } from '@nxp/com
               <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
                 Limit = 50
               </p>
-              <nxp-range
-                [limit]="50"
-                [(ngModel)]="limitValue"
-              />
+              <nxp-range [limit]="50" [(ngModel)]="limitValue" />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 {{ limitValue | json }}
               </p>
@@ -193,10 +193,7 @@ import { NxpRangeComponent, type NxpRangeSize, type NxpKeySteps } from '@nxp/com
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
             Disabled
           </h2>
-          <nxp-range
-            [disabled]="true"
-            [(ngModel)]="disabledValue"
-          />
+          <nxp-range [disabled]="true" [(ngModel)]="disabledValue" />
           <p class="text-xs text-gray-500 dark:text-gray-400">
             {{ disabledValue | json }}
           </p>
@@ -206,17 +203,10 @@ import { NxpRangeComponent, type NxpRangeSize, type NxpKeySteps } from '@nxp/com
   `,
 })
 export class RangeDemoComponent {
-  readonly sizes: readonly NxpRangeSize[] = ['s', 'm', 'l'];
-
   basicValue: [number, number] = [20, 80];
-
-  sizeValues: Record<string, [number, number]> = {
-    s: [10, 40],
-    m: [25, 75],
-    l: [30, 90],
-  };
-
-  segmentedValue: [number, number] = [20, 80];
+  steppedValue: [number, number] = [20, 80];
+  themedValue: [number, number] = [25, 75];
+  themedSteppedValue: [number, number] = [30, 70];
 
   priceKeySteps: NxpKeySteps = [
     [0, 50_000],

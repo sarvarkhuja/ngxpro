@@ -1,3 +1,4 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectorRef,
   type ComponentRef,
@@ -7,6 +8,7 @@ import {
   Injector,
   input,
   OnDestroy,
+  PLATFORM_ID,
 } from '@angular/core';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
@@ -17,6 +19,7 @@ import type { NxpTooltipOptions } from './tooltip.options';
 import { NxpTooltipComponent, NXP_TOOLTIP_HOST } from './tooltip.component';
 import type { NxpTooltipHost } from './tooltip.component';
 import type { NxpTooltipSize } from './tooltip.types';
+import { NxpTooltipGroupService } from './tooltip-group.service';
 
 /** Slide offset per direction for exit animation (mirrors component enter offsets). */
 const SLIDE_OFFSET = {
@@ -63,12 +66,25 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
   private readonly portalService = inject(NxpPortalService);
   private readonly injector = inject(INJECTOR);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly group = inject(NxpTooltipGroupService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  /**
+   * Only respond to `mouseenter`/`mouseleave` on devices that can actually
+   * hover. Touch devices synthesise hover events on tap, which would otherwise
+   * race against our touch handlers.
+   */
+  private readonly isHoverCapable =
+    this.isBrowser &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   private componentRef: ComponentRef<NxpTooltipComponent> | null = null;
   /** Ref being animated out — kept so we can destroy it if show() interrupts the exit. */
   private exitingRef: ComponentRef<NxpTooltipComponent> | null = null;
   private showTimer: ReturnType<typeof setTimeout> | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | null = null;
   private exitTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Whether the current open should skip the enter animation (skip-delay). */
+  private instantOpen = false;
 
   /** The tooltip content — string, TemplateRef, or PolymorpheusComponent. */
   readonly nxpTooltip = input<PolymorpheusContent<NxpContext<void>>>('');
@@ -111,13 +127,20 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
   }
 
   onMouseEnter(): void {
+    // Ignore synthesized hover on touch devices — touch handlers drive those.
+    if (!this.isHoverCapable) return;
     this.clearTimers();
     if (this.nxpTooltipDisabled()) return;
-    const delay = this.nxpTooltipShowDelay() ?? this.options.showDelay;
+    // Skip-delay: if another tooltip was visible very recently, open instantly
+    // and suppress the enter animation for a more continuous feel.
+    const skip = this.group.shouldSkipDelay();
+    this.instantOpen = skip;
+    const delay = skip ? 0 : (this.nxpTooltipShowDelay() ?? this.options.showDelay);
     this.showTimer = setTimeout(() => this.show(), delay);
   }
 
   onMouseLeave(): void {
+    if (!this.isHoverCapable) return;
     this.clearTimers();
     const delay = this.nxpTooltipHideDelay() ?? this.options.hideDelay;
     this.hideTimer = setTimeout(() => this.hide(), delay);
@@ -125,12 +148,18 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
 
   onTouchStart(): void {
     if (this.nxpTooltipDisabled()) return;
+    this.instantOpen = false;
     this.show();
   }
 
   onTouchEnd(): void {
     const delay = this.nxpTooltipHideDelay() ?? this.options.hideDelay;
     this.hideTimer = setTimeout(() => this.hide(), delay);
+  }
+
+  /** Whether the current tooltip should enter instantly (no animation). */
+  isInstant(): boolean {
+    return this.instantOpen;
   }
 
   show(): void {
@@ -205,6 +234,7 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
       this.exitTimer = null;
       this.exitingRef = null;
       ref.destroy();
+      this.group.noteHidden();
       this.cdr.markForCheck();
     }, EXIT_DURATION_MS);
   }

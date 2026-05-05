@@ -1,5 +1,6 @@
 import { Directive, computed, inject, input } from '@angular/core';
-import { cx, focusInput, hasErrorInput, NXP_TEXTFIELD } from '@nxp/cdk';
+import { cx, focusInput, hasErrorInput } from '../../../utils';
+import { NXP_TEXTFIELD } from '../../../tokens';
 
 /**
  * Input directive — applies Tremor-style classes to native `<input>` and `<textarea>` elements.
@@ -12,7 +13,7 @@ import { cx, focusInput, hasErrorInput, NXP_TEXTFIELD } from '@nxp/cdk';
  *
  * Inside nxp-textfield (border/bg come from the wrapper — input is transparent):
  * ```html
- * <nxp-textfield>
+ * <nxp-textfield iconStart="ri-search-line">
  *   <input nxpInput type="text" placeholder="Search…" />
  * </nxp-textfield>
  * ```
@@ -27,28 +28,32 @@ import { cx, focusInput, hasErrorInput, NXP_TEXTFIELD } from '@nxp/cdk';
 export class NxpInputDirective {
   private readonly textfield = inject(NXP_TEXTFIELD, { optional: true });
 
-  /** Whether the input has a validation error (standalone only; textfield manages its own error state). */
   readonly hasError = input(false);
 
-  /** Additional CSS classes to merge in. */
   readonly class = input<string>('');
+
+  /** Reads textfield's iconStart/iconEnd/cleaner state to add the right horizontal padding. */
+  private readonly adornmentPadding = computed(() => {
+    const tf = this.textfield;
+    if (!tf) return '';
+    const start = tf.hasStartAdornment?.() ? 'pl-9' : '';
+    const end = tf.hasEndAdornment?.() ? 'pr-9' : '';
+    return `${start} ${end}`.trim();
+  });
 
   readonly classes = computed(() => {
     if (this.textfield && !this.textfield.hasLabel()) {
-      // Inside nxp-textfield box mode (select/combo-box/date — no label):
-      // wrapper provides the border/bg; input is transparent.
       return cx(
         'block w-full h-full bg-transparent border-0 outline-none ring-0 px-2.5',
         'text-gray-900 dark:text-gray-50 sm:text-sm',
         'placeholder-gray-400 dark:placeholder-gray-500',
         'disabled:cursor-not-allowed',
         '[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden',
+        this.adornmentPadding(),
         this.class(),
       );
     }
 
-    // Standalone OR inside form-field mode (textfield with label):
-    // full Tremor-style border, bg, focus ring.
     return cx(
       'relative block w-full appearance-none rounded-md border px-2.5 py-2 shadow-xs outline-hidden transition sm:text-sm',
       'border-gray-300 dark:border-gray-800',
@@ -60,6 +65,7 @@ export class NxpInputDirective {
       '[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden',
       ...focusInput,
       ...(this.hasError() ? hasErrorInput : []),
+      this.adornmentPadding(),
       this.class(),
     );
   });

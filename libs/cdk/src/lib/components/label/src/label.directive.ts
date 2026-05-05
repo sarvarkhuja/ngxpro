@@ -1,5 +1,6 @@
 import { Directive, computed, input } from '@angular/core';
-import { cx, NXP_LABEL } from '@nxp/cdk';
+import { cx } from '../../../utils';
+import { NXP_LABEL } from '../../../tokens';
 
 /**
  * Label directive (Tremor styling).

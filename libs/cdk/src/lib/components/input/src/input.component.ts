@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { cx, focusInput, hasErrorInput } from '@nxp/cdk';
+import { cx, focusInput, hasErrorInput } from '../../../utils';
 
 /**
  * Input directive styled with Tremor patterns.

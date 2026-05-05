@@ -13,42 +13,63 @@ import {
   NXP_TEXTFIELD_OPTIONS,
   type NxpTextfieldSize,
 } from './textfield.options';
-import { cx } from 'tailwind-variants';
+import { cx } from '../../../utils';
 import { NxpDropdownDirective, NxpDropdownOpen } from '../../../portals';
 import { nxpAsDataListHost, NxpDataListHost } from '../../../tokens';
-import { NXP_TEXTFIELD, nxpAsTextfieldAccessor, NxpTextfieldAccessor, NXP_TEXTFIELD_ACCESSOR, NXP_LABEL } from './textfield-accessor';
+import {
+  NXP_TEXTFIELD,
+  nxpAsTextfieldAccessor,
+  NxpTextfieldAccessor,
+  NXP_TEXTFIELD_ACCESSOR,
+  NXP_LABEL,
+} from './textfield-accessor';
+import { NXP_TEXTFIELD_END } from './textfield-end.directive';
 
 @Component({
   selector: 'nxp-textfield',
   standalone: true,
   template: `
     <ng-content select="label[nxpLabel]" />
-    <ng-content select="input[nxpInput], textarea[nxpInput]" />
-    @if (showCleaner()) {
-      <button
-        type="button"
-        tabindex="-1"
-        aria-label="Clear"
-        class="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-5 w-5 shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400"
-        (click)="clear()"
-        (pointerdown.prevent)="(0)"
-      >
-        <svg
-          class="h-3.5 w-3.5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
+    <div [class]="innerClasses()">
+      @if (iconStart(); as iconStartClass) {
+        <i
+          [attr.class]="iconClass('start') + ' ' + iconStartClass"
           aria-hidden="true"
+        ></i>
+      }
+      <ng-content select="input[nxpInput], textarea[nxpInput]" />
+      @if (showCleaner()) {
+        <button
+          type="button"
+          tabindex="-1"
+          aria-label="Clear"
+          class="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-5 w-5 shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400"
+          (click)="clear()"
+          (pointerdown.prevent)="(0)"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
-    }
+          <svg
+            class="h-3.5 w-3.5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      } @else if (!hasEndProjected() && iconEnd(); as iconEndClass) {
+        <i
+          [attr.class]="iconClass('end') + ' ' + iconEndClass"
+          aria-hidden="true"
+        ></i>
+      }
+      <ng-content select="[nxpTextfieldEnd]" />
+    </div>
     <ng-content />
   `,
   host: {
@@ -59,14 +80,7 @@ import { NXP_TEXTFIELD, nxpAsTextfieldAccessor, NxpTextfieldAccessor, NXP_TEXTFI
   hostDirectives: [NxpDropdownDirective, NxpDropdownOpen],
   providers: [
     { provide: NXP_TEXTFIELD, useExisting: NxpTextfieldComponent },
-    // Receives `handleOption(value)` calls from portal-rendered options.
-    // Mirrors TuiTextfieldComponent.handleOption in Taiga UI.
     nxpAsDataListHost(NxpTextfieldComponent),
-    // Exposes NXP_TEXTFIELD_ACCESSOR at the element level as a facade over the
-    // real content-child accessor (e.g. NxpSelectDirective on input[nxpSelect]).
-    // Portal-rendered options can only walk up to nxp-textfield's injector, not
-    // further to a child input's injector, so they would fail to inject the real
-    // accessor. This facade bridges that gap for isSelected() comparisons.
     nxpAsTextfieldAccessor(NxpTextfieldComponent),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -81,14 +95,16 @@ export class NxpTextfieldComponent
     read: ElementRef,
   });
 
-  /** The real accessor (e.g. NxpSelectDirective) projected as content. */
   readonly accessor = contentChild<NxpTextfieldAccessor>(NXP_TEXTFIELD_ACCESSOR);
 
-  /** Detects a projected label[nxpLabel] child. */
   protected readonly labelToken = contentChild(NXP_LABEL);
 
-  /** True when a label is projected — switches to form-field mode (vertical stack). */
   readonly hasLabel = computed(() => !!this.labelToken());
+
+  protected readonly endProjected = contentChild(NXP_TEXTFIELD_END);
+
+  /** True when an `[nxpTextfieldEnd]` element is projected into the trailing slot. */
+  readonly hasEndProjected = computed(() => !!this.endProjected());
 
   readonly options = inject(NXP_TEXTFIELD_OPTIONS);
   readonly focused = signal(false);
@@ -97,25 +113,21 @@ export class NxpTextfieldComponent
   readonly hasError = input(false);
   readonly class = input('');
 
+  /** Remix-icon class (e.g. `ri-search-line`) rendered at the start of the field. */
+  readonly iconStart = input<string>('');
+
+  /** Remix-icon class (e.g. `ri-settings-line`) rendered at the end of the field. Hidden when the cleaner is visible. */
+  readonly iconEnd = input<string>('');
+
   readonly effectiveSize = computed<NxpTextfieldSize>(
     () => this.size() ?? this.options.size(),
   );
 
-  // ------------------------------------------------------------------ NxpTextfieldAccessor (facade)
-
-  /**
-   * Delegates to the real content-child accessor's display string.
-   * Used by portal-rendered options for `isSelected()` comparisons, and
-   * by the textfield itself to detect whether the field has a value.
-   */
   readonly value = computed(() => this.accessor()?.value() ?? '');
 
-  /** Delegates to `handleOption` — called by the cleaner button. */
   setValue(v: unknown): void {
     this.handleOption(v);
   }
-
-  // ------------------------------------------------------------------ state
 
   readonly hasValue = computed(() => {
     const v = this.accessor()?.value();
@@ -123,27 +135,44 @@ export class NxpTextfieldComponent
   });
 
   readonly showCleaner = computed(
-    () => this.options.cleaner() && this.hasValue(),
+    () =>
+      this.options.cleaner() && this.hasValue() && !this.hasEndProjected(),
   );
+
+  /** True when the trailing slot contains anything (cleaner, iconEnd, or projected). Used by NxpInputDirective for padding. */
+  readonly hasEndAdornment = computed(
+    () => this.showCleaner() || !!this.iconEnd() || this.hasEndProjected(),
+  );
+
+  /** True when the leading slot contains an icon. Used by NxpInputDirective for padding. */
+  readonly hasStartAdornment = computed(() => !!this.iconStart());
 
   get id(): string {
     return this.accessorEl()?.nativeElement?.id ?? this._autoId;
   }
 
+  protected iconClass(side: 'start' | 'end'): string {
+    return cx(
+      'absolute top-1/2 -translate-y-1/2 text-base leading-none text-gray-400 dark:text-gray-500 pointer-events-none z-10',
+      side === 'start' ? 'left-3' : 'right-3',
+    );
+  }
+
   protected readonly hostClasses = computed(() => {
     if (this.hasLabel()) {
-      // ── Form-field mode ─────────────────────────────────────────────────
-      // Vertical stack: label on top, full-styled input below.
-      // The wrapper has no border/bg — the projected input provides its own.
-      return cx(
-        'flex flex-col gap-1.5',
-        this.class(),
-      );
+      return cx('flex flex-col gap-1.5', this.class());
+    }
+    return cx('block', this.class());
+  });
+
+  protected readonly innerClasses = computed(() => {
+    if (this.hasLabel()) {
+      // Form-field mode: relative wrapper around the input so absolute
+      // icons/cleaner anchor to the input row, not to the label+input column.
+      return 'relative block';
     }
 
-    // ── Box mode ────────────────────────────────────────────────────────
-    // Styled border wrapper for select, combo-box, date, etc.
-    // The projected input is transparent; the wrapper provides border/bg.
+    // Box mode: relative wrapper IS the styled box.
     return cx(
       'relative block overflow-hidden rounded-md border transition-colors duration-150',
       'bg-white dark:bg-gray-950',
@@ -154,13 +183,9 @@ export class NxpTextfieldComponent
       'has-[input:disabled]:opacity-60 has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-gray-50 dark:has-[input:disabled]:bg-gray-900',
       this.focused() && !this.hasError() && 'ring-2 ring-primary/30 border-primary',
       this.hasError() && 'ring-2 ring-red-200 dark:ring-red-700/30 border-red-500 dark:border-red-700',
-      this.class(),
     );
   });
 
-  // ------------------------------------------------------------------ NxpDataListHost
-
-  /** Called by options (via `NXP_DATA_LIST_HOST`) when a value is selected. */
   public handleOption(option: unknown): void {
     this.accessor()?.setValue(option);
   }

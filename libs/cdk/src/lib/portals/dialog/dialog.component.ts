@@ -39,7 +39,9 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
         class="absolute top-4 right-4 z-10 inline-flex items-center justify-center rounded-md p-1.5
                text-gray-400 hover:text-gray-600 hover:bg-gray-100
                dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-800
-               focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
+               focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
+               transition-[background-color,color,transform] duration-[100ms] ease-out
+               active:scale-[0.97]"
         (click)="close$.next()"
         aria-label="Close"
       >
@@ -74,7 +76,9 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
                    bg-blue-600 text-white shadow-sm
                    hover:bg-blue-700
                    focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-                   dark:focus-visible:ring-offset-gray-900 transition-colors"
+                   dark:focus-visible:ring-offset-gray-900
+                   transition-[background-color,color,transform] duration-[100ms] ease-out
+                   active:scale-[0.97]"
             (click)="context.$implicit.complete()"
           >
             {{ context.data ?? 'OK' }}
@@ -84,7 +88,7 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
     </ng-container>
   `,
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [NxpDialogCloseService],
   styles: [`
     nxp-dialog {

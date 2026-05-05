@@ -1,5 +1,6 @@
 import { NxpTextfieldComponent } from './textfield.component';
 import { NxpTextfieldOptionsDirective } from './textfield.options';
+import { NxpTextfieldEndDirective } from './textfield-end.directive';
 
 /**
  * Convenience array of all textfield-related exports.
@@ -11,4 +12,5 @@ import { NxpTextfieldOptionsDirective } from './textfield.options';
 export const NxpTextfield = [
   NxpTextfieldComponent,
   NxpTextfieldOptionsDirective,
+  NxpTextfieldEndDirective,
 ] as const;

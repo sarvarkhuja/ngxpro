@@ -44,5 +44,8 @@ export {
   NXP_VISIBLE_TOASTS,
   NXP_SWIPE_THRESHOLD,
   NXP_TIME_BEFORE_UNMOUNT,
+  NXP_EASE_OUT_STRONG,
+  NXP_EASE_IN_OUT_STRONG,
+  NXP_EASE_DRAWER,
 } from './motion';
 export type { NxpSpringSpec } from './motion';

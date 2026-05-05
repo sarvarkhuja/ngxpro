@@ -79,7 +79,6 @@ function toLinear(m: MonthCoord): number {
       [attr.aria-label]="'Month picker'"
     >
       @if (isYearPickerShown) {
-        <!-- Year picker overlay -->
         <nxp-calendar-year
           [currentYear]="activeYear()"
           [selectedYear]="activeYear()"
@@ -88,9 +87,8 @@ function toLinear(m: MonthCoord): number {
           (yearClick)="onPickerYearClick($event)"
         />
       } @else {
-        <!-- Year navigation header -->
         <div
-          class="flex items-center justify-between"
+          class="flex items-center justify-between gap-1 pb-1"
           role="group"
           [attr.aria-label]="'Year navigation'"
         >
@@ -101,7 +99,7 @@ function toLinear(m: MonthCoord): number {
             [attr.aria-label]="'Previous year'"
             (click)="onPreviousYear()"
           >
-            <i class="ri-arrow-left-s-line size-4" aria-hidden="true"></i>
+            <i class="ri-arrow-left-s-line text-base leading-none" aria-hidden="true"></i>
           </button>
 
           <button
@@ -111,7 +109,7 @@ function toLinear(m: MonthCoord): number {
             [attr.aria-expanded]="isYearPickerShown"
             (click)="onYearClick()"
           >
-            {{ activeYear() }}
+            <span class="tabular-nums">{{ activeYear() }}</span>
           </button>
 
           <button
@@ -121,11 +119,10 @@ function toLinear(m: MonthCoord): number {
             [attr.aria-label]="'Next year'"
             (click)="onNextYear()"
           >
-            <i class="ri-arrow-right-s-line size-4" aria-hidden="true"></i>
+            <i class="ri-arrow-right-s-line text-base leading-none" aria-hidden="true"></i>
           </button>
         </div>
 
-        <!-- 3 rows × 4 columns month grid -->
         <div role="grid" [attr.aria-label]="'Months of ' + activeYear()">
           @for (row of rows; track row) {
             <div class="grid grid-cols-4 gap-1" role="row">
@@ -321,7 +318,7 @@ export class CalendarMonthComponent {
   });
 
   protected readonly containerClass = computed(() =>
-    cx(calendarContainerClass, 'flex-col gap-2 p-4 w-72', this.class()),
+    cx(calendarContainerClass, 'flex-col gap-2 p-4 w-[19rem]', this.class()),
   );
 
   // ------------------------------------------------------------------ helpers
@@ -386,14 +383,17 @@ export class CalendarMonthComponent {
 
   // ------------------------------------------------------------------ class helpers
 
-  protected readonly navBtnClass = cx(navButtonClass, 'p-1.5');
+  protected readonly navBtnClass = navButtonClass;
 
   protected readonly yearLabelClass = cx(
-    'text-sm font-semibold',
-    'text-text-primary',
-    'hover:text-text-action',
-    'transition-all duration-[80ms]',
-    'outline-none focus-visible:ring-1 focus-visible:ring-[#6B97FF]',
+    'flex-1 flex items-center justify-center',
+    'h-8 px-2 rounded-lg',
+    'text-sm font-semibold text-text-primary',
+    'hover:bg-bg-neutral-1',
+    'transition-[background-color,color,transform] duration-150',
+    '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
+    'active:scale-[0.98]',
+    'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
   );
 
   protected monthBtnClass(
@@ -401,30 +401,16 @@ export class CalendarMonthComponent {
     disabled: boolean,
     isToday: boolean,
   ): string {
-    if (disabled) {
-      return cx(calendarCellVariants({ state: 'disabled' }), 'h-10');
-    }
-
-    if (rangeState === 'active') {
-      return cx(calendarCellVariants({ state: 'selected' }), 'h-10');
-    }
-
-    if (rangeState === 'start') {
-      return cx(calendarCellVariants({ state: 'rangeStart' }), 'h-10');
-    }
-
-    if (rangeState === 'end') {
-      return cx(calendarCellVariants({ state: 'rangeEnd' }), 'h-10');
-    }
-
-    if (rangeState === 'middle') {
-      return cx(calendarCellVariants({ state: 'rangeMiddle' }), 'h-10');
-    }
+    if (disabled) return cx(calendarCellVariants({ state: 'disabled' }), 'h-10');
+    if (rangeState === 'active') return cx(calendarCellVariants({ state: 'selected' }), 'h-10');
+    if (rangeState === 'start') return cx(calendarCellVariants({ state: 'rangeStart' }), 'h-10');
+    if (rangeState === 'end') return cx(calendarCellVariants({ state: 'rangeEnd' }), 'h-10');
+    if (rangeState === 'middle') return cx(calendarCellVariants({ state: 'rangeMiddle' }), 'h-10');
 
     return cx(
       calendarCellVariants({ state: 'default' }),
       'h-10',
-      isToday ? 'ring-1 ring-primary' : '',
+      isToday ? 'ring-1 ring-inset ring-primary/60' : '',
     );
   }
 

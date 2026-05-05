@@ -4,6 +4,7 @@ import {
   input,
   ViewEncapsulation,
 } from '@angular/core';
+import { NxpAnimated } from '@nxp/cdk';
 
 @Component({
   selector: 'nxp-drawer',
@@ -21,6 +22,7 @@ import {
   `,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [NxpAnimated],
   host: {
     class: 'nxp-drawer',
     '[attr.data-direction]': 'direction()',
@@ -42,13 +44,69 @@ import {
     .nxp-drawer[data-direction='start'] {
       inset-inline-start: 0;
       border-start-start-radius: 0;
-      animation: nxp-drawer-slide-start 0.25s ease-out;
+      transform: translateX(0);
+      opacity: 1;
+      /* 250ms enter with iOS-drawer curve; exit (via .nxp-leave) is faster */
+      transition:
+        transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
+        opacity 250ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    @starting-style {
+      .nxp-drawer[data-direction='start'] {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+    }
+    .nxp-drawer[data-direction='start'].nxp-leave {
+      transform: translateX(-100%);
+      opacity: 0;
+      transition:
+        transform 180ms cubic-bezier(0.4, 0, 1, 1),
+        opacity 180ms cubic-bezier(0.4, 0, 1, 1);
     }
 
     .nxp-drawer[data-direction='end'] {
       inset-inline-end: 0;
       border-start-end-radius: 0;
-      animation: nxp-drawer-slide-end 0.25s ease-out;
+      transform: translateX(0);
+      opacity: 1;
+      transition:
+        transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
+        opacity 250ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    @starting-style {
+      .nxp-drawer[data-direction='end'] {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+    .nxp-drawer[data-direction='end'].nxp-leave {
+      transform: translateX(100%);
+      opacity: 0;
+      transition:
+        transform 180ms cubic-bezier(0.4, 0, 1, 1),
+        opacity 180ms cubic-bezier(0.4, 0, 1, 1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nxp-drawer[data-direction='start'],
+      .nxp-drawer[data-direction='end'] {
+        transform: none;
+        transition: opacity 200ms linear;
+      }
+      .nxp-drawer[data-direction='start'].nxp-leave,
+      .nxp-drawer[data-direction='end'].nxp-leave {
+        transform: none;
+        opacity: 0;
+        transition: opacity 150ms linear;
+      }
+      @starting-style {
+        .nxp-drawer[data-direction='start'],
+        .nxp-drawer[data-direction='end'] {
+          transform: none;
+          opacity: 0;
+        }
+      }
     }
 
     .nxp-drawer--overlay {
@@ -120,15 +178,6 @@ import {
       background: rgb(17, 24, 39);
     }
 
-    @keyframes nxp-drawer-slide-start {
-      from { transform: translateX(-100%); opacity: 0; }
-      to   { transform: translateX(0);    opacity: 1; }
-    }
-
-    @keyframes nxp-drawer-slide-end {
-      from { transform: translateX(100%); opacity: 0; }
-      to   { transform: translateX(0);    opacity: 1; }
-    }
   `],
 })
 export class DrawerComponent {

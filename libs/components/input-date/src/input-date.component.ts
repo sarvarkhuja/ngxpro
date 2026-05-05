@@ -8,6 +8,7 @@ import {
   HostListener,
   inject,
   input,
+  model,
   output,
   signal,
 } from '@angular/core';
@@ -50,6 +51,27 @@ import { formatDate, parseDate } from './date-input.utils';
       multi: true,
     },
   ],
+  styles: `
+    .nxp-date-pop {
+      transform-origin: top left;
+      animation: nxp-date-pop-in 180ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @keyframes nxp-date-pop-in {
+      from {
+        opacity: 0;
+        transform: scale(0.97) translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .nxp-date-pop {
+        animation: none;
+      }
+    }
+  `,
   template: `
     <div class="relative w-full">
       <input
@@ -62,15 +84,19 @@ import { formatDate, parseDate } from './date-input.utils';
         (input)="onInput($event)"
         (blur)="onBlur()"
         (keydown.escape)="close()"
-        aria-haspopup="true"
+        aria-haspopup="dialog"
         [attr.aria-expanded]="isOpen()"
         [attr.aria-label]="placeholder()"
         autocomplete="off"
       />
 
-      <!-- Calendar icon -->
       <span
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary pointer-events-none select-none"
+        class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none select-none
+               transition-[color,transform] duration-150
+               [transition-timing-function:cubic-bezier(0.23,1,0.32,1)]"
+        [class.text-text-tertiary]="!isOpen()"
+        [class.text-text-action]="isOpen()"
+        [class.scale-110]="isOpen()"
         aria-hidden="true"
       >
         <svg
@@ -87,10 +113,9 @@ import { formatDate, parseDate } from './date-input.utils';
         </svg>
       </span>
 
-      <!-- Calendar dropdown -->
       @if (isOpen()) {
         <div
-          class="absolute z-50 mt-1 top-full left-0"
+          class="nxp-date-pop absolute z-50 mt-2 top-full left-0"
           role="dialog"
           aria-modal="true"
           aria-label="Date picker"
@@ -112,52 +137,24 @@ import { formatDate, parseDate } from './date-input.utils';
 export class InputDateComponent implements ControlValueAccessor {
   private readonly el = inject(ElementRef);
 
-  // ------------------------------------------------------------------ inputs
-
-  /** Currently selected date. */
   readonly value = input<Date | null>(null);
-
-  /** Minimum selectable date. */
   readonly min = input<Date | null>(null);
-
-  /** Maximum selectable date. */
   readonly max = input<Date | null>(null);
-
-  /** Placeholder text shown when no value is set. */
   readonly placeholder = input<string>('MM/DD/YYYY');
-
-  /** Whether the input is disabled. */
-  readonly disabled = input<boolean>(false);
-
-  /** First day of week (0 = Sun … 6 = Sat). */
+  readonly disabled = model<boolean>(false);
   readonly weekStart = input<0 | 1 | 2 | 3 | 4 | 5 | 6>(1);
-
-  /** Optional handler to disable individual dates. */
   readonly disabledHandler = input<DisabledHandler | null>(null);
-
-  /** Optional handler to add dot markers to dates. */
   readonly markerHandler = input<MarkerHandler | null>(null);
-
-  /** Additional CSS classes for the input element. */
   readonly class = input<string>('');
 
-  // ------------------------------------------------------------------ outputs
-
-  /** Emitted when the selected date changes. */
   readonly valueChange = output<Date | null>();
-
-  // ------------------------------------------------------------------ internal state
 
   protected readonly isOpen = signal(false);
   protected readonly inputValue = signal('');
 
-  // ------------------------------------------------------------------ computed
-
   protected readonly inputClass = computed(() =>
     cx(inputVariants(), this.class()),
   );
-
-  // ------------------------------------------------------------------ sync value → inputValue
 
   constructor() {
     effect(() => {
@@ -165,8 +162,6 @@ export class InputDateComponent implements ControlValueAccessor {
       this.inputValue.set(v ? formatDate(v) : '');
     });
   }
-
-  // ------------------------------------------------------------------ CVA
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onChange: (v: Date | null) => void = () => {};
@@ -185,11 +180,9 @@ export class InputDateComponent implements ControlValueAccessor {
     this._onTouched = fn;
   }
 
-  setDisabledState(_isDisabled: boolean): void {
-    // Handled via the disabled() input signal
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled.set(isDisabled);
   }
-
-  // ------------------------------------------------------------------ click-outside / ESC
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
@@ -204,8 +197,6 @@ export class InputDateComponent implements ControlValueAccessor {
   onEsc(): void {
     this.isOpen.set(false);
   }
-
-  // ------------------------------------------------------------------ handlers
 
   protected toggle(): void {
     if (!this.disabled()) {

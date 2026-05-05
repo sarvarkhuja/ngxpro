@@ -1,15 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DoCheck,
-  ElementRef,
-  OnInit,
   computed,
   inject,
   input,
-  signal,
 } from '@angular/core';
-import { NgControl } from '@angular/forms';
 
 import { NXP_RADIO_OPTIONS } from './radio.options';
 import { cx } from '../../../utils/cx';
@@ -19,6 +14,11 @@ export type NxpRadioColor = 'primary' | 'secondary' | 'danger';
 
 /**
  * Radio input directive — applies to native `<input type="radio">` elements.
+ *
+ * State is read by the browser via `:checked` / `:disabled` pseudo-classes.
+ * No signal mirrors `nativeElement.checked` — that was the source of the
+ * "fade on route change" bug (CVA writes land one CD tick after first paint,
+ * signal flips, `transition-colors` animates the mismatch).
  *
  * Integrates with Angular Reactive Forms via the built-in RadioControlValueAccessor.
  * Use with `formControl`, `formControlName`, or `[(ngModel)]`.
@@ -34,10 +34,6 @@ export type NxpRadioColor = 'primary' | 'secondary' | 'danger';
  * @example
  * <!-- Size and color variants -->
  * <input type="radio" nxpRadio size="l" color="danger" name="opt" value="no" />
- *
- * @example
- * <!-- Disabled state (automatically reflected from NgControl) -->
- * <input type="radio" nxpRadio [formControl]="disabledCtrl" value="x" />
  */
 @Component({
   selector: 'input[type="radio"][nxpRadio]',
@@ -45,24 +41,26 @@ export type NxpRadioColor = 'primary' | 'secondary' | 'danger';
   template: '',
   host: {
     '[class]': 'hostClasses()',
-    '[style.background-image]': 'backgroundImage()',
-    '[style.background-size]': 'isChecked() ? "75% 75%" : null',
-    '[style.background-position]': 'isChecked() ? "center" : null',
-    '[style.background-repeat]': 'isChecked() ? "no-repeat" : null',
     '[attr.data-size]': 'size()',
     '[attr.data-color]': 'color()',
     '[class.nxp-radio]': 'true',
-    '[disabled]': 'isDisabled()',
   },
+  styles: [
+    `
+      /* White dot on checked — painted by the browser the instant
+       the native checked pseudo-class matches, with no Angular involvement. */
+      :host(:checked) {
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='white'/%3E%3C/svg%3E");
+        background-size: 75% 75%;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NxpRadioComponent implements OnInit, DoCheck {
+export class NxpRadioComponent {
   private readonly options = inject(NXP_RADIO_OPTIONS);
-  private readonly control = inject(NgControl, {
-    self: true,
-    optional: true,
-  });
-  private readonly el = inject<ElementRef<HTMLInputElement>>(ElementRef);
 
   /** Size of the radio input. Defaults to option value ('m'). */
   readonly size = input<NxpRadioSize>(this.options.size);
@@ -73,72 +71,46 @@ export class NxpRadioComponent implements OnInit, DoCheck {
   /** Additional CSS classes. */
   readonly class = input<string>('');
 
-  /** Tracks disabled state derived from NgControl or the native disabled attribute. */
-  readonly isDisabled = signal(false);
-
-  /** Tracks checked state from the native element — drives fill color and dot. */
-  readonly isChecked = signal(false);
-
-  ngOnInit(): void {
-    this.isDisabled.set(this.control?.disabled ?? false);
-    this.isChecked.set(this.el.nativeElement.checked);
-  }
-
-  ngDoCheck(): void {
-    this.isDisabled.set(this.control?.disabled ?? false);
-    this.isChecked.set(this.el.nativeElement.checked);
-  }
-
-  /**
-   * White dot via SVG data URI — shown only when checked.
-   * Follows Taiga's pattern of computing appearance from element state in ngDoCheck.
-   */
-  readonly backgroundImage = computed(() => {
-    if (!this.isChecked()) return null;
-    return `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='white'/%3E%3C/svg%3E")`;
-  });
-
   readonly hostClasses = computed(() => {
     const size = this.size();
     const color = this.color();
-    const checked = this.isChecked();
 
     return cx(
       // Reset browser appearance
       'appearance-none cursor-pointer shrink-0',
       // Shape
       'rounded-full border-2',
-      // Transition
-      'transition-all duration-150',
+      // Colour-only transition — safe here because the class list is static
+      // across state flips (only `:checked` pseudo-class toggles), so there
+      // is no Angular-driven re-render to race with the CSS transition.
+      'transition-[background-color,border-color,box-shadow] duration-150 ease-out',
       // Focus
-      'outline-none',
-      'focus-visible:ring-2 focus-visible:ring-offset-2',
+      'outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
       // Disabled
-      'disabled:opacity-50 disabled:cursor-not-allowed',
-      'dark:disabled:opacity-40',
+      'disabled:opacity-50 disabled:cursor-not-allowed dark:disabled:opacity-40',
 
       // Size variants
       size === 's' && 'size-4',
       size === 'm' && 'size-5',
       size === 'l' && 'size-6',
 
-      // Color variants — state driven by isChecked() signal (Taiga ngDoCheck pattern)
+      // Colour variants — `checked:*` maps to the real `:checked` pseudo-class.
       color === 'primary' && [
-        checked
-          ? ['border-blue-600 dark:border-blue-400', 'bg-blue-600 dark:bg-blue-400']
-          : ['border-gray-300 dark:border-gray-600', 'bg-white dark:bg-gray-800'],
+        'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800',
+        'checked:border-blue-600 checked:bg-blue-600',
+        'dark:checked:border-blue-400 dark:checked:bg-blue-400',
         'focus-visible:ring-blue-500',
       ],
       color === 'secondary' && [
-        checked
-          ? ['border-gray-600 dark:border-gray-400', 'bg-gray-600 dark:bg-gray-400']
-          : ['border-gray-300 dark:border-gray-600', 'bg-white dark:bg-gray-800'],
+        'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800',
+        'checked:border-gray-600 checked:bg-gray-600',
+        'dark:checked:border-gray-400 dark:checked:bg-gray-400',
         'focus-visible:ring-gray-500',
       ],
       color === 'danger' && [
-        checked
-          ? ['border-red-600 dark:border-red-400', 'bg-red-600 dark:bg-red-400']
-          : ['border-red-300 dark:border-red-600', 'bg-white dark:bg-gray-800'],
+        'border-red-300 bg-white dark:border-red-600 dark:bg-gray-800',
+        'checked:border-red-600 checked:bg-red-600',
+        'dark:checked:border-red-400 dark:checked:bg-red-400',
         'focus-visible:ring-red-500',
       ],
 

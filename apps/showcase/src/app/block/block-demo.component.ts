@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NxpCheckboxComponent } from '@nxp/cdk/components/checkbox';
+import { NxpCheckboxDirective } from '@nxp/cdk/components/checkbox';
 import { NxpRadioComponent } from '@nxp/cdk/components/radio';
 import { NxpBlockDirective, NxpBlockGroupComponent } from '@nxp/components/block';
 
@@ -9,7 +9,7 @@ import { NxpBlockDirective, NxpBlockGroupComponent } from '@nxp/components/block
   selector: 'app-block-demo',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterModule, ReactiveFormsModule, NxpBlockDirective, NxpBlockGroupComponent, NxpCheckboxComponent, NxpRadioComponent],
+  imports: [RouterModule, ReactiveFormsModule, NxpBlockDirective, NxpBlockGroupComponent, NxpCheckboxDirective, NxpRadioComponent],
   template: `
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-3xl mx-auto">

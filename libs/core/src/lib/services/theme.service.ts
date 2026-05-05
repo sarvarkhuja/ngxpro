@@ -1,4 +1,11 @@
-import { Injectable, signal, computed, effect, inject } from '@angular/core';
+import {
+  DestroyRef,
+  Injectable,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { NXP_DOCUMENT } from '@nxp/cdk';
 
 export type NgxproTheme = 'light' | 'dark' | 'system';
@@ -13,6 +20,7 @@ export type NgxproTheme = 'light' | 'dark' | 'system';
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly doc = inject(NXP_DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly _theme = signal<NgxproTheme>(this.getStoredTheme());
 
   /** System preference for dark mode (reactive to OS theme changes). */
@@ -82,8 +90,12 @@ export class ThemeService {
       '(prefers-color-scheme: dark)',
     );
     if (!mql) return;
-    mql.addEventListener('change', () => {
+    const listener = (): void => {
       this._prefersDark.set(this.readPrefersDark());
-    });
+    };
+    mql.addEventListener('change', listener);
+    this.destroyRef.onDestroy(() =>
+      mql.removeEventListener('change', listener),
+    );
   }
 }

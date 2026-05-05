@@ -12,8 +12,10 @@ const buttonVariants = tv({
     base: [
       // base
       'group relative inline-flex items-center justify-center whitespace-nowrap font-medium cursor-pointer',
-      // transition — snappy 80ms matching fluidfunctionalizm
-      'transition-all duration-[80ms]',
+      // transition — explicit props (never transition-all); 80ms ease-out
+      'transition-[background-color,color,border-color,transform,box-shadow] duration-[80ms] ease-out',
+      // press feedback — responsive scale on active
+      'active:scale-[0.97]',
       // focus
       'outline-none focus-visible:ring-1 focus-visible:ring-[#6B97FF]',
       // disabled
@@ -151,7 +153,7 @@ export type ButtonSize = NonNullable<
             stroke-width="1.125"
             stroke-linecap="round"
             pathLength="100"
-            style="stroke-dasharray: 15 85; animation: nxp-spinner-move 2s linear infinite, nxp-spinner-dash 4s ease-in-out infinite"
+            style="stroke-dasharray: 15 85; animation: nxp-spinner-move 2s linear infinite, nxp-spinner-dash 4s linear infinite"
           />
         </svg>
       </span>

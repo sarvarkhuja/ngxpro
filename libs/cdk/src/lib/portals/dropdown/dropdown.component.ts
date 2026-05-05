@@ -58,14 +58,39 @@ const MAX_WIDTH_GAP = 16;
           0 4px 6px -1px rgb(0 0 0 / 0.1),
           0 2px 4px -2px rgb(0 0 0 / 0.1);
         overflow: hidden;
+        /* transform-origin is set per-open in getStyles() so the panel
+           scales in from the edge nearest the trigger, not from center. */
       }
       :host-context(.dark) {
         background: #1f2937;
         color: white;
       }
+      :host.nxp-enter {
+        animation: nxp-dropdown-in 0.18s cubic-bezier(0.22, 1.2, 0.36, 1);
+      }
+      :host.nxp-leave {
+        animation: nxp-dropdown-in 0.12s cubic-bezier(0.4, 0, 1, 1) reverse;
+      }
+      @keyframes nxp-dropdown-in {
+        from { opacity: 0; transform: scale(0.96); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        :host.nxp-enter,
+        :host.nxp-leave {
+          animation: nxp-dropdown-fade 0.15s linear;
+        }
+        :host.nxp-leave {
+          animation-direction: reverse;
+        }
+        @keyframes nxp-dropdown-fade {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+      }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     NxpPositionService,
     nxpPositionAccessorFor('dropdown', NxpDropdownPosition),
@@ -122,6 +147,19 @@ export class NxpDropdownComponent implements AfterViewInit {
         ? maxHeight
         : clamp(available, minHeight, maxHeight);
 
+    // Scale-from-trigger: pick the edge nearest the trigger as the origin.
+    const panelWidth = this.el.getBoundingClientRect().width;
+    const triggerCenter = rect.left + rect.width / 2;
+    const panelStart = x;
+    const panelEnd = x + panelWidth;
+    const horizontal =
+      triggerCenter < panelStart
+        ? 'left'
+        : triggerCenter > panelEnd
+          ? 'right'
+          : 'center';
+    const vertical = y >= rect.bottom ? 'top' : 'bottom';
+
     return {
       position: this.position,
       top: nxpPx(Math.round(Math.max(y - top, offset - top) / zoom)),
@@ -130,6 +168,7 @@ export class NxpDropdownComponent implements AfterViewInit {
       width: limitWidth === 'fixed' ? nxpPx(Math.round(rect.width / zoom)) : '',
       minWidth: limitWidth === 'min' ? nxpPx(Math.round(rect.width / zoom)) : '',
       maxWidth: nxpPx(Math.round(viewport.width / zoom) - MAX_WIDTH_GAP),
+      transformOrigin: `${horizontal} ${vertical}`,
     };
   }
 }

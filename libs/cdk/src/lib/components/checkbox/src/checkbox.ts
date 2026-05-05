@@ -1,4 +1,5 @@
 import { NxpCheckboxComponent } from './checkbox.component';
+import { NxpCheckboxDirective } from './checkbox.directive';
 
 /**
  * Convenience array for importing all Checkbox-related declarations.
@@ -12,4 +13,4 @@ import { NxpCheckboxComponent } from './checkbox.component';
  * })
  * ```
  */
-export const NxpCheckbox = [NxpCheckboxComponent] as const;
+export const NxpCheckbox = [NxpCheckboxComponent, NxpCheckboxDirective] as const;

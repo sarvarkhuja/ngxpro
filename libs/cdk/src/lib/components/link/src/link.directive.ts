@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 import { tv, type VariantProps } from 'tailwind-variants';
-import { cx } from '@nxp/cdk';
+import { cx } from '../../../utils';
 
 // ---------------------------------------------------------------------------
 // Variants

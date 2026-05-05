@@ -20,13 +20,7 @@ export const appRoutes: Route[] = [
         (m) => m.AccordionDemoComponent,
       ),
   },
-  {
-    path: 'avatar',
-    loadComponent: () =>
-      import('./avatar/avatar-demo.component').then(
-        (m) => m.AvatarDemoComponent,
-      ),
-  },
+
   {
     path: 'button',
     loadComponent: () =>

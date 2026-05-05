@@ -1,4 +1,5 @@
 import {
+  booleanAttribute,
   Directive,
   InjectionToken,
   inject,
@@ -49,7 +50,8 @@ export class NxpTextfieldOptionsDirective implements NxpTextfieldOptions {
     alias: 'nxpTextfieldSize',
   });
 
-  readonly cleaner = input<boolean>(this.options.cleaner(), {
+  readonly cleaner = input<boolean, unknown>(this.options.cleaner(), {
     alias: 'nxpTextfieldCleaner',
+    transform: booleanAttribute,
   });
 }

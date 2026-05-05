@@ -10,3 +10,4 @@ export {
 } from './tooltip.options';
 export type { NxpTooltipOptions } from './tooltip.options';
 export type { NxpTooltipSize } from './tooltip.types';
+export { NxpTooltipGroupService } from './tooltip-group.service';

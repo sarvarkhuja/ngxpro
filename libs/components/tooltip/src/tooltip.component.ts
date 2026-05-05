@@ -50,6 +50,17 @@ const SLIDE_OFFSET: Record<NxpTooltipDirection, { x: number; y: number }> = {
 };
 
 /**
+ * Transform-origin per direction — the tooltip scales in from the edge
+ * closest to the trigger, not from center.
+ */
+const TRANSFORM_ORIGIN: Record<NxpTooltipDirection, string> = {
+  top: 'center bottom',
+  bottom: 'center top',
+  left: 'right center',
+  right: 'left center',
+};
+
+/**
  * Interface provided by the tooltip directive so the component can read inputs
  * without creating a circular import.
  */
@@ -59,6 +70,8 @@ export interface NxpTooltipHost extends NxpRectAccessor {
   nxpTooltipAppearance(): string;
   nxpTooltipSize(): NxpTooltipSize;
   hide(): void;
+  /** When true, skip the enter animation (used for skip-delay re-opens). */
+  isInstant?(): boolean;
 }
 
 /**
@@ -68,7 +81,6 @@ export interface NxpTooltipHost extends NxpRectAccessor {
 export const NXP_TOOLTIP_HOST = new InjectionToken<NxpTooltipHost>(
   ngDevMode ? 'NXP_TOOLTIP_HOST' : '',
 );
-
 /**
  * The rendered tooltip popup panel. Created dynamically by NxpTooltipDirective
  * via the portal system. Positions itself relative to the host element using
@@ -88,9 +100,7 @@ export const NXP_TOOLTIP_HOST = new InjectionToken<NxpTooltipHost>(
     <span [class]="arrowClasses()" aria-hidden="true"></span>
 
     <!-- Content -->
-    <div
-      *polymorpheusOutlet="host.tooltipContent() as text"
-    >
+    <div *polymorpheusOutlet="host.tooltipContent() as text">
       {{ text }}
     </div>
   `,
@@ -110,7 +120,7 @@ export const NXP_TOOLTIP_HOST = new InjectionToken<NxpTooltipHost>(
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     NxpPositionService,
     NxpTooltipPosition,
@@ -132,7 +142,8 @@ export class NxpTooltipComponent implements AfterViewInit {
 
   protected readonly arrowClasses = () => {
     const direction = this.position.resolvedDirection() ?? 'top';
-    const appearance = this.host.nxpTooltipAppearance() || this.options.appearance;
+    const appearance =
+      this.host.nxpTooltipAppearance() || this.options.appearance;
     const base = 'absolute block w-2 h-2 rotate-45 z-0';
     // For the light appearance, only show the two border sides that face outward
     // (away from the tooltip body) so the inner edges don't create a visible line.
@@ -188,6 +199,10 @@ export class NxpTooltipComponent implements AfterViewInit {
   /**
    * Spring-inspired enter animation: slide from directional offset to 0, fade in.
    * Uses NXP_SPRING_MODERATE cubic-bezier for the spring feel.
+   *
+   * Skip-delay: when `host.isInstant?.()` is true, jump straight to the final
+   * state with no transition — the tooltip group has just been active and
+   * further animation would feel choppy rather than considered.
    */
   private animateEnter(): void {
     const el = this.el;
@@ -195,32 +210,51 @@ export class NxpTooltipComponent implements AfterViewInit {
     if (el.dataset['entered']) return;
     el.dataset['entered'] = '1';
 
-    const direction = (this.position.resolvedDirection() ?? this.options.direction) as NxpTooltipDirection;
+    if (this.host.isInstant?.()) {
+      el.style.transition = 'none';
+      el.style.opacity = '1';
+      el.style.transform = 'translate(0, 0)';
+      return;
+    }
+
+    const direction = (this.position.resolvedDirection() ??
+      this.options.direction) as NxpTooltipDirection;
     const offset = SLIDE_OFFSET[direction] ?? SLIDE_OFFSET.top;
 
-    // Set initial state (slide offset + invisible)
+    // Set initial state (slide offset + invisible) on the current frame…
+    el.style.transition = 'none';
     el.style.opacity = '0';
     el.style.transform = `translate(${offset.x}px, ${offset.y}px)`;
-    el.style.transition = 'none';
 
-    // Force reflow so initial styles are applied before transitioning
-    el.offsetHeight; // eslint-disable-line @typescript-eslint/no-unused-expressions
-
-    // Apply enter transition using spring-like easing.
-    // NXP_SPRING_MODERATE (160ms, overshoot cubic-bezier) matches the perceptual
-    // feel of framer-motion's springs.fast (duration: 0.08 is a perceptual param,
-    // actual spring animation runs ~150-200ms).
-    el.style.transition = `opacity ${NXP_SPRING_MODERATE.duration}ms ${NXP_SPRING_MODERATE.easing}, transform ${NXP_SPRING_MODERATE.duration}ms ${NXP_SPRING_MODERATE.easing}`;
-    el.style.opacity = '1';
-    el.style.transform = 'translate(0, 0)';
+    // …then flip to the final state on the next paint so the browser actually
+    // transitions. Double rAF is the lowest-overhead replacement for a forced
+    // reflow via `offsetHeight`.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.style.transition = `opacity ${NXP_SPRING_MODERATE.duration}ms ${NXP_SPRING_MODERATE.easing}, transform ${NXP_SPRING_MODERATE.duration}ms ${NXP_SPRING_MODERATE.easing}`;
+        el.style.opacity = '1';
+        el.style.transform = 'translate(0, 0)';
+      });
+    });
   }
 
   private applyHostClasses(): void {
-    const appearance = this.host.nxpTooltipAppearance() || this.options.appearance;
+    const appearance =
+      this.host.nxpTooltipAppearance() || this.options.appearance;
     const size = this.host.nxpTooltipSize();
     const sizeClass = SIZE_CLASSES[size] ?? SIZE_CLASSES['md'];
     const appearanceClass = APPEARANCE_CLASSES[appearance] ?? '';
-    this.el.className = cx('relative overflow-visible', sizeClass, appearanceClass);
+    this.el.className = cx(
+      'relative overflow-visible',
+      sizeClass,
+      appearanceClass,
+    );
+    // Scale-from-trigger: origin is opposite the tooltip direction so the
+    // panel grows out of the edge nearest the triggering element.
+    const direction = (this.position.resolvedDirection() ??
+      this.options.direction) as NxpTooltipDirection;
+    this.el.style.transformOrigin =
+      TRANSFORM_ORIGIN[direction] ?? TRANSFORM_ORIGIN.top;
   }
 
   private getStyles(x: number, y: number): Record<string, string> {

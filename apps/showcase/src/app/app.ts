@@ -29,7 +29,6 @@ export class App {
     { path: '/', label: 'Home' },
     { path: '/accordion', label: 'Accordion' },
     { path: '/alert', label: 'Alert' },
-    { path: '/avatar', label: 'Avatar' },
     { path: '/slider', label: 'Slider' },
     { path: '/badge', label: 'Badge' },
     { path: '/block', label: 'Block' },

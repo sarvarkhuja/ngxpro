@@ -8,7 +8,7 @@ import {
   output,
   ViewChild,
 } from '@angular/core';
-import { cx, calendarCellVariants } from '@nxp/cdk';
+import { cx, calendarCellVariants } from '../../../utils';
 
 /** Number of years to show on each side of the current year. */
 const YEAR_RANGE = 100;
@@ -26,11 +26,11 @@ const YEAR_RANGE = 100;
   template: `
     <div
       #scrollContainer
-      class="h-56 overflow-y-auto overscroll-contain pr-1"
+      class="h-60 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin]"
       role="listbox"
       [attr.aria-label]="'Select year'"
     >
-      <div class="grid grid-cols-4 gap-1 p-1">
+      <div class="grid grid-cols-4 gap-1 p-0.5">
         @for (year of years(); track year) {
           <button
             type="button"
@@ -41,7 +41,7 @@ const YEAR_RANGE = 100;
             role="option"
             (click)="!isYearDisabled(year) && yearClick.emit(year)"
           >
-            {{ year }}
+            <span class="tabular-nums">{{ year }}</span>
           </button>
         }
       </div>
@@ -49,19 +49,11 @@ const YEAR_RANGE = 100;
   `,
 })
 export class CalendarYearComponent implements AfterViewInit {
-  /** The year currently in view (used to build the year list and scroll target). */
   readonly currentYear = input.required<number>();
-
-  /** The year that is currently selected (highlighted). */
   readonly selectedYear = input<number | null>(null);
-
-  /** Optional lower bound. */
   readonly min = input<Date | null>(null);
-
-  /** Optional upper bound. */
   readonly max = input<Date | null>(null);
 
-  /** Emitted when the user picks a year. */
   readonly yearClick = output<number>();
 
   @ViewChild('scrollContainer', { static: true })
@@ -83,7 +75,6 @@ export class CalendarYearComponent implements AfterViewInit {
     if (activeBtn) {
       activeBtn.scrollIntoView({ block: 'center', behavior: 'instant' });
     } else {
-      // Scroll to the current year button (no year selected yet)
       const btns = container.querySelectorAll<HTMLButtonElement>('button');
       const target = Array.from(btns).find(
         (btn) => btn.textContent?.trim() === String(this.currentYear()),
@@ -111,6 +102,6 @@ export class CalendarYearComponent implements AfterViewInit {
     else if (isCurrent) state = 'current';
     else state = 'default';
 
-    return cx(calendarCellVariants({ state }), 'px-2 py-1.5');
+    return cx(calendarCellVariants({ state }), 'h-10 px-2');
   }
 }
