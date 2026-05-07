@@ -3,11 +3,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   model,
   signal,
 } from '@angular/core';
-import { cx, NxpAnimatedProximityBase, type NxpItemRect } from '@ngxpro/cdk';
+import {
+  cx,
+  NxpAnimatedProximityBase,
+  NXP_DOCUMENT,
+  type NxpItemRect,
+} from '@ngxpro/cdk';
 
 /**
  * DataList — accessible listbox container with animated proximity-hover.
@@ -213,6 +219,8 @@ export class DataListComponent
    * Arrow keys move focus between enabled option buttons.
    * Home / End jump to the first / last option.
    */
+  private readonly doc = inject(NXP_DOCUMENT);
+
   protected onKeydown(event: KeyboardEvent): void {
     const { key } = event;
 
@@ -231,7 +239,7 @@ export class DataListComponent
 
     event.preventDefault();
 
-    const active = document.activeElement;
+    const active = this.doc.activeElement;
     const currentIndex = active ? options.indexOf(active as HTMLElement) : -1;
 
     let nextIndex: number;

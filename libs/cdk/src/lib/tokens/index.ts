@@ -1,28 +1,27 @@
-import { DOCUMENT } from '@angular/common';
-import { inject, InjectionToken } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { inject, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { merge, share, switchMap, takeUntil, type Observable } from 'rxjs';
 import { nxpTypedFromEvent } from '../observables/typed-from-event';
 
 /**
- * Token for the document reference.
+ * Token for the document reference. SSR-safe via Angular's DOCUMENT token.
  */
 export const NXP_DOCUMENT = new InjectionToken<Document>('NXP_DOCUMENT', {
-  factory: () => document,
+  factory: () => inject(DOCUMENT),
 });
 
 /**
- * Token for the window reference.
+ * Token for the window reference. Returns `null` on the server.
  */
-export const NXP_WINDOW = new InjectionToken<Window>('NXP_WINDOW', {
-  factory: () => window,
+export const NXP_WINDOW = new InjectionToken<Window | null>('NXP_WINDOW', {
+  factory: () => inject(NXP_DOCUMENT).defaultView,
 });
 
 /**
  * Token for checking if code is running in a browser environment.
  */
 export const NXP_IS_BROWSER = new InjectionToken<boolean>('NXP_IS_BROWSER', {
-  factory: () =>
-    typeof window !== 'undefined' && typeof document !== 'undefined',
+  factory: () => isPlatformBrowser(inject(PLATFORM_ID)),
 });
 
 /**
@@ -37,16 +36,18 @@ export const NXP_VIEWPORT = new InjectionToken<{
     return {
       type: 'viewport',
       getClientRect(): DOMRect {
-        const vv = win.visualViewport;
+        const innerWidth = win?.innerWidth ?? 0;
+        const innerHeight = win?.innerHeight ?? 0;
+        const vv = win?.visualViewport;
         const height = vv?.height ?? 0;
         const offsetTop = vv?.offsetTop ?? 0;
         const rect = {
           top: 0,
           left: 0,
-          right: win.innerWidth,
-          bottom: win.innerHeight,
-          width: win.innerWidth,
-          height: height + offsetTop || win.innerHeight,
+          right: innerWidth,
+          bottom: innerHeight,
+          width: innerWidth,
+          height: height + offsetTop || innerHeight,
           x: 0,
           y: 0,
         };

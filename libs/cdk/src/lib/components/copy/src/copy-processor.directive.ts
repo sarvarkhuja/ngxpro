@@ -25,7 +25,7 @@ export class NxpCopyProcessorDirective {
 
   @HostListener('copy', ['$event'])
   protected onCopy(event: ClipboardEvent): void {
-    const selected = this.win.getSelection()?.toString() ?? '';
+    const selected = this.win?.getSelection()?.toString() ?? '';
     if (!selected) {
       return;
     }

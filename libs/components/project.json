@@ -1,7 +1,7 @@
 {
   "name": "components",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/components",
+  "sourceRoot": "libs/components/src",
   "prefix": "nxp",
   "projectType": "library",
   "tags": ["scope:components"],

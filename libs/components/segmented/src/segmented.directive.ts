@@ -8,7 +8,7 @@ import {
 import { RouterLinkActive } from '@angular/router';
 import { NgControl, RadioControlValueAccessor } from '@angular/forms';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
+import { EMPTY } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 
 /**
@@ -44,14 +44,11 @@ export class NxpSegmentedDirective implements AfterContentChecked {
   constructor() {
     this.controls$
       .pipe(
-        switchMap(
-          ([control]) =>
-            new Observable<unknown>((sub) =>
-              control?.valueChanges
-                ?.pipe(startWith(control.value))
-                .subscribe(sub),
-            ),
-        ),
+        switchMap(([control]) => {
+          const changes = control?.valueChanges;
+          if (!changes) return EMPTY;
+          return changes.pipe(startWith(control.value));
+        }),
         map((value) => this.radios().findIndex((r) => r.value === value)),
         takeUntilDestroyed(),
       )

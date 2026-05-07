@@ -1,12 +1,11 @@
-import { DOCUMENT } from '@angular/common';
 import { Directive, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY_CLIENT_RECT } from '../../constants';
 import { NxpActiveZone } from '../../directives/active-zone.directive';
-import { nxpTypedFromEvent } from '../../observables/typed-from-event';
 import { nxpZoneOptimized } from '../../observables/zone';
 import { nxpAsDriver } from '../../classes/driver';
 import { nxpAsRectAccessor, NxpRectAccessor } from '../../classes/accessors';
+import { NxpDocumentEvents } from '../../services/document-events.service';
 import { filter, merge } from 'rxjs';
 import { NxpDropdownDriver } from './dropdown.driver';
 
@@ -55,14 +54,12 @@ export class NxpDropdownContext extends NxpRectAccessor {
   private currentRect = EMPTY_CLIENT_RECT;
   protected readonly activeZone = inject(NxpActiveZone);
   protected readonly driver = inject(NxpDropdownDriver);
-  protected readonly doc = inject(DOCUMENT);
+  protected readonly events = inject(NxpDocumentEvents);
 
   protected readonly sub = merge(
-    nxpTypedFromEvent(this.doc, 'pointerdown'),
-    nxpTypedFromEvent(this.doc, 'keydown').pipe(
-      filter(({ key }) => key === 'Escape'),
-    ),
-    nxpTypedFromEvent(this.doc, 'contextmenu', { capture: true }),
+    this.events.pointerdown(),
+    this.events.keydown().pipe(filter(({ key }) => key === 'Escape')),
+    this.events.contextmenuCapture(),
   )
     .pipe(
       filter(

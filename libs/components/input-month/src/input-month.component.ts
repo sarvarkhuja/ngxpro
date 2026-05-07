@@ -1,18 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  ElementRef,
   computed,
   effect,
-  ElementRef,
   forwardRef,
-  HostListener,
   inject,
   input,
-  output,
+  model,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx, inputVariants } from '@ngxpro/cdk';
+import { cx, inputVariants, NXP_DOCUMENT, NXP_IS_BROWSER } from '@ngxpro/cdk';
 import { CalendarMonthComponent } from '@ngxpro/components/calendar-month';
 import type { MonthCoord } from '@ngxpro/components/calendar-month';
 import { formatMonth } from '@ngxpro/components/input-date';
@@ -24,15 +24,9 @@ import { formatMonth } from '@ngxpro/components/input-date';
  * closes the dropdown and updates the value. The displayed value is formatted
  * as "Month YYYY" (e.g. "January 2025").
  *
- * Implements `ControlValueAccessor` for Angular forms integration.
- *
- * @example
- * <!-- Template-driven -->
- * <nxp-input-month [(ngModel)]="month" />
- *
- * @example
- * <!-- Reactive form with min/max bounds -->
- * <nxp-input-month [formControl]="monthControl" [min]="minMonth" [max]="maxMonth" />
+ * Implements `ControlValueAccessor` for Angular forms integration. `value`
+ * is a `model()` so reactive form `setValue()` propagates back through
+ * `writeValue()` and updates the calendar.
  */
 @Component({
   selector: 'nxp-input-month',
@@ -128,17 +122,18 @@ import { formatMonth } from '@ngxpro/components/input-date';
 })
 export class InputMonthComponent implements ControlValueAccessor {
   private readonly el = inject(ElementRef);
+  private readonly doc = inject(NXP_DOCUMENT);
+  private readonly isBrowser = inject(NXP_IS_BROWSER);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly value = input<MonthCoord | null>(null);
+  readonly value = model<MonthCoord | null>(null);
   readonly min = input<MonthCoord | null>(null);
   readonly max = input<MonthCoord | null>(null);
   readonly placeholder = input<string>('Month YYYY');
-  readonly disabled = input<boolean>(false);
+  readonly disabled = model<boolean>(false);
   readonly rangeMode = input<boolean>(false);
   readonly disabledHandler = input<((m: MonthCoord) => boolean) | null>(null);
   readonly class = input<string>('');
-
-  readonly valueChange = output<MonthCoord | null>();
 
   protected readonly isOpen = signal(false);
   protected readonly inputValue = signal('');
@@ -156,6 +151,25 @@ export class InputMonthComponent implements ControlValueAccessor {
       const v = this.value();
       this.inputValue.set(v ? formatMonth(v) : '');
     });
+
+    if (this.isBrowser) {
+      const onDocClick = (event: Event): void => {
+        if (
+          !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
+        ) {
+          this.isOpen.set(false);
+        }
+      };
+      const onDocEsc = (event: KeyboardEvent): void => {
+        if (event.key === 'Escape') this.isOpen.set(false);
+      };
+      this.doc.addEventListener('click', onDocClick, true);
+      this.doc.addEventListener('keydown', onDocEsc);
+      this.destroyRef.onDestroy(() => {
+        this.doc.removeEventListener('click', onDocClick, true);
+        this.doc.removeEventListener('keydown', onDocEsc);
+      });
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -164,7 +178,7 @@ export class InputMonthComponent implements ControlValueAccessor {
   _onTouched: () => void = () => {};
 
   writeValue(v: MonthCoord | null): void {
-    this.inputValue.set(v ? formatMonth(v) : '');
+    this.value.set(v);
   }
 
   registerOnChange(fn: (v: MonthCoord | null) => void): void {
@@ -175,22 +189,8 @@ export class InputMonthComponent implements ControlValueAccessor {
     this._onTouched = fn;
   }
 
-  setDisabledState(_isDisabled: boolean): void {
-    /*noop*/
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event): void {
-    if (
-      !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
-    ) {
-      this.isOpen.set(false);
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEsc(): void {
-    this.isOpen.set(false);
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled.set(isDisabled);
   }
 
   protected toggle(): void {
@@ -204,9 +204,8 @@ export class InputMonthComponent implements ControlValueAccessor {
   }
 
   protected onMonthPicked(m: MonthCoord): void {
-    this.inputValue.set(formatMonth(m));
+    this.value.set(m);
     this.isOpen.set(false);
-    this.valueChange.emit(m);
     this._onChange(m);
     this._onTouched();
   }

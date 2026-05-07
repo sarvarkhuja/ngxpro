@@ -1,4 +1,3 @@
-import { DOCUMENT } from '@angular/common';
 import {
   computed,
   contentChild,
@@ -12,7 +11,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NxpActiveZone } from '../../directives/active-zone.directive';
 import { NxpObscured } from '../../directives/obscured.directive';
-import { nxpTypedFromEvent } from '../../observables/typed-from-event';
+import { NxpDocumentEvents } from '../../services/document-events.service';
 import { nxpInjectElement } from '../../utils/inject-element';
 import { nxpIsEditingKey } from '../../utils/editing-key';
 import { nxpSetSignal } from '../../utils/set-signal';
@@ -104,7 +103,8 @@ export class NxpDropdownOpen {
     )
     .subscribe((open) => this.update(open));
 
-  protected readonly keydownSub = nxpTypedFromEvent(inject(DOCUMENT), 'keydown')
+  protected readonly keydownSub = inject(NxpDocumentEvents)
+    .keydown()
     .pipe(takeUntilDestroyed())
     .subscribe((event) => this.onKeydown(event));
 

@@ -47,6 +47,7 @@ export class NxpSwipeDismiss implements OnInit, OnDestroy {
   private startTime = 0;
   private lockedAxis: 'x' | 'y' | null = null;
   private swiping = false;
+  private capturedPointerId: number | null = null;
 
   // Bound handlers for cleanup
   private onPointerDownBound = this.onPointerDown.bind(this);
@@ -64,6 +65,7 @@ export class NxpSwipeDismiss implements OnInit, OnDestroy {
     this.el.removeEventListener('pointerdown', this.onPointerDownBound);
     this.el.removeEventListener('pointermove', this.onPointerMoveBound);
     this.el.removeEventListener('pointerup', this.onPointerUpBound);
+    this.releasePointer();
   }
 
   private onPointerDown(e: PointerEvent): void {
@@ -85,8 +87,19 @@ export class NxpSwipeDismiss implements OnInit, OnDestroy {
     this.swiping = false;
 
     this.el.setPointerCapture(e.pointerId);
+    this.capturedPointerId = e.pointerId;
     this.el.addEventListener('pointermove', this.onPointerMoveBound);
     this.el.addEventListener('pointerup', this.onPointerUpBound);
+  }
+
+  private releasePointer(): void {
+    if (this.capturedPointerId === null) return;
+    try {
+      this.el.releasePointerCapture(this.capturedPointerId);
+    } catch {
+      // pointer already released or element removed
+    }
+    this.capturedPointerId = null;
   }
 
   private onPointerMove(e: PointerEvent): void {
@@ -172,10 +185,12 @@ export class NxpSwipeDismiss implements OnInit, OnDestroy {
     if (dismissed && direction) {
       this.el.setAttribute('data-swipe-out', 'true');
       this.el.setAttribute('data-swipe-direction', direction);
+      this.releasePointer();
       this.zone.run(() =>
         this.swipeDismissed.emit(direction as NxpSwipeDirection),
       );
     } else {
+      this.releasePointer();
       this.cleanup();
     }
   }

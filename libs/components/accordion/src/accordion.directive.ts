@@ -1,10 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  inject,
-  model,
-  HostListener,
-} from '@angular/core';
+import { Directive, ElementRef, inject, model } from '@angular/core';
 import { AccordionComponent } from './accordion.component';
 
 /**
@@ -31,6 +25,7 @@ import { AccordionComponent } from './accordion.component';
   host: {
     '[attr.aria-expanded]': 'open()',
     '[class._open]': 'open()',
+    '(click)': 'toggle()',
   },
 })
 export class AccordionDirective {
@@ -43,8 +38,7 @@ export class AccordionDirective {
   /** Whether this accordion item is open. Supports two-way binding via [nxpAccordion]. */
   readonly open = model<boolean>(false);
 
-  @HostListener('click')
-  protected toggle(): void {
+  toggle(): void {
     this.open.set(!this.open());
     this.accordion?.toggleDirective(this);
   }

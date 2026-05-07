@@ -7,6 +7,8 @@
     "test": "nx run-many -t test --parallel=3 -p cdk,core,components,blocks,fintech",
     "lint": "nx run-many -t lint --parallel=3 -p cdk,core,components,blocks,fintech",
     "format": "nx format:write",
+    "prettier:fix": "prettier --write \"**/*.{ts,html,scss,css,json,md}\"",
+    "prettier:check": "prettier --check \"**/*.{ts,html,scss,css,json,md}\"",
     "release": "nx release",
     "release:dry-run": "nx release --dry-run --verbose",
     "local-registry:start": "verdaccio --config .verdaccio/config.yml",

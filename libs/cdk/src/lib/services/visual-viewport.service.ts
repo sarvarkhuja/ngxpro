@@ -12,9 +12,9 @@ export class NxpVisualViewportService {
 
   /** Corrects a point for WebKit visual viewport offset (Safari fix). */
   correct(point: NxpPoint): NxpPoint {
-    const isWebkit =
-      /WebKit/i.test(navigator.userAgent) &&
-      !/Chrome/i.test(navigator.userAgent);
+    if (!this.win) return point;
+    const ua = this.win.navigator?.userAgent ?? '';
+    const isWebkit = /WebKit/i.test(ua) && !/Chrome/i.test(ua);
     if (!isWebkit) return point;
     const vv = this.win.visualViewport;
     return [point[0] + (vv?.offsetLeft ?? 0), point[1] + (vv?.offsetTop ?? 0)];

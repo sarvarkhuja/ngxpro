@@ -1,11 +1,32 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  input,
+  DestroyRef,
   ViewEncapsulation,
+  effect,
+  inject,
+  input,
+  output,
 } from '@angular/core';
-import { NxpAnimated } from '@ngxpro/cdk';
+import {
+  NxpAnimated,
+  NxpFocusTrap,
+  NXP_DOCUMENT,
+  NXP_IS_BROWSER,
+} from '@ngxpro/cdk';
 
+/**
+ * Slide-in drawer with proper modal semantics:
+ * - `aria-modal="true"` + `role="dialog"` so screen readers announce it
+ * - Keyboard focus is trapped inside the drawer while open
+ * - Body scroll is locked while the drawer is open (`overlay` mode only)
+ * - Escape key closes the drawer (emits `close`)
+ * - Focus is restored to the previously focused element on close
+ *
+ * The host conditionally applies `[nxpFocusTrap]` via `hostDirectives` —
+ * always trap when mounted; the parent should *not* render `<nxp-drawer>`
+ * unless it is open. Use `*ngIf="open()"` in the consumer to control mount.
+ */
 @Component({
   selector: 'nxp-drawer',
   standalone: true,
@@ -22,11 +43,15 @@ import { NxpAnimated } from '@ngxpro/cdk';
   `,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  hostDirectives: [NxpAnimated],
+  hostDirectives: [NxpAnimated, NxpFocusTrap],
   host: {
     class: 'nxp-drawer',
+    role: 'dialog',
+    'aria-modal': 'true',
+    '[attr.aria-label]': 'ariaLabel() || null',
     '[attr.data-direction]': 'direction()',
     '[class.nxp-drawer--overlay]': 'overlay()',
+    '(keydown.escape)': 'closed.emit()',
   },
   styles: [
     `
@@ -47,7 +72,6 @@ import { NxpAnimated } from '@ngxpro/cdk';
         border-start-start-radius: 0;
         transform: translateX(0);
         opacity: 1;
-        /* 250ms enter with iOS-drawer curve; exit (via .nxp-leave) is faster */
         transition:
           transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
           opacity 250ms cubic-bezier(0.32, 0.72, 0, 1);
@@ -184,4 +208,32 @@ import { NxpAnimated } from '@ngxpro/cdk';
 export class DrawerComponent {
   readonly direction = input<'start' | 'end'>('end');
   readonly overlay = input(false);
+  readonly ariaLabel = input<string>('', { alias: 'aria-label' });
+
+  /** Emitted when the user presses Escape. Consumer should toggle mount. */
+  readonly closed = output<void>();
+
+  private readonly doc = inject(NXP_DOCUMENT);
+  private readonly isBrowser = inject(NXP_IS_BROWSER);
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
+    if (!this.isBrowser) return;
+
+    // Body scroll lock for overlay mode. Restored on destroy.
+    effect((onCleanup) => {
+      if (!this.overlay()) return;
+      const body = this.doc.body;
+      const previous = body.style.overflow;
+      body.style.overflow = 'hidden';
+      onCleanup(() => {
+        body.style.overflow = previous;
+      });
+    });
+
+    // Defensive: ensure scroll is restored even if effect doesn't fire cleanup.
+    this.destroyRef.onDestroy(() => {
+      this.doc.body.style.overflow = '';
+    });
+  }
 }

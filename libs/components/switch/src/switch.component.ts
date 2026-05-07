@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { cx, NXP_SPRING_MODERATE, NXP_SPRING_FAST } from '@ngxpro/cdk';
+import { ThemeService } from '@ngxpro/core';
 import {
   NXP_SWITCH_OPTIONS,
   type NxpSwitchColor,
@@ -154,6 +155,7 @@ const TRACK_BG_TRANSITION = `background-color ${FAST}`;
 })
 export class NxpSwitchComponent implements ControlValueAccessor {
   private readonly options = inject(NXP_SWITCH_OPTIONS);
+  private readonly theme = inject(ThemeService);
 
   // ── Public inputs ──
   readonly checked = model(false);
@@ -202,18 +204,14 @@ export class NxpSwitchComponent implements ControlValueAccessor {
   // ── Computed values ──
 
   readonly dims = computed(() => SIZES[this.size()]);
-  readonly colorSpec = computed(() => {
-    const isDark =
-      typeof document !== 'undefined' &&
-      document.documentElement.classList.contains('dark');
-    return { ...COLORS[this.color()], isDark };
-  });
+  readonly colorSpec = computed(() => ({
+    ...COLORS[this.color()],
+    isDark: this.theme.isDark(),
+  }));
 
   readonly trackBg = computed(() => {
     const spec = COLORS[this.color()];
-    const isDark =
-      typeof document !== 'undefined' &&
-      document.documentElement.classList.contains('dark');
+    const isDark = this.theme.isDark();
     const isOn = this.checked();
     const isHover = this.hovered();
 

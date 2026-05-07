@@ -6,9 +6,11 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { NXP_DOCUMENT } from '@ngxpro/cdk';
+import { NXP_DOCUMENT, NXP_IS_BROWSER } from '@ngxpro/cdk';
 
 export type NgxproTheme = 'light' | 'dark' | 'system';
+
+const STORAGE_KEY = 'nxp-theme';
 
 /**
  * Theme service using Tailwind's class-based dark mode.
@@ -16,10 +18,16 @@ export type NgxproTheme = 'light' | 'dark' | 'system';
  *
  * Requires Tailwind v4 with class-based dark variant in your styles:
  *   @custom-variant dark (&:where(.dark, .dark *));
+ *
+ * SSR-safe: storage and DOM mutations are gated on the browser platform, so
+ * the server always renders with the default (`system` -> light) theme. Pair
+ * with a small inline `<head>` script that sets the `.dark` class before
+ * hydration to avoid a flash if you persist a user preference.
  */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly doc = inject(NXP_DOCUMENT);
+  private readonly isBrowser = inject(NXP_IS_BROWSER);
   private readonly destroyRef = inject(DestroyRef);
   private readonly _theme = signal<NgxproTheme>(this.getStoredTheme());
 
@@ -39,6 +47,8 @@ export class ThemeService {
   });
 
   constructor() {
+    if (!this.isBrowser) return;
+
     this.setupPrefersDarkListener();
     effect(() => {
       const dark = this.isDark();
@@ -54,10 +64,11 @@ export class ThemeService {
   /** Set the theme. */
   setTheme(theme: NgxproTheme): void {
     this._theme.set(theme);
+    if (!this.isBrowser) return;
     try {
-      localStorage.setItem('nxp-theme', theme);
+      this.doc.defaultView?.localStorage?.setItem(STORAGE_KEY, theme);
     } catch {
-      // localStorage not available
+      // localStorage not available (e.g. SecurityError in privacy mode)
     }
   }
 
@@ -67,8 +78,9 @@ export class ThemeService {
   }
 
   private getStoredTheme(): NgxproTheme {
+    if (!this.isBrowser) return 'system';
     try {
-      const stored = localStorage.getItem('nxp-theme');
+      const stored = this.doc.defaultView?.localStorage?.getItem(STORAGE_KEY);
       if (stored === 'light' || stored === 'dark' || stored === 'system') {
         return stored;
       }
@@ -79,6 +91,7 @@ export class ThemeService {
   }
 
   private readPrefersDark(): boolean {
+    if (!this.isBrowser) return false;
     return (
       this.doc.defaultView?.matchMedia('(prefers-color-scheme: dark)')
         ?.matches ?? false

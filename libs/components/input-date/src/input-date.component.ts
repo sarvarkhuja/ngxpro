@@ -1,19 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  ElementRef,
   computed,
   effect,
-  ElementRef,
   forwardRef,
-  HostListener,
   inject,
   input,
   model,
-  output,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx, inputVariants } from '@ngxpro/cdk';
+import { cx, inputVariants, NXP_DOCUMENT, NXP_IS_BROWSER } from '@ngxpro/cdk';
 import { CalendarComponent } from '@ngxpro/components/calendar';
 import type {
   DisabledHandler,
@@ -29,7 +28,8 @@ import { formatDate, parseDate } from './date-input.utils';
  * on blur, the raw text is parsed (MM/DD/YYYY, MM-DD-YYYY, YYYY-MM-DD).
  *
  * Implements `ControlValueAccessor` so it works with both template-driven
- * and reactive Angular forms.
+ * and reactive Angular forms. `value` is a `model()` so reactive form
+ * `setValue()` propagates back through `writeValue()` and updates the calendar.
  *
  * @example
  * <!-- Template-driven -->
@@ -136,8 +136,11 @@ import { formatDate, parseDate } from './date-input.utils';
 })
 export class InputDateComponent implements ControlValueAccessor {
   private readonly el = inject(ElementRef);
+  private readonly doc = inject(NXP_DOCUMENT);
+  private readonly isBrowser = inject(NXP_IS_BROWSER);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly value = input<Date | null>(null);
+  readonly value = model<Date | null>(null);
   readonly min = input<Date | null>(null);
   readonly max = input<Date | null>(null);
   readonly placeholder = input<string>('MM/DD/YYYY');
@@ -146,8 +149,6 @@ export class InputDateComponent implements ControlValueAccessor {
   readonly disabledHandler = input<DisabledHandler | null>(null);
   readonly markerHandler = input<MarkerHandler | null>(null);
   readonly class = input<string>('');
-
-  readonly valueChange = output<Date | null>();
 
   protected readonly isOpen = signal(false);
   protected readonly inputValue = signal('');
@@ -161,6 +162,25 @@ export class InputDateComponent implements ControlValueAccessor {
       const v = this.value();
       this.inputValue.set(v ? formatDate(v) : '');
     });
+
+    if (this.isBrowser) {
+      const onDocClick = (event: Event): void => {
+        if (
+          !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
+        ) {
+          this.isOpen.set(false);
+        }
+      };
+      const onDocEsc = (event: KeyboardEvent): void => {
+        if (event.key === 'Escape') this.isOpen.set(false);
+      };
+      this.doc.addEventListener('click', onDocClick, true);
+      this.doc.addEventListener('keydown', onDocEsc);
+      this.destroyRef.onDestroy(() => {
+        this.doc.removeEventListener('click', onDocClick, true);
+        this.doc.removeEventListener('keydown', onDocEsc);
+      });
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -169,7 +189,7 @@ export class InputDateComponent implements ControlValueAccessor {
   _onTouched: () => void = () => {};
 
   writeValue(v: Date | null): void {
-    this.inputValue.set(v ? formatDate(v) : '');
+    this.value.set(v);
   }
 
   registerOnChange(fn: (v: Date | null) => void): void {
@@ -184,20 +204,6 @@ export class InputDateComponent implements ControlValueAccessor {
     this.disabled.set(isDisabled);
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event): void {
-    if (
-      !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
-    ) {
-      this.isOpen.set(false);
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEsc(): void {
-    this.isOpen.set(false);
-  }
-
   protected toggle(): void {
     if (!this.disabled()) {
       this.isOpen.update((v) => !v);
@@ -209,9 +215,8 @@ export class InputDateComponent implements ControlValueAccessor {
   }
 
   protected onDayPicked(day: Date): void {
-    this.inputValue.set(formatDate(day));
+    this.value.set(day);
     this.isOpen.set(false);
-    this.valueChange.emit(day);
     this._onChange(day);
   }
 
@@ -223,10 +228,10 @@ export class InputDateComponent implements ControlValueAccessor {
   protected onBlur(): void {
     const parsed = parseDate(this.inputValue());
     if (parsed) {
-      this.valueChange.emit(parsed);
+      this.value.set(parsed);
       this._onChange(parsed);
     } else if (!this.inputValue()) {
-      this.valueChange.emit(null);
+      this.value.set(null);
       this._onChange(null);
     }
     this._onTouched();

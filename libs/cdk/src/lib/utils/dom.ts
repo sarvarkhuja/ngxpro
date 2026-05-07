@@ -13,12 +13,13 @@ export function isFocused(element: Element): boolean {
 }
 
 /**
- * Returns the active element, piercing shadow DOM boundaries.
+ * Returns the active element, piercing shadow DOM boundaries. Pass the root
+ * explicitly when calling outside a browser context (SSR).
  */
-export function getActiveElement(
-  root: Document | ShadowRoot = document,
-): Element | null {
-  const active = root.activeElement;
+export function getActiveElement(root?: Document | ShadowRoot): Element | null {
+  const r = root ?? (typeof document === 'undefined' ? null : document);
+  if (!r) return null;
+  const active = r.activeElement;
   if (active?.shadowRoot) {
     return getActiveElement(active.shadowRoot);
   }
@@ -26,9 +27,13 @@ export function getActiveElement(
 }
 
 /**
- * Checks if an element is visible in the viewport.
+ * Checks if an element is visible in the viewport. Returns `false` outside
+ * the browser.
  */
 export function isElementInViewport(element: Element): boolean {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return false;
+  }
   const rect = element.getBoundingClientRect();
   return (
     rect.top >= 0 &&

@@ -1,18 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  ElementRef,
   computed,
   effect,
-  ElementRef,
   forwardRef,
-  HostListener,
   inject,
   input,
-  output,
+  model,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx, inputVariants } from '@ngxpro/cdk';
+import { cx, inputVariants, NXP_DOCUMENT, NXP_IS_BROWSER } from '@ngxpro/cdk';
 import type {
   DisabledHandler,
   MarkerHandler,
@@ -31,15 +31,9 @@ import { formatDateRange, parseDateRange } from '@ngxpro/components/input-date';
  * type a range directly (format: "MM/DD/YYYY – MM/DD/YYYY"); on blur, the
  * raw text is parsed.
  *
- * Implements `ControlValueAccessor` for Angular forms integration.
- *
- * @example
- * <!-- Template-driven -->
- * <nxp-input-date-range [(ngModel)]="range" />
- *
- * @example
- * <!-- With preset periods sidebar -->
- * <nxp-input-date-range [items]="presets" [formControl]="rangeControl" />
+ * Implements `ControlValueAccessor` for Angular forms integration. `value`
+ * is a `model()` so reactive form `setValue()` propagates back through
+ * `writeValue()` and updates the calendar.
  */
 @Component({
   selector: 'nxp-input-date-range',
@@ -140,20 +134,21 @@ import { formatDateRange, parseDateRange } from '@ngxpro/components/input-date';
 })
 export class InputDateRangeComponent implements ControlValueAccessor {
   private readonly el = inject(ElementRef);
+  private readonly doc = inject(NXP_DOCUMENT);
+  private readonly isBrowser = inject(NXP_IS_BROWSER);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly value = input<[Date, Date] | null>(null);
+  readonly value = model<[Date, Date] | null>(null);
   readonly min = input<Date | null>(null);
   readonly max = input<Date | null>(null);
   readonly minLength = input<number | null>(null);
   readonly maxLength = input<number | null>(null);
   readonly placeholder = input<string>('MM/DD/YYYY – MM/DD/YYYY');
-  readonly disabled = input<boolean>(false);
+  readonly disabled = model<boolean>(false);
   readonly disabledHandler = input<DisabledHandler | null>(null);
   readonly markerHandler = input<MarkerHandler | null>(null);
   readonly items = input<DateRangePeriod[]>([]);
   readonly class = input<string>('');
-
-  readonly valueChange = output<[Date, Date] | null>();
 
   protected readonly isOpen = signal(false);
   protected readonly inputValue = signal('');
@@ -167,6 +162,25 @@ export class InputDateRangeComponent implements ControlValueAccessor {
       const v = this.value();
       this.inputValue.set(v ? formatDateRange(v) : '');
     });
+
+    if (this.isBrowser) {
+      const onDocClick = (event: Event): void => {
+        if (
+          !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
+        ) {
+          this.isOpen.set(false);
+        }
+      };
+      const onDocEsc = (event: KeyboardEvent): void => {
+        if (event.key === 'Escape') this.isOpen.set(false);
+      };
+      this.doc.addEventListener('click', onDocClick, true);
+      this.doc.addEventListener('keydown', onDocEsc);
+      this.destroyRef.onDestroy(() => {
+        this.doc.removeEventListener('click', onDocClick, true);
+        this.doc.removeEventListener('keydown', onDocEsc);
+      });
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -175,7 +189,7 @@ export class InputDateRangeComponent implements ControlValueAccessor {
   _onTouched: () => void = () => {};
 
   writeValue(v: [Date, Date] | null): void {
-    this.inputValue.set(v ? formatDateRange(v) : '');
+    this.value.set(v);
   }
 
   registerOnChange(fn: (v: [Date, Date] | null) => void): void {
@@ -186,22 +200,8 @@ export class InputDateRangeComponent implements ControlValueAccessor {
     this._onTouched = fn;
   }
 
-  setDisabledState(_isDisabled: boolean): void {
-    /*noop*/
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event): void {
-    if (
-      !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
-    ) {
-      this.isOpen.set(false);
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEsc(): void {
-    this.isOpen.set(false);
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled.set(isDisabled);
   }
 
   protected toggle(): void {
@@ -215,11 +215,10 @@ export class InputDateRangeComponent implements ControlValueAccessor {
   }
 
   protected onRangePicked(range: [Date, Date] | null): void {
+    this.value.set(range);
     if (range) {
-      this.inputValue.set(formatDateRange(range));
       this.isOpen.set(false);
     }
-    this.valueChange.emit(range);
     this._onChange(range);
   }
 
@@ -231,10 +230,10 @@ export class InputDateRangeComponent implements ControlValueAccessor {
   protected onBlur(): void {
     const parsed = parseDateRange(this.inputValue());
     if (parsed) {
-      this.valueChange.emit(parsed);
+      this.value.set(parsed);
       this._onChange(parsed);
     } else if (!this.inputValue()) {
-      this.valueChange.emit(null);
+      this.value.set(null);
       this._onChange(null);
     }
     this._onTouched();

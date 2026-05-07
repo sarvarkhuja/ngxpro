@@ -46,6 +46,8 @@ import { NxpSelectOptionComponent } from './select-option.component';
     '(blur)': 'onBlur()',
     '(keydown.escape)': 'closeDropdown()',
     '(keydown.enter)': 'onEnter($event)',
+    '(keydown.arrowDown)': 'onArrowOpen($event)',
+    '(keydown.arrowUp)': 'onArrowOpen($event)',
   },
   exportAs: 'nxpComboBox',
 })
@@ -218,6 +220,14 @@ export class NxpComboBoxDirective<T = unknown>
     if (filtered.length === 1 && filtered[0] != null) {
       event.preventDefault();
       this.selectItem(filtered[0]);
+    }
+  }
+
+  /** Open the dropdown on first ArrowDown/ArrowUp; subsequent arrows are handled
+   *  by NxpDropdownOpen which moves focus into the listbox panel. */
+  protected onArrowOpen(_event: Event): void {
+    if (!this.isOpen() && this.interactive()) {
+      this.openDropdown();
     }
   }
 

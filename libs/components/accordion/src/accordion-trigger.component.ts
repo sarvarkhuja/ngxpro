@@ -39,10 +39,12 @@ import { AccordionDirective } from './accordion.directive';
     ></i>
   `,
   host: {
-    type: 'button',
     role: 'button',
+    tabindex: '0',
     '[attr.aria-expanded]': 'directive.open()',
     '[class._open]': 'directive.open()',
+    '(keydown.enter)': '$event.preventDefault(); directive.toggle()',
+    '(keydown.space)': '$event.preventDefault(); directive.toggle()',
     class:
       'relative z-10 flex items-center gap-2.5 rounded-m px-3 py-2 w-full cursor-pointer outline-none text-[13px] text-left font-medium text-text-primary focus-visible:outline-none',
   },

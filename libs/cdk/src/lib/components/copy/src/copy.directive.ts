@@ -38,6 +38,7 @@ export class NxpCopyDirective implements OnDestroy {
 
   protected readonly copied = signal(false);
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
+  private destroyed = false;
 
   protected async onClick(): Promise<void> {
     const raw = this.textfield.value();
@@ -46,7 +47,7 @@ export class NxpCopyDirective implements OnDestroy {
       return;
     }
     const ok = await nxpWriteToClipboard(text, this.doc);
-    if (!ok) {
+    if (!ok || this.destroyed) {
       return;
     }
     this.copied.set(true);
@@ -54,12 +55,14 @@ export class NxpCopyDirective implements OnDestroy {
       clearTimeout(this.timeoutId);
     }
     this.timeoutId = setTimeout(() => {
+      if (this.destroyed) return;
       this.copied.set(false);
       this.timeoutId = null;
     }, this.options.hintTimeout);
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
     if (this.timeoutId !== null) {
       clearTimeout(this.timeoutId);
       this.timeoutId = null;

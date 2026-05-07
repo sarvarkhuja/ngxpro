@@ -1,24 +1,29 @@
-import { DOCUMENT } from '@angular/common';
 import {
+  DestroyRef,
   Directive,
   EventEmitter,
-  inject,
   Input,
-  OnDestroy,
   Output,
+  inject,
 } from '@angular/core';
+import { NXP_DOCUMENT } from '../tokens';
 import { nxpInjectElement } from '../utils/inject-element';
 
 /**
  * NxpActiveZone — tracks focus/click inside a composite zone.
  * Emits `nxpActiveZoneChange` (true = zone active, false = zone left).
- * Can be linked to a parent zone via `nxpActiveZoneParent`.
+ * Can be linked to a parent zone via `nxpActiveZoneParent`. Parent linkage
+ * supports both template binding (`[nxpActiveZoneParent]="parent"`) and
+ * imperative assignment (used by NxpModal for nested zones).
  */
 @Directive({ selector: '[nxpActiveZone]', exportAs: 'nxpActiveZone' })
-export class NxpActiveZone implements OnDestroy {
+export class NxpActiveZone {
   private readonly el = nxpInjectElement();
-  private readonly doc = inject(DOCUMENT);
+  private readonly doc = inject(NXP_DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
   private parentZone?: NxpActiveZone;
+  private destroyed = false;
+  private pendingTimer: ReturnType<typeof setTimeout> | null = null;
   readonly children = new Set<NxpActiveZone>();
   private _active = false;
 
@@ -35,16 +40,31 @@ export class NxpActiveZone implements OnDestroy {
 
   @Output() readonly nxpActiveZoneChange = new EventEmitter<boolean>();
 
-  private readonly onFocusin = (e: FocusEvent) =>
-    this.check(e.target as Element | null);
-
-  private readonly onFocusout = (_e: FocusEvent) => {
-    setTimeout(() => this.check(this.doc.activeElement));
-  };
-
   constructor() {
-    this.el.addEventListener('focusin', this.onFocusin);
-    this.el.addEventListener('focusout', this.onFocusout);
+    const onFocusin = (e: FocusEvent): void =>
+      this.check(e.target as Element | null);
+    const onFocusout = (_e: FocusEvent): void => {
+      this.pendingTimer = setTimeout(() => {
+        this.pendingTimer = null;
+        if (this.destroyed) return;
+        this.check(this.doc.activeElement);
+      });
+    };
+    this.el.addEventListener('focusin', onFocusin);
+    this.el.addEventListener('focusout', onFocusout);
+
+    this.destroyRef.onDestroy(() => {
+      this.destroyed = true;
+      if (this.pendingTimer !== null) {
+        clearTimeout(this.pendingTimer);
+        this.pendingTimer = null;
+      }
+      this.el.removeEventListener('focusin', onFocusin);
+      this.el.removeEventListener('focusout', onFocusout);
+      if (this.parentZone) {
+        this.parentZone.removeChild(this);
+      }
+    });
   }
 
   addChild(zone: NxpActiveZone): void {
@@ -69,14 +89,6 @@ export class NxpActiveZone implements OnDestroy {
       this._active = active;
       this.nxpActiveZoneChange.emit(active);
       this.parentZone?.check(target);
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.el.removeEventListener('focusin', this.onFocusin);
-    this.el.removeEventListener('focusout', this.onFocusout);
-    if (this.parentZone) {
-      this.parentZone.removeChild(this);
     }
   }
 }

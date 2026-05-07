@@ -1,4 +1,3 @@
-import { DOCUMENT } from '@angular/common';
 import {
   contentChild,
   Directive,
@@ -8,15 +7,14 @@ import {
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { NxpActiveZone } from '../../directives/active-zone.directive';
-import { nxpTypedFromEvent } from '../../observables/typed-from-event';
 import { nxpZoneOptimized } from '../../observables/zone';
 import { nxpAsDriver, NxpDriver } from '../../classes/driver';
+import { NxpDocumentEvents } from '../../services/document-events.service';
 import { nxpInjectElement } from '../../utils/inject-element';
 import {
   delay,
   distinctUntilChanged,
   filter,
-  fromEvent,
   map,
   merge,
   of,
@@ -46,7 +44,7 @@ export class NxpDropdownHover extends NxpDriver {
   });
   private hovered = false;
   private readonly el = nxpInjectElement();
-  private readonly doc = inject(DOCUMENT);
+  private readonly events = inject(NxpDocumentEvents);
   private readonly options = inject(NXP_DROPDOWN_HOVER_OPTIONS);
   private readonly activeZone = inject(NxpActiveZone);
   private readonly open = inject(NxpDropdownOpen, { optional: true });
@@ -55,20 +53,16 @@ export class NxpDropdownHover extends NxpDriver {
     toObservable(inject(NxpDropdownDirective).ref).pipe(
       filter((x) => !x && this.hovered),
       switchMap(() =>
-        nxpTypedFromEvent(this.doc, 'pointerdown').pipe(
+        this.events.pointerdown().pipe(
           map((e) => e.composedPath()[0] as Element),
           delay(this.nxpDropdownHideDelay()),
           startWith(null),
-          takeUntil(fromEvent(this.doc, 'mouseover')),
+          takeUntil(this.events.mouseover()),
         ),
       ),
     ),
-    nxpTypedFromEvent(this.doc, 'mouseover').pipe(
-      map((e) => e.composedPath()[0] as Element),
-    ),
-    nxpTypedFromEvent(this.doc, 'mouseout').pipe(
-      map((e) => e.relatedTarget as Element | null),
-    ),
+    this.events.mouseover().pipe(map((e) => e.composedPath()[0] as Element)),
+    this.events.mouseout().pipe(map((e) => e.relatedTarget as Element | null)),
   ).pipe(
     map((element) => !!element && this.isHovered(element as Element)),
     distinctUntilChanged(),

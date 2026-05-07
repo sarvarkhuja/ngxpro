@@ -107,6 +107,7 @@ export class NxpCopyComponent implements OnDestroy {
   protected readonly copied = signal(false);
 
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
+  private destroyed = false;
 
   protected readonly hostClasses = computed(() =>
     cx(copyVariants({ size: this.size() })),
@@ -119,7 +120,7 @@ export class NxpCopyComponent implements OnDestroy {
       return;
     }
     const ok = await nxpWriteToClipboard(text, this.doc);
-    if (!ok) {
+    if (!ok || this.destroyed) {
       return;
     }
     this.copied.set(true);
@@ -127,12 +128,14 @@ export class NxpCopyComponent implements OnDestroy {
       clearTimeout(this.timeoutId);
     }
     this.timeoutId = setTimeout(() => {
+      if (this.destroyed) return;
       this.copied.set(false);
       this.timeoutId = null;
     }, this.options.successTimeout);
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
     if (this.timeoutId !== null) {
       clearTimeout(this.timeoutId);
       this.timeoutId = null;

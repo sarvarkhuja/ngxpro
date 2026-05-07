@@ -25,6 +25,12 @@ import { NXP_TABS_OPTIONS, type NxpTabsSize } from './tabs.options';
     '[attr.data-size]': 'size()',
     '[attr.role]': '"tablist"',
     '(nxp-tab-activate)': 'onActivate($event)',
+    '(keydown.arrowRight)': 'onArrow($event, 1)',
+    '(keydown.arrowLeft)': 'onArrow($event, -1)',
+    '(keydown.arrowDown)': 'onArrow($event, 1)',
+    '(keydown.arrowUp)': 'onArrow($event, -1)',
+    '(keydown.home)': 'onHomeEnd($event, 0)',
+    '(keydown.end)': 'onHomeEnd($event, -1)',
   },
 })
 export class NxpTabsDirective implements AfterViewChecked {
@@ -75,6 +81,23 @@ export class NxpTabsDirective implements AfterViewChecked {
     if (idx !== -1) {
       this.activeItemIndex.set(idx);
     }
+  }
+
+  protected onArrow(event: Event, step: number): void {
+    if (!(event.target instanceof HTMLElement)) return;
+    if (!event.target.hasAttribute('nxpTab')) return;
+    event.preventDefault();
+    this.moveFocus(event.target, step);
+  }
+
+  protected onHomeEnd(event: Event, indexFromEnd: 0 | -1): void {
+    if (!(event.target instanceof HTMLElement)) return;
+    if (!event.target.hasAttribute('nxpTab')) return;
+    event.preventDefault();
+    const enabled = this.tabs.filter((t) => !t.hasAttribute('disabled'));
+    const target =
+      indexFromEnd === 0 ? enabled[0] : enabled[enabled.length - 1];
+    target?.focus();
   }
 
   markTabAsActive(): void {

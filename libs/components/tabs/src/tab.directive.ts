@@ -1,11 +1,5 @@
-import {
-  Directive,
-  ElementRef,
-  HostListener,
-  OnDestroy,
-  inject,
-  input,
-} from '@angular/core';
+import { Directive, ElementRef, OnDestroy, inject, input } from '@angular/core';
+import { NXP_DOCUMENT } from '@ngxpro/cdk';
 
 export const NXP_TAB_ACTIVATE = 'nxp-tab-activate';
 
@@ -46,9 +40,11 @@ export const NXP_TAB_ACTIVATE = 'nxp-tab-activate';
   standalone: true,
   host: {
     '[attr.role]': '"tab"',
-    '[attr.tabindex]': '"-1"',
+    // Default to focusable. NxpTabsDirective overrides via setAttribute to
+    // implement roving tabindex (active tab = 0, others = -1) once mounted.
+    '[attr.tabindex]': '"0"',
     '[attr.disabled]': 'disabled() || null',
-    // Base layout classes — active/inactive colors managed by NxpTabsDirective.markTabAsActive()
+    '(click)': 'onClick()',
     class:
       'relative z-10 inline-flex items-center gap-2 whitespace-nowrap cursor-pointer select-none ' +
       'transition-colors duration-normal ' +
@@ -59,18 +55,18 @@ export const NXP_TAB_ACTIVATE = 'nxp-tab-activate';
 })
 export class NxpTabDirective implements OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>).nativeElement;
+  private readonly doc = inject(NXP_DOCUMENT);
 
   /** Whether this tab is disabled. */
   readonly disabled = input(false);
 
-  @HostListener('click')
   protected onClick(): void {
     if (this.disabled()) return;
     this.el.dispatchEvent(new CustomEvent(NXP_TAB_ACTIVATE, { bubbles: true }));
   }
 
   ngOnDestroy(): void {
-    if (document.activeElement === this.el) {
+    if (this.doc.activeElement === this.el) {
       this.el.blur();
     }
   }

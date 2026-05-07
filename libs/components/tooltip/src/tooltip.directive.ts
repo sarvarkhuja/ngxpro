@@ -59,8 +59,12 @@ const EXIT_DURATION_MS = 100;
   host: {
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
+    '(focusin)': 'onFocusIn()',
+    '(focusout)': 'onFocusOut()',
     '(touchstart)': 'onTouchStart()',
     '(touchend)': 'onTouchEnd()',
+    '(window:scroll)': 'hide()',
+    '(window:blur)': 'hide()',
     '[attr.aria-describedby]': 'nxpTooltipDescribe()',
   },
 })
@@ -150,6 +154,19 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
     this.clearTimers();
     const delay = this.nxpTooltipHideDelay() ?? this.options.hideDelay;
     this.hideTimer = setTimeout(() => this.hide(), delay);
+  }
+
+  onFocusIn(): void {
+    this.clearTimers();
+    if (this.nxpTooltipDisabled()) return;
+    // Keyboard focus opens immediately — there's no hover-jitter to debounce.
+    this.instantOpen = false;
+    this.show();
+  }
+
+  onFocusOut(): void {
+    this.clearTimers();
+    this.hide();
   }
 
   onTouchStart(): void {
