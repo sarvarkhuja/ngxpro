@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CardComponent } from '@nxp/components/card';
+import { CardComponent } from '@ngxpro/components/card';
 
 /**
  * Showcase home component displaying all available nxp components.

@@ -15,7 +15,9 @@ export function isFocused(element: Element): boolean {
 /**
  * Returns the active element, piercing shadow DOM boundaries.
  */
-export function getActiveElement(root: Document | ShadowRoot = document): Element | null {
+export function getActiveElement(
+  root: Document | ShadowRoot = document,
+): Element | null {
   const active = root.activeElement;
   if (active?.shadowRoot) {
     return getActiveElement(active.shadowRoot);
@@ -31,7 +33,8 @@ export function isElementInViewport(element: Element): boolean {
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }

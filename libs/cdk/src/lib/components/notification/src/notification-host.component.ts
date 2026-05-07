@@ -6,9 +6,13 @@ import {
   signal,
 } from '@angular/core';
 import { NxpNotificationComponent } from './notification.component';
-import { NxpNotificationService, type NxpNotification } from './notification.service';
+import {
+  NxpNotificationService,
+  type NxpNotification,
+} from './notification.service';
 import type { NxpNotificationOptions } from './notification.options';
-import { NXP_TOAST_GAP, NXP_VISIBLE_TOASTS } from '../../../constants/motion';
+import { NXP_TOAST_GAP } from '../../../constants';
+import { NXP_VISIBLE_TOASTS } from '../../../constants';
 
 // ── Position parsing helpers ─────────────────────────────────────────────────
 
@@ -43,7 +47,12 @@ function containerClasses(pos: NxpNotificationOptions['position']): string {
 }
 
 const ALL_POSITIONS = [
-  'top-right', 'top-left', 'bottom-right', 'bottom-left', 'top-center', 'bottom-center',
+  'top-right',
+  'top-left',
+  'bottom-right',
+  'bottom-left',
+  'top-center',
+  'bottom-center',
 ] as NxpNotificationOptions['position'][];
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -116,7 +125,9 @@ export class NxpNotificationHostComponent {
 
   /** Notifications grouped by position. */
   protected readonly byPosition = computed(() => {
-    const map: Partial<Record<NxpNotificationOptions['position'], NxpNotification[]>> = {};
+    const map: Partial<
+      Record<NxpNotificationOptions['position'], NxpNotification[]>
+    > = {};
     for (const n of this.service.notifications()) {
       const pos = n.options.position;
       (map[pos] ??= []).push(n);
@@ -171,9 +182,7 @@ export class NxpNotificationHostComponent {
 
     // Swipe directions based on y-position
     const swipeDirections: ('left' | 'right' | 'up' | 'down')[] =
-      yPos === 'bottom'
-        ? ['down', 'left', 'right']
-        : ['up', 'left', 'right'];
+      yPos === 'bottom' ? ['down', 'left', 'right'] : ['up', 'left', 'right'];
 
     return {
       index: invertedIndex,

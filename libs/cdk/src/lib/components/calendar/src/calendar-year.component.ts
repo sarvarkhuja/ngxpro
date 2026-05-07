@@ -61,7 +61,10 @@ export class CalendarYearComponent implements AfterViewInit {
 
   protected readonly years = computed(() => {
     const cy = this.currentYear();
-    return Array.from({ length: YEAR_RANGE * 2 + 1 }, (_, i) => cy - YEAR_RANGE + i);
+    return Array.from(
+      { length: YEAR_RANGE * 2 + 1 },
+      (_, i) => cy - YEAR_RANGE + i,
+    );
   });
 
   ngAfterViewInit(): void {
@@ -71,7 +74,9 @@ export class CalendarYearComponent implements AfterViewInit {
   private scrollToCurrentYear(): void {
     const container = this.scrollContainer?.nativeElement;
     if (!container) return;
-    const activeBtn = container.querySelector<HTMLButtonElement>('[aria-selected="true"]');
+    const activeBtn = container.querySelector<HTMLButtonElement>(
+      '[aria-selected="true"]',
+    );
     if (activeBtn) {
       activeBtn.scrollIntoView({ block: 'center', behavior: 'instant' });
     } else {

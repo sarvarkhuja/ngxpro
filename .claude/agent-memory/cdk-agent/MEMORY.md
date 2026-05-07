@@ -1,7 +1,9 @@
 # CDK Agent Memory
 
 ## Build Command
+
 Run from `/Users/aki/Documents/GitHub/ngxpro/ngxpro/`:
+
 ```
 npx nx build cdk
 ```
@@ -9,7 +11,9 @@ npx nx build cdk
 ## Key Patterns
 
 ### No @angular/cdk — use inline helpers instead
+
 The project does NOT have `@angular/cdk`. Replace `coerceArray()` with a local helper:
+
 ```typescript
 function toArray<T>(value: T | T[] | null): T[] {
   if (value === null) return [];
@@ -18,7 +22,9 @@ function toArray<T>(value: T | T[] | null): T[] {
 ```
 
 ### Host binding type errors
+
 Angular strict mode rejects `$event` type mismatches in host bindings. Use `$any()`:
+
 ```typescript
 host: {
   '(click)': 'onClick($any($event.target))',
@@ -27,13 +33,16 @@ host: {
 ```
 
 ### Circular dependency: dropdown.providers.ts
+
 Do NOT use `require()` in the token factory for NXP_DROPDOWN_COMPONENT — it breaks ng-packagr.
 Instead, declare the token without a factory and provide NxpDropdownComponent via the assembly file (dropdown.ts / ng providers).
 
 ### Token factory imports
+
 NXP_SELECTION_STREAM token uses `nxpTypedFromEvent` — import from `'../observables/typed-from-event'` (relative), not from the barrel `index.ts`, to avoid circular imports.
 
 ## CDK Structure (as of 2026-02-24)
+
 ```
 libs/cdk/src/lib/
 ├── utils/          → cx, focusRing, focusInput, coercion, dom, math,
@@ -63,6 +72,7 @@ libs/cdk/src/lib/
 ```
 
 ## Dropdown System Architecture
+
 - NxpDropdownDirective — core vehicle (creates/destroys component ref)
 - NxpDropdownDriver — BehaviorSubject<boolean> that emits open state
 - NxpDriverDirective — wires drivers to vehicles

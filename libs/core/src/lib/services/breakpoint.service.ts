@@ -1,5 +1,5 @@
 import { Injectable, signal, inject, OnDestroy } from '@angular/core';
-import { NXP_WINDOW } from '@nxp/cdk';
+import { NXP_WINDOW } from '@ngxpro/cdk';
 
 export type NgxproBreakpoint = 'mobile' | 'tablet' | 'desktop' | 'desktopLarge';
 

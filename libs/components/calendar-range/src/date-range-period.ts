@@ -16,19 +16,29 @@ export class DateRangePeriod {
 /** Convenience factory for common preset periods. */
 export function createDefaultDateRangePeriods(): DateRangePeriod[] {
   const today = new Date();
-  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const startOfToday = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
   const yesterday = new Date(startOfToday);
   yesterday.setDate(yesterday.getDate() - 1);
 
   const startOfWeek = new Date(startOfToday);
-  startOfWeek.setDate(startOfToday.getDate() - ((startOfToday.getDay() + 6) % 7)); // Monday
+  startOfWeek.setDate(
+    startOfToday.getDate() - ((startOfToday.getDay() + 6) % 7),
+  ); // Monday
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(startOfWeek.getDate() + 6);
 
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-  const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+  const startOfLastMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() - 1,
+    1,
+  );
   const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
   return [

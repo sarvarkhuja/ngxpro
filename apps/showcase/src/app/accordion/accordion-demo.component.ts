@@ -1,13 +1,13 @@
 import { KeyValuePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ExpandComponent } from '@nxp/cdk';
+import { ExpandComponent } from '@ngxpro/cdk';
 import {
   AccordionComponent,
   AccordionTriggerComponent,
-} from '@nxp/components/accordion';
-import { NxpTabs } from '@nxp/components/tabs';
-import { AmountPipe } from '@nxp/core';
+} from '@ngxpro/components/accordion';
+import { NxpTabs } from '@ngxpro/components/tabs';
+import { AmountPipe } from '@ngxpro/core';
 
 interface Operation {
   title: string;

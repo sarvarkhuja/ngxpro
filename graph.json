@@ -7,10 +7,7 @@
         "data": {
           "root": "libs/components",
           "name": "components",
-          "tags": [
-            "npm:public",
-            "scope:components"
-          ],
+          "tags": ["npm:public", "scope:components"],
           "metadata": {
             "targetGroups": {},
             "js": {
@@ -22,9 +19,7 @@
           "targets": {
             "nx-release-publish": {
               "executor": "@nx/js:release-publish",
-              "dependsOn": [
-                "^nx-release-publish"
-              ],
+              "dependsOn": ["^nx-release-publish"],
               "options": {
                 "packageRoot": "dist/libs/components"
               },
@@ -33,9 +28,7 @@
             },
             "build": {
               "executor": "@nx/angular:package",
-              "outputs": [
-                "{workspaceRoot}/dist/{projectRoot}"
-              ],
+              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
               "options": {
                 "project": "libs/components/ng-package.json",
                 "tsConfig": "libs/components/tsconfig.lib.json"
@@ -49,29 +42,18 @@
               "defaultConfiguration": "production",
               "parallelism": true,
               "cache": true,
-              "dependsOn": [
-                "^build"
-              ],
-              "inputs": [
-                "production",
-                "^production"
-              ]
+              "dependsOn": ["^build"],
+              "inputs": ["production", "^production"]
             },
             "test": {
               "executor": "@nx/angular:unit-test",
               "options": {
-                "include": [
-                  "src/**/*.spec.ts",
-                  "*/src/**/*.spec.ts"
-                ]
+                "include": ["src/**/*.spec.ts", "*/src/**/*.spec.ts"]
               },
               "configurations": {},
               "parallelism": true,
               "cache": true,
-              "inputs": [
-                "default",
-                "^production"
-              ]
+              "inputs": ["default", "^production"]
             },
             "lint": {
               "executor": "@nx/eslint:lint",
@@ -93,9 +75,7 @@
           "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": [
-                "dist/{projectRoot}"
-              ],
+              "manifestRootsToUpdate": ["dist/{projectRoot}"],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -117,9 +97,7 @@
           "targets": {
             "build": {
               "executor": "@angular/build:application",
-              "outputs": [
-                "{options.outputPath}"
-              ],
+              "outputs": ["{options.outputPath}"],
               "options": {
                 "outputPath": "dist/apps/showcase",
                 "browser": "apps/showcase/src/main.ts",
@@ -131,9 +109,7 @@
                     "input": "apps/showcase/public"
                   }
                 ],
-                "styles": [
-                  "apps/showcase/src/styles.scss"
-                ],
+                "styles": ["apps/showcase/src/styles.scss"],
                 "loader": {
                   ".svg": "text"
                 }
@@ -163,13 +139,8 @@
               "defaultConfiguration": "production",
               "parallelism": true,
               "cache": true,
-              "dependsOn": [
-                "^build"
-              ],
-              "inputs": [
-                "production",
-                "^production"
-              ]
+              "dependsOn": ["^build"],
+              "inputs": ["production", "^production"]
             },
             "serve": {
               "continuous": true,
@@ -205,10 +176,7 @@
               "configurations": {},
               "parallelism": true,
               "cache": true,
-              "inputs": [
-                "default",
-                "^production"
-              ]
+              "inputs": ["default", "^production"]
             },
             "serve-static": {
               "continuous": true,
@@ -231,10 +199,7 @@
         "data": {
           "root": "libs/fintech",
           "name": "fintech",
-          "tags": [
-            "npm:public",
-            "scope:fintech"
-          ],
+          "tags": ["npm:public", "scope:fintech"],
           "metadata": {
             "targetGroups": {},
             "js": {
@@ -246,9 +211,7 @@
           "targets": {
             "nx-release-publish": {
               "executor": "@nx/js:release-publish",
-              "dependsOn": [
-                "^nx-release-publish"
-              ],
+              "dependsOn": ["^nx-release-publish"],
               "options": {
                 "packageRoot": "dist/libs/fintech"
               },
@@ -257,9 +220,7 @@
             },
             "build": {
               "executor": "@nx/angular:package",
-              "outputs": [
-                "{workspaceRoot}/dist/{projectRoot}"
-              ],
+              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
               "options": {
                 "project": "libs/fintech/ng-package.json",
                 "tsConfig": "libs/fintech/tsconfig.lib.json"
@@ -273,13 +234,8 @@
               "defaultConfiguration": "production",
               "parallelism": true,
               "cache": true,
-              "dependsOn": [
-                "^build"
-              ],
-              "inputs": [
-                "production",
-                "^production"
-              ]
+              "dependsOn": ["^build"],
+              "inputs": ["production", "^production"]
             },
             "test": {
               "executor": "@nx/angular:unit-test",
@@ -287,10 +243,7 @@
               "configurations": {},
               "parallelism": true,
               "cache": true,
-              "inputs": [
-                "default",
-                "^production"
-              ]
+              "inputs": ["default", "^production"]
             },
             "lint": {
               "executor": "@nx/eslint:lint",
@@ -312,9 +265,7 @@
           "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": [
-                "dist/{projectRoot}"
-              ],
+              "manifestRootsToUpdate": ["dist/{projectRoot}"],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -328,10 +279,7 @@
         "data": {
           "root": "libs/blocks",
           "name": "blocks",
-          "tags": [
-            "npm:public",
-            "scope:blocks"
-          ],
+          "tags": ["npm:public", "scope:blocks"],
           "metadata": {
             "targetGroups": {},
             "js": {
@@ -343,9 +291,7 @@
           "targets": {
             "nx-release-publish": {
               "executor": "@nx/js:release-publish",
-              "dependsOn": [
-                "^nx-release-publish"
-              ],
+              "dependsOn": ["^nx-release-publish"],
               "options": {
                 "packageRoot": "dist/libs/blocks"
               },
@@ -354,9 +300,7 @@
             },
             "build": {
               "executor": "@nx/angular:package",
-              "outputs": [
-                "{workspaceRoot}/dist/{projectRoot}"
-              ],
+              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
               "options": {
                 "project": "libs/blocks/ng-package.json",
                 "tsConfig": "libs/blocks/tsconfig.lib.json"
@@ -370,13 +314,8 @@
               "defaultConfiguration": "production",
               "parallelism": true,
               "cache": true,
-              "dependsOn": [
-                "^build"
-              ],
-              "inputs": [
-                "production",
-                "^production"
-              ]
+              "dependsOn": ["^build"],
+              "inputs": ["production", "^production"]
             },
             "test": {
               "executor": "@nx/angular:unit-test",
@@ -384,10 +323,7 @@
               "configurations": {},
               "parallelism": true,
               "cache": true,
-              "inputs": [
-                "default",
-                "^production"
-              ]
+              "inputs": ["default", "^production"]
             },
             "lint": {
               "executor": "@nx/eslint:lint",
@@ -409,9 +345,7 @@
           "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": [
-                "dist/{projectRoot}"
-              ],
+              "manifestRootsToUpdate": ["dist/{projectRoot}"],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -425,10 +359,7 @@
         "data": {
           "root": "libs/core",
           "name": "core",
-          "tags": [
-            "npm:public",
-            "scope:core"
-          ],
+          "tags": ["npm:public", "scope:core"],
           "metadata": {
             "targetGroups": {},
             "js": {
@@ -440,9 +371,7 @@
           "targets": {
             "nx-release-publish": {
               "executor": "@nx/js:release-publish",
-              "dependsOn": [
-                "^nx-release-publish"
-              ],
+              "dependsOn": ["^nx-release-publish"],
               "options": {
                 "packageRoot": "dist/libs/core"
               },
@@ -451,9 +380,7 @@
             },
             "build": {
               "executor": "@nx/angular:package",
-              "outputs": [
-                "{workspaceRoot}/dist/{projectRoot}"
-              ],
+              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
               "options": {
                 "project": "libs/core/ng-package.json",
                 "tsConfig": "libs/core/tsconfig.lib.json"
@@ -467,13 +394,8 @@
               "defaultConfiguration": "production",
               "parallelism": true,
               "cache": true,
-              "dependsOn": [
-                "^build"
-              ],
-              "inputs": [
-                "production",
-                "^production"
-              ]
+              "dependsOn": ["^build"],
+              "inputs": ["production", "^production"]
             },
             "test": {
               "executor": "@nx/angular:unit-test",
@@ -481,10 +403,7 @@
               "configurations": {},
               "parallelism": true,
               "cache": true,
-              "inputs": [
-                "default",
-                "^production"
-              ]
+              "inputs": ["default", "^production"]
             },
             "lint": {
               "executor": "@nx/eslint:lint",
@@ -506,9 +425,7 @@
           "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": [
-                "dist/{projectRoot}"
-              ],
+              "manifestRootsToUpdate": ["dist/{projectRoot}"],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -522,10 +439,7 @@
         "data": {
           "root": "libs/cdk",
           "name": "cdk",
-          "tags": [
-            "npm:public",
-            "scope:cdk"
-          ],
+          "tags": ["npm:public", "scope:cdk"],
           "metadata": {
             "targetGroups": {},
             "js": {
@@ -537,9 +451,7 @@
           "targets": {
             "nx-release-publish": {
               "executor": "@nx/js:release-publish",
-              "dependsOn": [
-                "^nx-release-publish"
-              ],
+              "dependsOn": ["^nx-release-publish"],
               "options": {
                 "packageRoot": "dist/libs/cdk"
               },
@@ -548,9 +460,7 @@
             },
             "build": {
               "executor": "@nx/angular:package",
-              "outputs": [
-                "{workspaceRoot}/dist/{projectRoot}"
-              ],
+              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
               "options": {
                 "project": "libs/cdk/ng-package.json",
                 "tsConfig": "libs/cdk/tsconfig.lib.json"
@@ -564,13 +474,8 @@
               "defaultConfiguration": "production",
               "parallelism": true,
               "cache": true,
-              "dependsOn": [
-                "^build"
-              ],
-              "inputs": [
-                "production",
-                "^production"
-              ]
+              "dependsOn": ["^build"],
+              "inputs": ["production", "^production"]
             },
             "test": {
               "executor": "@nx/angular:unit-test",
@@ -578,10 +483,7 @@
               "configurations": {},
               "parallelism": true,
               "cache": true,
-              "inputs": [
-                "default",
-                "^production"
-              ]
+              "inputs": ["default", "^production"]
             },
             "lint": {
               "executor": "@nx/eslint:lint",
@@ -603,9 +505,7 @@
           "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": [
-                "dist/{projectRoot}"
-              ],
+              "manifestRootsToUpdate": ["dist/{projectRoot}"],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -620,9 +520,7 @@
           "root": ".",
           "name": "@nxp/source",
           "includedScripts": [],
-          "tags": [
-            "npm:private"
-          ],
+          "tags": ["npm:private"],
           "metadata": {
             "targetGroups": {},
             "js": {

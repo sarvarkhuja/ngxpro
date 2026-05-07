@@ -9,7 +9,10 @@ import {
 import { NXP_VIEWPORT } from '../../tokens';
 import type { NxpPoint, NxpVerticalDirection } from '../../types';
 import { distinctUntilChanged, Subject } from 'rxjs';
-import { NXP_DROPDOWN_OPTIONS, type NxpDropdownAlign } from './dropdown-options.directive';
+import {
+  NXP_DROPDOWN_OPTIONS,
+  type NxpDropdownAlign,
+} from './dropdown-options.directive';
 
 /**
  * Directive that calculates the optimal position for a dropdown relative to its host element.
@@ -25,7 +28,9 @@ export class NxpDropdownPosition extends NxpPositionAccessor {
   public readonly direction = new Subject<NxpVerticalDirection>();
   public readonly type = 'dropdown';
   public readonly accessor = nxpFallbackAccessor<NxpRectAccessor>('dropdown')(
-    inject<any>(NxpRectAccessor, { optional: true }),
+    inject(NxpRectAccessor, { optional: true }) as
+      | readonly NxpRectAccessor[]
+      | null,
     { getClientRect: () => this.el.getBoundingClientRect() },
   );
 
@@ -51,7 +56,8 @@ export class NxpDropdownPosition extends NxpPositionAccessor {
       top: hostRect.top - 2 * offset - viewport.top,
       bottom: viewport.bottom - hostRect.bottom - 2 * offset,
     } as const;
-    const rectWidth = this.options.limitWidth === 'fixed' ? hostRect.width : width;
+    const rectWidth =
+      this.options.limitWidth === 'fixed' ? hostRect.width : width;
     const right = Math.max(hostRect.right - rectWidth, offset);
     const left = hostRect.left + width < viewport.right ? hostRect.left : right;
     const position = {
@@ -64,9 +70,13 @@ export class NxpDropdownPosition extends NxpPositionAccessor {
           : right,
       left: Math.max(viewport.left, left),
     } as const;
-    const better: NxpVerticalDirection = available.top > available.bottom ? 'top' : 'bottom';
+    const better: NxpVerticalDirection =
+      available.top > available.bottom ? 'top' : 'bottom';
 
-    if ((available[previous] > minHeight && direction) || available[previous] > height) {
+    if (
+      (available[previous] > minHeight && direction) ||
+      available[previous] > height
+    ) {
       this.direction.next(previous);
       return [position[align], position[previous]];
     }

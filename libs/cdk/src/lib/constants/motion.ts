@@ -56,10 +56,16 @@ export function nxpBuildTransition(spring: NxpSpringSpec): string {
 }
 
 /** Toast enter — Sonner-style overshoot ease. */
-export const NXP_TOAST_ENTER: NxpSpringSpec = { duration: 400, easing: 'cubic-bezier(0.21, 1.02, 0.73, 1)' };
+export const NXP_TOAST_ENTER: NxpSpringSpec = {
+  duration: 400,
+  easing: 'cubic-bezier(0.21, 1.02, 0.73, 1)',
+};
 
 /** Toast exit — quick ease-out. */
-export const NXP_TOAST_EXIT: NxpSpringSpec = { duration: 200, easing: 'ease-out' };
+export const NXP_TOAST_EXIT: NxpSpringSpec = {
+  duration: 200,
+  easing: 'ease-out',
+};
 
 /** Gap between stacked toasts (px). */
 export const NXP_TOAST_GAP = 14;

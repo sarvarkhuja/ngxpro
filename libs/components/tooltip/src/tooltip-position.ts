@@ -3,9 +3,9 @@ import {
   NxpPositionAccessor,
   NxpRectAccessor,
   nxpInjectElement,
-} from '@nxp/cdk';
-import { NXP_VIEWPORT } from '@nxp/cdk';
-import type { NxpPoint } from '@nxp/cdk';
+} from '@ngxpro/cdk';
+import { NXP_VIEWPORT } from '@ngxpro/cdk';
+import type { NxpPoint } from '@ngxpro/cdk';
 import { NXP_TOOLTIP_OPTIONS } from './tooltip.options';
 
 export type NxpTooltipDirection = 'top' | 'bottom' | 'left' | 'right';
@@ -35,7 +35,9 @@ export class NxpTooltipPosition extends NxpPositionAccessor {
   public readonly type = 'tooltip';
 
   private getHostRect(): DOMRect {
-    return this.rectAccessor?.getClientRect() ?? this.el.getBoundingClientRect();
+    return (
+      this.rectAccessor?.getClientRect() ?? this.el.getBoundingClientRect()
+    );
   }
 
   public getPosition({ width, height }: DOMRect): NxpPoint {
@@ -57,12 +59,24 @@ export class NxpTooltipPosition extends NxpPositionAccessor {
     // On subsequent renders keep the current direction if it still fits,
     // otherwise re-evaluate from the preferred direction.
     const candidate = previous ?? preferredDirection;
-    const resolved: NxpTooltipDirection = this.hasSpace(candidate, available, width, height)
+    const resolved: NxpTooltipDirection = this.hasSpace(
+      candidate,
+      available,
+      width,
+      height,
+    )
       ? candidate
       : this.pickDirection(preferredDirection, available, width, height);
 
     this.resolvedDirection.set(resolved);
-    return this.computePoint(resolved, hostRect, width, height, viewportRect, offset);
+    return this.computePoint(
+      resolved,
+      hostRect,
+      width,
+      height,
+      viewportRect,
+      offset,
+    );
   }
 
   private pickDirection(
@@ -144,7 +158,10 @@ export class NxpTooltipPosition extends NxpPositionAccessor {
     } else {
       x = host.left + host.width / 2 - panelWidth / 2;
     }
-    return Math.max(viewport.left + 4, Math.min(x, viewport.right - panelWidth - 4));
+    return Math.max(
+      viewport.left + 4,
+      Math.min(x, viewport.right - panelWidth - 4),
+    );
   }
 
   private crossAxisY(
@@ -161,6 +178,9 @@ export class NxpTooltipPosition extends NxpPositionAccessor {
     } else {
       y = host.top + host.height / 2 - panelHeight / 2;
     }
-    return Math.max(viewport.top + 4, Math.min(y, viewport.bottom - panelHeight - 4));
+    return Math.max(
+      viewport.top + 4,
+      Math.min(y, viewport.bottom - panelHeight - 4),
+    );
   }
 }

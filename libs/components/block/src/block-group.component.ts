@@ -5,14 +5,14 @@ import {
   contentChildren,
   model,
 } from '@angular/core';
-import { NxpAnimatedProximityBase } from '@nxp/cdk';
+import { NxpAnimatedProximityBase } from '@ngxpro/cdk';
 import { NxpBlockDirective } from './block.directive';
 import { NXP_BLOCK_GROUP } from './block.options';
 
 /**
  * Animated block group — renders animated indicator overlays (selected pill,
  * hover background, focus ring) over `[nxpBlock]` children using
- * proximity-hover tracking from `@nxp/cdk`'s `NxpAnimatedProximityBase`.
+ * proximity-hover tracking from `@ngxpro/cdk`'s `NxpAnimatedProximityBase`.
  *
  * Wraps radio-style block selection with smooth animated transitions.
  *
@@ -32,13 +32,15 @@ import { NXP_BLOCK_GROUP } from './block.options';
   selector: 'nxp-block-group',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [{ provide: NXP_BLOCK_GROUP, useExisting: NxpBlockGroupComponent }],
+  providers: [
+    { provide: NXP_BLOCK_GROUP, useExisting: NxpBlockGroupComponent },
+  ],
   template: `
     <ng-content />
 
     @if (activeRect(); as r) {
       <div
-        class="absolute pointer-events-none rounded-lg bg-gray-200/40 dark:bg-gray-700/30"
+        class="absolute pointer-events-none rounded-m bg-bg-neutral-1"
         [style.left.px]="r.left"
         [style.top.px]="r.top"
         [style.width.px]="r.width"
@@ -50,7 +52,7 @@ import { NXP_BLOCK_GROUP } from './block.options';
     @if (isHoveringOther()) {
       @if (hoverRect(); as h) {
         <div
-          class="absolute pointer-events-none rounded-lg bg-gray-200/60 dark:bg-gray-700/40"
+          class="absolute pointer-events-none rounded-m bg-bg-neutral-2/60"
           [style.left.px]="h.left"
           [style.top.px]="h.top"
           [style.width.px]="h.width"
@@ -61,7 +63,7 @@ import { NXP_BLOCK_GROUP } from './block.options';
     }
     @if (focusRect(); as f) {
       <div
-        class="absolute pointer-events-none z-20 rounded-lg border border-blue-500"
+        class="absolute pointer-events-none z-20 rounded-m border border-border-focus"
         [style.left.px]="f.left - 2"
         [style.top.px]="f.top - 2"
         [style.width.px]="f.width + 4"
@@ -120,7 +122,9 @@ export class NxpBlockGroupComponent
   protected onClickDetectRadio(): void {
     const items = this.getItems();
     for (let i = 0; i < items.length; i++) {
-      const radio = items[i].querySelector('input[type=radio]:checked') as HTMLInputElement | null;
+      const radio = items[i].querySelector(
+        'input[type=radio]:checked',
+      ) as HTMLInputElement | null;
       if (radio) {
         this.checkedIndex.set(i);
         this.optimisticActive.set(i);

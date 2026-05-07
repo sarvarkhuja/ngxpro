@@ -1,5 +1,11 @@
 import { DOCUMENT } from '@angular/common';
-import { contentChild, Directive, ElementRef, inject, input } from '@angular/core';
+import {
+  contentChild,
+  Directive,
+  ElementRef,
+  inject,
+  input,
+} from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { NxpActiveZone } from '../../directives/active-zone.directive';
 import { nxpTypedFromEvent } from '../../observables/typed-from-event';
@@ -57,7 +63,9 @@ export class NxpDropdownHover extends NxpDriver {
         ),
       ),
     ),
-    nxpTypedFromEvent(this.doc, 'mouseover').pipe(map((e) => e.composedPath()[0] as Element)),
+    nxpTypedFromEvent(this.doc, 'mouseover').pipe(
+      map((e) => e.composedPath()[0] as Element),
+    ),
     nxpTypedFromEvent(this.doc, 'mouseout').pipe(
       map((e) => e.relatedTarget as Element | null),
     ),
@@ -65,7 +73,9 @@ export class NxpDropdownHover extends NxpDriver {
     map((element) => !!element && this.isHovered(element as Element)),
     distinctUntilChanged(),
     switchMap((v) =>
-      of(v).pipe(delay(v ? this.nxpDropdownShowDelay() : this.nxpDropdownHideDelay())),
+      of(v).pipe(
+        delay(v ? this.nxpDropdownShowDelay() : this.nxpDropdownHideDelay()),
+      ),
     ),
     nxpZoneOptimized(),
     tap((hovered) => {

@@ -1,9 +1,38 @@
 {
-  "name": "@nxp/components",
+  "name": "@ngxpro/components",
   "version": "0.0.1",
+  "description": "30+ standalone Angular UI components (accordion, button, calendar, input, textfield, etc.) styled with Tailwind CSS v4.",
+  "license": "MIT",
+  "homepage": "https://github.com/SarvarkhujaMurodov/ngxpro#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro.git",
+    "directory": "libs/components"
+  },
+  "bugs": {
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro/issues"
+  },
+  "keywords": [
+    "angular",
+    "ngxpro",
+    "components",
+    "ui",
+    "tailwind",
+    "design-system"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "peerDependencies": {
     "@angular/common": "^21.1.0",
-    "@angular/core": "^21.1.0"
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@ngxpro/cdk": "*",
+    "@taiga-ui/polymorpheus": "^5.0.0",
+    "rxjs": "^7.8.0",
+    "tailwind-variants": "^3.0.0"
   },
   "sideEffects": false
 }

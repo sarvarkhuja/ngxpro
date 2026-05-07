@@ -1,4 +1,4 @@
-import { nxpCreateOptions } from '@nxp/cdk';
+import { nxpCreateOptions } from '@ngxpro/cdk';
 
 export interface NxpRangeOptions {
   readonly color: string;

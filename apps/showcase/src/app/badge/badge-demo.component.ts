@@ -6,7 +6,7 @@ import {
   NXP_BADGE_COLORS,
   type NxpBadgeColor,
   type NxpBadgeSize,
-} from '@nxp/components/badge';
+} from '@ngxpro/components/badge';
 
 @Component({
   selector: 'app-badge-demo',

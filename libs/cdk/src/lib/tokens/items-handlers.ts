@@ -18,7 +18,8 @@ export interface NxpItemsHandlers<T> {
 }
 
 const NXP_FALSE_HANDLER = (): false => false;
-const NXP_DEFAULT_IDENTITY_MATCHER: NxpIdentityMatcher<unknown> = (a, b) => a === b;
+const NXP_DEFAULT_IDENTITY_MATCHER: NxpIdentityMatcher<unknown> = (a, b) =>
+  a === b;
 
 export const NXP_DEFAULT_ITEMS_HANDLERS: NxpItemsHandlers<unknown> = {
   stringify: signal(String),
@@ -26,7 +27,7 @@ export const NXP_DEFAULT_ITEMS_HANDLERS: NxpItemsHandlers<unknown> = {
   disabledItemHandler: signal(NXP_FALSE_HANDLER),
 };
 
-export const NXP_ITEMS_HANDLERS = new InjectionToken<NxpItemsHandlers<any>>(
+export const NXP_ITEMS_HANDLERS = new InjectionToken<NxpItemsHandlers<unknown>>(
   'NXP_ITEMS_HANDLERS',
   { factory: () => NXP_DEFAULT_ITEMS_HANDLERS },
 );
@@ -40,10 +41,12 @@ export function nxpItemsHandlersProvider<T>(
     useFactory: (parent: NxpItemsHandlers<T> | null): NxpItemsHandlers<T> => ({
       stringify: signal(parent?.stringify() ?? (String as NxpStringHandler<T>)),
       identityMatcher: signal(
-        parent?.identityMatcher() ?? (NXP_DEFAULT_IDENTITY_MATCHER as NxpIdentityMatcher<T>),
+        parent?.identityMatcher() ??
+          (NXP_DEFAULT_IDENTITY_MATCHER as NxpIdentityMatcher<T>),
       ),
       disabledItemHandler: signal(
-        parent?.disabledItemHandler() ?? (NXP_FALSE_HANDLER as NxpBooleanHandler<T>),
+        parent?.disabledItemHandler() ??
+          (NXP_FALSE_HANDLER as NxpBooleanHandler<T>),
       ),
       ...options,
     }),

@@ -32,7 +32,7 @@ export const NXP_LEAVE = 'nxp-leave';
   },
 })
 export class NxpAnimated {
-  // @ts-ignore — access internal Angular renderer via ViewContainerRef lView
+  // @ts-expect-error — access internal Angular renderer via ViewContainerRef lView
   private readonly renderer = inject(ViewContainerRef)._hostLView?.[11];
   private readonly el = nxpInjectElement();
 

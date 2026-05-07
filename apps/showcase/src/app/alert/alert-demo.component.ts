@@ -12,7 +12,7 @@ import {
   NxpNotificationHostComponent,
   NxpNotificationService,
   type NxpNotificationOptions,
-} from '@nxp/cdk/components/notification';
+} from '@ngxpro/cdk/components/notification';
 
 type Appearance = NxpNotificationOptions['appearance'];
 type Position = NxpNotificationOptions['position'];
@@ -30,31 +30,34 @@ interface Scenario {
 @Component({
   selector: 'app-alert-demo',
   standalone: true,
-  imports: [
-    RouterModule,
-    FormsModule,
-    NxpNotificationHostComponent,
-  ],
+  imports: [RouterModule, FormsModule, NxpNotificationHostComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nxp-notification-host />
 
-    <div class="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+    <div
+      class="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
+    >
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
-
         <!-- ── Header ─────────────────────────────────────────────── -->
         <header class="space-y-4">
-          <a routerLink="/" class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
+          <a
+            routerLink="/"
+            class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+          >
             <span aria-hidden="true">←</span> Back to home
           </a>
           <div class="flex items-start justify-between gap-6 flex-wrap">
             <div class="space-y-2">
-              <h1 class="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
+              <h1
+                class="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white"
+              >
                 Alerts
               </h1>
               <p class="text-base text-gray-600 dark:text-gray-400 max-w-xl">
-                Programmatic, stackable toasts inspired by Sonner. Hover to expand,
-                swipe to dismiss, pause on hover, and pick from six positions.
+                Programmatic, stackable toasts inspired by Sonner. Hover to
+                expand, swipe to dismiss, pause on hover, and pick from six
+                positions.
               </p>
             </div>
             <button
@@ -63,7 +66,11 @@ interface Scenario {
               class="group inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 active:scale-[0.98] transition-all shadow-sm"
             >
               <span>Try a toast</span>
-              <span class="transition-transform group-hover:translate-x-0.5" aria-hidden="true">→</span>
+              <span
+                class="transition-transform group-hover:translate-x-0.5"
+                aria-hidden="true"
+                >→</span
+              >
             </button>
           </div>
         </header>
@@ -71,10 +78,14 @@ interface Scenario {
         <!-- ── Real-world scenarios ─────────────────────────────── -->
         <section class="space-y-4">
           <div class="flex items-baseline justify-between">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <h2
+              class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+            >
               Scenarios
             </h2>
-            <span class="text-xs text-gray-400 dark:text-gray-500">Click a card to fire</span>
+            <span class="text-xs text-gray-400 dark:text-gray-500"
+              >Click a card to fire</span
+            >
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             @for (s of scenarios; track s.key) {
@@ -88,11 +99,21 @@ interface Scenario {
                     <i [class]="s.icon" aria-hidden="true"></i>
                   </span>
                   <div class="flex-1 min-w-0 space-y-1">
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ s.title }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-snug">{{ s.description }}</p>
+                    <p
+                      class="text-sm font-semibold text-gray-900 dark:text-white"
+                    >
+                      {{ s.title }}
+                    </p>
+                    <p
+                      class="text-xs text-gray-500 dark:text-gray-400 leading-snug"
+                    >
+                      {{ s.description }}
+                    </p>
                   </div>
                 </div>
-                <p class="mt-3 text-xs font-medium text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">
+                <p
+                  class="mt-3 text-xs font-medium text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors"
+                >
                   {{ s.cta }} →
                 </p>
               </button>
@@ -101,13 +122,17 @@ interface Scenario {
         </section>
 
         <!-- ── Promise pattern ──────────────────────────────────── -->
-        <section class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-4">
+        <section
+          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-4"
+        >
           <div class="flex items-start justify-between gap-4 flex-wrap">
             <div class="space-y-1.5 max-w-md">
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Promise pattern</h2>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Promise pattern
+              </h2>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                Show a loading toast that morphs into success or failure. Replaces the
-                same toast id, so the visual position is preserved.
+                Show a loading toast that morphs into success or failure.
+                Replaces the same toast id, so the visual position is preserved.
               </p>
             </div>
             <div class="flex gap-2">
@@ -135,11 +160,15 @@ interface Scenario {
 
         <!-- ── Stack & expand ───────────────────────────────────── -->
         <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3">
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Compressed stack</h3>
+          <div
+            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3"
+          >
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+              Compressed stack
+            </h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Open multiple alerts and they collapse behind the front toast. Hover the
-              stack to fan them out, leave to recompress.
+              Open multiple alerts and they collapse behind the front toast.
+              Hover the stack to fan them out, leave to recompress.
             </p>
             <div class="flex flex-wrap gap-2 pt-1">
               <button
@@ -159,10 +188,19 @@ interface Scenario {
             </div>
           </div>
 
-          <div class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3">
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Auto-close</h3>
+          <div
+            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3"
+          >
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+              Auto-close
+            </h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Pauses on hover, resumes on leave. Pass <code class="text-[11px] font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">false</code> to make it sticky.
+              Pauses on hover, resumes on leave. Pass
+              <code
+                class="text-[11px] font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                >false</code
+              >
+              to make it sticky.
             </p>
             <div class="flex flex-wrap gap-2 pt-1">
               @for (d of autoCloseOptions; track d.value) {
@@ -179,14 +217,21 @@ interface Scenario {
         </section>
 
         <!-- ── Position picker (visual 3×3) ─────────────────────── -->
-        <section class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-5">
+        <section
+          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-5"
+        >
           <div class="space-y-1.5">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Position</h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Position
+            </h2>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Pick an edge or center. Active corner becomes the default for the playground below.
+              Pick an edge or center. Active corner becomes the default for the
+              playground below.
             </p>
           </div>
-          <div class="relative aspect-[16/9] max-w-md mx-auto rounded-xl border border-dashed border-gray-300 dark:border-gray-700 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 grid grid-cols-3 grid-rows-2 p-3 gap-3">
+          <div
+            class="relative aspect-[16/9] max-w-md mx-auto rounded-xl border border-dashed border-gray-300 dark:border-gray-700 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 grid grid-cols-3 grid-rows-2 p-3 gap-3"
+          >
             @for (pos of positions; track pos.value) {
               <button
                 type="button"
@@ -197,50 +242,80 @@ interface Scenario {
                 [style.grid-row]="pos.row"
                 [attr.aria-label]="pos.value"
               >
-                <span class="absolute inset-0 rounded-md ring-0 transition" aria-hidden="true"></span>
-                <span class="text-[10px] font-medium tracking-wide">{{ pos.label }}</span>
+                <span
+                  class="absolute inset-0 rounded-md ring-0 transition"
+                  aria-hidden="true"
+                ></span>
+                <span class="text-[10px] font-medium tracking-wide">{{
+                  pos.label
+                }}</span>
               </button>
             }
           </div>
         </section>
 
         <!-- ── Live playground ──────────────────────────────────── -->
-        <section class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden">
-          <div class="p-6 sm:p-8 space-y-1.5 border-b border-gray-200 dark:border-gray-800">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Playground</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Configure every option and fire.</p>
+        <section
+          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
+        >
+          <div
+            class="p-6 sm:p-8 space-y-1.5 border-b border-gray-200 dark:border-gray-800"
+          >
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Playground
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Configure every option and fire.
+            </p>
           </div>
-          <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-200 dark:divide-gray-800">
+          <div
+            class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-200 dark:divide-gray-800"
+          >
             <!-- Controls -->
             <div class="p-6 sm:p-8 space-y-5">
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Appearance</label>
+                <label
+                  for="play-appearance"
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                  >Appearance</label
+                >
                 <div class="flex flex-wrap gap-1.5">
                   @for (a of appearances; track a) {
                     <button
                       type="button"
                       (click)="playAppearance.set(a)"
                       [class]="segmentClass(playAppearance() === a)"
-                    >{{ a }}</button>
+                    >
+                      {{ a }}
+                    </button>
                   }
                 </div>
               </div>
 
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Size</label>
+                <label
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                  >Size</label
+                >
                 <div class="flex gap-1.5">
                   @for (s of sizes; track s) {
                     <button
                       type="button"
                       (click)="playSize.set(s)"
                       [class]="segmentClass(playSize() === s)"
-                    >{{ s }}</button>
+                    >
+                      {{ s }}
+                    </button>
                   }
                 </div>
               </div>
 
               <div class="space-y-2">
-                <label for="play-label" class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Label</label>
+                <label
+                  for="play-label"
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                  >Label</label
+                >
                 <input
                   id="play-label"
                   type="text"
@@ -252,7 +327,11 @@ interface Scenario {
               </div>
 
               <div class="space-y-2">
-                <label for="play-content" class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Message</label>
+                <label
+                  for="play-content"
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                  >Message</label
+                >
                 <textarea
                   id="play-content"
                   rows="2"
@@ -263,7 +342,9 @@ interface Scenario {
               </div>
 
               <div class="grid grid-cols-2 gap-3">
-                <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                <label
+                  class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                >
                   <input
                     type="checkbox"
                     [ngModel]="playClosable()"
@@ -272,7 +353,9 @@ interface Scenario {
                   />
                   Closable
                 </label>
-                <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                <label
+                  class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                >
                   <input
                     type="checkbox"
                     [ngModel]="playPersistent()"
@@ -286,8 +369,15 @@ interface Scenario {
               @if (!playPersistent()) {
                 <div class="space-y-2">
                   <div class="flex items-center justify-between">
-                    <label for="play-duration" class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Duration</label>
-                    <span class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ playDuration() / 1000 }}s</span>
+                    <label
+                      for="play-duration"
+                      class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                      >Duration</label
+                    >
+                    <span
+                      class="text-xs font-mono text-gray-500 dark:text-gray-400"
+                      >{{ playDuration() / 1000 }}s</span
+                    >
                   </div>
                   <input
                     id="play-duration"
@@ -304,25 +394,47 @@ interface Scenario {
             </div>
 
             <!-- Preview / Action -->
-            <div class="p-6 sm:p-8 bg-gray-50 dark:bg-gray-950/40 flex flex-col justify-between gap-6">
+            <div
+              class="p-6 sm:p-8 bg-gray-50 dark:bg-gray-950/40 flex flex-col justify-between gap-6"
+            >
               <div class="space-y-3">
-                <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Preview</p>
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                >
+                  Preview
+                </p>
                 <div [class]="previewClasses()">
-                  <i [class]="previewIcon() + ' text-xl ' + previewIconClass()" aria-hidden="true"></i>
+                  <i
+                    [class]="previewIcon() + ' text-xl ' + previewIconClass()"
+                    aria-hidden="true"
+                  ></i>
                   <div class="flex-1 min-w-0">
                     @if (playLabel()) {
-                      <p class="text-sm font-semibold text-gray-900 dark:text-gray-50 leading-snug">{{ playLabel() }}</p>
+                      <p
+                        class="text-sm font-semibold text-gray-900 dark:text-gray-50 leading-snug"
+                      >
+                        {{ playLabel() }}
+                      </p>
                     }
-                    <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug" [class.mt-0.5]="playLabel()">
+                    <p
+                      class="text-sm text-gray-700 dark:text-gray-300 leading-snug"
+                      [class.mt-0.5]="playLabel()"
+                    >
                       {{ playContent() || 'Your message goes here.' }}
                     </p>
                   </div>
                   @if (playClosable()) {
-                    <i class="ri-close-line text-gray-400 text-sm shrink-0" aria-hidden="true"></i>
+                    <i
+                      class="ri-close-line text-gray-400 text-sm shrink-0"
+                      aria-hidden="true"
+                    ></i>
                   }
                 </div>
                 <p class="text-xs text-gray-500 dark:text-gray-500">
-                  Position: <span class="font-mono text-gray-700 dark:text-gray-300">{{ selectedPosition() }}</span>
+                  Position:
+                  <span class="font-mono text-gray-700 dark:text-gray-300">{{
+                    selectedPosition()
+                  }}</span>
                 </p>
               </div>
 
@@ -337,14 +449,15 @@ interface Scenario {
             </div>
           </div>
         </section>
-
       </div>
     </div>
 
     <!-- Templates for rich content -->
     <ng-template #undoTpl>
       <div class="flex items-center justify-between gap-3 w-full">
-        <span class="text-sm text-gray-700 dark:text-gray-300">Moved to trash.</span>
+        <span class="text-sm text-gray-700 dark:text-gray-300"
+          >Moved to trash.</span
+        >
         <button
           type="button"
           (click)="undoDelete()"
@@ -357,7 +470,9 @@ interface Scenario {
 
     <ng-template #retryTpl>
       <div class="flex items-center justify-between gap-3 w-full">
-        <span class="text-sm text-gray-700 dark:text-gray-300">Could not reach server.</span>
+        <span class="text-sm text-gray-700 dark:text-gray-300"
+          >Could not reach server.</span
+        >
         <button
           type="button"
           (click)="retryConnection()"
@@ -372,11 +487,19 @@ interface Scenario {
 export class AlertDemoComponent {
   protected readonly service = inject(NxpNotificationService);
 
-  private readonly undoTpl = viewChild.required<TemplateRef<unknown>>('undoTpl');
-  private readonly retryTpl = viewChild.required<TemplateRef<unknown>>('retryTpl');
+  private readonly undoTpl =
+    viewChild.required<TemplateRef<unknown>>('undoTpl');
+  private readonly retryTpl =
+    viewChild.required<TemplateRef<unknown>>('retryTpl');
 
   // ── Static option lists ──────────────────────────────────────────────────
-  protected readonly appearances: Appearance[] = ['info', 'success', 'warning', 'error', 'neutral'];
+  protected readonly appearances: Appearance[] = [
+    'info',
+    'success',
+    'warning',
+    'error',
+    'neutral',
+  ];
   protected readonly sizes: Size[] = ['s', 'm', 'l'];
 
   protected readonly autoCloseOptions = [
@@ -412,7 +535,8 @@ export class AlertDemoComponent {
     {
       key: 'delete',
       title: 'Delete with undo',
-      description: 'Action toast — gives the user a five-second window to revert.',
+      description:
+        'Action toast — gives the user a five-second window to revert.',
       cta: 'Delete file',
       icon: 'ri-delete-bin-line',
       tone: 'rose',
@@ -551,7 +675,13 @@ export class AlertDemoComponent {
   }
 
   protected showStack(): void {
-    const palette: Appearance[] = ['info', 'success', 'warning', 'error', 'neutral'];
+    const palette: Appearance[] = [
+      'info',
+      'success',
+      'warning',
+      'error',
+      'neutral',
+    ];
     const lines = [
       'Build started',
       'Compiled 142 modules',
@@ -572,9 +702,10 @@ export class AlertDemoComponent {
   }
 
   protected showAutoClose(value: number | false): void {
-    const msg = value === false
-      ? 'This one stays put. Dismiss it manually.'
-      : `Closes in ${value / 1000}s — hover to pause.`;
+    const msg =
+      value === false
+        ? 'This one stays put. Dismiss it manually.'
+        : `Closes in ${value / 1000}s — hover to pause.`;
     this.service.open(msg, {
       appearance: value === false ? 'warning' : 'info',
       label: value === false ? 'Sticky' : `${value / 1000}s`,
@@ -633,11 +764,14 @@ export class AlertDemoComponent {
   // ── Class helpers ────────────────────────────────────────────────────────
   protected scenarioIconClass(tone: Scenario['tone']): string {
     const map: Record<Scenario['tone'], string> = {
-      emerald: 'inline-flex items-center justify-center size-9 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 text-base shrink-0',
+      emerald:
+        'inline-flex items-center justify-center size-9 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 text-base shrink-0',
       rose: 'inline-flex items-center justify-center size-9 rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 text-base shrink-0',
-      amber: 'inline-flex items-center justify-center size-9 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 text-base shrink-0',
+      amber:
+        'inline-flex items-center justify-center size-9 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 text-base shrink-0',
       sky: 'inline-flex items-center justify-center size-9 rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400 text-base shrink-0',
-      violet: 'inline-flex items-center justify-center size-9 rounded-lg bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-400 text-base shrink-0',
+      violet:
+        'inline-flex items-center justify-center size-9 rounded-lg bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-400 text-base shrink-0',
     };
     return map[tone];
   }
@@ -661,7 +795,8 @@ export class AlertDemoComponent {
   }
 
   protected segmentClass(active: boolean): string {
-    const base = 'px-2.5 py-1 rounded-md text-xs font-medium capitalize transition-colors';
+    const base =
+      'px-2.5 py-1 rounded-md text-xs font-medium capitalize transition-colors';
     return active
       ? `${base} bg-gray-900 dark:bg-white text-white dark:text-gray-900`
       : `${base} bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700`;
@@ -697,9 +832,12 @@ export class AlertDemoComponent {
     };
     const toneMap: Record<Appearance, string> = {
       info: 'border-blue-200 bg-blue-50 dark:border-blue-900/50 dark:bg-blue-950/40',
-      success: 'border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40',
-      warning: 'border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-950/40',
-      error: 'border-rose-200 bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/40',
+      success:
+        'border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40',
+      warning:
+        'border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-950/40',
+      error:
+        'border-rose-200 bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/40',
       neutral: 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900',
     };
     return `relative flex items-start rounded-lg border shadow-sm ${sizeMap[this.playSize()]} ${toneMap[this.playAppearance()]}`;

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NxpSegmentedComponent } from '@nxp/components/segmented';
-import type { NxpSegmentedSize } from '@nxp/components/segmented';
+import { NxpSegmentedComponent } from '@ngxpro/components/segmented';
+import type { NxpSegmentedSize } from '@ngxpro/components/segmented';
 
 @Component({
   selector: 'app-segmented-demo',
@@ -22,11 +22,19 @@ import type { NxpSegmentedSize } from '@nxp/components/segmented';
         <h1 class="text-3xl font-bold text-text-primary mb-2">Segmented</h1>
         <p class="text-text-secondary mb-10">
           Pill-shaped segmented control with an animated sliding indicator.
-          Place <code class="text-sm font-mono bg-bg-neutral-1 px-1 rounded">button</code>,
-          <code class="text-sm font-mono bg-bg-neutral-1 px-1 rounded">a</code>, or
-          <code class="text-sm font-mono bg-bg-neutral-1 px-1 rounded">label</code>
+          Place
+          <code class="text-sm font-mono bg-bg-neutral-1 px-1 rounded"
+            >button</code
+          >,
+          <code class="text-sm font-mono bg-bg-neutral-1 px-1 rounded">a</code>,
+          or
+          <code class="text-sm font-mono bg-bg-neutral-1 px-1 rounded"
+            >label</code
+          >
           elements directly inside. Use
-          <code class="text-sm font-mono bg-bg-neutral-1 px-1 rounded">[(activeItemIndex)]</code>
+          <code class="text-sm font-mono bg-bg-neutral-1 px-1 rounded"
+            >[(activeItemIndex)]</code
+          >
           for two-way binding.
         </p>
 
@@ -34,8 +42,8 @@ import type { NxpSegmentedSize } from '@nxp/components/segmented';
         <section class="mb-12">
           <h2 class="text-xl font-semibold text-text-primary mb-1">Basic</h2>
           <p class="text-sm text-text-secondary mb-4">
-            Three buttons with animated indicator.
-            Active index: <strong>{{ basicIndex() }}</strong>
+            Three buttons with animated indicator. Active index:
+            <strong>{{ basicIndex() }}</strong>
           </p>
           <nxp-segmented
             [activeItemIndex]="basicIndex()"
@@ -45,7 +53,9 @@ import type { NxpSegmentedSize } from '@nxp/components/segmented';
             <button>Week</button>
             <button>Month</button>
           </nxp-segmented>
-          <div class="mt-4 p-4 rounded-lg bg-bg-base border border-border-normal text-sm text-text-primary">
+          <div
+            class="mt-4 p-4 rounded-lg bg-bg-base border border-border-normal text-sm text-text-primary"
+          >
             Viewing:
             <strong>{{ ['Day', 'Week', 'Month'][basicIndex()] }}</strong> data
           </div>
@@ -60,7 +70,9 @@ import type { NxpSegmentedSize } from '@nxp/components/segmented';
           <div class="flex flex-col gap-6">
             @for (s of sizes; track s) {
               <div>
-                <p class="text-xs font-medium text-text-secondary mb-2">{{ s }}</p>
+                <p class="text-xs font-medium text-text-secondary mb-2">
+                  {{ s }}
+                </p>
                 <nxp-segmented
                   [size]="s"
                   [activeItemIndex]="sizeTabs[s]()"
@@ -77,7 +89,9 @@ import type { NxpSegmentedSize } from '@nxp/components/segmented';
 
         <!-- Four options -->
         <section class="mb-12">
-          <h2 class="text-xl font-semibold text-text-primary mb-1">Four options</h2>
+          <h2 class="text-xl font-semibold text-text-primary mb-1">
+            Four options
+          </h2>
           <p class="text-sm text-text-secondary mb-4">
             Works with any number of items.
           </p>
@@ -94,7 +108,9 @@ import type { NxpSegmentedSize } from '@nxp/components/segmented';
 
         <!-- Two options -->
         <section class="mb-12">
-          <h2 class="text-xl font-semibold text-text-primary mb-1">Two options</h2>
+          <h2 class="text-xl font-semibold text-text-primary mb-1">
+            Two options
+          </h2>
           <p class="text-sm text-text-secondary mb-4">
             Toggle pattern with two options.
           </p>
@@ -116,7 +132,10 @@ export class SegmentedDemoComponent {
   readonly toggleIndex = signal(0);
 
   readonly sizes: NxpSegmentedSize[] = ['sm', 'md', 'lg'];
-  readonly sizeTabs: Record<NxpSegmentedSize, ReturnType<typeof signal<number>>> = {
+  readonly sizeTabs: Record<
+    NxpSegmentedSize,
+    ReturnType<typeof signal<number>>
+  > = {
     sm: signal(0),
     md: signal(0),
     lg: signal(0),

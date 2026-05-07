@@ -34,9 +34,6 @@ import { cx } from '../utils/cx';
 export class SubtitleDirective {
   @HostBinding('class')
   protected get hostClasses(): string {
-    return cx(
-      'flex items-center gap-1',
-      'text-sm text-gray-600 dark:text-gray-400',
-    );
+    return cx('flex items-center gap-1', 'text-sm text-text-secondary');
   }
 }

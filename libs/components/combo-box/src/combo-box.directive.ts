@@ -19,11 +19,11 @@ import {
   NXP_STRICT_MATCHER,
   NXP_DEFAULT_MATCHER,
   type NxpStringMatcher,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';
 import {
   nxpAsTextfieldAccessor,
   type NxpTextfieldAccessor,
-} from '@nxp/cdk/components/textfield';
+} from '@ngxpro/cdk/components/textfield';
 import { NxpSelectOptionComponent } from './select-option.component';
 
 @Directive({
@@ -116,7 +116,8 @@ export class NxpComboBoxDirective<T = unknown>
     // Sync confirmedValue -> input text
     effect(() => {
       const v = this.confirmedValue();
-      const text = v == null ? '' : typeof v === 'string' ? v : this.stringify(v);
+      const text =
+        v == null ? '' : typeof v === 'string' ? v : this.stringify(v);
       untracked(() => {
         if (this.el.value !== text) {
           this.el.value = text;
@@ -142,7 +143,12 @@ export class NxpComboBoxDirective<T = unknown>
   // ------------------------------------------------------------------ NxpTextfieldAccessor
 
   setValue(value: T | string | null): void {
-    const text = value == null ? '' : typeof value === 'string' ? value : this.stringify(value);
+    const text =
+      value == null
+        ? ''
+        : typeof value === 'string'
+          ? value
+          : this.stringify(value);
     this.el.value = text;
     this.inputText.set(text);
     this.confirmedValue.set(value);
@@ -154,7 +160,12 @@ export class NxpComboBoxDirective<T = unknown>
 
   override writeValue(value: T | null): void {
     super.writeValue(value);
-    const text = value == null ? '' : typeof value === 'string' ? value : this.stringify(value);
+    const text =
+      value == null
+        ? ''
+        : typeof value === 'string'
+          ? value
+          : this.stringify(value);
     this.confirmedValue.set(value);
     this.el.value = text;
     this.inputText.set(text);
@@ -192,7 +203,11 @@ export class NxpComboBoxDirective<T = unknown>
       // Revert to the last confirmed value
       const current = this.confirmedValue();
       const revertText =
-        current == null ? '' : typeof current === 'string' ? current : this.stringify(current);
+        current == null
+          ? ''
+          : typeof current === 'string'
+            ? current
+            : this.stringify(current);
       this.el.value = revertText;
       this.inputText.set(revertText);
     }
@@ -230,6 +245,8 @@ export class NxpComboBoxDirective<T = unknown>
   // ------------------------------------------------------------------ private
 
   private stringify(value: T): string {
-    return this.handlers.stringify()(value as Parameters<ReturnType<typeof this.handlers.stringify>>[0]);
+    return this.handlers.stringify()(
+      value as Parameters<ReturnType<typeof this.handlers.stringify>>[0],
+    );
   }
 }

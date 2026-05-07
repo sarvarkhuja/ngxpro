@@ -28,7 +28,12 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
 // Types
 // ---------------------------------------------------------------------------
 
-export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tooltip';
+export type NxpSliderValuePosition =
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'bottom'
+  | 'tooltip';
 
 /**
  * A visually styled slider component matching the fluidfunctionalizm design
@@ -68,7 +73,9 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
   },
   template: `
     <!-- Value display: top or left -->
-    @if (showValue() && (valuePosition() === 'top' || valuePosition() === 'left')) {
+    @if (
+      showValue() && (valuePosition() === 'top' || valuePosition() === 'left')
+    ) {
       <ng-container *ngTemplateOutlet="valueDisplayTpl" />
     }
 
@@ -95,7 +102,12 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       }
 
       <!-- Hover tooltip (on cursor position, non-tooltip mode) -->
-      @if (hoverPreview() && showHoverTooltip() && !isPressed() && valuePosition() !== 'tooltip') {
+      @if (
+        hoverPreview() &&
+        showHoverTooltip() &&
+        !isPressed() &&
+        valuePosition() !== 'tooltip'
+      ) {
         <div
           class="nxp-sv-hover-tooltip"
           [style.left.px]="hoverPreview()!.cursorX"
@@ -125,10 +137,7 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
           [style.height.px]="TRACK_BG_HEIGHT"
         >
           <!-- Fill -->
-          <div
-            class="nxp-sv-fill"
-            [style.width]="fillWidth()"
-          ></div>
+          <div class="nxp-sv-fill" [style.width]="fillWidth()"></div>
 
           <!-- Hover preview bar -->
           @if (hoverPreview() && !isPressed()) {
@@ -136,9 +145,11 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
               class="nxp-sv-hover-preview"
               [style.left.px]="hoverPreview()!.left - TRACK_INSET"
               [style.width.px]="hoverPreview()!.width"
-              [style.border-radius]="hoverPreview()!.cursorX > hoverPreview()!.left
-                ? '0 9999px 9999px 0'
-                : '9999px 0 0 9999px'"
+              [style.border-radius]="
+                hoverPreview()!.cursorX > hoverPreview()!.left
+                  ? '0 9999px 9999px 0'
+                  : '9999px 0 0 9999px'
+              "
             ></div>
           }
         </div>
@@ -153,7 +164,15 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
             @for (dot of stepDots(); track dot.value) {
               <div
                 class="nxp-sv-dot-wrapper"
-                [style.left]="'calc(' + THUMB_SIZE / 2 + 'px + ' + dot.percent + ' * (100% - ' + THUMB_SIZE + 'px))'"
+                [style.left]="
+                  'calc(' +
+                  THUMB_SIZE / 2 +
+                  'px + ' +
+                  dot.percent +
+                  ' * (100% - ' +
+                  THUMB_SIZE +
+                  'px))'
+                "
               >
                 <div
                   class="nxp-sv-dot"
@@ -199,7 +218,10 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
     </div>
 
     <!-- Value display: bottom or right -->
-    @if (showValue() && (valuePosition() === 'bottom' || valuePosition() === 'right')) {
+    @if (
+      showValue() &&
+      (valuePosition() === 'bottom' || valuePosition() === 'right')
+    ) {
       <ng-container *ngTemplateOutlet="valueDisplayTpl" />
     }
 
@@ -261,7 +283,9 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       z-index: 20;
       top: -16px;
       opacity: 0;
-      transition: opacity 100ms ease, transform 100ms ease;
+      transition:
+        opacity 100ms ease,
+        transform 100ms ease;
     }
     .nxp-sv-tooltip-visible {
       opacity: 1;
@@ -286,8 +310,14 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       animation: nxp-sv-fade-in 100ms ease forwards;
     }
     @keyframes nxp-sv-fade-in {
-      from { opacity: 0; transform: translateX(-50%) translateY(4px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
     }
 
     :host-context(.dark) .nxp-sv-tooltip-label {
@@ -319,11 +349,19 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       position: absolute;
       left: 0;
       height: 100%;
-      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 12%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(17 24 39)) 12%,
+        transparent
+      );
       transition: width 160ms cubic-bezier(0.22, 1.2, 0.36, 1);
     }
     :host-context(.dark) .nxp-sv-fill {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 12%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(243 244 246)) 12%,
+        transparent
+      );
     }
     .nxp-sv-dragging .nxp-sv-fill {
       transition: none;
@@ -335,12 +373,20 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       height: 100%;
       pointer-events: none;
       z-index: 2;
-      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 4%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(17 24 39)) 4%,
+        transparent
+      );
       opacity: 1;
       transition: opacity 150ms linear;
     }
     :host-context(.dark) .nxp-sv-hover-preview {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 4%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(243 244 246)) 4%,
+        transparent
+      );
     }
 
     /* --- Step dots --- */
@@ -366,9 +412,10 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       flex-shrink: 0;
       background: var(--nxp-muted-fg, rgb(156 163 175));
       opacity: 0.3;
-      transition: width 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
-                  height 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
-                  opacity 80ms linear;
+      transition:
+        width 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
+        height 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
+        opacity 80ms linear;
     }
     .nxp-sv-dot-hovered {
       width: ${DOT_SIZE * 1.25}px;
@@ -406,7 +453,7 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       width: ${THUMB_SIZE + 4}px;
       height: ${THUMB_SIZE + 4}px;
       border-radius: 9999px;
-      border: 1px solid #6B97FF;
+      border: 1px solid #6b97ff;
       pointer-events: none;
     }
 
@@ -421,11 +468,19 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
 
     /* --- Theme color mode --- */
     :host.nxp-slider-themed .nxp-sv-fill {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 25%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 25%,
+        transparent
+      );
     }
     :host-context(.dark):host.nxp-slider-themed .nxp-sv-fill,
     :host.nxp-slider-themed:host-context(.dark) .nxp-sv-fill {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 30%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 30%,
+        transparent
+      );
     }
     :host.nxp-slider-themed .nxp-sv-thumb {
       background: var(--nxp-primary, #3b82f6);
@@ -435,14 +490,26 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       border-color: var(--nxp-primary, #3b82f6);
     }
     :host.nxp-slider-themed .nxp-sv-track-bg {
-      border-color: color-mix(in srgb, var(--nxp-primary, #3b82f6) 30%, var(--nxp-border, rgb(229 231 235)));
+      border-color: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 30%,
+        var(--nxp-border, rgb(229 231 235))
+      );
     }
     :host.nxp-slider-themed .nxp-sv-hover-preview {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 8%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 8%,
+        transparent
+      );
     }
     :host-context(.dark):host.nxp-slider-themed .nxp-sv-hover-preview,
     :host.nxp-slider-themed:host-context(.dark) .nxp-sv-hover-preview {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 10%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 10%,
+        transparent
+      );
     }
     :host.nxp-slider-themed .nxp-sv-tooltip-label {
       background: var(--nxp-primary, #3b82f6);
@@ -454,7 +521,11 @@ export type NxpSliderValuePosition = 'left' | 'right' | 'top' | 'bottom' | 'tool
       color: var(--nxp-text-on-accent, white);
     }
     :host.nxp-slider-themed .nxp-sv-dot {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 40%, var(--nxp-muted-fg, rgb(156 163 175)));
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 40%,
+        var(--nxp-muted-fg, rgb(156 163 175))
+      );
     }
 
     /* --- Value display --- */
@@ -507,7 +578,10 @@ export class NxpSliderVisualComponent implements ControlValueAccessor {
   readonly showSteps = input(false);
   readonly showValue = input(true);
   readonly valuePosition = input<NxpSliderValuePosition>('left');
-  readonly formatValueFn = input<(v: number) => string>((v: number) => String(v), { alias: 'formatValue' });
+  readonly formatValueFn = input<(v: number) => string>(
+    (v: number) => String(v),
+    { alias: 'formatValue' },
+  );
   readonly label = input<string | undefined>(undefined);
   readonly disabled = input(false);
   /** When true, use the theme primary color (`--nxp-primary`) instead of neutral gray. */
@@ -523,8 +597,10 @@ export class NxpSliderVisualComponent implements ControlValueAccessor {
   // View children
   // ---------------------------------------------------------------------------
 
-  private readonly trackElRef = viewChild<ElementRef<HTMLDivElement>>('trackEl');
-  private readonly nativeInputRef = viewChild<ElementRef<HTMLInputElement>>('nativeInput');
+  private readonly trackElRef =
+    viewChild<ElementRef<HTMLDivElement>>('trackEl');
+  private readonly nativeInputRef =
+    viewChild<ElementRef<HTMLInputElement>>('nativeInput');
 
   // ---------------------------------------------------------------------------
   // State
@@ -622,7 +698,10 @@ export class NxpSliderVisualComponent implements ControlValueAccessor {
     effect(() => {
       const hovered = this.isHovered();
       if (hovered) {
-        this.hoverDelayTimer = setTimeout(() => this.showHoverTooltip.set(true), 100);
+        this.hoverDelayTimer = setTimeout(
+          () => this.showHoverTooltip.set(true),
+          100,
+        );
       } else {
         if (this.hoverDelayTimer) clearTimeout(this.hoverDelayTimer);
         this.showHoverTooltip.set(false);
@@ -658,7 +737,7 @@ export class NxpSliderVisualComponent implements ControlValueAccessor {
     this._onTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean): void {
+  setDisabledState?(_isDisabled: boolean): void {
     // disabled is an input, but forms may call this
   }
 
@@ -754,7 +833,10 @@ export class NxpSliderVisualComponent implements ControlValueAccessor {
     const rawPx = cursorX - THUMB_SIZE / 2;
     const clampedPx = Math.max(0, Math.min(usable, rawPx));
     const rawVal = usable > 0 ? (clampedPx / usable) * (mx - mn) + mn : mn;
-    const snappedVal = Math.max(mn, Math.min(mx, Math.round((rawVal - mn) / s) * s + mn));
+    const snappedVal = Math.max(
+      mn,
+      Math.min(mx, Math.round((rawVal - mn) / s) * s + mn),
+    );
     const snappedPercent = mx === mn ? 0 : (snappedVal - mn) / (mx - mn);
     const snappedX = THUMB_SIZE / 2 + snappedPercent * usable;
 
@@ -763,10 +845,16 @@ export class NxpSliderVisualComponent implements ControlValueAccessor {
     const thumbCenterX = THUMB_SIZE / 2 + r * usable;
 
     // Extend to track edges at extremes
-    const edgeX = snappedVal === mn ? 0 : snappedVal === mx ? trackWidth : snappedX;
+    const edgeX =
+      snappedVal === mn ? 0 : snappedVal === mx ? trackWidth : snappedX;
     const left = Math.min(thumbCenterX, edgeX);
     const width = Math.abs(edgeX - thumbCenterX);
 
-    this.hoverPreview.set({ left, width, snappedValue: snappedVal, cursorX: snappedX });
+    this.hoverPreview.set({
+      left,
+      width,
+      snappedValue: snappedVal,
+      cursorX: snappedX,
+    });
   }
 }

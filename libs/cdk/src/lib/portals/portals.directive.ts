@@ -30,9 +30,15 @@ export abstract class NxpPortals {
 
   addComponent<C>(component: PolymorpheusComponent<C>): ComponentRef<C> {
     // Access internal injector from PolymorpheusComponent (matches Taiga pattern)
-    const context = (component as unknown as { i?: { get: (t: unknown, o?: { optional: boolean }) => unknown } })
-      .i?.get(POLYMORPHEUS_CONTEXT, { optional: true });
-    const injector = component.createInjector(this.injector, context ?? undefined);
+    const context = (
+      component as unknown as {
+        i?: { get: (t: unknown, o?: { optional: boolean }) => unknown };
+      }
+    ).i?.get(POLYMORPHEUS_CONTEXT, { optional: true });
+    const injector = component.createInjector(
+      this.injector,
+      context ?? undefined,
+    );
     const ref = this.vcr().createComponent(component.component, { injector });
     ref.changeDetectorRef.detectChanges();
     return ref;

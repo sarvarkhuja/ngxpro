@@ -6,7 +6,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { NXP_ITEMS_HANDLERS, NXP_MULTI_SELECT_TEXTS } from '@nxp/cdk';
+import { NXP_ITEMS_HANDLERS, NXP_MULTI_SELECT_TEXTS } from '@ngxpro/cdk';
 import { NxpMultiSelectComponent } from './multi-select.component';
 import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
 
@@ -34,7 +34,7 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
  * ```
  */
 @Component({
-  selector: 'div[nxpMultiSelectGroup]',
+  selector: 'nxp-multi-select-group, div[nxpMultiSelectGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -45,14 +45,16 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
   template: `
     <div class="flex items-center justify-between px-3 py-1.5">
       @if (label()) {
-        <span class="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+        <span
+          class="text-xs font-semibold uppercase tracking-wide text-text-tertiary"
+        >
           {{ label() }}
         </span>
       }
       @if (groupValues().length > 0) {
         <button
           type="button"
-          class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:underline"
+          class="text-xs font-medium text-text-action hover:underline focus:outline-none focus:underline"
           (pointerdown)="$event.preventDefault()"
           (click)="toggle()"
           [attr.aria-label]="allSelected() ? texts().none : texts().all"
@@ -65,7 +67,9 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
   `,
 })
 export class NxpMultiSelectGroupComponent<T = unknown> {
-  private readonly multiSelect = inject(NxpMultiSelectComponent, { optional: true }) as NxpMultiSelectComponent<T> | null;
+  private readonly multiSelect = inject(NxpMultiSelectComponent, {
+    optional: true,
+  }) as NxpMultiSelectComponent<T> | null;
   private readonly handlers = inject(NXP_ITEMS_HANDLERS);
 
   protected readonly texts = inject(NXP_MULTI_SELECT_TEXTS);
@@ -83,8 +87,9 @@ export class NxpMultiSelectGroupComponent<T = unknown> {
   /** True when every item in the group is currently selected. */
   protected readonly allSelected = computed(() => {
     const values = this.groupValues();
-    if (!values.length || !this.multiSelect) return false;
-    return values.every((v) => this.multiSelect!.isItemSelected(v));
+    const ms = this.multiSelect;
+    if (!values.length || !ms) return false;
+    return values.every((v) => ms.isItemSelected(v));
   });
 
   /** Toggle all items in the group on or off. */
@@ -98,10 +103,16 @@ export class NxpMultiSelectGroupComponent<T = unknown> {
 
     if (this.allSelected()) {
       // Deselect all group items, preserve rest
-      ms.setItems(current.filter((v) => !groupVals.some((gv) => matcher(v as unknown as T, gv))));
+      ms.setItems(
+        current.filter(
+          (v) => !groupVals.some((gv) => matcher(v as unknown as T, gv)),
+        ),
+      );
     } else {
       // Add missing group items to selection
-      const toAdd = groupVals.filter((gv) => !current.some((v) => matcher(v as unknown as T, gv)));
+      const toAdd = groupVals.filter(
+        (gv) => !current.some((v) => matcher(v as unknown as T, gv)),
+      );
       ms.setItems([...current, ...toAdd] as readonly T[]);
     }
   }

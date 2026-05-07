@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NxpInputPinComponent } from '@nxp/components/input-pin';
+import { NxpInputPinComponent } from '@ngxpro/components/input-pin';
 
 @Component({
   selector: 'app-input-pin-demo',
@@ -321,9 +321,7 @@ import { NxpInputPinComponent } from '@nxp/components/input-pin';
                   <td class="px-4 py-2 font-mono">placeholder</td>
                   <td class="px-4 py-2 font-mono">string</td>
                   <td class="px-4 py-2 font-mono">'·'</td>
-                  <td class="px-4 py-2">
-                    Character shown in empty cells
-                  </td>
+                  <td class="px-4 py-2">Character shown in empty cells</td>
                 </tr>
                 <tr>
                   <td class="px-4 py-2 font-mono">disabled</td>

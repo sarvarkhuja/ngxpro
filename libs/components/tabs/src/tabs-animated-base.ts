@@ -1,11 +1,11 @@
 import { Directive, inject } from '@angular/core';
-import { NxpAnimatedProximityBase } from '@nxp/cdk';
+import { NxpAnimatedProximityBase } from '@ngxpro/cdk';
 import { NxpTabsDirective } from './tabs.directive';
 
 /**
  * Shared implementation for animated tab containers (`NxpTabsHorizontal` and
  * `NxpTabsVertical`). Thin subclass of `NxpAnimatedProximityBase` — the
- * reusable indicator engine in `@nxp/cdk` — adding only the tab-specific
+ * reusable indicator engine in `@ngxpro/cdk` — adding only the tab-specific
  * glue: item source (`tabsDirective.tabs`) and activation handler.
  *
  * Subclasses only differ in the axis (`'x'` vs `'y'`) used for proximity

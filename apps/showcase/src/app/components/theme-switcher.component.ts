@@ -1,5 +1,5 @@
 import { Component, inject, computed, signal, DOCUMENT } from '@angular/core';
-import { ThemeService, type NgxproTheme } from '@nxp/core';
+import { ThemeService, type NgxproTheme } from '@ngxpro/core';
 
 interface ColorPreset {
   label: string;
@@ -7,12 +7,12 @@ interface ColorPreset {
 }
 
 const PRESETS: ColorPreset[] = [
-  { label: 'Blue',    primary: '#3b82f6' },
-  { label: 'Violet',  primary: '#8b5cf6' },
-  { label: 'Rose',    primary: '#f43f5e' },
-  { label: 'Orange',  primary: '#f97316' },
+  { label: 'Blue', primary: '#3b82f6' },
+  { label: 'Violet', primary: '#8b5cf6' },
+  { label: 'Rose', primary: '#f43f5e' },
+  { label: 'Orange', primary: '#f97316' },
   { label: 'Emerald', primary: '#10b981' },
-  { label: 'Cyan',    primary: '#06b6d4' },
+  { label: 'Cyan', primary: '#06b6d4' },
 ];
 
 @Component({
@@ -20,7 +20,6 @@ const PRESETS: ColorPreset[] = [
   standalone: true,
   template: `
     <div class="fixed top-4 right-4 z-50 flex flex-col items-end gap-2">
-
       <!-- Toggle button -->
       <button
         (click)="open.set(!open())"
@@ -43,10 +42,12 @@ const PRESETS: ColorPreset[] = [
           role="dialog"
           aria-label="Theme configurator"
         >
-
           <!-- Mode -->
           <div class="flex flex-col gap-2">
-            <span class="text-xs font-medium text-text-secondary uppercase tracking-wide">Mode</span>
+            <span
+              class="text-xs font-medium text-text-secondary uppercase tracking-wide"
+              >Mode</span
+            >
             <div class="flex items-center gap-1 bg-bg-neutral-1 rounded-lg p-1">
               @for (mode of modes; track mode.value) {
                 <button
@@ -64,7 +65,10 @@ const PRESETS: ColorPreset[] = [
 
           <!-- Primary color -->
           <div class="flex flex-col gap-2">
-            <span class="text-xs font-medium text-text-secondary uppercase tracking-wide">Primary</span>
+            <span
+              class="text-xs font-medium text-text-secondary uppercase tracking-wide"
+              >Primary</span
+            >
             <div class="flex items-center gap-1.5 flex-wrap">
               @for (preset of presets; track preset.primary) {
                 <button
@@ -89,9 +93,11 @@ const PRESETS: ColorPreset[] = [
                 aria-label="Custom primary color"
                 title="Custom color"
               >
-                <i class="ri-add-line absolute inset-0 flex items-center justify-center
+                <i
+                  class="ri-add-line absolute inset-0 flex items-center justify-center
                            text-xs text-text-secondary pointer-events-none leading-6
-                           text-center w-full"></i>
+                           text-center w-full"
+                ></i>
                 <input
                   type="color"
                   [value]="primary()"
@@ -103,29 +109,40 @@ const PRESETS: ColorPreset[] = [
             </div>
 
             <!-- Current value -->
-            <span class="text-xs text-text-tertiary font-mono">{{ primary() }}</span>
+            <span class="text-xs text-text-tertiary font-mono">{{
+              primary()
+            }}</span>
           </div>
-
         </div>
       }
     </div>
   `,
-  styles: [`:host { display: contents; }`],
+  styles: [
+    `
+      :host {
+        display: contents;
+      }
+    `,
+  ],
 })
 export class ThemeSwitcherComponent {
   private readonly themeService = inject(ThemeService);
   private readonly doc = inject(DOCUMENT);
 
   readonly theme = this.themeService.theme;
-  readonly open  = signal(false);
+  readonly open = signal(false);
   readonly primary = signal('#3b82f6');
 
   readonly presets = PRESETS;
 
   readonly modes = [
-    { value: 'light'  as NgxproTheme, label: 'Light',  icon: 'ri-sun-line'      },
-    { value: 'dark'   as NgxproTheme, label: 'Dark',   icon: 'ri-moon-line'     },
-    { value: 'system' as NgxproTheme, label: 'System', icon: 'ri-computer-line' },
+    { value: 'light' as NgxproTheme, label: 'Light', icon: 'ri-sun-line' },
+    { value: 'dark' as NgxproTheme, label: 'Dark', icon: 'ri-moon-line' },
+    {
+      value: 'system' as NgxproTheme,
+      label: 'System',
+      icon: 'ri-computer-line',
+    },
   ];
 
   setTheme(theme: NgxproTheme): void {

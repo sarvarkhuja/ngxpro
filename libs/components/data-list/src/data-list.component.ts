@@ -7,11 +7,7 @@ import {
   model,
   signal,
 } from '@angular/core';
-import {
-  cx,
-  NxpAnimatedProximityBase,
-  type NxpItemRect,
-} from '@nxp/cdk';
+import { cx, NxpAnimatedProximityBase, type NxpItemRect } from '@ngxpro/cdk';
 
 /**
  * DataList — accessible listbox container with animated proximity-hover.
@@ -62,7 +58,7 @@ import {
 
     @if (empty()) {
       <span
-        class="flex items-center justify-center px-3 py-5 text-sm text-gray-400 dark:text-gray-600 select-none"
+        class="flex items-center justify-center px-3 py-5 text-sm text-text-tertiary select-none"
         role="presentation"
       >
         {{ emptyLabel() }}
@@ -72,7 +68,7 @@ import {
     <!-- Active/selected background overlay -->
     @if (selectedRect(); as r) {
       <div
-        class="absolute pointer-events-none rounded-lg bg-neutral-900/[0.06] dark:bg-white/[0.08]"
+        class="absolute pointer-events-none rounded-s bg-bg-neutral-1"
         [style.left.px]="r.left"
         [style.top.px]="r.top"
         [style.width.px]="r.width"
@@ -85,7 +81,7 @@ import {
     <!-- Hover background overlay (all hovered items including selected) -->
     @if (hoverRect(); as h) {
       <div
-        class="absolute pointer-events-none rounded-lg bg-neutral-900/[0.04] dark:bg-white/[0.05]"
+        class="absolute pointer-events-none rounded-s bg-bg-neutral-1/60"
         [style.left.px]="h.left"
         [style.top.px]="h.top"
         [style.width.px]="h.width"
@@ -97,7 +93,7 @@ import {
     <!-- Focus ring overlay -->
     @if (focusRect(); as f) {
       <div
-        class="absolute pointer-events-none z-20 rounded-lg border border-[#6B97FF]"
+        class="absolute pointer-events-none z-20 rounded-s border border-border-focus"
         [style.left.px]="f.left - 2"
         [style.top.px]="f.top - 2"
         [style.width.px]="f.width + 4"
@@ -152,14 +148,14 @@ export class DataListComponent
   private readonly derivedSelectedIndex = signal<number | null>(null);
 
   /** Effective selected index: explicit model takes priority, then auto-derived. */
-  private readonly effectiveSelectedIndex = computed<number | null>(() =>
-    this.selectedIndex() ?? this.derivedSelectedIndex(),
+  private readonly effectiveSelectedIndex = computed<number | null>(
+    () => this.selectedIndex() ?? this.derivedSelectedIndex(),
   );
 
   /** Rect of the selected item for the active overlay. */
   protected readonly selectedRect = computed<NxpItemRect | null>(() => {
     const idx = this.effectiveSelectedIndex();
-    return idx == null ? null : this.itemRects()[idx] ?? null;
+    return idx == null ? null : (this.itemRects()[idx] ?? null);
   });
 
   // ------------------------------------------------------------------ host class

@@ -1,5 +1,5 @@
 /**
- * @nxp/blocks/charts
+ * @ngxpro/blocks/charts
  * Chart blocks: AreaChart, LineChart, BarChart, DonutChart, etc.
  */
-export const NXP_CHARTS_ENTRY = '@nxp/blocks/charts';
+export const NXP_CHARTS_ENTRY = '@ngxpro/blocks/charts';

@@ -7,7 +7,10 @@ import { NxpMenuItemDirective } from './menu-item.directive';
   standalone: true,
   imports: [NxpMenuComponent, NxpMenuItemDirective],
   template: `
-    <nxp-menu [checkedIndex]="checked()" (checkedIndexChange)="checked.set($event)">
+    <nxp-menu
+      [checkedIndex]="checked()"
+      (checkedIndexChange)="checked.set($event)"
+    >
       <button nxpMenuItem>Profile</button>
       <button nxpMenuItem>Settings</button>
       <button nxpMenuItem>Sign out</button>
@@ -32,9 +35,18 @@ describe('NxpMenuComponent', () => {
     );
     items.forEach((el, i) => {
       Object.defineProperty(el, 'offsetLeft', { value: 0, configurable: true });
-      Object.defineProperty(el, 'offsetTop', { value: i * 32, configurable: true });
-      Object.defineProperty(el, 'offsetWidth', { value: 240, configurable: true });
-      Object.defineProperty(el, 'offsetHeight', { value: 32, configurable: true });
+      Object.defineProperty(el, 'offsetTop', {
+        value: i * 32,
+        configurable: true,
+      });
+      Object.defineProperty(el, 'offsetWidth', {
+        value: 240,
+        configurable: true,
+      });
+      Object.defineProperty(el, 'offsetHeight', {
+        value: 32,
+        configurable: true,
+      });
     });
     fixture.detectChanges();
     return { fixture, host, items };
@@ -42,9 +54,11 @@ describe('NxpMenuComponent', () => {
 
   it('assigns sequential data-proximity-index on each item', () => {
     const { items } = setup();
-    expect(items.map((el) => el.getAttribute('data-proximity-index'))).toEqual(
-      ['0', '1', '2'],
-    );
+    expect(items.map((el) => el.getAttribute('data-proximity-index'))).toEqual([
+      '0',
+      '1',
+      '2',
+    ]);
   });
 
   it('marks the checked item with aria-checked="true"', () => {

@@ -12,7 +12,7 @@ import {
   ExpandComponent,
   NxpAnimatedProximityBase,
   type NxpItemRect,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';
 import { AccordionDirective } from './accordion.directive';
 import { AccordionItemComponent } from './accordion-item.component';
 
@@ -46,7 +46,7 @@ interface NxpAccordionOpenEntry {
   template: `
     @for (entry of openRectEntries(); track entry.index) {
       <div
-        class="absolute pointer-events-none rounded-lg bg-gray-200/40 dark:bg-gray-700/30"
+        class="absolute pointer-events-none rounded-m bg-bg-neutral-1"
         [style.left.px]="entry.rect.left"
         [style.top.px]="entry.rect.top"
         [style.width.px]="entry.rect.width"
@@ -58,7 +58,7 @@ interface NxpAccordionOpenEntry {
     @if (isHoveringClosed()) {
       @if (hoverRect(); as h) {
         <div
-          class="absolute pointer-events-none rounded-lg bg-gray-200/60 dark:bg-gray-700/40"
+          class="absolute pointer-events-none rounded-m bg-bg-neutral-2/60"
           [style.left.px]="h.left"
           [style.top.px]="h.top"
           [style.width.px]="h.width"
@@ -69,7 +69,7 @@ interface NxpAccordionOpenEntry {
     }
     @if (focusRect(); as f) {
       <div
-        class="absolute pointer-events-none z-20 rounded-lg border border-blue-500"
+        class="absolute pointer-events-none z-20 rounded-m border border-border-focus"
         [style.left.px]="f.left - 2"
         [style.top.px]="f.top - 2"
         [style.width.px]="f.width + 4"

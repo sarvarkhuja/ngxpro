@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxpTree } from '@nxp/components/tree';
+import { NxpTree } from '@ngxpro/components/tree';
 
 interface FileNode {
   name: string;
@@ -21,10 +21,7 @@ const FILE_TREE: FileNode[] = [
       },
       {
         name: 'assets',
-        children: [
-          { name: 'logo.svg' },
-          { name: 'styles.css' },
-        ],
+        children: [{ name: 'logo.svg' }, { name: 'styles.css' }],
       },
       { name: 'main.ts' },
       { name: 'index.html' },
@@ -77,8 +74,9 @@ const FILE_TREE: FileNode[] = [
           File tree
         </h2>
         <p class="text-sm text-gray-500 dark:text-gray-400">
-          Simple mode using <code class="font-mono text-xs">nxpTreeController</code> (no external map).
-          All nodes start collapsed; click the chevron to expand.
+          Simple mode using
+          <code class="font-mono text-xs">nxpTreeController</code> (no external
+          map). All nodes start collapsed; click the chevron to expand.
         </p>
 
         <div
@@ -86,7 +84,11 @@ const FILE_TREE: FileNode[] = [
           class="rounded-lg border border-gray-200 bg-white px-2 py-2 dark:border-gray-700 dark:bg-gray-900"
         >
           @for (item of fileTree; track item.name) {
-            <nxp-tree [value]="item" [childrenHandler]="getChildren" [content]="nodeTemplate" />
+            <nxp-tree
+              [value]="item"
+              [childrenHandler]="getChildren"
+              [content]="nodeTemplate"
+            />
           }
         </div>
       </section>
@@ -105,7 +107,11 @@ const FILE_TREE: FileNode[] = [
           class="rounded-lg border border-gray-200 bg-white px-2 py-2 dark:border-gray-700 dark:bg-gray-900"
         >
           @for (item of nestedTree; track item.name) {
-            <nxp-tree [value]="item" [childrenHandler]="getChildren" [content]="nodeTemplate" />
+            <nxp-tree
+              [value]="item"
+              [childrenHandler]="getChildren"
+              [content]="nodeTemplate"
+            />
           }
         </div>
       </section>
@@ -125,7 +131,11 @@ const FILE_TREE: FileNode[] = [
           class="rounded-lg border border-gray-200 bg-white px-2 py-2 dark:border-gray-700 dark:bg-gray-900"
         >
           @for (item of flatList; track item.name) {
-            <nxp-tree [value]="item" [childrenHandler]="getChildren" [content]="nodeTemplate" />
+            <nxp-tree
+              [value]="item"
+              [childrenHandler]="getChildren"
+              [content]="nodeTemplate"
+            />
           }
         </div>
       </section>

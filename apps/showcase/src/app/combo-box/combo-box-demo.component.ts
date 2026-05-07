@@ -2,18 +2,18 @@ import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NxpDropdownContent } from '@nxp/cdk';
-import { NxpInputDirective } from '@nxp/cdk/components/input';
-import { NxpLabelDirective } from '@nxp/cdk/components/label';
+import { NxpDropdownContent } from '@ngxpro/cdk';
+import { NxpInputDirective } from '@ngxpro/cdk/components/input';
+import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
 import {
   NxpTextfieldComponent,
   NxpTextfieldOptionsDirective,
-} from '@nxp/cdk/components/textfield';
-import { DataListComponent } from '@nxp/components/data-list';
+} from '@ngxpro/cdk/components/textfield';
+import { DataListComponent } from '@ngxpro/components/data-list';
 import {
   NxpComboBoxDirective,
   NxpSelectOptionComponent,
-} from '@nxp/components/combo-box';
+} from '@ngxpro/components/combo-box';
 
 const COUNTRIES = [
   'Afghanistan',

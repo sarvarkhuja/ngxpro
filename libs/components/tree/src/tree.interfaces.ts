@@ -1,4 +1,3 @@
-import type { TemplateRef } from '@angular/core';
 import type { NxpTreeItemComponent } from './tree-item.component';
 
 /** Controller for expand/collapse behavior on tree items. */

@@ -1,6 +1,13 @@
-import { Directive, ElementRef, computed, contentChild, inject, input } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  computed,
+  contentChild,
+  inject,
+  input,
+} from '@angular/core';
 import { NgControl } from '@angular/forms';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 import {
   NXP_BLOCK_GROUP,
   NXP_BLOCK_OPTIONS,
@@ -15,20 +22,20 @@ const SIZE_CLASSES: Record<NxpBlockSize, string> = {
 };
 
 const APPEARANCE_CLASSES: Record<NxpBlockAppearance, string> = {
-  outline: 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
-  filled:  'border-transparent bg-gray-100 dark:bg-gray-800',
+  outline: 'border-border-normal bg-bg-base',
+  filled: 'border-transparent bg-bg-neutral-1',
   primary: 'border-primary/30 bg-primary/10',
-  success: 'border-green-500/30 bg-green-50 dark:border-green-400/30 dark:bg-green-950/30',
-  danger:  'border-red-500/30 bg-red-50 dark:border-red-400/30 dark:bg-red-950/30',
+  success: 'border-status-positive/30 bg-status-positive-pale',
+  danger: 'border-status-negative/30 bg-status-negative-pale',
 };
 
 /** When inside a group, backgrounds must be transparent so overlay divs show through. */
 const APPEARANCE_GROUP_CLASSES: Record<NxpBlockAppearance, string> = {
-  outline: 'border-gray-200 bg-transparent dark:border-gray-700',
-  filled:  'border-transparent bg-transparent',
+  outline: 'border-border-normal bg-transparent',
+  filled: 'border-transparent bg-transparent',
   primary: 'border-primary/30 bg-transparent',
-  success: 'border-green-500/30 bg-transparent dark:border-green-400/30',
-  danger:  'border-red-500/30 bg-transparent dark:border-red-400/30',
+  success: 'border-status-positive/30 bg-transparent',
+  danger: 'border-status-negative/30 bg-transparent',
 };
 
 /**
@@ -86,19 +93,19 @@ export class NxpBlockDirective {
     const disabled = !!this.control()?.disabled;
     const inGroup = !!this.blockGroup;
     return cx(
-      'relative flex cursor-pointer select-none items-start gap-3 rounded-lg border',
-      // Colour-only transition. Safe because border/bg flips are driven by
-      // `:has(input:checked)` at the CSS level — the nested radio/checkbox
-      // reads native state via `:checked`/`peer-checked`, so there is no
-      // Angular-driven class mismatch between first paint and CVA writeValue.
-      'transition-[background-color,border-color,box-shadow] duration-150 ease-out',
+      'relative flex cursor-pointer select-none items-start gap-3 rounded-m border',
+      'transition-[background-color,border-color,box-shadow] duration-normal ease-out',
       // When inside a group, the overlay handles hover/focus/checked — just lift content above overlays
       inGroup && 'z-10',
       // Standalone: block handles its own hover/focus/checked styles
-      !inGroup && 'focus-within:ring-2 focus-within:ring-primary/30 focus-within:ring-offset-1',
-      !inGroup && '[&:has(input:checked)]:border-primary [&:has(input:checked)]:bg-primary/10',
+      !inGroup &&
+        'focus-within:ring-2 focus-within:ring-primary/30 focus-within:ring-offset-1',
+      !inGroup &&
+        '[&:has(input:checked)]:border-primary [&:has(input:checked)]:bg-primary/10',
       SIZE_CLASSES[this.size()],
-      inGroup ? APPEARANCE_GROUP_CLASSES[this.appearance()] : APPEARANCE_CLASSES[this.appearance()],
+      inGroup
+        ? APPEARANCE_GROUP_CLASSES[this.appearance()]
+        : APPEARANCE_CLASSES[this.appearance()],
       !disabled && !inGroup && 'hover:border-primary hover:bg-primary/8',
       disabled && 'cursor-not-allowed opacity-50',
       this.class(),

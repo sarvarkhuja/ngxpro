@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { NXP_FORMAT_OPTIONS, type NgxproFormatOptions } from '../tokens';
+import { NXP_FORMAT_OPTIONS } from '../tokens';
 
 /**
  * Format service for numbers, currency, and dates.
@@ -31,7 +31,7 @@ export class FormatService {
   }
 
   /** Format a number as a percentage. */
-  formatPercent(value: number, decimals: number = 1): string {
+  formatPercent(value: number, decimals = 1): string {
     return new Intl.NumberFormat(this.options.locale, {
       style: 'percent',
       minimumFractionDigits: decimals,

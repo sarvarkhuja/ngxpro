@@ -14,16 +14,19 @@ import {
   type NxpTextfieldSize,
 } from './textfield.options';
 import { cx } from '../../../utils';
-import { NxpDropdownDirective, NxpDropdownOpen } from '../../../portals';
+import {
+  NxpDropdownDirective,
+  NxpDropdownOpen,
+} from '../../../portals/dropdown';
+import { NXP_TEXTFIELD_END } from './textfield-end.directive';
 import { nxpAsDataListHost, NxpDataListHost } from '../../../tokens';
 import {
   NXP_TEXTFIELD,
   nxpAsTextfieldAccessor,
-  NxpTextfieldAccessor,
   NXP_TEXTFIELD_ACCESSOR,
   NXP_LABEL,
+  NxpTextfieldAccessor,
 } from './textfield-accessor';
-import { NXP_TEXTFIELD_END } from './textfield-end.directive';
 
 @Component({
   selector: 'nxp-textfield',
@@ -43,7 +46,7 @@ import { NXP_TEXTFIELD_END } from './textfield-end.directive';
           type="button"
           tabindex="-1"
           aria-label="Clear"
-          class="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-5 w-5 shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400"
+          class="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-5 w-5 shrink-0 items-center justify-center rounded-xs text-text-tertiary transition-colors hover:text-text-primary"
           (click)="clear()"
           (pointerdown.prevent)="(0)"
         >
@@ -95,7 +98,9 @@ export class NxpTextfieldComponent
     read: ElementRef,
   });
 
-  readonly accessor = contentChild<NxpTextfieldAccessor>(NXP_TEXTFIELD_ACCESSOR);
+  readonly accessor = contentChild<NxpTextfieldAccessor>(
+    NXP_TEXTFIELD_ACCESSOR,
+  );
 
   protected readonly labelToken = contentChild(NXP_LABEL);
 
@@ -135,8 +140,7 @@ export class NxpTextfieldComponent
   });
 
   readonly showCleaner = computed(
-    () =>
-      this.options.cleaner() && this.hasValue() && !this.hasEndProjected(),
+    () => this.options.cleaner() && this.hasValue() && !this.hasEndProjected(),
   );
 
   /** True when the trailing slot contains anything (cleaner, iconEnd, or projected). Used by NxpInputDirective for padding. */
@@ -153,7 +157,7 @@ export class NxpTextfieldComponent
 
   protected iconClass(side: 'start' | 'end'): string {
     return cx(
-      'absolute top-1/2 -translate-y-1/2 text-base leading-none text-gray-400 dark:text-gray-500 pointer-events-none z-10',
+      'absolute top-1/2 -translate-y-1/2 text-base leading-none text-text-tertiary pointer-events-none z-10',
       side === 'start' ? 'left-3' : 'right-3',
     );
   }
@@ -172,17 +176,19 @@ export class NxpTextfieldComponent
       return 'relative block';
     }
 
-    // Box mode: relative wrapper IS the styled box.
     return cx(
-      'relative block overflow-hidden rounded-md border transition-colors duration-150',
-      'bg-white dark:bg-gray-950',
-      'border-gray-300 dark:border-gray-800',
+      'relative block overflow-hidden rounded-m border transition-colors duration-normal',
+      'bg-bg-base',
+      'border-border-normal',
       this.effectiveSize() === 'sm' && 'h-8',
       this.effectiveSize() === 'md' && 'h-10',
       this.effectiveSize() === 'lg' && 'h-12',
-      'has-[input:disabled]:opacity-60 has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-gray-50 dark:has-[input:disabled]:bg-gray-900',
-      this.focused() && !this.hasError() && 'ring-2 ring-primary/30 border-primary',
-      this.hasError() && 'ring-2 ring-red-200 dark:ring-red-700/30 border-red-500 dark:border-red-700',
+      'has-[input:disabled]:opacity-50 has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-bg-neutral-1',
+      this.focused() &&
+        !this.hasError() &&
+        'ring-2 ring-primary/30 border-primary',
+      this.hasError() &&
+        'ring-2 ring-status-negative/30 border-status-negative',
     );
   });
 

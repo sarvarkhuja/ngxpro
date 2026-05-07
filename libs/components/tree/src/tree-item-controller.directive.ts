@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { nxpProvide } from '@nxp/cdk';
+import { nxpProvide } from '@ngxpro/cdk';
 import { NXP_TREE_CONTROLLER } from './tree.tokens';
 import type { NxpTreeController } from './tree.interfaces';
 import { NxpTreeItemComponent } from './tree-item.component';

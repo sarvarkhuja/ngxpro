@@ -1,7 +1,7 @@
 import { NxpMultiSelectComponent } from './multi-select.component';
 import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
 import { NxpMultiSelectGroupComponent } from './multi-select-group.component';
-import { DataListComponent } from '@nxp/components/data-list';
+import { DataListComponent } from '@ngxpro/components/data-list';
 
 /**
  * Convenience import array — spread into `imports` to bring in all multi-select pieces.

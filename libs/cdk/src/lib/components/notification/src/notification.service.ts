@@ -5,7 +5,7 @@ import {
   NXP_NOTIFICATION_OPTIONS,
   type NxpNotificationOptions,
 } from './notification.options';
-import { NXP_TIME_BEFORE_UNMOUNT } from '../../../constants/motion';
+import { NXP_TIME_BEFORE_UNMOUNT } from '../../../constants';
 
 // ── Notification state ──────────────────────────────────────────────────────
 
@@ -17,7 +17,10 @@ export interface NxpNotification<T = unknown> {
   /** Unique identifier for this notification. */
   readonly id: string;
   /** Resolved options (merged with defaults). */
-  readonly options: NxpNotificationOptions & { data?: T; content: PolymorpheusContent };
+  readonly options: NxpNotificationOptions & {
+    data?: T;
+    content: PolymorpheusContent;
+  };
   /** Call this to programmatically dismiss the notification. */
   readonly dismiss: () => void;
   /** Animation lifecycle state. */
@@ -49,7 +52,10 @@ export class NxpNotificationService {
     options?: Partial<NxpNotificationOptions & { data?: T }>,
   ): Observable<void> {
     const id = `nxp-notif-${++this._counter}`;
-    const resolved: NxpNotificationOptions & { data?: T; content: PolymorpheusContent } = {
+    const resolved: NxpNotificationOptions & {
+      data?: T;
+      content: PolymorpheusContent;
+    } = {
       ...this.defaultOptions,
       ...options,
       content,

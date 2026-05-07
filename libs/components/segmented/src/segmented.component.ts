@@ -11,7 +11,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { cx, fromResizeObserver, nxpInjectElement, nxpZonefree } from '@nxp/cdk';
+import {
+  cx,
+  fromResizeObserver,
+  nxpInjectElement,
+  nxpZonefree,
+} from '@ngxpro/cdk';
 import { NxpSegmentedDirective } from './segmented.directive';
 import {
   NXP_SEGMENTED_OPTIONS,
@@ -55,75 +60,79 @@ import {
     <ng-content />
     <!-- Animated sliding indicator — sits behind children via z-index -->
     <span
-      class="absolute transition-all duration-200 ease-in-out rounded-[inherit] bg-bg-base shadow-sm pointer-events-none z-0 ring-1 ring-border-normal"
+      class="absolute transition-all duration-slow ease-in-out rounded-[inherit] bg-bg-base shadow-sm pointer-events-none z-0 ring-1 ring-border-normal"
       [style.top.px]="indicatorTop()"
       [style.left.px]="indicatorLeft()"
       [style.width.px]="indicatorWidth()"
       [style.height.px]="indicatorHeight()"
     ></span>
   `,
-  styles: [`
-    /* Item base — button / a / label direct children */
-    nxp-segmented > :is(button, a, label) {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      cursor: pointer;
-      border-radius: inherit;
-      border: none;
-      background: transparent;
-      font: inherit;
-      font-weight: 500;
-      z-index: 1;
-      padding-inline: 0.75rem;
-      transition: color 150ms ease, opacity 150ms ease;
-      color: inherit;
-      text-decoration: none;
-      -webkit-user-select: none;
-      user-select: none;
-    }
+  styles: [
+    `
+      /* Item base — button / a / label direct children */
+      nxp-segmented > :is(button, a, label) {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        cursor: pointer;
+        border-radius: inherit;
+        border: none;
+        background: transparent;
+        font: inherit;
+        font-weight: 500;
+        z-index: 1;
+        padding-inline: 0.75rem;
+        transition:
+          color var(--nxp-duration-normal) ease,
+          opacity var(--nxp-duration-normal) ease;
+        color: inherit;
+        text-decoration: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
 
-    /* Hover on inactive items */
-    nxp-segmented > :is(button, a, label):not([data-active]):hover {
-      color: var(--nxp-text-primary);
-    }
+      /* Hover on inactive items */
+      nxp-segmented > :is(button, a, label):not([data-active]):hover {
+        color: var(--nxp-text-primary);
+      }
 
-    /* Active item — high-contrast text */
-    nxp-segmented > :is(button, a, label)[data-active] {
-      color: var(--nxp-text-primary);
-    }
+      /* Active item — high-contrast text */
+      nxp-segmented > :is(button, a, label)[data-active] {
+        color: var(--nxp-text-primary);
+      }
 
-    /* Focus-visible ring */
-    nxp-segmented > :is(button, a, label):focus-visible {
-      outline: 2px solid var(--color-border-focus, #3b82f6);
-      outline-offset: -2px;
-    }
+      /* Focus-visible ring */
+      nxp-segmented > :is(button, a, label):focus-visible {
+        outline: 2px solid var(--color-border-focus, #3b82f6);
+        outline-offset: -2px;
+      }
 
-    /* Size-driven heights — align with button component (sm=h-8, md=h-10, lg=h-12) */
-    /* sm:  container p-0.5 (2px) × 2 + item 28px = 32px = h-8  */
-    /* md:  container p-1   (4px) × 2 + item 32px = 40px = h-10 */
-    /* lg:  container p-1   (4px) × 2 + item 40px = 48px = h-12 */
-    nxp-segmented[data-size="sm"] > :is(button, a, label) {
-      height: 1.75rem;   /* 28px */
-      padding-inline: 0.625rem;
-      font-size: 0.75rem;
-      line-height: 1rem;
-    }
-    nxp-segmented[data-size="md"] > :is(button, a, label) {
-      height: 2rem;      /* 32px */
-      padding-inline: 0.875rem;
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-    }
-    nxp-segmented[data-size="lg"] > :is(button, a, label) {
-      height: 2.5rem;    /* 40px */
-      padding-inline: 1.125rem;
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
-  `],
+      /* Size-driven heights — align with button component (sm=h-8, md=h-10, lg=h-12) */
+      /* sm:  container p-0.5 (2px) × 2 + item 28px = 32px = h-8  */
+      /* md:  container p-1   (4px) × 2 + item 32px = 40px = h-10 */
+      /* lg:  container p-1   (4px) × 2 + item 40px = 48px = h-12 */
+      nxp-segmented[data-size='sm'] > :is(button, a, label) {
+        height: 1.75rem; /* 28px */
+        padding-inline: 0.625rem;
+        font-size: 0.75rem;
+        line-height: 1rem;
+      }
+      nxp-segmented[data-size='md'] > :is(button, a, label) {
+        height: 2rem; /* 32px */
+        padding-inline: 0.875rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+      }
+      nxp-segmented[data-size='lg'] > :is(button, a, label) {
+        height: 2.5rem; /* 40px */
+        padding-inline: 1.125rem;
+        font-size: 1rem;
+        line-height: 1.5rem;
+      }
+    `,
+  ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [NxpSegmentedDirective],
@@ -150,28 +159,21 @@ export class NxpSegmentedComponent implements AfterViewInit, OnChanges {
   protected readonly indicatorHeight = signal(0);
 
   protected readonly hostClass = computed(() => {
-    // Border-radius per size — smaller container radius uses smaller child radius via inherit
     const radiusBySize: Record<NxpSegmentedSize, string> = {
-      sm: 'rounded-lg',   // 8px container → ~6px items (rounded-md feel)
-      md: 'rounded-xl',   // 12px container → ~10px items
-      lg: 'rounded-2xl',  // 16px container → ~14px items
+      sm: 'rounded-m',
+      md: 'rounded-l',
+      lg: 'rounded-xl',
     };
-    // Padding per size (leaves room for indicator inset)
     const paddingBySize: Record<NxpSegmentedSize, string> = {
-      sm: 'p-0.5', // 2px — total height: 28 + 4 = 32px (h-8)
-      md: 'p-1',   // 4px — total height: 32 + 8 = 40px (h-10)
-      lg: 'p-1',   // 4px — total height: 40 + 8 = 48px (h-12)
+      sm: 'p-0.5',
+      md: 'p-1',
+      lg: 'p-1',
     };
     return cx(
-      // Layout
       'relative inline-flex flex-shrink-0 overflow-hidden',
-      // Background — subtle tray
       'bg-bg-neutral-1',
-      // Default text — muted, inactive color
       'text-text-secondary',
-      // Font
       'font-medium',
-      // Size-specific
       radiusBySize[this.size()],
       paddingBySize[this.size()],
     );

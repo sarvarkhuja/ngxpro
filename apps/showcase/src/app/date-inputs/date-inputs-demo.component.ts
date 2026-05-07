@@ -2,13 +2,11 @@ import { DecimalPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { InputDateComponent } from '@nxp/components/input-date';
-import { InputDateRangeComponent } from '@nxp/components/input-date-range';
-import { InputMonthComponent } from '@nxp/components/input-month';
-import {
-  createDefaultDateRangePeriods,
-} from '@nxp/components/calendar-range';
-import type { MonthCoord } from '@nxp/components/calendar-month';
+import { InputDateComponent } from '@ngxpro/components/input-date';
+import { InputDateRangeComponent } from '@ngxpro/components/input-date-range';
+import { InputMonthComponent } from '@ngxpro/components/input-month';
+import { createDefaultDateRangePeriods } from '@ngxpro/components/calendar-range';
+import type { MonthCoord } from '@ngxpro/components/calendar-month';
 
 /**
  * Showcase demo for the three date input components:
@@ -31,11 +29,14 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
   template: `
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
       <div class="max-w-4xl mx-auto space-y-16">
-
         <!-- Page header -->
         <div>
-          <a routerLink="/" class="text-sm text-blue-500 hover:underline">← Back to home</a>
-          <h1 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white">Date Inputs</h1>
+          <a routerLink="/" class="text-sm text-blue-500 hover:underline"
+            >← Back to home</a
+          >
+          <h1 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white">
+            Date Inputs
+          </h1>
           <p class="mt-2 text-gray-600 dark:text-gray-400">
             Text inputs with calendar dropdowns. All support keyboard date entry
             and Angular reactive/template-driven forms.
@@ -46,15 +47,18 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
              Section 1: InputDate
         ================================================================ -->
         <section class="space-y-8">
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h2
+            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
+          >
             nxp-input-date
           </h2>
 
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-
             <!-- 1a. Standalone signal -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Signal binding</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Signal binding
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Click to open calendar or type directly (MM/DD/YYYY).
               </p>
@@ -63,37 +67,54 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
                 (valueChange)="singleDate.set($event)"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                Value: <code class="font-mono">{{ singleDate() ? singleDate()!.toLocaleDateString() : 'null' }}</code>
+                Value:
+                <code class="font-mono">{{
+                  singleDate() ? singleDate()!.toLocaleDateString() : 'null'
+                }}</code>
               </p>
             </div>
 
             <!-- 1b. ngModel -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">With [(ngModel)]</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                With [(ngModel)]
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Two-way binding via template-driven forms.
               </p>
               <nxp-input-date [(ngModel)]="ngModelDate" />
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                ngModel: <code class="font-mono">{{ ngModelDate ? ngModelDate.toLocaleDateString() : 'null' }}</code>
+                ngModel:
+                <code class="font-mono">{{
+                  ngModelDate ? ngModelDate.toLocaleDateString() : 'null'
+                }}</code>
               </p>
             </div>
 
             <!-- 1c. Reactive form -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Reactive form</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Reactive form
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Works with <code class="font-mono text-xs">FormControl</code>.
               </p>
               <nxp-input-date [formControl]="dateControl" />
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                Control: <code class="font-mono">{{ dateControl.value ? dateControl.value.toLocaleDateString() : 'null' }}</code>
+                Control:
+                <code class="font-mono">{{
+                  dateControl.value
+                    ? dateControl.value.toLocaleDateString()
+                    : 'null'
+                }}</code>
               </p>
             </div>
 
             <!-- 1d. Min / Max bounds -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Min / Max bounds</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Min / Max bounds
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Only dates within ±7 days of today are selectable.
               </p>
@@ -104,13 +125,18 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
                 (valueChange)="boundedDate.set($event)"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                Value: <code class="font-mono">{{ boundedDate() ? boundedDate()!.toLocaleDateString() : 'null' }}</code>
+                Value:
+                <code class="font-mono">{{
+                  boundedDate() ? boundedDate()!.toLocaleDateString() : 'null'
+                }}</code>
               </p>
             </div>
 
             <!-- 1e. Disabled -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Disabled state</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Disabled state
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 The input is non-interactive when disabled.
               </p>
@@ -120,7 +146,6 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
                 placeholder="Disabled input"
               />
             </div>
-
           </div>
         </section>
 
@@ -128,17 +153,21 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
              Section 2: InputDateRange
         ================================================================ -->
         <section class="space-y-8">
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h2
+            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
+          >
             nxp-input-date-range
           </h2>
 
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-
             <!-- 2a. Basic -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Basic range picker</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Basic range picker
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                Click once for start, again for end. Or type "MM/DD/YYYY – MM/DD/YYYY".
+                Click once for start, again for end. Or type "MM/DD/YYYY –
+                MM/DD/YYYY".
               </p>
               <nxp-input-date-range
                 [value]="range()"
@@ -146,7 +175,11 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 @if (range()) {
-                  Range: <code class="font-mono">{{ range()![0].toLocaleDateString() }} – {{ range()![1].toLocaleDateString() }}</code>
+                  Range:
+                  <code class="font-mono"
+                    >{{ range()![0].toLocaleDateString() }} –
+                    {{ range()![1].toLocaleDateString() }}</code
+                  >
                 } @else {
                   Range: <code class="font-mono">null</code>
                 }
@@ -155,7 +188,9 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
 
             <!-- 2b. With preset periods -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">With preset periods sidebar</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                With preset periods sidebar
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Predefined ranges shown in a sidebar for quick selection.
               </p>
@@ -166,7 +201,11 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 @if (rangeWithPresets()) {
-                  Range: <code class="font-mono">{{ rangeWithPresets()![0].toLocaleDateString() }} – {{ rangeWithPresets()![1].toLocaleDateString() }}</code>
+                  Range:
+                  <code class="font-mono"
+                    >{{ rangeWithPresets()![0].toLocaleDateString() }} –
+                    {{ rangeWithPresets()![1].toLocaleDateString() }}</code
+                  >
                 } @else {
                   Range: <code class="font-mono">null</code>
                 }
@@ -175,7 +214,9 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
 
             <!-- 2c. Min / Max length constraint -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Length constraints</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Length constraints
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Minimum 3 days, maximum 14 days allowed.
               </p>
@@ -187,7 +228,11 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 @if (constrainedRange()) {
-                  Range: <code class="font-mono">{{ constrainedRange()![0].toLocaleDateString() }} – {{ constrainedRange()![1].toLocaleDateString() }}</code>
+                  Range:
+                  <code class="font-mono"
+                    >{{ constrainedRange()![0].toLocaleDateString() }} –
+                    {{ constrainedRange()![1].toLocaleDateString() }}</code
+                  >
                 } @else {
                   Range: <code class="font-mono">null</code>
                 }
@@ -196,20 +241,25 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
 
             <!-- 2d. Reactive form -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Reactive form</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Reactive form
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Works with <code class="font-mono text-xs">FormControl</code>.
               </p>
               <nxp-input-date-range [formControl]="rangeControl" />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 @if (rangeControl.value) {
-                  Control: <code class="font-mono">{{ rangeControl.value[0].toLocaleDateString() }} – {{ rangeControl.value[1].toLocaleDateString() }}</code>
+                  Control:
+                  <code class="font-mono"
+                    >{{ rangeControl.value[0].toLocaleDateString() }} –
+                    {{ rangeControl.value[1].toLocaleDateString() }}</code
+                  >
                 } @else {
                   Control: <code class="font-mono">null</code>
                 }
               </p>
             </div>
-
           </div>
         </section>
 
@@ -217,15 +267,18 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
              Section 3: InputMonth
         ================================================================ -->
         <section class="space-y-8">
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h2
+            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
+          >
             nxp-input-month
           </h2>
 
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-
             <!-- 3a. Basic -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Single month picker</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Single month picker
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Click to open the month grid and select a month.
               </p>
@@ -235,7 +288,12 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 @if (selectedMonth()) {
-                  Value: <code class="font-mono">{{ selectedMonth()!.year }}-{{ selectedMonth()!.month + 1 | number:'2.0-0' }}</code>
+                  Value:
+                  <code class="font-mono"
+                    >{{ selectedMonth()!.year }}-{{
+                      selectedMonth()!.month + 1 | number: '2.0-0'
+                    }}</code
+                  >
                 } @else {
                   Value: <code class="font-mono">null</code>
                 }
@@ -244,14 +302,21 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
 
             <!-- 3b. ngModel -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">With [(ngModel)]</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                With [(ngModel)]
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Two-way binding via template-driven forms.
               </p>
               <nxp-input-month [(ngModel)]="ngModelMonth" />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 @if (ngModelMonth) {
-                  ngModel: <code class="font-mono">{{ ngModelMonth.year }}-{{ ngModelMonth.month + 1 | number:'2.0-0' }}</code>
+                  ngModel:
+                  <code class="font-mono"
+                    >{{ ngModelMonth.year }}-{{
+                      ngModelMonth.month + 1 | number: '2.0-0'
+                    }}</code
+                  >
                 } @else {
                   ngModel: <code class="font-mono">null</code>
                 }
@@ -260,7 +325,9 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
 
             <!-- 3c. Min / Max bounds -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Min / Max bounds</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Min / Max bounds
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Limited to months within 2024–2025.
               </p>
@@ -272,7 +339,12 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 @if (boundedMonth()) {
-                  Value: <code class="font-mono">{{ boundedMonth()!.year }}-{{ boundedMonth()!.month + 1 | number:'2.0-0' }}</code>
+                  Value:
+                  <code class="font-mono"
+                    >{{ boundedMonth()!.year }}-{{
+                      boundedMonth()!.month + 1 | number: '2.0-0'
+                    }}</code
+                  >
                 } @else {
                   Value: <code class="font-mono">null</code>
                 }
@@ -281,7 +353,9 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
 
             <!-- 3d. Disabled -->
             <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">Disabled state</h3>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                Disabled state
+              </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 The input is non-interactive when disabled.
               </p>
@@ -291,10 +365,8 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
                 placeholder="Disabled"
               />
             </div>
-
           </div>
         </section>
-
       </div>
     </div>
   `,
@@ -331,6 +403,6 @@ export class DateInputsDemoComponent {
   ngModelMonth: MonthCoord | null = null;
   readonly boundedMonth = signal<MonthCoord | null>(null);
 
-  readonly minMonth: MonthCoord = { year: 2024, month: 0 };   // Jan 2024
-  readonly maxMonth: MonthCoord = { year: 2025, month: 11 };  // Dec 2025
+  readonly minMonth: MonthCoord = { year: 2024, month: 0 }; // Jan 2024
+  readonly maxMonth: MonthCoord = { year: 2025, month: 11 }; // Dec 2025
 }

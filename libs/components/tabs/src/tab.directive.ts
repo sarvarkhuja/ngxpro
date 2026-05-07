@@ -51,10 +51,10 @@ export const NXP_TAB_ACTIVATE = 'nxp-tab-activate';
     // Base layout classes — active/inactive colors managed by NxpTabsDirective.markTabAsActive()
     class:
       'relative z-10 inline-flex items-center gap-2 whitespace-nowrap cursor-pointer select-none ' +
-      'transition-colors duration-150 ' +
-      'focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 ' +
-      'text-gray-500 hover:text-gray-700 ' +
-      'disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none',
+      'transition-colors duration-normal ' +
+      'focus:outline-none focus-visible:ring-1 focus-visible:ring-border-focus focus-visible:ring-offset-1 ' +
+      'text-text-secondary hover:text-text-primary ' +
+      'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
   },
 })
 export class NxpTabDirective implements OnDestroy {
@@ -66,9 +66,7 @@ export class NxpTabDirective implements OnDestroy {
   @HostListener('click')
   protected onClick(): void {
     if (this.disabled()) return;
-    this.el.dispatchEvent(
-      new CustomEvent(NXP_TAB_ACTIVATE, { bubbles: true }),
-    );
+    this.el.dispatchEvent(new CustomEvent(NXP_TAB_ACTIVATE, { bubbles: true }));
   }
 
   ngOnDestroy(): void {

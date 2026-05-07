@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { AccordionComponent } from './accordion.component';
-import { cx, ExpandComponent } from '@nxp/cdk';
+import { cx, ExpandComponent } from '@ngxpro/cdk';
 
 /**
  * Individual accordion item with trigger and collapsible content.
@@ -38,15 +38,13 @@ import { cx, ExpandComponent } from '@nxp/cdk';
       <i [class]="iconClasses()" aria-hidden="true"></i>
     </button>
     <nxp-expand [expanded]="expanded()">
-      <div
-        class="overflow-hidden px-3 pb-2 text-[13px] text-gray-700 dark:text-gray-200"
-      >
+      <div class="overflow-hidden px-3 pb-2 text-[13px] text-text-secondary">
         <ng-content />
       </div>
     </nxp-expand>
   `,
   host: {
-    class: 'relative block rounded-lg overflow-hidden',
+    class: 'relative block rounded-l overflow-hidden',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -66,17 +64,17 @@ export class AccordionItemComponent {
   private readonly accordion = inject(AccordionComponent, { optional: true });
 
   readonly triggerClasses = cx(
-    'flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] text-gray-800 dark:text-gray-200',
-    'hover:bg-gray-200/40 dark:hover:bg-gray-700/30',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
-    'disabled:cursor-default disabled:text-gray-400 dark:disabled:text-gray-600',
+    'flex w-full cursor-pointer items-center gap-2.5 rounded-m px-3 py-2 text-left text-[13px] text-text-primary',
+    'hover:bg-bg-neutral-1',
+    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
+    'disabled:cursor-default disabled:text-text-tertiary',
   );
 
   readonly iconClasses = () =>
     cx(
-      'ri-arrow-right-s-line shrink-0 text-base leading-none text-gray-500 dark:text-gray-400 transition-transform duration-[160ms] ease-[cubic-bezier(0.22,1.2,0.36,1)]',
+      'ri-arrow-right-s-line shrink-0 text-base leading-none text-text-secondary transition-transform duration-normal ease-[cubic-bezier(0.22,1.2,0.36,1)]',
       this.expanded() && 'rotate-90',
-      this.disabled() && '!text-gray-300 dark:!text-gray-700',
+      this.disabled() && '!text-text-tertiary',
     );
 
   toggle(): void {

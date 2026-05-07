@@ -12,8 +12,14 @@ import {
 @Directive({ providers: [nxpDropdownOptionsProvider({ limitWidth: 'fixed' })] })
 export class NxpDropdownFixed {
   constructor() {
-    const override = nxpOverrideOptions({ limitWidth: 'fixed' }, NXP_DROPDOWN_DEFAULT_OPTIONS);
-    override(inject(NXP_DROPDOWN_OPTIONS, { self: true, optional: true }), null);
+    const override = nxpOverrideOptions(
+      { limitWidth: 'fixed' },
+      NXP_DROPDOWN_DEFAULT_OPTIONS,
+    );
+    override(
+      inject(NXP_DROPDOWN_OPTIONS, { self: true, optional: true }),
+      null,
+    );
   }
 }
 
@@ -23,6 +29,7 @@ export class NxpDropdownFixed {
 @Directive()
 export class NxpDropdownAuto {
   constructor() {
-    (inject(NXP_DROPDOWN_OPTIONS) as any).limitWidth = 'auto';
+    (inject(NXP_DROPDOWN_OPTIONS) as { limitWidth: 'auto' }).limitWidth =
+      'auto';
   }
 }

@@ -40,9 +40,7 @@ export class NxpTabsDirective implements AfterViewChecked {
 
   /** All direct `[nxpTab]` elements within this tablist. */
   get tabs(): HTMLElement[] {
-    return Array.from(
-      this.el.querySelectorAll('[nxpTab]'),
-    ) as HTMLElement[];
+    return Array.from(this.el.querySelectorAll('[nxpTab]')) as HTMLElement[];
   }
 
   /** The currently active tab element, or null if none. */
@@ -84,11 +82,9 @@ export class NxpTabsDirective implements AfterViewChecked {
     tabs.forEach((el) => {
       const active = el === activeElement;
       el.classList.toggle('_active', active);
-      el.classList.toggle('text-gray-900', active);
-      el.classList.toggle('dark:text-gray-100', active);
+      el.classList.toggle('text-text-primary', active);
       el.classList.toggle('font-semibold', active);
-      el.classList.toggle('text-gray-500', !active);
-      el.classList.toggle('dark:text-gray-400', !active);
+      el.classList.toggle('text-text-secondary', !active);
       el.setAttribute('tabindex', active ? '0' : '-1');
       el.setAttribute('aria-selected', active ? 'true' : 'false');
     });

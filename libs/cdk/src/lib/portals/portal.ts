@@ -12,7 +12,7 @@ import {
 } from '@taiga-ui/polymorpheus';
 import { Observable, type Observer } from 'rxjs';
 import { nxpGenerateId } from '../utils/generate-id';
-import type { NxpPortalService } from './portal.service';
+import { NxpPortalService } from './portal.service';
 
 /** Context passed to portal content (observer + portal options). */
 export type NxpPortalContext<T, O = void> = T & {
@@ -34,11 +34,11 @@ export abstract class NxpPortal<T, K = void> {
 
   private readonly injector = inject(INJECTOR);
 
-  constructor(protected readonly service: NxpPortalService) {}
+  protected readonly service = inject(NxpPortalService);
 
   open<G = void>(
     content: PolymorpheusContent<NxpPortalContext<T, K extends void ? G : K>>,
-    options: Partial<T> = {}
+    options: Partial<T> = {},
   ): Observable<K extends void ? G : K> {
     return new Observable((observer) =>
       this.add(
@@ -63,9 +63,9 @@ export abstract class NxpPortal<T, K = void> {
                 } satisfies NxpPortalContext<T, K extends void ? G : K>,
               },
             ],
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
   }
 

@@ -1,4 +1,3 @@
-
 import { nxpCreateOptions } from '../../../utils';
 import type { CalendarOptions } from './calendar-options.interface';
 

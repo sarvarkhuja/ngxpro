@@ -34,8 +34,12 @@ export abstract class NxpDriverDirective implements AfterViewInit {
   public abstract type: string;
 
   private readonly destroyRef = inject(DestroyRef);
-  private readonly drivers = toArray(inject(NxpDriver, { self: true, optional: true }));
-  private readonly vehicles = toArray(inject(NxpVehicle, { self: true, optional: true }));
+  private readonly drivers = toArray(
+    inject(NxpDriver, { self: true, optional: true }),
+  );
+  private readonly vehicles = toArray(
+    inject(NxpVehicle, { self: true, optional: true }),
+  );
 
   public ngAfterViewInit(): void {
     const vehicle = this.vehicles.find(({ type }) => type === this.type);

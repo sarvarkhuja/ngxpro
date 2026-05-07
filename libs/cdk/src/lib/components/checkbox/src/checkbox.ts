@@ -6,11 +6,14 @@ import { NxpCheckboxDirective } from './checkbox.directive';
  *
  * @example
  * ```typescript
- * import { NxpCheckbox } from '@nxp/components/checkbox';
+ * import { NxpCheckbox } from '@ngxpro/components/checkbox';
  *
  * @Component({
  *   imports: [...NxpCheckbox],
  * })
  * ```
  */
-export const NxpCheckbox = [NxpCheckboxComponent, NxpCheckboxDirective] as const;
+export const NxpCheckbox = [
+  NxpCheckboxComponent,
+  NxpCheckboxDirective,
+] as const;

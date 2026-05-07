@@ -12,7 +12,9 @@ import { NxpPortal } from './portal';
  * Pattern from Taiga UI TuiPortalDirective.
  */
 @Directive()
-export class NxpPortalDirective<T> extends PolymorpheusTemplate<NxpPortalContext<T>> {
+export class NxpPortalDirective<T> extends PolymorpheusTemplate<
+  NxpPortalContext<T>
+> {
   private readonly portal = inject(NxpPortal<T>);
 
   readonly options = input<Partial<T>>({});

@@ -20,7 +20,11 @@ export const NXP_FLOATING_PRECISION = 7;
  *   [100, 30_000_000],
  * ];
  */
-export type NxpKeySteps = [[0, number], ...Array<[number, number]>, [100, number]];
+export type NxpKeySteps = [
+  [0, number],
+  ...Array<[number, number]>,
+  [100, number],
+];
 
 function findKeyStepBoundaries(
   keySteps: NxpKeySteps,
@@ -51,7 +55,10 @@ export function nxpPercentageToKeyStepValue(
 /**
  * Converts a real domain value to the percentage (0–100) using key steps.
  */
-export function nxpKeyStepValueToPercentage(value: number, keySteps: NxpKeySteps): number {
+export function nxpKeyStepValueToPercentage(
+  value: number,
+  keySteps: NxpKeySteps,
+): number {
   const [[lowerPercent, lowerValue], [upperPercent, upperValue]] =
     findKeyStepBoundaries(keySteps, ([, v]) => value <= v);
   const ratio = (value - lowerValue) / (upperValue - lowerValue) || 0;

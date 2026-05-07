@@ -22,9 +22,10 @@ type Options<D> = Omit<NxpDialogOptions<D>, 'data'> & { injector?: Injector };
  */
 export function nxpDialog<D, R = void>(
   component: Type<{ context: unknown }>,
-  opts: Partial<Options<D>> = {}
+  opts: Partial<Options<D>> = {},
 ): (data: D) => Observable<R> {
-  const injector = opts.injector ?? (assertInInjectionContext(nxpDialog), inject(INJECTOR));
+  const injector =
+    opts.injector ?? (assertInInjectionContext(nxpDialog), inject(INJECTOR));
   const dialogService = injector.get(NxpDialogService);
   const { injector: _i, ...options } = opts;
 

@@ -4,7 +4,7 @@ import {
   NxpLinkDirective,
   type LinkSize,
   type LinkVariant,
-} from '@nxp/cdk/components/link';
+} from '@ngxpro/cdk/components/link';
 
 @Component({
   selector: 'app-link-demo',

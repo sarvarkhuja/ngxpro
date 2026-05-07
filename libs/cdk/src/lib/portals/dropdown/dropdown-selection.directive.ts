@@ -1,15 +1,12 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import {
-  computed,
-  Directive,
-  inject,
-  input,
-  PLATFORM_ID,
-} from '@angular/core';
+import { computed, Directive, inject, input, PLATFORM_ID } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { EMPTY_CLIENT_RECT, NXP_TRUE_HANDLER } from '../../constants';
 import { nxpAsDriver, NxpDriver } from '../../classes/driver';
-import { nxpAsRectAccessor, type NxpRectAccessor } from '../../classes/accessors';
+import {
+  nxpAsRectAccessor,
+  type NxpRectAccessor,
+} from '../../classes/accessors';
 import { nxpInjectElement } from '../../utils/inject-element';
 import { nxpIsString } from '../../utils/is-string';
 import { nxpGetWordRange } from '../../utils/get-word-range';
@@ -34,17 +31,18 @@ import { NxpDropdownDirective } from './dropdown.directive';
  */
 @Directive({
   selector: '[nxpDropdownSelection]',
-  providers: [nxpAsDriver(NxpDropdownSelection), nxpAsRectAccessor(NxpDropdownSelection)],
+  providers: [
+    nxpAsDriver(NxpDropdownSelection),
+    nxpAsRectAccessor(NxpDropdownSelection),
+  ],
 })
-export class NxpDropdownSelection
-  extends NxpDriver
-  implements NxpRectAccessor
-{
+export class NxpDropdownSelection extends NxpDriver implements NxpRectAccessor {
   protected readonly doc = inject(DOCUMENT);
   protected readonly dropdown = inject(NxpDropdownDirective);
   protected readonly el = nxpInjectElement();
-  protected readonly handler = computed((visible = this.nxpDropdownSelection()) =>
-    nxpIsString(visible) ? NXP_TRUE_HANDLER : visible,
+  protected readonly handler = computed(
+    (visible = this.nxpDropdownSelection()) =>
+      nxpIsString(visible) ? NXP_TRUE_HANDLER : visible,
   );
 
   protected readonly stream$ = combineLatest([
@@ -83,10 +81,12 @@ export class NxpDropdownSelection
     : ({} as unknown as Range);
 
   public readonly type = 'dropdown';
-  public readonly nxpDropdownSelection = input<NxpBooleanHandler<Range> | string>('');
-  public readonly nxpDropdownSelectionPosition = input<'selection' | 'tag' | 'word'>(
-    'selection',
-  );
+  public readonly nxpDropdownSelection = input<
+    NxpBooleanHandler<Range> | string
+  >('');
+  public readonly nxpDropdownSelectionPosition = input<
+    'selection' | 'tag' | 'word'
+  >('selection');
 
   constructor() {
     super((subscriber) => this.stream$.subscribe(subscriber));
@@ -113,7 +113,8 @@ export class NxpDropdownSelection
 
   private getRange(): Range {
     const selection = this.doc.getSelection();
-    const range = (selection?.rangeCount && selection.getRangeAt(0)) || this.range;
+    const range =
+      (selection?.rangeCount && selection.getRangeAt(0)) || this.range;
     return range.cloneRange();
   }
 

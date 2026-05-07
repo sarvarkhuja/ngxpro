@@ -10,17 +10,18 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx } from '../../../utils';
+
 import { NXP_CHECKBOX_OPTIONS } from './checkbox.options';
+import { cx } from '../../../utils';
 
 export type NxpCheckboxSize = 's' | 'm' | 'l';
 export type NxpCheckboxColor = 'primary' | 'secondary' | 'danger';
 
 const SIZE_PX: Record<NxpCheckboxSize, number> = { s: 16, m: 18, l: 22 };
 const SIZE_RADIUS: Record<NxpCheckboxSize, string> = {
-  s: '4px',
-  m: '5px',
-  l: '6px',
+  s: 'var(--nxp-radius-s)',
+  m: 'var(--nxp-radius-s)',
+  l: 'var(--nxp-radius-s)',
 };
 
 /**
@@ -110,10 +111,16 @@ export class NxpCheckboxComponent implements ControlValueAccessor {
   readonly class = input<string>('');
 
   private readonly cvaDisabled = signal(false);
-  readonly disabled = computed(() => this.disabledInput() || this.cvaDisabled());
+  readonly disabled = computed(
+    () => this.disabledInput() || this.cvaDisabled(),
+  );
 
-  private onChange: (value: boolean) => void = () => {};
-  onTouched: () => void = () => {};
+  private onChange: (value: boolean) => void = () => {
+    /* noop */
+  };
+  onTouched: () => void = () => {
+    /* noop */
+  };
 
   readonly sizePx = computed(() => SIZE_PX[this.size()]);
   readonly borderRadius = computed(() => SIZE_RADIUS[this.size()]);
@@ -131,40 +138,26 @@ export class NxpCheckboxComponent implements ControlValueAccessor {
     return cx(
       'relative shrink-0 cursor-pointer',
       'border-[1.5px] border-solid',
-      'transition-colors duration-[80ms] ease-out',
+      'transition-colors duration-fast ease-out',
 
-      // Base (unchecked) colours
-      'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800',
+      'border-border-normal bg-bg-base',
       'text-transparent',
-      // Hover (on the sibling input → via peer)
-      'peer-hover:border-neutral-400 dark:peer-hover:border-neutral-500',
-      // Disabled
+      'peer-hover:border-border-hover',
       'peer-disabled:opacity-50 peer-disabled:cursor-not-allowed',
 
-      // Focus ring
-      'peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2',
-      color === 'primary' && 'peer-focus-visible:ring-blue-500',
-      color === 'secondary' && 'peer-focus-visible:ring-gray-500',
-      color === 'danger' && 'peer-focus-visible:ring-red-500',
+      'peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-border-focus',
 
-      // Filled state (checked OR indeterminate) — purely CSS-driven.
       color === 'primary' && [
-        'peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:text-white',
-        'peer-indeterminate:border-blue-600 peer-indeterminate:bg-blue-600 peer-indeterminate:text-white',
-        'dark:peer-checked:border-blue-400 dark:peer-checked:bg-blue-400 dark:peer-checked:text-gray-900',
-        'dark:peer-indeterminate:border-blue-400 dark:peer-indeterminate:bg-blue-400 dark:peer-indeterminate:text-gray-900',
+        'peer-checked:border-primary peer-checked:bg-primary peer-checked:text-text-on-accent',
+        'peer-indeterminate:border-primary peer-indeterminate:bg-primary peer-indeterminate:text-text-on-accent',
       ],
       color === 'secondary' && [
-        'peer-checked:border-gray-600 peer-checked:bg-gray-600 peer-checked:text-white',
-        'peer-indeterminate:border-gray-600 peer-indeterminate:bg-gray-600 peer-indeterminate:text-white',
-        'dark:peer-checked:border-gray-400 dark:peer-checked:bg-gray-400 dark:peer-checked:text-gray-900',
-        'dark:peer-indeterminate:border-gray-400 dark:peer-indeterminate:bg-gray-400 dark:peer-indeterminate:text-gray-900',
+        'peer-checked:border-bg-neutral-2 peer-checked:bg-bg-neutral-2 peer-checked:text-text-primary',
+        'peer-indeterminate:border-bg-neutral-2 peer-indeterminate:bg-bg-neutral-2 peer-indeterminate:text-text-primary',
       ],
       color === 'danger' && [
-        'peer-checked:border-red-600 peer-checked:bg-red-600 peer-checked:text-white',
-        'peer-indeterminate:border-red-600 peer-indeterminate:bg-red-600 peer-indeterminate:text-white',
-        'dark:peer-checked:border-red-400 dark:peer-checked:bg-red-400 dark:peer-checked:text-gray-900',
-        'dark:peer-indeterminate:border-red-400 dark:peer-indeterminate:bg-red-400 dark:peer-indeterminate:text-gray-900',
+        'peer-checked:border-status-negative peer-checked:bg-status-negative peer-checked:text-text-on-accent',
+        'peer-indeterminate:border-status-negative peer-indeterminate:bg-status-negative peer-indeterminate:text-text-on-accent',
       ],
     );
   });

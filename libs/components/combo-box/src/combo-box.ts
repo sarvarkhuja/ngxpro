@@ -1,8 +1,11 @@
-import { NxpDropdownContent } from '@nxp/cdk';
-import { NxpTextfieldComponent } from '@nxp/cdk/components/textfield';
-import { NxpLabelDirective } from '@nxp/cdk/components/label';
-import { NxpInputDirective } from '@nxp/cdk/components/input';
-import { DataListComponent, OptionDirective } from '@nxp/components/data-list';
+import { NxpDropdownContent } from '@ngxpro/cdk';
+import { NxpTextfieldComponent } from '@ngxpro/cdk/components/textfield';
+import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
+import { NxpInputDirective } from '@ngxpro/cdk/components/input';
+import {
+  DataListComponent,
+  OptionDirective,
+} from '@ngxpro/components/data-list';
 import { NxpComboBoxDirective } from './combo-box.directive';
 import { NxpSelectOptionComponent } from './select-option.component';
 

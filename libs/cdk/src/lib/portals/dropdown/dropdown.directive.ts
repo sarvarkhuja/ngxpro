@@ -26,7 +26,10 @@ import { NxpPortalService } from '../portal.service';
 import { nxpCheckFixedPosition } from '../../utils/check-fixed-position';
 import { nxpInjectElement } from '../../utils/inject-element';
 import { NxpActiveZone } from '../../directives/active-zone.directive';
-import { NxpDropdownDriver, NxpDropdownDriverDirective } from './dropdown.driver';
+import {
+  NxpDropdownDriver,
+  NxpDropdownDriverDirective,
+} from './dropdown.driver';
 import { NXP_DROPDOWN_COMPONENT } from './dropdown.providers';
 import { NxpDropdownPosition } from './dropdown-position.directive';
 import type { NxpContext } from '../../types';
@@ -85,11 +88,12 @@ export class NxpDropdownDirective
 
   public readonly nxpDropdown =
     input<PolymorpheusContent<NxpContext<() => void>>>();
-  public readonly content = computed<PolymorpheusContent<NxpContext<() => void>>>(
-    (content = this.nxpDropdown()) =>
-      content instanceof TemplateRef
-        ? new PolymorpheusTemplate(content, this.cdr)
-        : content,
+  public readonly content = computed<
+    PolymorpheusContent<NxpContext<() => void>>
+  >((content = this.nxpDropdown()) =>
+    content instanceof TemplateRef
+      ? new PolymorpheusTemplate(content, this.cdr)
+      : content,
   );
 
   public get position(): 'absolute' | 'fixed' {

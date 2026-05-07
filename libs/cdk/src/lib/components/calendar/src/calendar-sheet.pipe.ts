@@ -34,7 +34,13 @@ export class CalendarSheetPipe implements PipeTransform {
       const week: Date[] = [];
       for (let col = 0; col < 7; col++) {
         const dayIndex = row * 7 + col;
-        week.push(new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + dayIndex));
+        week.push(
+          new Date(
+            gridStart.getFullYear(),
+            gridStart.getMonth(),
+            gridStart.getDate() + dayIndex,
+          ),
+        );
       }
       rows.push(week);
     }

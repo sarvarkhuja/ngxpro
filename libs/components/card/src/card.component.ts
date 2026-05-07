@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 
 /**
  * Card container component (Tremor-style).
@@ -24,13 +24,9 @@ export class CardComponent {
 
   readonly hostClasses = () =>
     cx(
-      // base
-      'relative block rounded-lg border p-6',
-      // border color
-      'border-gray-200 dark:border-gray-800',
-      // background
-      'bg-white dark:bg-gray-950',
-      // shadow
+      'relative block rounded-m border p-6',
+      'border-border-normal',
+      'bg-bg-base',
       'shadow-sm',
       this.class(),
     );

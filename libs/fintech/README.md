@@ -1,7 +1,25 @@
-# fintech
+# @ngxpro/fintech
 
-This library was generated with [Nx](https://nx.dev).
+Fintech-domain blocks built on top of `@ngxpro/blocks`. Part of the [ngxpro](https://github.com/SarvarkhujaMurodov/ngxpro) Angular UI library.
 
-## Running unit tests
+## Install
 
-Run `nx test fintech` to execute the unit tests.
+```bash
+npm install @ngxpro/fintech --legacy-peer-deps
+```
+
+## Peer dependencies
+
+- `@angular/common` ^21.1
+- `@angular/core` ^21.1
+- `@ngxpro/cdk`, `@ngxpro/core`, `@ngxpro/components`, `@ngxpro/blocks` (any matching workspace version)
+
+## Usage
+
+```ts
+import {} from /* … */ '@ngxpro/fintech';
+```
+
+## License
+
+[MIT](./LICENSE)

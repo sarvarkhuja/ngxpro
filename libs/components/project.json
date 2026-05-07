@@ -4,13 +4,6 @@
   "sourceRoot": "libs/components",
   "prefix": "nxp",
   "projectType": "library",
-  "release": {
-    "version": {
-      "manifestRootsToUpdate": ["dist/{projectRoot}"],
-      "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk"
-    }
-  },
   "tags": ["scope:components"],
   "targets": {
     "build": {

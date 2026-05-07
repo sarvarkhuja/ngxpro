@@ -7,7 +7,7 @@ import {
   input,
   model,
 } from '@angular/core';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 import { NxpStepComponent } from './step.component';
 
 /**
@@ -36,7 +36,7 @@ import { NxpStepComponent } from './step.component';
   host: {
     '[class]': 'hostClasses()',
     '[attr.data-orientation]': 'orientation()',
-    'tabindex': '-1',
+    tabindex: '-1',
     '(keydown.arrowRight)': 'onArrowKey($event, 1)',
     '(keydown.arrowLeft)': 'onArrowKey($event, -1)',
     '(keydown.arrowDown)': 'onArrowKey($event, 1)',
@@ -51,9 +51,12 @@ export class NxpStepperComponent {
   /** Index of the currently active step (two-way bindable). */
   readonly activeItemIndex = model(0);
 
-  readonly steps = contentChildren(forwardRef(() => NxpStepComponent), {
-    read: ElementRef,
-  });
+  readonly steps = contentChildren(
+    forwardRef(() => NxpStepComponent),
+    {
+      read: ElementRef,
+    },
+  );
 
   readonly hostClasses = () =>
     cx(
@@ -85,7 +88,11 @@ export class NxpStepperComponent {
   private scrollIntoView(index: number): void {
     const steps = this.steps();
     const el = steps[index]?.nativeElement as HTMLElement | undefined;
-    el?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+    el?.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest',
+      behavior: 'smooth',
+    });
     el?.focus();
   }
 

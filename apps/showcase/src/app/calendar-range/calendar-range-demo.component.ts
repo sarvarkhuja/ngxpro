@@ -4,13 +4,13 @@ import {
   CalendarRangeComponent,
   createDefaultDateRangePeriods,
   DateRangePeriod,
-} from '@nxp/components/calendar-range';
+} from '@ngxpro/components/calendar-range';
 import type { DisabledHandler } from 'libs/cdk/src/lib/components/calendar/src';
 import {
   DataListComponent,
   OptionDirective,
   OptGroupDirective,
-} from '@nxp/components/data-list';
+} from '@ngxpro/components/data-list';
 
 // ------------------------------------------------------------------ helpers
 
@@ -126,7 +126,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
         <!-- ── Hero ───────────────────────────────────────────────────────── -->
         <div class="space-y-3">
           <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-primary/10 text-action border border-primary/30">
-            @nxp/components/calendar-range
+            @ngxpro/components/calendar-range
           </span>
           <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
             Calendar Range

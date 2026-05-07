@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxpIconComponent } from '@nxp/cdk/components/icon';
-import { NxpTabs, type NxpTabsSize } from '@nxp/components/tabs';
+import { NxpIconComponent } from '@ngxpro/cdk/components/icon';
+import { NxpTabs, type NxpTabsSize } from '@ngxpro/components/tabs';
 
 @Component({
   selector: 'app-tabs-demo',
@@ -26,8 +26,8 @@ import { NxpTabs, type NxpTabsSize } from '@nxp/components/tabs';
           Tabs
         </h1>
         <p class="text-gray-600 dark:text-gray-400 mb-10">
-          Horizontal and vertical tab containers with an animated segment
-          (pill) indicator. Use
+          Horizontal and vertical tab containers with an animated segment (pill)
+          indicator. Use
           <code
             class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded"
             >[(activeItemIndex)]</code

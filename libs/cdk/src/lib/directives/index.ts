@@ -10,4 +10,7 @@ export { NxpObscured } from './obscured.directive';
 export { NxpAnimated, NXP_ENTER, NXP_LEAVE } from './animated.directive';
 export { NxpFocusTrap } from './focus-trap.directive';
 export { NxpAnimatedProximityBase } from './animated-proximity-base';
-export { NxpSwipeDismiss, type NxpSwipeDirection } from './swipe-dismiss.directive';
+export {
+  NxpSwipeDismiss,
+  type NxpSwipeDirection,
+} from './swipe-dismiss.directive';

@@ -41,7 +41,12 @@ export function nxpTextfieldOptionsProvider(
 
 @Directive({
   selector: '[nxpTextfieldSize],[nxpTextfieldCleaner]',
-  providers: [{ provide: NXP_TEXTFIELD_OPTIONS, useExisting: NxpTextfieldOptionsDirective }],
+  providers: [
+    {
+      provide: NXP_TEXTFIELD_OPTIONS,
+      useExisting: NxpTextfieldOptionsDirective,
+    },
+  ],
 })
 export class NxpTextfieldOptionsDirective implements NxpTextfieldOptions {
   private readonly options = inject(NXP_TEXTFIELD_OPTIONS, { skipSelf: true });

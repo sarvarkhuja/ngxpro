@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NxpLabelDirective } from '@nxp/cdk/components/label';
-import { NxpTextfieldComponent } from '@nxp/cdk/components/textfield';
+import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
+import { NxpTextfieldComponent } from '@ngxpro/cdk/components/textfield';
 import { NxpTextareaComponent } from 'libs/components/textarea/src/textarea.component';
 import { NxpTextareaLimitDirective } from 'libs/components/textarea/src/textarea.directive';
 
@@ -52,7 +52,7 @@ import { NxpTextareaLimitDirective } from 'libs/components/textarea/src/textarea
                    bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400
                    border border-blue-200 dark:border-blue-800"
           >
-            @nxp/components/textarea
+            @ngxpro/components/textarea
           </span>
           <h2 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
             Textarea

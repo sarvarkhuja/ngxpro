@@ -1,15 +1,15 @@
 import { Component, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { InputDateRangeComponent } from '@nxp/components/input-date-range';
+import { InputDateRangeComponent } from '@ngxpro/components/input-date-range';
 import {
   createDefaultDateRangePeriods,
   DateRangePeriod,
-} from '@nxp/components/calendar-range';
+} from '@ngxpro/components/calendar-range';
 import type {
   DisabledHandler,
   MarkerHandler,
-} from '@nxp/components/calendar';
+} from '@ngxpro/components/calendar';
 
 @Component({
   selector: 'app-input-date-range-demo',
@@ -197,9 +197,7 @@ import type {
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
-                <code class="font-mono">{{
-                  formatRange(boundedRange())
-                }}</code>
+                <code class="font-mono">{{ formatRange(boundedRange()) }}</code>
               </p>
             </div>
 
@@ -243,9 +241,7 @@ import type {
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
-                <code class="font-mono">{{
-                  formatRange(weekdayRange())
-                }}</code>
+                <code class="font-mono">{{ formatRange(weekdayRange()) }}</code>
               </p>
             </div>
 
@@ -264,9 +260,7 @@ import type {
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
-                <code class="font-mono">{{
-                  formatRange(markerRange())
-                }}</code>
+                <code class="font-mono">{{ formatRange(markerRange()) }}</code>
               </p>
             </div>
           </div>
@@ -332,9 +326,7 @@ import type {
                 <tr>
                   <td class="px-4 py-2 font-mono">placeholder</td>
                   <td class="px-4 py-2 font-mono">string</td>
-                  <td class="px-4 py-2 font-mono">
-                    'MM/DD/YYYY – MM/DD/YYYY'
-                  </td>
+                  <td class="px-4 py-2 font-mono">'MM/DD/YYYY – MM/DD/YYYY'</td>
                   <td class="px-4 py-2">Placeholder text</td>
                 </tr>
                 <tr>

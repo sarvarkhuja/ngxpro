@@ -1,7 +1,16 @@
 export { cx } from './cx';
 export { focusRing, focusInput, hasErrorInput } from './focus-styles';
-export { coerceBooleanProperty, coerceNumberProperty, coerceStringArray } from './coercion';
-export { isElement, isFocused, getActiveElement, isElementInViewport } from './dom';
+export {
+  coerceBooleanProperty,
+  coerceNumberProperty,
+  coerceStringArray,
+} from './coercion';
+export {
+  isElement,
+  isFocused,
+  getActiveElement,
+  isElementInViewport,
+} from './dom';
 export { nxpGenerateId } from './generate-id';
 export { clamp, round, normalize, toPercent } from './math';
 export { nxpSetSignal } from './set-signal';
@@ -27,3 +36,9 @@ export {
   navButtonClass,
 } from './calendar-variants';
 export { inputVariants } from './input-variants';
+export {
+  DURATION_FAST,
+  DURATION_NORMAL,
+  DURATION_SLOW,
+  EASE_OUT_STRONG,
+} from './durations';

@@ -150,6 +150,46 @@
       </div>
     </nxp-card>
 
+    <!-- Demo 5: Tooltip with morphing label -->
+    <nxp-card class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        Tooltip with morphing label
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        The tooltip's content is a
+        <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-xs"
+          >&lt;ng-template&gt;</code
+        >
+        wrapping
+        <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-xs"
+          >&lt;nxp-text-morph&gt;</code
+        >, so the label animates from <strong>Copy</strong> to
+        <strong>Copied</strong> when the button is pressed.
+      </p>
+
+      <div class="flex items-center gap-4">
+        <code
+          class="flex-1 truncate font-mono text-sm bg-gray-100 dark:bg-gray-800 rounded-md px-3 py-2 text-gray-700 dark:text-gray-300"
+        >
+          {{ copyValue }}
+        </code>
+        <button
+          nxpButton
+          variant="secondary"
+          [nxpTooltip]="copyTooltip"
+          nxpTooltipDirection="top"
+          [attr.aria-label]="copyLabel()"
+          (click)="copyToClipboard()"
+        >
+          <nxp-text-morph [text]="copyLabel()" class="font-medium" />
+        </button>
+      </div>
+
+      <ng-template #copyTooltip>
+        <nxp-text-morph [text]="copyLabel()" class="text-sm font-medium" />
+      </ng-template>
+    </nxp-card>
+
     <!-- Usage -->
     <nxp-card>
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">

@@ -1,5 +1,5 @@
 import { computed, Directive, ElementRef, inject, input } from '@angular/core';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 import { DataListComponent } from './data-list.component';
 
 /**
@@ -76,23 +76,17 @@ export class OptionDirective {
     };
 
     return cx(
-      // Layout — z-10 so text sits above the animated overlays
-      'relative z-10 flex w-full items-center gap-2.5 rounded-lg font-medium text-left',
-      'transition-[color,font-variation-settings] duration-100 select-none',
-      // Focus ring — keep as accessibility fallback
+      'relative z-10 flex w-full items-center gap-2.5 rounded-s font-medium text-left',
+      'transition-[color,font-variation-settings] duration-fast select-none',
       'outline-none focus-visible:outline focus-visible:outline-2',
       'focus-visible:outline-offset-1 focus-visible:outline-border-focus',
-      // Size padding
       sizing[s] ?? sizing['md'],
-      // Text color — foreground for selected or hovered, muted otherwise.
-      // Font weight is semibold only for selected (not hover).
       active
-        ? 'text-neutral-900 dark:text-neutral-100'
+        ? 'text-text-primary'
         : hovered
-          ? 'text-neutral-900 dark:text-neutral-100'
-          : 'text-neutral-500 dark:text-neutral-400',
-      // Disabled
-      off && 'opacity-40 cursor-not-allowed pointer-events-none',
+          ? 'text-text-primary'
+          : 'text-text-secondary',
+      off && 'opacity-50 cursor-not-allowed pointer-events-none',
     );
   });
 }

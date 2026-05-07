@@ -1,4 +1,9 @@
-import { InjectionToken, signal, type Provider, type Signal } from '@angular/core';
+import {
+  InjectionToken,
+  signal,
+  type Provider,
+  type Signal,
+} from '@angular/core';
 
 export interface NxpTextareaOptions {
   readonly min: Signal<number>;
@@ -15,7 +20,9 @@ export const NXP_TEXTAREA_OPTIONS = new InjectionToken<NxpTextareaOptions>(
   },
 );
 
-export function nxpTextareaOptionsProvider(options: Partial<{ min: number; max: number }>): Provider {
+export function nxpTextareaOptionsProvider(
+  options: Partial<{ min: number; max: number }>,
+): Provider {
   return {
     provide: NXP_TEXTAREA_OPTIONS,
     deps: [],

@@ -7,11 +7,11 @@ import {
   NxpDropdownOpen,
   nxpDropdownEnabled,
   nxpInjectElement,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';
 import {
   nxpAsTextfieldAccessor,
   type NxpTextfieldAccessor,
-} from '@nxp/cdk/components/textfield';
+} from '@ngxpro/cdk/components/textfield';
 
 /**
  * Select directive for `<input nxpSelect>` inside `<nxp-textfield>`.

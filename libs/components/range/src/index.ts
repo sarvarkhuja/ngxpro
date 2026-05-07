@@ -6,4 +6,4 @@ export {
 } from './range.options';
 
 // Re-export key-steps from CDK for convenience
-export { type NxpKeySteps } from '@nxp/cdk';
+export { type NxpKeySteps } from '@ngxpro/cdk';

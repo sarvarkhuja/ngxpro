@@ -14,8 +14,13 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
-import { cx } from '@nxp/cdk';
+import {
+  AbstractControl,
+  NG_VALIDATORS,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
+import { cx } from '@ngxpro/cdk';
 
 /**
  * Internal counter component rendered below the textarea.
@@ -37,8 +42,8 @@ export class NxpTextareaCounterComponent {
     cx(
       'text-xs tabular-nums',
       this.current() > this.limit()
-        ? 'text-red-500 dark:text-red-400'
-        : 'text-gray-400 dark:text-gray-500',
+        ? 'text-status-negative'
+        : 'text-text-tertiary',
     ),
   );
 }
@@ -67,7 +72,9 @@ export class NxpTextareaCounterComponent {
     '[attr.maxlength]': 'null', // Do NOT apply maxlength natively — show error instead
   },
 })
-export class NxpTextareaLimitDirective implements Validator, DoCheck, OnInit, OnDestroy {
+export class NxpTextareaLimitDirective
+  implements Validator, DoCheck, OnInit, OnDestroy
+{
   private readonly el = inject(ElementRef<HTMLTextAreaElement>).nativeElement;
   private readonly appRef = inject(ApplicationRef);
   private readonly envInjector = inject(EnvironmentInjector);
@@ -75,7 +82,9 @@ export class NxpTextareaLimitDirective implements Validator, DoCheck, OnInit, On
   /** Maximum number of characters allowed. */
   readonly limit = input.required<number>();
 
-  private counterRef: ReturnType<typeof createComponent<NxpTextareaCounterComponent>> | null = null;
+  private counterRef: ReturnType<
+    typeof createComponent<NxpTextareaCounterComponent>
+  > | null = null;
   private wrapperEl: HTMLElement | null = null;
   private _onChange: (() => void) | null = null;
 

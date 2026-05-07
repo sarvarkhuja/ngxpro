@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { InputMonthComponent } from '@nxp/components/input-month';
-import type { MonthCoord } from '@nxp/components/calendar-month';
+import { InputMonthComponent } from '@ngxpro/components/input-month';
+import type { MonthCoord } from '@ngxpro/components/calendar-month';
 
 @Component({
   selector: 'app-input-month-demo',
@@ -121,9 +121,7 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
-                <code class="font-mono">{{
-                  formatCoord(boundedMonth())
-                }}</code>
+                <code class="font-mono">{{ formatCoord(boundedMonth()) }}</code>
               </p>
             </div>
 
@@ -247,8 +245,7 @@ import type { MonthCoord } from '@nxp/components/calendar-month';
                   <td class="px-4 py-2 font-mono">MonthCoord | null</td>
                   <td class="px-4 py-2 font-mono">null</td>
                   <td class="px-4 py-2">
-                    Currently selected month
-                    (<code class="font-mono text-xs"
+                    Currently selected month (<code class="font-mono text-xs"
                       >{{ '{' }} year, month {{ '}' }}</code
                     >)
                   </td>
@@ -355,8 +352,18 @@ export class InputMonthDemoComponent {
   formatCoord(m: MonthCoord | null | undefined): string {
     if (!m) return 'null';
     const names = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return `${names[m.month]} ${m.year}`;
   }

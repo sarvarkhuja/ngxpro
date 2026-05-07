@@ -36,7 +36,9 @@ export class NxpDropdownClose {
           merge(
             nxpCloseWatcher(),
             this.obscured.nxpObscured$.pipe(filter(Boolean)),
-            this.activeZone.nxpActiveZoneChange.pipe(filter((active) => !active)),
+            this.activeZone.nxpActiveZoneChange.pipe(
+              filter((active) => !active),
+            ),
             nxpTypedFromEvent(this.el, 'focusin').pipe(
               filter(
                 (event) =>
@@ -47,8 +49,11 @@ export class NxpDropdownClose {
           ),
         ),
       ),
-      typeof (globalThis as Record<string, unknown>)['CloseWatcher'] === 'undefined'
-        ? nxpTypedFromEvent(inject(DOCUMENT), 'keydown', { capture: true }).pipe(
+      typeof (globalThis as Record<string, unknown>)['CloseWatcher'] ===
+        'undefined'
+        ? nxpTypedFromEvent(inject(DOCUMENT), 'keydown', {
+            capture: true,
+          }).pipe(
             filter(
               ({ key }) =>
                 key === 'Escape' &&

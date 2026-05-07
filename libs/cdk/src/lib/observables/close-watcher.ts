@@ -17,7 +17,9 @@ function nxpNoopDestroy(): void {
 
 function createCloseWatcher(): CloseWatcherLike {
   try {
-    return new (globalThis as unknown as { CloseWatcher: new () => CloseWatcherLike }).CloseWatcher();
+    return new (
+      globalThis as unknown as { CloseWatcher: new () => CloseWatcherLike }
+    ).CloseWatcher();
   } catch {
     return { destroy: nxpNoopDestroy };
   }

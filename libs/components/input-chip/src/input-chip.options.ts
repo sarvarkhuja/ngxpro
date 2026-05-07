@@ -1,4 +1,4 @@
-import { nxpCreateOptions } from '@nxp/cdk';
+import { nxpCreateOptions } from '@ngxpro/cdk';
 
 export interface NxpInputChipOptions {
   /** Separator used to split input text into multiple chips. */

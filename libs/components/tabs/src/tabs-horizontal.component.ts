@@ -23,7 +23,7 @@ import { NxpTabsAnimatedBase } from './tabs-animated-base';
 
     @if (activeRect(); as r) {
       <div
-        class="absolute pointer-events-none rounded-md bg-white dark:bg-gray-800 shadow-sm dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+        class="absolute pointer-events-none rounded-s bg-bg-base shadow-sm dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
         [style.left.px]="r.left"
         [style.top.px]="r.top"
         [style.width.px]="r.width"
@@ -35,7 +35,7 @@ import { NxpTabsAnimatedBase } from './tabs-animated-base';
     @if (isHoveringOther()) {
       @if (hoverRect(); as h) {
         <div
-          class="absolute pointer-events-none rounded-md bg-gray-200/60 dark:bg-gray-700/40"
+          class="absolute pointer-events-none rounded-s bg-bg-neutral-2/60"
           [style.left.px]="h.left"
           [style.top.px]="h.top"
           [style.width.px]="h.width"
@@ -46,7 +46,7 @@ import { NxpTabsAnimatedBase } from './tabs-animated-base';
     }
     @if (focusRect(); as f) {
       <div
-        class="absolute pointer-events-none z-20 rounded-md border border-blue-500"
+        class="absolute pointer-events-none z-20 rounded-s border border-border-focus"
         [style.left.px]="f.left - 2"
         [style.top.px]="f.top - 2"
         [style.width.px]="f.width + 4"
@@ -65,7 +65,7 @@ import { NxpTabsAnimatedBase } from './tabs-animated-base';
   ],
   host: {
     class:
-      'relative flex flex-row overflow-x-auto rounded-lg bg-gray-100 dark:bg-gray-800 p-1 gap-1',
+      'relative flex flex-row overflow-x-auto rounded-m bg-bg-neutral-1 p-1 gap-1',
     '(keydown.arrowRight.prevent)': 'onKeyDownArrow($event.target, 1)',
     '(keydown.arrowLeft.prevent)': 'onKeyDownArrow($event.target, -1)',
     '(mousemove)': 'onMouseMove($event)',

@@ -18,68 +18,74 @@
  */
 
 :root {
-  --nxp-primary-hover:     oklch(from var(--nxp-primary)   calc(l - 0.08)  c h);
-  --nxp-primary-pressed:   oklch(from var(--nxp-primary)   calc(l - 0.15)  c h);
-  --nxp-secondary-hover:   oklch(from var(--nxp-secondary) calc(l - 0.035) c h);
-  --nxp-secondary-pressed: oklch(from var(--nxp-secondary) calc(l - 0.09)  c h);
+  --nxp-primary-hover: oklch(from var(--nxp-primary) calc(l - 0.08) c h);
+  --nxp-primary-pressed: oklch(from var(--nxp-primary) calc(l - 0.15) c h);
+  --nxp-secondary-hover: oklch(from var(--nxp-secondary) calc(l - 0.035) c h);
+  --nxp-secondary-pressed: oklch(from var(--nxp-secondary) calc(l - 0.09) c h);
 }
 
 .dark {
-  --nxp-primary-hover:     oklch(from var(--nxp-primary)   calc(l + 0.08)  c h);
-  --nxp-primary-pressed:   oklch(from var(--nxp-primary)   calc(l - 0.08)  c h);
-  --nxp-secondary-hover:   oklch(from var(--nxp-secondary) calc(l + 0.07)  c h);
-  --nxp-secondary-pressed: oklch(from var(--nxp-secondary) calc(l + 0.15)  c h);
+  --nxp-primary-hover: oklch(from var(--nxp-primary) calc(l + 0.08) c h);
+  --nxp-primary-pressed: oklch(from var(--nxp-primary) calc(l - 0.08) c h);
+  --nxp-secondary-hover: oklch(from var(--nxp-secondary) calc(l + 0.07) c h);
+  --nxp-secondary-pressed: oklch(from var(--nxp-secondary) calc(l + 0.15) c h);
 }
 
 /* ── Map nxp tokens → Tailwind utility names ── */
 @theme inline {
   /* Primary */
-  --color-primary:         var(--nxp-primary);
-  --color-primary-hover:   var(--nxp-primary-hover);
+  --color-primary: var(--nxp-primary);
+  --color-primary-hover: var(--nxp-primary-hover);
   --color-primary-pressed: var(--nxp-primary-pressed);
 
   /* Secondary */
-  --color-secondary:         var(--nxp-secondary);
-  --color-secondary-hover:   var(--nxp-secondary-hover);
+  --color-secondary: var(--nxp-secondary);
+  --color-secondary-hover: var(--nxp-secondary-hover);
   --color-secondary-pressed: var(--nxp-secondary-pressed);
 
   /* Backgrounds */
-  --color-bg-base:      var(--nxp-bg-base);
-  --color-bg-base-alt:  var(--nxp-bg-base-alt);
+  --color-bg-base: var(--nxp-bg-base);
+  --color-bg-base-alt: var(--nxp-bg-base-alt);
   --color-bg-neutral-1: var(--nxp-bg-neutral-1);
   --color-bg-neutral-2: var(--nxp-bg-neutral-2);
 
   /* Text */
-  --color-text-primary:   var(--nxp-text-primary);
+  --color-text-primary: var(--nxp-text-primary);
   --color-text-secondary: var(--nxp-text-secondary);
-  --color-text-tertiary:  var(--nxp-text-tertiary);
+  --color-text-tertiary: var(--nxp-text-tertiary);
   --color-text-on-accent: var(--nxp-text-on-accent);
-  --color-text-action:    var(--nxp-text-action);
+  --color-text-action: var(--nxp-text-action);
 
   /* Border */
   --color-border-normal: var(--nxp-border-normal);
-  --color-border-hover:  var(--nxp-border-hover);
-  --color-border-focus:  var(--nxp-border-focus);
+  --color-border-strong: var(--nxp-border-strong);
+  --color-border-hover: var(--nxp-border-hover);
+  --color-border-focus: var(--nxp-border-focus);
 
   /* Status */
-  --color-status-negative:      var(--nxp-status-negative);
-  --color-status-positive:      var(--nxp-status-positive);
-  --color-status-warning:       var(--nxp-status-warning);
-  --color-status-info:          var(--nxp-status-info);
+  --color-status-negative: var(--nxp-status-negative);
+  --color-status-positive: var(--nxp-status-positive);
+  --color-status-warning: var(--nxp-status-warning);
+  --color-status-info: var(--nxp-status-info);
   --color-status-negative-pale: var(--nxp-status-negative-pale);
   --color-status-positive-pale: var(--nxp-status-positive-pale);
-  --color-status-warning-pale:  var(--nxp-status-warning-pale);
-  --color-status-info-pale:     var(--nxp-status-info-pale);
+  --color-status-warning-pale: var(--nxp-status-warning-pale);
+  --color-status-info-pale: var(--nxp-status-info-pale);
 
   /* Radius */
   --radius-xs: var(--nxp-radius-xs);
-  --radius-s:  var(--nxp-radius-s);
-  --radius-m:  var(--nxp-radius-m);
-  --radius-l:  var(--nxp-radius-l);
+  --radius-s: var(--nxp-radius-s);
+  --radius-m: var(--nxp-radius-m);
+  --radius-l: var(--nxp-radius-l);
   --radius-xl: var(--nxp-radius-xl);
 
   /* Font */
   --font-sans: var(--nxp-font-sans);
+
+  /* Duration — use `duration-fast | duration-normal | duration-slow` Tailwind utilities */
+  --duration-fast: var(--nxp-duration-fast);
+  --duration-normal: var(--nxp-duration-normal);
+  --duration-slow: var(--nxp-duration-slow);
 }
 
 /*
@@ -87,12 +93,19 @@
  * Two-animation approach: rotation + dash sweep for an elegant loading feel.
  */
 @keyframes nxp-spinner-move {
-  to { stroke-dashoffset: -100; }
+  to {
+    stroke-dashoffset: -100;
+  }
 }
 
 @keyframes nxp-spinner-dash {
-  0%, 100% { stroke-dasharray: 15 85; }
-  50%      { stroke-dasharray: 40 60; }
+  0%,
+  100% {
+    stroke-dasharray: 15 85;
+  }
+  50% {
+    stroke-dasharray: 40 60;
+  }
 }
 
 /*
@@ -110,7 +123,11 @@
   opacity: 0;
   transform: var(--y);
   touch-action: none;
-  transition: transform 400ms, opacity 400ms, height 400ms, box-shadow 200ms;
+  transition:
+    transform 400ms,
+    opacity 400ms,
+    height 400ms,
+    box-shadow 200ms;
   box-sizing: border-box;
   outline: none;
   overflow-wrap: anywhere;
@@ -132,8 +149,12 @@
 }
 
 /* ── X positioning ── */
-[data-nxp-toast][data-x-position='right'] { right: 0; }
-[data-nxp-toast][data-x-position='left']  { left: 0; }
+[data-nxp-toast][data-x-position='right'] {
+  right: 0;
+}
+[data-nxp-toast][data-x-position='left'] {
+  left: 0;
+}
 
 /* ── Mounted: slide to resting position ── */
 [data-nxp-toast][data-mounted='true'] {
@@ -144,7 +165,8 @@
 /* ── Compressed stack: non-front toasts scale + flatten ── */
 [data-nxp-toast][data-expanded='false'][data-front='false'] {
   --scale: var(--toasts-before) * 0.05 + 1;
-  --y: translateY(calc(var(--lift-amount) * var(--toasts-before))) scale(calc(-1 * var(--scale)));
+  --y: translateY(calc(var(--lift-amount) * var(--toasts-before)))
+    scale(calc(-1 * var(--scale)));
   height: var(--front-toast-height);
 }
 
@@ -179,7 +201,9 @@
 [data-nxp-toast][data-removed='true'][data-front='false'][data-swipe-out='false'][data-expanded='false'] {
   --y: translateY(40%);
   opacity: 0;
-  transition: transform 500ms, opacity 200ms;
+  transition:
+    transform 500ms,
+    opacity 200ms;
 }
 
 /* ── Hidden beyond visible limit ── */
@@ -200,7 +224,8 @@
 
 /* ── Swiping: disable transitions, follow pointer ── */
 [data-nxp-toast][data-swiping='true'] {
-  transform: var(--y) translateY(var(--swipe-amount-y, 0px)) translateX(var(--swipe-amount-x, 0px));
+  transform: var(--y) translateY(var(--swipe-amount-y, 0px))
+    translateX(var(--swipe-amount-x, 0px));
   transition: none;
 }
 
@@ -252,20 +277,44 @@
 }
 
 @keyframes nxp-swipe-out-left {
-  from { transform: var(--y) translateX(var(--swipe-amount-x)); opacity: 1; }
-  to   { transform: var(--y) translateX(calc(var(--swipe-amount-x) - 100%)); opacity: 0; }
+  from {
+    transform: var(--y) translateX(var(--swipe-amount-x));
+    opacity: 1;
+  }
+  to {
+    transform: var(--y) translateX(calc(var(--swipe-amount-x) - 100%));
+    opacity: 0;
+  }
 }
 @keyframes nxp-swipe-out-right {
-  from { transform: var(--y) translateX(var(--swipe-amount-x)); opacity: 1; }
-  to   { transform: var(--y) translateX(calc(var(--swipe-amount-x) + 100%)); opacity: 0; }
+  from {
+    transform: var(--y) translateX(var(--swipe-amount-x));
+    opacity: 1;
+  }
+  to {
+    transform: var(--y) translateX(calc(var(--swipe-amount-x) + 100%));
+    opacity: 0;
+  }
 }
 @keyframes nxp-swipe-out-up {
-  from { transform: var(--y) translateY(var(--swipe-amount-y)); opacity: 1; }
-  to   { transform: var(--y) translateY(calc(var(--swipe-amount-y) - 100%)); opacity: 0; }
+  from {
+    transform: var(--y) translateY(var(--swipe-amount-y));
+    opacity: 1;
+  }
+  to {
+    transform: var(--y) translateY(calc(var(--swipe-amount-y) - 100%));
+    opacity: 0;
+  }
 }
 @keyframes nxp-swipe-out-down {
-  from { transform: var(--y) translateY(var(--swipe-amount-y)); opacity: 1; }
-  to   { transform: var(--y) translateY(calc(var(--swipe-amount-y) + 100%)); opacity: 0; }
+  from {
+    transform: var(--y) translateY(var(--swipe-amount-y));
+    opacity: 1;
+  }
+  to {
+    transform: var(--y) translateY(calc(var(--swipe-amount-y) + 100%));
+    opacity: 0;
+  }
 }
 
 /* ── Mobile: full-width toasts ── */

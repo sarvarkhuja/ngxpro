@@ -1,4 +1,11 @@
-import { Directive, ElementRef, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Directive({
@@ -7,7 +14,8 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class NxpVisualViewportDirective implements OnInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly el = inject(ElementRef<HTMLElement>).nativeElement as HTMLElement;
+  private readonly el = inject(ElementRef<HTMLElement>)
+    .nativeElement as HTMLElement;
   private readonly handler = (): void => this.update();
 
   ngOnInit(): void {
@@ -36,7 +44,13 @@ export class NxpVisualViewportDirective implements OnInit, OnDestroy {
     this.el.style.setProperty('--nxp-viewport-height', `${height}px`);
     this.el.style.setProperty('--nxp-viewport-width', `${width}px`);
     this.el.style.setProperty('--nxp-viewport-scale', String(scale));
-    this.el.style.setProperty('--nxp-viewport-vh', `${window.innerHeight / 100}px`);
-    this.el.style.setProperty('--nxp-viewport-vw', `${window.innerWidth / 100}px`);
+    this.el.style.setProperty(
+      '--nxp-viewport-vh',
+      `${window.innerHeight / 100}px`,
+    );
+    this.el.style.setProperty(
+      '--nxp-viewport-vw',
+      `${window.innerWidth / 100}px`,
+    );
   }
 }

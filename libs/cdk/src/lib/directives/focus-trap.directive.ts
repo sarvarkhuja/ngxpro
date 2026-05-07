@@ -27,11 +27,12 @@ function nxpGetFocused(doc: Document): Element | null {
  * Returns true when `current` contains `node` or comes before it in document order.
  */
 function nxpContainsOrAfter(current: Node, node: Node): boolean {
-  // eslint-disable-next-line no-bitwise
   try {
     return (
       current.contains(node) ||
-      !!(node.compareDocumentPosition(current) & Node.DOCUMENT_POSITION_PRECEDING)
+      !!(
+        node.compareDocumentPosition(current) & Node.DOCUMENT_POSITION_PRECEDING
+      )
     );
   } catch {
     return false;
@@ -42,7 +43,10 @@ function nxpContainsOrAfter(current: Node, node: Node): boolean {
  * Checks whether an element can receive keyboard focus.
  */
 function nxpIsFocusable(element: Element): boolean {
-  if (element.matches(':disabled') || element.getAttribute('tabIndex') === '-1') {
+  if (
+    element.matches(':disabled') ||
+    element.getAttribute('tabIndex') === '-1'
+  ) {
     return false;
   }
 

@@ -1,6 +1,29 @@
 {
-  "name": "@nxp/blocks",
+  "name": "@ngxpro/blocks",
   "version": "0.0.1",
+  "description": "Higher-level composed blocks (charts, KPI cards, tables) built on top of @ngxpro/components.",
+  "license": "MIT",
+  "homepage": "https://github.com/SarvarkhujaMurodov/ngxpro#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro.git",
+    "directory": "libs/blocks"
+  },
+  "bugs": {
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro/issues"
+  },
+  "keywords": [
+    "angular",
+    "ngxpro",
+    "blocks",
+    "charts",
+    "kpi-cards",
+    "tables"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "peerDependencies": {
     "@angular/common": "^21.1.0",
     "@angular/core": "^21.1.0"

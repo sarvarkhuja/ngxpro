@@ -21,8 +21,8 @@ import {
   nxpAsDataListHost,
   type NxpDataListHost,
   type NxpItemsHandlers,
-} from '@nxp/cdk';
-import { DataListComponent } from '@nxp/components/data-list';
+} from '@ngxpro/cdk';
+import { DataListComponent } from '@ngxpro/components/data-list';
 import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
 
 /**
@@ -69,78 +69,7 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
   host: {
     '[class]': 'hostClass()',
   },
-  template: `
-    <!-- Trigger area: chips + hidden input for keyboard/a11y -->
-    <div
-      class="flex flex-wrap items-center gap-1 min-h-9 w-full p-1.5 cursor-text"
-      (click)="onTriggerClick($event)"
-    >
-      <!-- Selected chips -->
-      @for (item of value(); track identityTrack($index, item)) {
-        <span class="inline-flex items-center gap-1 rounded-md bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-xs font-medium text-gray-700 dark:text-gray-300 leading-none shrink-0">
-          <span class="truncate max-w-[12rem]">{{ stringify(item) }}</span>
-          @if (!disabled()) {
-            <button
-              type="button"
-              class="ml-0.5 shrink-0 rounded-sm opacity-60 hover:opacity-100 transition-opacity focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600"
-              (click)="removeAt($index); $event.stopPropagation()"
-              [attr.aria-label]="'Remove ' + stringify(item)"
-            >
-              <svg viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3" aria-hidden="true">
-                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-              </svg>
-            </button>
-          }
-        </span>
-      }
-
-      <!-- Focusable input for keyboard/a11y -->
-      <input
-        #triggerInput
-        class="min-w-0 flex-1 bg-transparent outline-none text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 disabled:cursor-not-allowed caret-transparent cursor-default select-none"
-        [placeholder]="value().length === 0 ? placeholder() : ''"
-        [disabled]="disabled()"
-        [attr.aria-expanded]="isOpen()"
-        [attr.aria-haspopup]="'listbox'"
-        [attr.aria-label]="placeholder()"
-        role="combobox"
-        readonly
-        (focus)="focused.set(true)"
-        (blur)="onBlur()"
-        (keydown.escape)="closeDropdown()"
-        (keydown.backspace)="onBackspace()"
-        (keydown.space)="openDropdown(); $event.preventDefault()"
-        (keydown.enter)="onTriggerClick($event)"
-        (keydown.arrowDown)="openDropdown(); $event.preventDefault()"
-      />
-
-      <!-- Chevron icon -->
-      <svg
-        class="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500 transition-transform duration-150 ml-1"
-        [class.rotate-180]="isOpen()"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" />
-      </svg>
-    </div>
-
-    <!-- Dropdown panel -->
-    @if (isOpen()) {
-      <div
-        class="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-950 shadow-lg"
-        role="listbox"
-        aria-multiselectable="true"
-      >
-        <nxp-data-list [emptyLabel]="emptyLabel()">
-          @for (item of items(); track $index) {
-            <nxp-multi-select-option [value]="item" />
-          }
-        </nxp-data-list>
-      </div>
-    }
-  `,
+  templateUrl: './multi-select.component.html',
 })
 export class NxpMultiSelectComponent<T = unknown>
   implements ControlValueAccessor, NxpDataListHost<T>
@@ -151,10 +80,18 @@ export class NxpMultiSelectComponent<T = unknown>
   private readonly destroyRef = inject(DestroyRef);
   private readonly handlers = inject<NxpItemsHandlers<T>>(NXP_ITEMS_HANDLERS);
 
-  private readonly triggerInputRef = viewChild<ElementRef<HTMLInputElement>>('triggerInput');
+  private readonly triggerInputRef =
+    viewChild<ElementRef<HTMLInputElement>>('triggerInput');
 
-  private _onChange: (value: readonly T[]) => void = () => {};
-  private _onTouched: () => void = () => {};
+  private static _idCounter = 0;
+  readonly listboxId = `nxp-multi-select-listbox-${++NxpMultiSelectComponent._idCounter}`;
+
+  private _onChange: (value: readonly T[]) => void = () => {
+    /*noop*/
+  };
+  private _onTouched: () => void = () => {
+    /*noop*/
+  };
 
   // ------------------------------------------------------------------ inputs
 
@@ -188,12 +125,13 @@ export class NxpMultiSelectComponent<T = unknown>
 
   protected readonly hostClass = computed(() =>
     cx(
-      'relative block rounded-md border transition-colors duration-150',
-      'bg-white dark:bg-gray-950',
+      'relative block rounded-m border transition-colors duration-normal',
+      'bg-bg-base',
       this.focused() || this.isOpen()
-        ? 'border-blue-500 ring-2 ring-blue-500/20 dark:border-blue-400 dark:ring-blue-400/20'
-        : 'border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600',
-      this.disabled() && 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-gray-900 pointer-events-none',
+        ? 'border-primary ring-2 ring-primary/20'
+        : 'border-border-normal hover:border-border-hover',
+      this.disabled() &&
+        'opacity-50 cursor-not-allowed bg-bg-neutral-1 pointer-events-none',
       this.class(),
     ),
   );

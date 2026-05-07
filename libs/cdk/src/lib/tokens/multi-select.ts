@@ -16,9 +16,8 @@ export interface NxpMultiSelectTexts {
  * @example
  * providers: [{ provide: NXP_MULTI_SELECT_TEXTS, useValue: signal({ all: 'Tous', none: 'Aucun' }) }]
  */
-export const NXP_MULTI_SELECT_TEXTS = new InjectionToken<Signal<NxpMultiSelectTexts>>(
-  'NXP_MULTI_SELECT_TEXTS',
-  {
-    factory: () => signal({ all: 'All', none: 'None' }),
-  },
-);
+export const NXP_MULTI_SELECT_TEXTS = new InjectionToken<
+  Signal<NxpMultiSelectTexts>
+>('NXP_MULTI_SELECT_TEXTS', {
+  factory: () => signal({ all: 'All', none: 'None' }),
+});

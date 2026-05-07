@@ -1,5 +1,5 @@
 import { Directive, input } from '@angular/core';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 
 /**
  * OptGroup directive — groups related options inside `<nxp-data-list>`.

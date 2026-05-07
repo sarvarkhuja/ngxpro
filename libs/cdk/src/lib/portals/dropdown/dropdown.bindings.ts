@@ -24,6 +24,8 @@ export function nxpDropdownEnabled(
   value: WritableSignal<boolean> | boolean,
 ): WritableSignal<boolean>;
 export function nxpDropdownEnabled(value: Signal<boolean>): Signal<boolean>;
-export function nxpDropdownEnabled(value: Signal<boolean> | boolean): Signal<boolean> {
+export function nxpDropdownEnabled(
+  value: Signal<boolean> | boolean,
+): Signal<boolean> {
   return nxpDirectiveBinding(NxpDropdownOpen, 'enabled', value, {});
 }

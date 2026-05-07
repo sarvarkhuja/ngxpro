@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { nxpCreateOptions } from '@nxp/cdk';
+import { nxpCreateOptions } from '@ngxpro/cdk';
 
 export type NxpBlockSize = 's' | 'm' | 'l';
 export type NxpBlockAppearance =

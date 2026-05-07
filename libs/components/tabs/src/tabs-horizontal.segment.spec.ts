@@ -31,10 +31,19 @@ describe('NxpTabsHorizontal (segment)', () => {
       host.querySelectorAll('[nxpTab]'),
     );
     tabs.forEach((t, i) => {
-      Object.defineProperty(t, 'offsetLeft', { value: i * 80, configurable: true });
+      Object.defineProperty(t, 'offsetLeft', {
+        value: i * 80,
+        configurable: true,
+      });
       Object.defineProperty(t, 'offsetTop', { value: 0, configurable: true });
-      Object.defineProperty(t, 'offsetWidth', { value: 80, configurable: true });
-      Object.defineProperty(t, 'offsetHeight', { value: 40, configurable: true });
+      Object.defineProperty(t, 'offsetWidth', {
+        value: 80,
+        configurable: true,
+      });
+      Object.defineProperty(t, 'offsetHeight', {
+        value: 40,
+        configurable: true,
+      });
     });
     fixture.detectChanges();
     return { fixture, host, tabs };

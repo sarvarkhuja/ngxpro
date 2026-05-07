@@ -4,7 +4,7 @@ import {
   input,
   ViewEncapsulation,
 } from '@angular/core';
-import { NxpAnimated } from '@nxp/cdk';
+import { NxpAnimated } from '@ngxpro/cdk';
 
 @Component({
   selector: 'nxp-drawer',
@@ -28,157 +28,158 @@ import { NxpAnimated } from '@nxp/cdk';
     '[attr.data-direction]': 'direction()',
     '[class.nxp-drawer--overlay]': 'overlay()',
   },
-  styles: [`
-    .nxp-drawer {
-      position: fixed;
-      top: max(3rem, env(safe-area-inset-top));
-      bottom: 0;
-      inline-size: 36.25rem;
-      max-inline-size: calc(100vw - 3rem);
-      z-index: 1000;
-      border-top-left-radius: 1.25rem;
-      border-top-right-radius: 1.25rem;
-      overflow: hidden;
-    }
+  styles: [
+    `
+      .nxp-drawer {
+        position: fixed;
+        top: max(3rem, env(safe-area-inset-top));
+        bottom: 0;
+        inline-size: 36.25rem;
+        max-inline-size: calc(100vw - 3rem);
+        z-index: 1000;
+        border-top-left-radius: 1.25rem;
+        border-top-right-radius: 1.25rem;
+        overflow: hidden;
+      }
 
-    .nxp-drawer[data-direction='start'] {
-      inset-inline-start: 0;
-      border-start-start-radius: 0;
-      transform: translateX(0);
-      opacity: 1;
-      /* 250ms enter with iOS-drawer curve; exit (via .nxp-leave) is faster */
-      transition:
-        transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
-        opacity 250ms cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    @starting-style {
       .nxp-drawer[data-direction='start'] {
-        transform: translateX(-100%);
-        opacity: 0;
-      }
-    }
-    .nxp-drawer[data-direction='start'].nxp-leave {
-      transform: translateX(-100%);
-      opacity: 0;
-      transition:
-        transform 180ms cubic-bezier(0.4, 0, 1, 1),
-        opacity 180ms cubic-bezier(0.4, 0, 1, 1);
-    }
-
-    .nxp-drawer[data-direction='end'] {
-      inset-inline-end: 0;
-      border-start-end-radius: 0;
-      transform: translateX(0);
-      opacity: 1;
-      transition:
-        transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
-        opacity 250ms cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    @starting-style {
-      .nxp-drawer[data-direction='end'] {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-    }
-    .nxp-drawer[data-direction='end'].nxp-leave {
-      transform: translateX(100%);
-      opacity: 0;
-      transition:
-        transform 180ms cubic-bezier(0.4, 0, 1, 1),
-        opacity 180ms cubic-bezier(0.4, 0, 1, 1);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .nxp-drawer[data-direction='start'],
-      .nxp-drawer[data-direction='end'] {
-        transform: none;
-        transition: opacity 200ms linear;
-      }
-      .nxp-drawer[data-direction='start'].nxp-leave,
-      .nxp-drawer[data-direction='end'].nxp-leave {
-        transform: none;
-        opacity: 0;
-        transition: opacity 150ms linear;
+        inset-inline-start: 0;
+        border-start-start-radius: 0;
+        transform: translateX(0);
+        opacity: 1;
+        /* 250ms enter with iOS-drawer curve; exit (via .nxp-leave) is faster */
+        transition:
+          transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
+          opacity 250ms cubic-bezier(0.32, 0.72, 0, 1);
       }
       @starting-style {
-        .nxp-drawer[data-direction='start'],
-        .nxp-drawer[data-direction='end'] {
-          transform: none;
+        .nxp-drawer[data-direction='start'] {
+          transform: translateX(-100%);
           opacity: 0;
         }
       }
-    }
+      .nxp-drawer[data-direction='start'].nxp-leave {
+        transform: translateX(-100%);
+        opacity: 0;
+        transition:
+          transform 180ms cubic-bezier(0.4, 0, 1, 1),
+          opacity 180ms cubic-bezier(0.4, 0, 1, 1);
+      }
 
-    .nxp-drawer--overlay {
-      top: 0;
-      border-radius: 0;
-    }
+      .nxp-drawer[data-direction='end'] {
+        inset-inline-end: 0;
+        border-start-end-radius: 0;
+        transform: translateX(0);
+        opacity: 1;
+        transition:
+          transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
+          opacity 250ms cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      @starting-style {
+        .nxp-drawer[data-direction='end'] {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+      .nxp-drawer[data-direction='end'].nxp-leave {
+        transform: translateX(100%);
+        opacity: 0;
+        transition:
+          transform 180ms cubic-bezier(0.4, 0, 1, 1),
+          opacity 180ms cubic-bezier(0.4, 0, 1, 1);
+      }
 
-    .nxp-drawer--overlay::before {
-      content: '';
-      position: fixed;
-      inset: -100vh -100vw;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: -1;
-    }
+      @media (prefers-reduced-motion: reduce) {
+        .nxp-drawer[data-direction='start'],
+        .nxp-drawer[data-direction='end'] {
+          transform: none;
+          transition: opacity 200ms linear;
+        }
+        .nxp-drawer[data-direction='start'].nxp-leave,
+        .nxp-drawer[data-direction='end'].nxp-leave {
+          transform: none;
+          opacity: 0;
+          transition: opacity 150ms linear;
+        }
+        @starting-style {
+          .nxp-drawer[data-direction='start'],
+          .nxp-drawer[data-direction='end'] {
+            transform: none;
+            opacity: 0;
+          }
+        }
+      }
 
-    .nxp-drawer__aside {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      background: white;
-      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-      box-sizing: border-box;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
+      .nxp-drawer--overlay {
+        top: 0;
+        border-radius: 0;
+      }
 
-    :is(.dark) .nxp-drawer__aside {
-      background: rgb(17, 24, 39);
-      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
-    }
+      .nxp-drawer--overlay::before {
+        content: '';
+        position: fixed;
+        inset: -100vh -100vw;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+      }
 
-    .nxp-drawer__scroll {
-      flex: 1;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-    }
+      .nxp-drawer__aside {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: white;
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+        box-sizing: border-box;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
 
-    .nxp-drawer__content {
-      padding: 1.25rem 1.5rem;
-    }
+      :is(.dark) .nxp-drawer__aside {
+        background: rgb(17, 24, 39);
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
+      }
 
-    .nxp-drawer__aside > footer {
-      display: flex;
-      gap: 0.75rem;
-      padding: 0.75rem 1.5rem;
-      border-top: 1px solid rgb(229, 231, 235);
-      background: white;
-      overflow-x: auto;
-    }
+      .nxp-drawer__scroll {
+        flex: 1;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
 
-    :is(.dark) .nxp-drawer__aside > footer {
-      border-top-color: rgb(55, 65, 81);
-      background: rgb(17, 24, 39);
-    }
+      .nxp-drawer__content {
+        padding: 1.25rem 1.5rem;
+      }
 
-    .nxp-drawer__aside > .nxp-drawer__scroll > header {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      padding: 1.5rem 1.5rem 0.75rem;
-      border-bottom: 1px solid rgb(229, 231, 235);
-      background: white;
-    }
+      .nxp-drawer__aside > footer {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        border-top: 1px solid rgb(229, 231, 235);
+        background: white;
+        overflow-x: auto;
+      }
 
-    :is(.dark) .nxp-drawer__aside > .nxp-drawer__scroll > header {
-      border-bottom-color: rgb(55, 65, 81);
-      background: rgb(17, 24, 39);
-    }
+      :is(.dark) .nxp-drawer__aside > footer {
+        border-top-color: rgb(55, 65, 81);
+        background: rgb(17, 24, 39);
+      }
 
-  `],
+      .nxp-drawer__aside > .nxp-drawer__scroll > header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.5rem 1.5rem 0.75rem;
+        border-bottom: 1px solid rgb(229, 231, 235);
+        background: white;
+      }
+
+      :is(.dark) .nxp-drawer__aside > .nxp-drawer__scroll > header {
+        border-bottom-color: rgb(55, 65, 81);
+        background: rgb(17, 24, 39);
+      }
+    `,
+  ],
 })
 export class DrawerComponent {
   readonly direction = input<'start' | 'end'>('end');

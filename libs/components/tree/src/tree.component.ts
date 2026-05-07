@@ -33,8 +33,12 @@ const DEFAULT_CHILDREN_HANDLER: NxpTreeHandler<unknown> = (item: unknown) =>
  */
 @Component({
   selector: 'nxp-tree',
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  imports: [NgTemplateOutlet, NxpTreeItemComponent, NxpTreeItemContentComponent, forwardRef(() => NxpTreeComponent)],
+  imports: [
+    NgTemplateOutlet,
+    NxpTreeItemComponent,
+    NxpTreeItemContentComponent,
+    forwardRef(() => NxpTreeComponent),
+  ],
   template: `
     @if (value() !== undefined) {
       <nxp-tree-item>
@@ -70,7 +74,10 @@ const DEFAULT_CHILDREN_HANDLER: NxpTreeHandler<unknown> = (item: unknown) =>
     {
       provide: NXP_TREE_LEVEL,
       useFactory: () => {
-        const parentLevel = inject(NXP_TREE_LEVEL, { skipSelf: true, optional: true });
+        const parentLevel = inject(NXP_TREE_LEVEL, {
+          skipSelf: true,
+          optional: true,
+        });
         return (parentLevel ?? -1) + 1;
       },
     },

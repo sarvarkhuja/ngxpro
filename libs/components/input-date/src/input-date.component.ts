@@ -13,12 +13,12 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx, inputVariants } from '@nxp/cdk';
-import { CalendarComponent } from '@nxp/components/calendar';
+import { cx, inputVariants } from '@ngxpro/cdk';
+import { CalendarComponent } from '@ngxpro/components/calendar';
 import type {
   DisabledHandler,
   MarkerHandler,
-} from '@nxp/components/calendar';
+} from '@ngxpro/components/calendar';
 import { formatDate, parseDate } from './date-input.utils';
 
 /**
@@ -92,7 +92,7 @@ import { formatDate, parseDate } from './date-input.utils';
 
       <span
         class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none select-none
-               transition-[color,transform] duration-150
+               transition-[color,transform] duration-normal
                [transition-timing-function:cubic-bezier(0.23,1,0.32,1)]"
         [class.text-text-tertiary]="!isOpen()"
         [class.text-text-action]="isOpen()"

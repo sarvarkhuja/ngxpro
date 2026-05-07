@@ -7,15 +7,20 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NxpDropdownDirective, NxpDropdownOpen } from '@nxp/cdk';
-import { NxpInputDirective } from '@nxp/cdk/components/input';
-import { NxpLabelDirective } from '@nxp/cdk/components/label';
+import { NxpDropdownDirective, NxpDropdownOpen } from '@ngxpro/cdk';
+import {
+  NxpCopyComponent,
+  NxpCopyDirective,
+} from '@ngxpro/cdk/components/copy';
+import { NxpIconComponent } from '@ngxpro/cdk/components/icon';
+import { NxpInputDirective } from '@ngxpro/cdk/components/input';
+import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
 import {
   NxpTextfieldComponent,
   NxpTextfieldEndDirective,
   NxpTextfieldOptionsDirective,
-} from '@nxp/cdk/components/textfield';
-import { NxpTooltipDirective } from '@nxp/components/tooltip';
+} from '@ngxpro/cdk/components/textfield';
+import { NxpTooltipDirective } from '@ngxpro/components/tooltip';
 
 @Component({
   selector: 'app-input-demo',
@@ -33,6 +38,9 @@ import { NxpTooltipDirective } from '@nxp/components/tooltip';
     NxpDropdownDirective,
     NxpDropdownOpen,
     NxpTooltipDirective,
+    NxpIconComponent,
+    NxpCopyDirective,
+    NxpCopyComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -186,17 +194,14 @@ import { NxpTooltipDirective } from '@nxp/components/tooltip';
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
             <!-- Tooltip hint -->
             <div>
-              <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+              <p
+                class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+              >
                 Hover hint
               </p>
               <nxp-textfield>
                 <label nxpLabel for="end-info">API token</label>
-                <input
-                  nxpInput
-                  id="end-info"
-                  type="text"
-                  placeholder="sk_…"
-                />
+                <input nxpInput id="end-info" type="text" placeholder="sk_…" />
                 <button
                   nxpTextfieldEnd
                   type="button"
@@ -217,7 +222,9 @@ import { NxpTooltipDirective } from '@nxp/components/tooltip';
 
             <!-- Settings dropdown -->
             <div>
-              <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+              <p
+                class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+              >
                 Settings dropdown
               </p>
               <nxp-textfield>
@@ -273,7 +280,9 @@ import { NxpTooltipDirective } from '@nxp/components/tooltip';
 
             <!-- Password eye toggle -->
             <div class="sm:col-span-2">
-              <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+              <p
+                class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+              >
                 Password toggle
               </p>
               <nxp-textfield iconStart="ri-lock-line">
@@ -310,6 +319,96 @@ import { NxpTooltipDirective } from '@nxp/components/tooltip';
                 Value: <strong>{{ pwdValue() || '(empty)' }}</strong>
               </p>
             </div>
+          </div>
+        </section>
+
+        <!-- Copy to clipboard -->
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-6"
+        >
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Copy to clipboard
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Drop a <code>&lt;nxp-icon nxpCopy nxpTextfieldEnd&gt;</code> into
+              the trailing slot to copy the field value. The icon dims and
+              becomes inert when the input is empty, and flips its
+              <code>aria-label</code> to "Copied" for ~3s after a successful
+              copy. Standalone <code>&lt;nxp-copy&gt;</code> works for inline
+              read-only values.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+            <!-- Editable field with copy icon -->
+            <div>
+              <p
+                class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+              >
+                Editable field
+              </p>
+              <nxp-textfield iconStart="ri-key-2-line">
+                <label nxpLabel for="copy-token">API key</label>
+                <input
+                  nxpInput
+                  id="copy-token"
+                  type="text"
+                  placeholder="Type a value to enable copy"
+                  [(ngModel)]="copyToken"
+                />
+                <nxp-icon
+                  nxpCopy
+                  nxpTextfieldEnd
+                  icon="ri-file-copy-line"
+                  class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400"
+                  (pointerdown.prevent)="(0)"
+                />
+              </nxp-textfield>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Value: <strong>{{ copyToken() || '(empty)' }}</strong>
+              </p>
+            </div>
+
+            <!-- Pre-filled read-only field with copy icon -->
+            <div>
+              <p
+                class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+              >
+                Read-only token
+              </p>
+              <nxp-textfield iconStart="ri-shield-keyhole-line">
+                <label nxpLabel for="copy-readonly"
+                  >Personal access token</label
+                >
+                <input
+                  nxpInput
+                  id="copy-readonly"
+                  type="text"
+                  readonly
+                  value="ghp_aBC123xyzREADONLYtok"
+                />
+                <nxp-icon
+                  nxpCopy
+                  nxpTextfieldEnd
+                  icon="ri-file-copy-line"
+                  class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400"
+                  (pointerdown.prevent)="(0)"
+                />
+              </nxp-textfield>
+            </div>
+          </div>
+
+          <!-- Standalone <nxp-copy> pill -->
+          <div>
+            <p
+              class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+            >
+              Standalone copy pill
+            </p>
+            <nxp-copy
+              >npm install ngxpro/components --legacy-peer-deps</nxp-copy
+            >
           </div>
         </section>
 
@@ -463,6 +562,7 @@ export class InputDemoComponent {
   readonly clearSearch = signal('');
   readonly pwdVisible = signal(false);
   readonly pwdValue = signal('');
+  readonly copyToken = signal('');
 
   readonly usernameCtrl = new FormControl<string>('', {
     validators: [Validators.required, Validators.minLength(3)],

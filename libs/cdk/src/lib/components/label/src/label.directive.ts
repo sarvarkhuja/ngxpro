@@ -25,8 +25,8 @@ export class NxpLabelDirective {
   readonly classes = computed(() =>
     cx(
       'text-sm leading-none',
-      'text-gray-900 dark:text-gray-50',
-      this.disabled() && 'text-gray-400 dark:text-gray-600',
+      'text-text-primary',
+      this.disabled() && 'text-text-tertiary',
       this.class(),
     ),
   );

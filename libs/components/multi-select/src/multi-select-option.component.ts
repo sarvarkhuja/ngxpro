@@ -5,7 +5,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { cx, NXP_ITEMS_HANDLERS } from '@nxp/cdk';
+import { cx, NXP_ITEMS_HANDLERS } from '@ngxpro/cdk';
 import { NxpMultiSelectComponent } from './multi-select.component';
 
 /**
@@ -41,13 +41,23 @@ import { NxpMultiSelectComponent } from './multi-select.component';
   template: `
     <!-- Checkbox indicator -->
     <span
-      class="flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors duration-100"
+      class="flex h-4 w-4 shrink-0 items-center justify-center rounded-xs border transition-colors duration-fast"
       [class]="checkboxClass()"
       aria-hidden="true"
     >
       @if (isSelected()) {
-        <svg viewBox="0 0 12 12" fill="none" class="h-3 w-3" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5" />
+        <svg
+          viewBox="0 0 12 12"
+          fill="none"
+          class="h-3 w-3"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M2 6l3 3 5-5"
+          />
         </svg>
       }
     </span>
@@ -60,7 +70,9 @@ export class NxpMultiSelectOptionComponent<T = unknown> {
   private readonly handlers = inject(NXP_ITEMS_HANDLERS);
   // Always a child of NxpMultiSelectComponent — injected for both
   // isItemSelected() check and handleOption() calls.
-  private readonly multiSelect = inject(NxpMultiSelectComponent, { optional: true }) as NxpMultiSelectComponent<T> | null;
+  private readonly multiSelect = inject(NxpMultiSelectComponent, {
+    optional: true,
+  }) as NxpMultiSelectComponent<T> | null;
 
   readonly value = input.required<T>();
 
@@ -68,8 +80,8 @@ export class NxpMultiSelectOptionComponent<T = unknown> {
     this.handlers.stringify()(this.value()),
   );
 
-  protected readonly isSelected = computed(() =>
-    this.multiSelect?.isItemSelected(this.value()) ?? false,
+  protected readonly isSelected = computed(
+    () => this.multiSelect?.isItemSelected(this.value()) ?? false,
   );
 
   protected readonly isDisabled = computed(() =>
@@ -78,22 +90,22 @@ export class NxpMultiSelectOptionComponent<T = unknown> {
 
   protected readonly classes = computed(() =>
     cx(
-      'flex w-full cursor-pointer items-center gap-2.5 rounded-md px-3 py-1.5',
+      'flex w-full cursor-pointer items-center gap-2.5 rounded-s px-3 py-1.5',
       'text-sm font-medium text-left select-none',
-      'transition-colors duration-100',
+      'transition-colors duration-fast',
       'outline-none focus-visible:outline focus-visible:outline-2',
-      'focus-visible:outline-offset-1 focus-visible:outline-blue-500',
+      'focus-visible:outline-offset-1 focus-visible:outline-border-focus',
       this.isSelected()
-        ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300'
-        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
-      this.isDisabled() && 'opacity-40 cursor-not-allowed pointer-events-none',
+        ? 'bg-primary/10 text-text-action'
+        : 'text-text-secondary hover:bg-bg-neutral-1',
+      this.isDisabled() && 'opacity-50 cursor-not-allowed pointer-events-none',
     ),
   );
 
   protected readonly checkboxClass = computed(() =>
     this.isSelected()
-      ? 'border-blue-500 bg-blue-500 text-white dark:border-blue-400 dark:bg-blue-400'
-      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900',
+      ? 'border-primary bg-primary text-text-on-accent'
+      : 'border-border-normal bg-bg-base',
   );
 
   protected select(): void {

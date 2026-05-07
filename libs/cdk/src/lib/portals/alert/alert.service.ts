@@ -1,15 +1,9 @@
-import {
-  type ComponentRef,
-  inject,
-  Injectable,
-} from '@angular/core';
+import { type ComponentRef, Injectable } from '@angular/core';
 import type { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { NxpPortal } from '../portal';
-import { NxpPortalService } from '../portal.service';
 import { NxpPositionOptions } from './alert.directive';
 import { NXP_LEAVE } from '../../directives/animated.directive';
 import { NXP_TIME_BEFORE_UNMOUNT } from '../../constants/motion';
-
 
 /**
  * Alert portal service with concurrency limit and queue.
@@ -22,19 +16,19 @@ import { NXP_TIME_BEFORE_UNMOUNT } from '../../constants/motion';
 @Injectable()
 export abstract class NxpAlertService<
   T extends NxpPositionOptions = NxpPositionOptions,
-  K = void
+  K = void,
 > extends NxpPortal<T, K> {
   private readonly concurrency: number;
   private readonly current = new Map<unknown, ComponentRef<unknown>>();
   private readonly queue = new Set<PolymorpheusComponent<unknown>>();
 
   constructor(concurrency: number) {
-    super(inject(NxpPortalService));
+    super();
     this.concurrency = Math.min(concurrency, 5);
   }
 
   protected override add(
-    component: PolymorpheusComponent<unknown>
+    component: PolymorpheusComponent<unknown>,
   ): () => void {
     if (this.current.size < this.concurrency) {
       this.current.set(component, this.service.add(component));

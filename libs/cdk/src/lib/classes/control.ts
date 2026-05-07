@@ -30,11 +30,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NXP_FALLBACK_VALUE } from '../tokens/fallback-value';
 import { nxpProvide } from '../utils/provide';
 
-function noop(): void { /* intentional */ }
+function noop(): void {
+  /* intentional */
+}
 
 @Directive()
 export abstract class NxpControl<T> implements ControlValueAccessor {
-  private readonly fallback = inject(NXP_FALLBACK_VALUE, { optional: true }) as T;
+  private readonly fallback = inject(NXP_FALLBACK_VALUE, {
+    optional: true,
+  }) as T;
   private readonly refresh$ = new Subject<void>();
   private readonly internal = signal(this.fallback);
 
@@ -47,7 +51,9 @@ export abstract class NxpControl<T> implements ControlValueAccessor {
   public readonly touched = signal(false);
   public readonly status = signal<FormControlStatus | undefined>(undefined);
   public readonly disabled = computed(() => this.status() === 'DISABLED');
-  public readonly interactive = computed(() => !this.disabled() && !this.readOnly());
+  public readonly interactive = computed(
+    () => !this.disabled() && !this.readOnly(),
+  );
   public readonly invalid = computed(() =>
     this.pseudoInvalid() !== null
       ? !!this.pseudoInvalid() && this.interactive()

@@ -4,13 +4,6 @@
   "sourceRoot": "libs/blocks/src",
   "prefix": "nxp",
   "projectType": "library",
-  "release": {
-    "version": {
-      "manifestRootsToUpdate": ["dist/{projectRoot}"],
-      "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk"
-    }
-  },
   "tags": ["scope:blocks"],
   "targets": {
     "build": {

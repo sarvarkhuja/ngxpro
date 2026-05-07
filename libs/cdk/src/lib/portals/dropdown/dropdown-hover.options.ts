@@ -10,6 +10,5 @@ export const NXP_DROPDOWN_HOVER_DEFAULT_OPTIONS: NxpDropdownHoverOptions = {
   hideDelay: 500,
 };
 
-export const [NXP_DROPDOWN_HOVER_OPTIONS, nxpDropdownHoverOptionsProvider] = nxpCreateOptions(
-  NXP_DROPDOWN_HOVER_DEFAULT_OPTIONS,
-);
+export const [NXP_DROPDOWN_HOVER_OPTIONS, nxpDropdownHoverOptionsProvider] =
+  nxpCreateOptions(NXP_DROPDOWN_HOVER_DEFAULT_OPTIONS);

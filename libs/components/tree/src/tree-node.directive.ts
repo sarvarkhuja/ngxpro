@@ -1,10 +1,4 @@
-import {
-  Directive,
-  inject,
-  input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Directive, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { NXP_TREE_ACCESSOR } from './tree.tokens';
 import { NxpTreeItemComponent } from './tree-item.component';
 

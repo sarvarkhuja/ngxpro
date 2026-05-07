@@ -3,9 +3,13 @@
  */
 export function nxpGetClipboardDataText(
   event: ClipboardEvent,
-  format: string = 'text/plain',
+  format = 'text/plain',
 ): string {
-  return event.clipboardData?.getData(format) ?? event.clipboardData?.getData('text/plain') ?? '';
+  return (
+    event.clipboardData?.getData(format) ??
+    event.clipboardData?.getData('text/plain') ??
+    ''
+  );
 }
 
 /**

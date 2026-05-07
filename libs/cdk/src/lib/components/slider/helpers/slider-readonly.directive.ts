@@ -42,9 +42,15 @@ export class NxpSliderReadonly {
   public readonly readonly = input(true);
 
   constructor() {
-    const touchStart$ = nxpTypedFromEvent(this.el, 'touchstart', { passive: false });
-    const touchMove$ = nxpTypedFromEvent(this.doc, 'touchmove', { passive: false });
-    const touchEnd$ = nxpTypedFromEvent(this.doc, 'touchend', { passive: true });
+    const touchStart$ = nxpTypedFromEvent(this.el, 'touchstart', {
+      passive: false,
+    });
+    const touchMove$ = nxpTypedFromEvent(this.doc, 'touchmove', {
+      passive: false,
+    });
+    const touchEnd$ = nxpTypedFromEvent(this.doc, 'touchend', {
+      passive: true,
+    });
 
     const shouldPreventMove$ = merge(
       touchStart$.pipe(

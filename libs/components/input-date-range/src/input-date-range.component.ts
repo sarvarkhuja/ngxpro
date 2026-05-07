@@ -12,16 +12,16 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx, inputVariants } from '@nxp/cdk';
+import { cx, inputVariants } from '@ngxpro/cdk';
 import type {
   DisabledHandler,
   MarkerHandler,
-} from '@nxp/components/calendar';
+} from '@ngxpro/components/calendar';
 import {
   CalendarRangeComponent,
   DateRangePeriod,
-} from '@nxp/components/calendar-range';
-import { formatDateRange, parseDateRange } from '@nxp/components/input-date';
+} from '@ngxpro/components/calendar-range';
+import { formatDateRange, parseDateRange } from '@ngxpro/components/input-date';
 
 /**
  * Date-range input with dual-calendar dropdown.
@@ -94,7 +94,7 @@ import { formatDateRange, parseDateRange } from '@nxp/components/input-date';
 
       <span
         class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none select-none
-               transition-[color,transform] duration-150
+               transition-[color,transform] duration-normal
                [transition-timing-function:cubic-bezier(0.23,1,0.32,1)]"
         [class.text-text-tertiary]="!isOpen()"
         [class.text-text-action]="isOpen()"
@@ -186,7 +186,9 @@ export class InputDateRangeComponent implements ControlValueAccessor {
     this._onTouched = fn;
   }
 
-  setDisabledState(_isDisabled: boolean): void {}
+  setDisabledState(_isDisabled: boolean): void {
+    /*noop*/
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {

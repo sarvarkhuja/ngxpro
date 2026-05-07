@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { cx, focusInput, hasErrorInput } from '../../../utils';
+import { focusInput, hasErrorInput } from '../../../utils';
+import { cx } from '../../../utils';
 
 /**
  * Input directive styled with Tremor patterns.
@@ -26,22 +27,13 @@ export class InputComponent {
 
   readonly hostClasses = () =>
     cx(
-      // base
-      'relative block w-full appearance-none rounded-md border px-3 py-2 shadow-sm outline-none transition sm:text-sm',
-      // border
-      'border-gray-300 dark:border-gray-800',
-      // background
-      'bg-white dark:bg-gray-950',
-      // text
-      'text-gray-900 dark:text-gray-50',
-      // placeholder
-      'placeholder:text-gray-400 dark:placeholder:text-gray-500',
-      // disabled
-      'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400',
-      'dark:disabled:bg-gray-800 dark:disabled:text-gray-500',
-      // focus
+      'relative block w-full appearance-none rounded-m border px-3 py-2 shadow-sm outline-none transition sm:text-sm',
+      'border-border-normal',
+      'bg-bg-base',
+      'text-text-primary',
+      'placeholder:text-text-tertiary',
+      'disabled:cursor-not-allowed disabled:bg-bg-neutral-1 disabled:text-text-tertiary',
       ...focusInput,
-      // error
       this.hasError() && hasErrorInput,
       this.class(),
     );

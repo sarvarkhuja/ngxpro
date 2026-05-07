@@ -8,7 +8,12 @@ import {
 } from '@angular/core';
 import { dayCellVariants } from '../../../utils';
 import { CalendarSheetPipe } from './calendar-sheet.pipe';
-import type { DayRange, DisabledHandler, MarkerHandler, WeekStart } from './calendar.types';
+import type {
+  DayRange,
+  DisabledHandler,
+  MarkerHandler,
+  WeekStart,
+} from './calendar.types';
 
 /** Short week-day labels in Sunday-first order. */
 const ALL_WEEKDAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as const;
@@ -54,7 +59,10 @@ function startOfDay(d: Date): Date {
     </div>
 
     <div role="grid" [attr.aria-label]="gridLabel()" class="grid gap-y-0.5">
-      @for (week of (year() | calendarSheet:month():weekStart()); track $index) {
+      @for (
+        week of year() | calendarSheet: month() : weekStart();
+        track $index
+      ) {
         <div class="grid grid-cols-7" role="row">
           @for (day of week; track day.getTime()) {
             <div
@@ -66,7 +74,14 @@ function startOfDay(d: Date): Date {
                 type="button"
                 [class]="dayCellClass(day)"
                 [disabled]="isDisabled(day)"
-                [attr.aria-label]="day.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })"
+                [attr.aria-label]="
+                  day.toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })
+                "
                 [attr.aria-selected]="isSelected(day) || null"
                 [attr.aria-disabled]="isDisabled(day) || null"
                 [attr.aria-current]="isToday(day) ? 'date' : null"
@@ -117,11 +132,15 @@ export class CalendarSheetComponent {
 
   protected readonly weekdayLabels = computed(() => {
     const ws = this.weekStart();
-    return Array.from({ length: 7 }, (_, i) => ALL_WEEKDAY_LABELS[(ws + i) % 7]);
+    return Array.from(
+      { length: 7 },
+      (_, i) => ALL_WEEKDAY_LABELS[(ws + i) % 7],
+    );
   });
 
   protected readonly gridLabel = computed(
-    () => `Calendar — ${this.year()}-${String(this.month() + 1).padStart(2, '0')}`,
+    () =>
+      `Calendar — ${this.year()}-${String(this.month() + 1).padStart(2, '0')}`,
   );
 
   protected markers(day: Date): string[] {

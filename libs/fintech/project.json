@@ -4,13 +4,6 @@
   "sourceRoot": "libs/fintech/src",
   "prefix": "nxp",
   "projectType": "library",
-  "release": {
-    "version": {
-      "manifestRootsToUpdate": ["dist/{projectRoot}"],
-      "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk"
-    }
-  },
   "tags": ["scope:fintech"],
   "targets": {
     "build": {

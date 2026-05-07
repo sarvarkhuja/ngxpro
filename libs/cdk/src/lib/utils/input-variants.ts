@@ -5,7 +5,7 @@ export const inputVariants = tv({
     'w-full rounded-lg border border-border-normal bg-bg-base',
     'px-3.5 py-2.5 pr-10',
     'text-sm text-text-primary placeholder:text-text-tertiary',
-    'shadow-sm transition-[border-color,box-shadow,background-color,color] duration-150',
+    'shadow-sm transition-[border-color,box-shadow,background-color,color] duration-normal',
     '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
     'outline-none ring-0',
     'hover:border-border-strong',

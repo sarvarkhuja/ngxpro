@@ -1,10 +1,11 @@
 import { tv } from 'tailwind-variants';
 import { cx } from './cx';
 
-const EASE_OUT_STRONG = '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]';
+const EASE_OUT_STRONG =
+  '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]';
 
 const INTERACTIVE_BASE = [
-  'transition-[background-color,color,transform,box-shadow,opacity] duration-150',
+  'transition-[background-color,color,transform,box-shadow,opacity] duration-normal',
   EASE_OUT_STRONG,
   'outline-none',
   'focus-visible:ring-1 focus-visible:ring-border-focus focus-visible:ring-offset-0',
@@ -55,16 +56,14 @@ export const dayCellVariants = tv({
 });
 
 export const calendarCellVariants = tv({
-  base: [
-    'rounded-lg text-sm font-medium text-center',
-    ...INTERACTIVE_BASE,
-  ],
+  base: ['rounded-lg text-sm font-medium text-center', ...INTERACTIVE_BASE],
   variants: {
     state: {
       default: 'text-text-secondary hover:bg-bg-neutral-1 cursor-pointer',
       selected:
         'bg-primary-hover text-text-on-accent shadow-sm shadow-primary/20 hover:bg-primary-pressed cursor-pointer',
-      current: 'text-text-action font-semibold hover:bg-bg-neutral-1 cursor-pointer',
+      current:
+        'text-text-action font-semibold hover:bg-bg-neutral-1 cursor-pointer',
       disabled:
         'opacity-30 cursor-not-allowed pointer-events-none text-text-tertiary',
       rangeStart:
@@ -79,7 +78,7 @@ export const calendarCellVariants = tv({
 });
 
 export const calendarContainerClass = cx(
-  'inline-flex rounded-2xl border border-border-normal bg-bg-base',
+  'inline-flex rounded-l border border-border-normal bg-bg-base',
   'shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]',
   'dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-8px_rgba(0,0,0,0.5)]',
   'overflow-hidden',
@@ -91,7 +90,7 @@ export const navButtonClass = cx(
   'text-text-secondary',
   'hover:bg-bg-neutral-1 hover:text-text-primary',
   'disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none',
-  'transition-[background-color,color,transform] duration-150',
+  'transition-[background-color,color,transform] duration-normal',
   '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
   'active:scale-[0.94]',
   'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',

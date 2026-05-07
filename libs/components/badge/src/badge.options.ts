@@ -1,4 +1,4 @@
-import { nxpCreateOptions } from '@nxp/cdk';
+import { nxpCreateOptions } from '@ngxpro/cdk';
 
 export const NXP_BADGE_COLORS = {
   gray: '#a3a3a3',
@@ -31,4 +31,8 @@ export interface NxpBadgeOptions {
 }
 
 export const [NXP_BADGE_OPTIONS, nxpBadgeOptionsProvider] =
-  nxpCreateOptions<NxpBadgeOptions>({ variant: 'solid', size: 'md', color: 'gray' });
+  nxpCreateOptions<NxpBadgeOptions>({
+    variant: 'solid',
+    size: 'md',
+    color: 'gray',
+  });

@@ -13,10 +13,10 @@ import { TitleCasePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import {
+  NxpNotificationOptions,
   NxpNotificationHostComponent,
   NxpNotificationService,
-  NxpNotificationOptions,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk/components/notification';
 
 type Appearance = NxpNotificationOptions['appearance'];
 
@@ -77,11 +77,15 @@ const UPLOAD_DATA = new InjectionToken<UploadData>('UPLOAD_DATA');
             {{ data.filename }}
           </p>
         </div>
-        <p class="text-xs font-mono tabular-nums text-gray-500 dark:text-gray-400">
+        <p
+          class="text-xs font-mono tabular-nums text-gray-500 dark:text-gray-400"
+        >
           {{ progress() }}%
         </p>
       </div>
-      <div class="h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
+      <div
+        class="h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden"
+      >
         <div
           class="h-full bg-gray-900 dark:bg-white transition-all duration-200 ease-out"
           [style.width.%]="progress()"
@@ -133,11 +137,17 @@ const MESSAGE_DATA = new InjectionToken<MessageData>('MESSAGE_DATA');
       <div [class]="avatarClasses()">{{ data.initials }}</div>
       <div class="flex-1 min-w-0 space-y-1">
         <p class="text-sm">
-          <span class="font-semibold text-gray-900 dark:text-white">{{ data.name }}</span>
+          <span class="font-semibold text-gray-900 dark:text-white">{{
+            data.name
+          }}</span>
           <span class="text-gray-500 dark:text-gray-400"> in </span>
-          <span class="font-medium text-gray-700 dark:text-gray-300">{{ data.channel }}</span>
+          <span class="font-medium text-gray-700 dark:text-gray-300">{{
+            data.channel
+          }}</span>
         </p>
-        <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-snug">
+        <p
+          class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-snug"
+        >
           {{ data.preview }}
         </p>
       </div>
@@ -158,8 +168,10 @@ class MessageToastComponent {
     const map: Record<MessageData['tone'], string> = {
       rose: 'bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300',
       sky: 'bg-sky-100 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300',
-      violet: 'bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300',
-      emerald: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300',
+      violet:
+        'bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300',
+      emerald:
+        'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300',
     };
     return `inline-flex items-center justify-center size-9 rounded-full text-xs font-semibold shrink-0 ${map[this.data.tone]}`;
   }
@@ -181,7 +193,9 @@ const INVITE_DATA = new InjectionToken<InviteData>('INVITE_DATA');
     <div class="w-full space-y-3">
       <div class="space-y-0.5">
         <p class="text-sm text-gray-700 dark:text-gray-300">
-          <span class="font-semibold text-gray-900 dark:text-white">{{ data.inviter }}</span>
+          <span class="font-semibold text-gray-900 dark:text-white">{{
+            data.inviter
+          }}</span>
           invited you to join
         </p>
         <p class="text-sm font-semibold text-gray-900 dark:text-white">
@@ -193,12 +207,16 @@ const INVITE_DATA = new InjectionToken<InviteData>('INVITE_DATA');
           type="button"
           (click)="data.onAccept()"
           class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-        >Accept</button>
+        >
+          Accept
+        </button>
         <button
           type="button"
           (click)="data.onDecline()"
           class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-        >Decline</button>
+        >
+          Decline
+        </button>
       </div>
     </div>
   `,
@@ -228,7 +246,9 @@ const RELEASE_DATA = new InjectionToken<ReleaseData>('RELEASE_DATA');
         </p>
       </div>
       <div class="flex items-center gap-1.5">
-        <code class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+        <code
+          class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+        >
           {{ data.branch }}
         </code>
         <span class="text-gray-300 dark:text-gray-600">·</span>
@@ -241,7 +261,11 @@ const RELEASE_DATA = new InjectionToken<ReleaseData>('RELEASE_DATA');
           [attr.aria-label]="'Copy ' + data.hash"
           class="ml-auto shrink-0 inline-flex items-center justify-center size-6 rounded text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          <i [class]="copied() ? 'ri-check-line' : 'ri-file-copy-line'" class="text-xs" aria-hidden="true"></i>
+          <i
+            [class]="copied() ? 'ri-check-line' : 'ri-file-copy-line'"
+            class="text-xs"
+            aria-hidden="true"
+          ></i>
         </button>
       </div>
     </div>
@@ -278,28 +302,45 @@ interface RichDemo {
   template: `
     <nxp-notification-host />
 
-    <div class="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+    <div
+      class="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
+    >
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
-
         <!-- Header -->
         <header class="space-y-4">
-          <a routerLink="/" class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
+          <a
+            routerLink="/"
+            class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+          >
             <span aria-hidden="true">←</span> Back to home
           </a>
           <div class="space-y-2 max-w-2xl">
             <div class="flex flex-wrap items-center gap-2">
-              <h1 class="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
+              <h1
+                class="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white"
+              >
                 Notifications
               </h1>
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900">
+              <span
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900"
+              >
                 <i class="ri-component-line" aria-hidden="true"></i>
                 PolymorpheusComponent
               </span>
             </div>
             <p class="text-base text-gray-600 dark:text-gray-400">
-              Pass any Angular component as toast content. Each rich body below is a
-              standalone <code class="font-mono text-[13px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800">PolymorpheusComponent</code>
-              with its own state, layout, and actions — provided per-toast via a custom <code class="font-mono text-[13px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800">Injector</code>.
+              Pass any Angular component as toast content. Each rich body below
+              is a standalone
+              <code
+                class="font-mono text-[13px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800"
+                >PolymorpheusComponent</code
+              >
+              with its own state, layout, and actions — provided per-toast via a
+              custom
+              <code
+                class="font-mono text-[13px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800"
+                >Injector</code
+              >.
             </p>
           </div>
         </header>
@@ -307,10 +348,14 @@ interface RichDemo {
         <!-- ── Rich component-based toasts ─────────────────────────── -->
         <section class="space-y-4">
           <div class="flex items-baseline justify-between">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <h2
+              class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+            >
               Component bodies
             </h2>
-            <span class="text-xs text-gray-400 dark:text-gray-500">Click a card to fire</span>
+            <span class="text-xs text-gray-400 dark:text-gray-500"
+              >Click a card to fire</span
+            >
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             @for (d of richDemos; track d.key) {
@@ -324,11 +369,21 @@ interface RichDemo {
                     <i [class]="d.icon" aria-hidden="true"></i>
                   </span>
                   <div class="flex-1 min-w-0 space-y-1">
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ d.title }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-snug">{{ d.description }}</p>
+                    <p
+                      class="text-sm font-semibold text-gray-900 dark:text-white"
+                    >
+                      {{ d.title }}
+                    </p>
+                    <p
+                      class="text-xs text-gray-500 dark:text-gray-400 leading-snug"
+                    >
+                      {{ d.description }}
+                    </p>
                   </div>
                 </div>
-                <p class="mt-3 text-xs font-medium text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">
+                <p
+                  class="mt-3 text-xs font-medium text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors"
+                >
                   Fire toast →
                 </p>
               </button>
@@ -337,14 +392,28 @@ interface RichDemo {
         </section>
 
         <!-- ── String vs Component compare ───────────────────────── -->
-        <section class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden">
-          <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-800">
+        <section
+          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
+        >
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-800"
+          >
             <div class="p-6 sm:p-8 space-y-4">
               <div class="space-y-1">
-                <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">String content</p>
-                <h3 class="text-base font-semibold text-gray-900 dark:text-white">Plain text body</h3>
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                >
+                  String content
+                </p>
+                <h3
+                  class="text-base font-semibold text-gray-900 dark:text-white"
+                >
+                  Plain text body
+                </h3>
               </div>
-              <pre class="text-[12px] font-mono leading-relaxed bg-gray-950 text-gray-100 rounded-lg p-4 overflow-x-auto"><code>service.<span class="text-cyan-300">open</span>(<span class="text-emerald-300">'Saved.'</span>, &#123;
+              <pre
+                class="text-[12px] font-mono leading-relaxed bg-gray-950 text-gray-100 rounded-lg p-4 overflow-x-auto"
+              ><code>service.<span class="text-cyan-300">open</span>(<span class="text-emerald-300">'Saved.'</span>, &#123;
   appearance: <span class="text-emerald-300">'success'</span>,
   label: <span class="text-emerald-300">'All done'</span>,
 &#125;);</code></pre>
@@ -352,14 +421,26 @@ interface RichDemo {
                 type="button"
                 (click)="fireString()"
                 class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >Fire string toast</button>
+              >
+                Fire string toast
+              </button>
             </div>
             <div class="p-6 sm:p-8 space-y-4 bg-gray-50 dark:bg-gray-950/40">
               <div class="space-y-1">
-                <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Component content</p>
-                <h3 class="text-base font-semibold text-gray-900 dark:text-white">PolymorpheusComponent</h3>
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                >
+                  Component content
+                </p>
+                <h3
+                  class="text-base font-semibold text-gray-900 dark:text-white"
+                >
+                  PolymorpheusComponent
+                </h3>
               </div>
-              <pre class="text-[12px] font-mono leading-relaxed bg-gray-950 text-gray-100 rounded-lg p-4 overflow-x-auto"><code><span class="text-gray-500">// Per-toast data via custom Injector</span>
+              <pre
+                class="text-[12px] font-mono leading-relaxed bg-gray-950 text-gray-100 rounded-lg p-4 overflow-x-auto"
+              ><code><span class="text-gray-500">// Per-toast data via custom Injector</span>
 <span class="text-purple-300">const</span> injector = Injector.<span class="text-cyan-300">create</span>(&#123;
   parent: <span class="text-purple-300">this</span>.injector,
   providers: [&#123; provide: UNDO_DATA, useValue: data &#125;],
@@ -373,17 +454,24 @@ service.<span class="text-cyan-300">open</span>(
                 type="button"
                 (click)="fireRich('undo')"
                 class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md text-sm font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-              >Fire component toast</button>
+              >
+                Fire component toast
+              </button>
             </div>
           </div>
         </section>
 
         <!-- ── Appearance variants (string content) ─────────────── -->
-        <section class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-4">
+        <section
+          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-4"
+        >
           <div class="space-y-1.5">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Appearance & label</h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Appearance & label
+            </h2>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Five built-in appearances, each with its own colour palette and default icon.
+              Five built-in appearances, each with its own colour palette and
+              default icon.
             </p>
           </div>
           <div class="flex flex-wrap gap-2">
@@ -392,64 +480,98 @@ service.<span class="text-cyan-300">open</span>(
                 type="button"
                 (click)="fireAppearance(a)"
                 [class]="appearancePillClass(a)"
-              >{{ a | titlecase }}</button>
+              >
+                {{ a | titlecase }}
+              </button>
             }
           </div>
         </section>
 
         <!-- ── Sizes & timing & stack ─────────────────────────── -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3">
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Sizes</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Compact, default, and roomy.</p>
+          <div
+            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3"
+          >
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+              Sizes
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Compact, default, and roomy.
+            </p>
             <div class="flex gap-1.5 pt-1">
               @for (s of sizes; track s) {
                 <button
                   type="button"
                   (click)="fireSize(s)"
                   class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                >{{ s }}</button>
+                >
+                  {{ s }}
+                </button>
               }
             </div>
           </div>
 
-          <div class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3">
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Auto-close</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Pauses on hover, resumes on leave.</p>
+          <div
+            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3"
+          >
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+              Auto-close
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Pauses on hover, resumes on leave.
+            </p>
             <div class="flex flex-wrap gap-1.5 pt-1">
               @for (d of durations; track d.value) {
                 <button
                   type="button"
                   (click)="fireAutoClose(d.value)"
                   class="px-3 py-1.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                >{{ d.label }}</button>
+                >
+                  {{ d.label }}
+                </button>
               }
             </div>
           </div>
 
-          <div class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3">
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Stack</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Open many. Hover to expand.</p>
+          <div
+            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3"
+          >
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+              Stack
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Open many. Hover to expand.
+            </p>
             <div class="flex gap-1.5 pt-1">
               <button
                 type="button"
                 (click)="fireStack()"
                 class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-              >Stack 5</button>
+              >
+                Stack 5
+              </button>
               <button
                 type="button"
                 (click)="dismissAll()"
                 class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >Clear</button>
+              >
+                Clear
+              </button>
             </div>
           </div>
         </section>
 
         <!-- ── Positions ─────────────────────────────────────────── -->
-        <section class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-4">
+        <section
+          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-4"
+        >
           <div class="space-y-1.5">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Positions</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Six anchor points around the viewport.</p>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Positions
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Six anchor points around the viewport.
+            </p>
           </div>
           <div class="grid grid-cols-3 gap-2">
             @for (p of positions; track p) {
@@ -457,11 +579,12 @@ service.<span class="text-cyan-300">open</span>(
                 type="button"
                 (click)="firePosition(p)"
                 class="px-3 py-2 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >{{ p }}</button>
+              >
+                {{ p }}
+              </button>
             }
           </div>
         </section>
-
       </div>
     </div>
   `,
@@ -471,11 +594,21 @@ export class NotificationDemoComponent {
   private readonly injector = inject(Injector);
 
   // ── Static option lists ──────────────────────────────────────────────────
-  protected readonly appearances: Appearance[] = ['info', 'success', 'warning', 'error', 'neutral'];
+  protected readonly appearances: Appearance[] = [
+    'info',
+    'success',
+    'warning',
+    'error',
+    'neutral',
+  ];
   protected readonly sizes: NxpNotificationOptions['size'][] = ['s', 'm', 'l'];
   protected readonly positions: NxpNotificationOptions['position'][] = [
-    'top-left', 'top-center', 'top-right',
-    'bottom-left', 'bottom-center', 'bottom-right',
+    'top-left',
+    'top-center',
+    'top-right',
+    'bottom-left',
+    'bottom-center',
+    'bottom-right',
   ];
   protected readonly durations = [
     { value: 2000, label: '2s' },
@@ -495,21 +628,24 @@ export class NotificationDemoComponent {
     {
       key: 'upload',
       title: 'Live progress',
-      description: 'Toast holds its own signal-driven state — progress ticks in real time.',
+      description:
+        'Toast holds its own signal-driven state — progress ticks in real time.',
       icon: 'ri-cloud-line',
       tone: 'sky',
     },
     {
       key: 'message',
       title: 'Mention',
-      description: 'Avatar + multi-line preview + reply chip in a single component.',
+      description:
+        'Avatar + multi-line preview + reply chip in a single component.',
       icon: 'ri-chat-3-line',
       tone: 'violet',
     },
     {
       key: 'invite',
       title: 'Workspace invite',
-      description: 'Two-button accept/decline pattern, sticky until the user picks.',
+      description:
+        'Two-button accept/decline pattern, sticky until the user picks.',
       icon: 'ri-user-add-line',
       tone: 'amber',
     },
@@ -560,17 +696,23 @@ export class NotificationDemoComponent {
   }
 
   private openUpload(): void {
-    const data: UploadData = { filename: 'quarterly-report.pdf', bytes: 2_350_000 };
+    const data: UploadData = {
+      filename: 'quarterly-report.pdf',
+      bytes: 2_350_000,
+    };
     const injector = Injector.create({
       parent: this.injector,
       providers: [{ provide: UPLOAD_DATA, useValue: data }],
     });
-    this.service.open(new PolymorpheusComponent(UploadToastComponent, injector), {
-      appearance: 'neutral',
-      icon: () => '',
-      label: 'Uploading',
-      autoClose: false,
-    });
+    this.service.open(
+      new PolymorpheusComponent(UploadToastComponent, injector),
+      {
+        appearance: 'neutral',
+        icon: () => '',
+        label: 'Uploading',
+        autoClose: false,
+      },
+    );
   }
 
   private openMessage(): void {
@@ -578,7 +720,8 @@ export class NotificationDemoComponent {
       initials: 'RM',
       name: 'Riley Martinez',
       channel: '#design-system',
-      preview: 'Mind taking another pass on the toast spacing? The medium variant feels a touch tight.',
+      preview:
+        'Mind taking another pass on the toast spacing? The medium variant feels a touch tight.',
       tone: 'violet',
       onReply: () => this.handleReply(),
     };
@@ -586,11 +729,14 @@ export class NotificationDemoComponent {
       parent: this.injector,
       providers: [{ provide: MESSAGE_DATA, useValue: data }],
     });
-    this.service.open(new PolymorpheusComponent(MessageToastComponent, injector), {
-      appearance: 'neutral',
-      icon: () => '',
-      autoClose: 8000,
-    });
+    this.service.open(
+      new PolymorpheusComponent(MessageToastComponent, injector),
+      {
+        appearance: 'neutral',
+        icon: () => '',
+        autoClose: 8000,
+      },
+    );
   }
 
   private openInvite(): void {
@@ -604,11 +750,14 @@ export class NotificationDemoComponent {
       parent: this.injector,
       providers: [{ provide: INVITE_DATA, useValue: data }],
     });
-    this.service.open(new PolymorpheusComponent(InviteToastComponent, injector), {
-      appearance: 'neutral',
-      icon: 'ri-user-add-line',
-      autoClose: false,
-    });
+    this.service.open(
+      new PolymorpheusComponent(InviteToastComponent, injector),
+      {
+        appearance: 'neutral',
+        icon: 'ri-user-add-line',
+        autoClose: false,
+      },
+    );
   }
 
   private openRelease(): void {
@@ -622,25 +771,34 @@ export class NotificationDemoComponent {
       parent: this.injector,
       providers: [{ provide: RELEASE_DATA, useValue: data }],
     });
-    this.service.open(new PolymorpheusComponent(ReleaseToastComponent, injector), {
-      appearance: 'success',
-      icon: () => '',
-      autoClose: 7000,
-    });
+    this.service.open(
+      new PolymorpheusComponent(ReleaseToastComponent, injector),
+      {
+        appearance: 'success',
+        icon: () => '',
+        autoClose: 7000,
+      },
+    );
   }
 
   // ── Action handlers (called by rich toast bodies) ───────────────────────
   private handleUndo(): void {
     this.service.dismissAll();
     setTimeout(() => {
-      this.service.open('Restored from trash.', { appearance: 'success', autoClose: 2500 });
+      this.service.open('Restored from trash.', {
+        appearance: 'success',
+        autoClose: 2500,
+      });
     }, 220);
   }
 
   private handleReply(): void {
     this.service.dismissAll();
     setTimeout(() => {
-      this.service.open('Opening composer…', { appearance: 'info', autoClose: 1800 });
+      this.service.open('Opening composer…', {
+        appearance: 'info',
+        autoClose: 1800,
+      });
     }, 220);
   }
 
@@ -658,7 +816,10 @@ export class NotificationDemoComponent {
   private handleDecline(): void {
     this.service.dismissAll();
     setTimeout(() => {
-      this.service.open('Invite declined.', { appearance: 'neutral', autoClose: 2200 });
+      this.service.open('Invite declined.', {
+        appearance: 'neutral',
+        autoClose: 2200,
+      });
     }, 220);
   }
 
@@ -697,9 +858,10 @@ export class NotificationDemoComponent {
   }
 
   protected fireAutoClose(value: number | false): void {
-    const msg = value === false
-      ? 'Sticky toast — dismiss it manually.'
-      : `Closes in ${value / 1000}s — hover to pause.`;
+    const msg =
+      value === false
+        ? 'Sticky toast — dismiss it manually.'
+        : `Closes in ${value / 1000}s — hover to pause.`;
     this.service.open(msg, {
       appearance: value === false ? 'warning' : 'info',
       label: value === false ? 'Sticky' : `${value / 1000}s`,
@@ -717,7 +879,13 @@ export class NotificationDemoComponent {
   }
 
   protected fireStack(): void {
-    const palette: Appearance[] = ['info', 'success', 'warning', 'error', 'neutral'];
+    const palette: Appearance[] = [
+      'info',
+      'success',
+      'warning',
+      'error',
+      'neutral',
+    ];
     const lines = [
       'Build started',
       'Compiled 142 modules',
@@ -743,11 +911,14 @@ export class NotificationDemoComponent {
   // ── Class helpers ────────────────────────────────────────────────────────
   protected iconBadgeClass(tone: RichDemo['tone']): string {
     const map: Record<RichDemo['tone'], string> = {
-      emerald: 'inline-flex items-center justify-center size-9 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 text-base shrink-0',
+      emerald:
+        'inline-flex items-center justify-center size-9 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 text-base shrink-0',
       rose: 'inline-flex items-center justify-center size-9 rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 text-base shrink-0',
       sky: 'inline-flex items-center justify-center size-9 rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400 text-base shrink-0',
-      violet: 'inline-flex items-center justify-center size-9 rounded-lg bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-400 text-base shrink-0',
-      amber: 'inline-flex items-center justify-center size-9 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 text-base shrink-0',
+      violet:
+        'inline-flex items-center justify-center size-9 rounded-lg bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-400 text-base shrink-0',
+      amber:
+        'inline-flex items-center justify-center size-9 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 text-base shrink-0',
     };
     return map[tone];
   }
@@ -756,10 +927,14 @@ export class NotificationDemoComponent {
     const base = 'px-3 py-1.5 rounded-md text-xs font-medium transition-colors';
     const map: Record<Appearance, string> = {
       info: 'bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-300 dark:hover:bg-blue-950',
-      success: 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950',
-      warning: 'bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-950/50 dark:text-amber-300 dark:hover:bg-amber-950',
-      error: 'bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950/50 dark:text-rose-300 dark:hover:bg-rose-950',
-      neutral: 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700',
+      success:
+        'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950',
+      warning:
+        'bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-950/50 dark:text-amber-300 dark:hover:bg-amber-950',
+      error:
+        'bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950/50 dark:text-rose-300 dark:hover:bg-rose-950',
+      neutral:
+        'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700',
     };
     return `${base} ${map[appearance]}`;
   }

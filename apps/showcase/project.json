@@ -8,9 +8,7 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/showcase",
         "browser": "apps/showcase/src/main.ts",
@@ -22,9 +20,7 @@
             "input": "apps/showcase/public"
           }
         ],
-        "styles": [
-          "apps/showcase/src/styles.scss"
-        ],
+        "styles": ["apps/showcase/src/styles.scss"],
         "loader": {
           ".svg": "text"
         }

@@ -1,5 +1,8 @@
-import { NxpTextfieldComponent, NxpTextfieldOptionsDirective } from '@nxp/cdk/components/textfield';
-import { NxpLabelDirective } from '@nxp/cdk/components/label';
+import {
+  NxpTextfieldComponent,
+  NxpTextfieldOptionsDirective,
+} from '@ngxpro/cdk/components/textfield';
+import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
 import { NxpTextareaComponent } from './textarea.component';
 import { NxpTextareaLimitDirective } from './textarea.directive';
 

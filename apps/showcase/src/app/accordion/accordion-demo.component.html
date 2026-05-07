@@ -1,4 +1,6 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+<div
+  class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8"
+>
   <div class="max-w-3xl mx-auto">
     <a
       routerLink="/"
@@ -7,10 +9,12 @@
       &larr; Back to showcase
     </a>
 
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Accordion</h1>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      Accordion
+    </h1>
     <p class="text-gray-600 dark:text-gray-400 mb-10">
-      Proximity-animated accordion with fluid motion layers — hover pill,
-      focus ring, and per-open-item background that springs with the content.
+      Proximity-animated accordion with fluid motion layers — hover pill, focus
+      ring, and per-open-item background that springs with the content.
     </p>
 
     <nxp-tabs
@@ -26,20 +30,35 @@
       @switch (accordionTab()) {
         @case (0) {
           <div>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Multiple mode</h2>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Default — multiple sections can be open at once.</p>
+            <h2
+              class="text-base font-semibold text-gray-900 dark:text-white mb-1"
+            >
+              Multiple mode
+            </h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+              Default — multiple sections can be open at once.
+            </p>
             <nxp-accordion>
-              <nxp-accordion-trigger nxpAccordion>What is nxp?</nxp-accordion-trigger>
+              <nxp-accordion-trigger nxpAccordion
+                >What is nxp?</nxp-accordion-trigger
+              >
               <nxp-expand>
-                <div class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400">
-                  A production-ready Angular UI library combining Taiga UI architecture
-                  patterns with Tremor Tailwind styling and fluid motion.
+                <div
+                  class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400"
+                >
+                  A production-ready Angular UI library combining Taiga UI
+                  architecture patterns with Tremor Tailwind styling and fluid
+                  motion.
                 </div>
               </nxp-expand>
 
-              <nxp-accordion-trigger nxpAccordion>Key features</nxp-accordion-trigger>
+              <nxp-accordion-trigger nxpAccordion
+                >Key features</nxp-accordion-trigger
+              >
               <nxp-expand>
-                <div class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400">
+                <div
+                  class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400"
+                >
                   <ul class="list-disc list-inside space-y-1">
                     <li>Signals-first architecture</li>
                     <li>Light / dark mode</li>
@@ -49,10 +68,18 @@
                 </div>
               </nxp-expand>
 
-              <nxp-accordion-trigger nxpAccordion>Installation</nxp-accordion-trigger>
+              <nxp-accordion-trigger nxpAccordion
+                >Installation</nxp-accordion-trigger
+              >
               <nxp-expand>
-                <div class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400">
-                  <pre class="mt-1 p-2 bg-gray-100 dark:bg-gray-800 rounded text-[12px]">npm install @nxp/components</pre>
+                <div
+                  class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400"
+                >
+                  <pre
+                    class="mt-1 p-2 bg-gray-100 dark:bg-gray-800 rounded text-[12px]"
+                  >
+npm install ngxpro/components</pre
+                  >
                 </div>
               </nxp-expand>
             </nxp-accordion>
@@ -60,26 +87,44 @@
         }
         @case (1) {
           <div>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Single mode</h2>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Only one section open at a time.</p>
+            <h2
+              class="text-base font-semibold text-gray-900 dark:text-white mb-1"
+            >
+              Single mode
+            </h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+              Only one section open at a time.
+            </p>
             <nxp-accordion type="single">
-              <nxp-accordion-trigger nxpAccordion>Section 1</nxp-accordion-trigger>
+              <nxp-accordion-trigger nxpAccordion
+                >Section 1</nxp-accordion-trigger
+              >
               <nxp-expand>
-                <div class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400">
+                <div
+                  class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400"
+                >
                   Only one section can be open at a time in single mode.
                 </div>
               </nxp-expand>
 
-              <nxp-accordion-trigger nxpAccordion>Section 2</nxp-accordion-trigger>
+              <nxp-accordion-trigger nxpAccordion
+                >Section 2</nxp-accordion-trigger
+              >
               <nxp-expand>
-                <div class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400">
+                <div
+                  class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400"
+                >
                   Opening this section will close the others.
                 </div>
               </nxp-expand>
 
-              <nxp-accordion-trigger nxpAccordion>Section 3</nxp-accordion-trigger>
+              <nxp-accordion-trigger nxpAccordion
+                >Section 3</nxp-accordion-trigger
+              >
               <nxp-expand>
-                <div class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400">
+                <div
+                  class="px-3 pb-2 pt-1 text-[13px] text-gray-600 dark:text-gray-400"
+                >
                   This keeps the reading surface focused on a single topic.
                 </div>
               </nxp-expand>
@@ -88,36 +133,53 @@
         }
         @case (2) {
           <div>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Operations</h2>
+            <h2
+              class="text-base font-semibold text-gray-900 dark:text-white mb-1"
+            >
+              Operations
+            </h2>
             <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
               Grouped transactions — compact list inside each section.
             </p>
             <nxp-accordion type="single">
               @for (group of operations | keyvalue; track group.key) {
                 <nxp-accordion-trigger nxpAccordion>
-                  <span class="flex items-baseline justify-between gap-2 w-full">
+                  <span
+                    class="flex items-baseline justify-between gap-2 w-full"
+                  >
                     <span>{{ group.key }}</span>
-                    <span class="text-[11px] font-normal text-gray-500 dark:text-gray-400">
+                    <span
+                      class="text-[11px] font-normal text-gray-500 dark:text-gray-400"
+                    >
                       @if (group.value.length; as count) {
-                        {{ count }} · {{ sum(group.value) | nxpAmount:'USD':'start' }}
+                        {{ count }} ·
+                        {{ sum(group.value) | nxpAmount: 'USD' : 'start' }}
                       } @else {
                         Empty
                       }
                     </span>
                   </span>
                 </nxp-accordion-trigger>
-                <nxp-expand [style.display]="group.value.length ? null : 'none'">
+                <nxp-expand
+                  [style.display]="group.value.length ? null : 'none'"
+                >
                   <div class="px-3 pb-2 pt-1 flex flex-col gap-1">
                     @for (operation of group.value; track operation.title) {
-                      <div class="flex items-center justify-between gap-2 py-1 text-[12px]">
+                      <div
+                        class="flex items-center justify-between gap-2 py-1 text-[12px]"
+                      >
                         <span class="text-gray-700 dark:text-gray-300 truncate">
                           {{ operation.title }}
                         </span>
                         @if (operation.sum; as s) {
                           <span
-                            [class]="s > 0 ? 'text-green-600 dark:text-green-400 font-medium shrink-0' : 'text-gray-600 dark:text-gray-400 shrink-0'"
+                            [class]="
+                              s > 0
+                                ? 'text-green-600 dark:text-green-400 font-medium shrink-0'
+                                : 'text-gray-600 dark:text-gray-400 shrink-0'
+                            "
                           >
-                            {{ s | nxpAmount:'USD':'start' }}
+                            {{ s | nxpAmount: 'USD' : 'start' }}
                           </span>
                         }
                       </div>

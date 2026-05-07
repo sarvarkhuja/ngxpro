@@ -6,7 +6,7 @@ import {
   contentChildren,
   effect,
 } from '@angular/core';
-import { NxpAnimatedProximityBase, type NxpItemRect } from '@nxp/cdk';
+import { NxpAnimatedProximityBase, type NxpItemRect } from '@ngxpro/cdk';
 import { NxpNavItemDirective } from './nav-item.directive';
 
 /**
@@ -32,7 +32,7 @@ import { NxpNavItemDirective } from './nav-item.directive';
 
     @if (checkedRect(); as r) {
       <div
-        class="absolute pointer-events-none rounded-md bg-gray-500/15 dark:bg-gray-400/20"
+        class="absolute pointer-events-none rounded-s bg-bg-neutral-1"
         [style.left.px]="r.left"
         [style.top.px]="r.top"
         [style.width.px]="r.width"
@@ -44,7 +44,7 @@ import { NxpNavItemDirective } from './nav-item.directive';
     @if (isHoveringOther()) {
       @if (hoverRect(); as h) {
         <div
-          class="absolute pointer-events-none rounded-md bg-gray-200/60 dark:bg-gray-700/40"
+          class="absolute pointer-events-none rounded-s bg-bg-neutral-2/60"
           [style.left.px]="h.left"
           [style.top.px]="h.top"
           [style.width.px]="h.width"
@@ -55,7 +55,7 @@ import { NxpNavItemDirective } from './nav-item.directive';
     }
     @if (focusRect(); as f) {
       <div
-        class="absolute pointer-events-none z-20 rounded-md border border-[#6B97FF]"
+        class="absolute pointer-events-none z-20 rounded-s border border-border-focus"
         [style.left.px]="f.left - 2"
         [style.top.px]="f.top - 2"
         [style.width.px]="f.width + 4"
@@ -91,7 +91,7 @@ export class NxpNavComponent
 
   protected readonly checkedRect = computed<NxpItemRect | null>(() => {
     const idx = this.checkedIndex();
-    return idx == null ? null : this.itemRects()[idx] ?? null;
+    return idx == null ? null : (this.itemRects()[idx] ?? null);
   });
 
   constructor() {

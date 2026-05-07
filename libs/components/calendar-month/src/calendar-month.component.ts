@@ -12,8 +12,8 @@ import {
   calendarCellVariants,
   calendarContainerClass,
   navButtonClass,
-} from '@nxp/cdk';
-import { CalendarYearComponent } from '@nxp/components/calendar';
+} from '@ngxpro/cdk';
+import { CalendarYearComponent } from '@ngxpro/components/calendar';
 import { CALENDAR_MONTH_OPTIONS } from './calendar-month.options';
 
 /** Short month labels (Jan–Dec). */
@@ -99,7 +99,10 @@ function toLinear(m: MonthCoord): number {
             [attr.aria-label]="'Previous year'"
             (click)="onPreviousYear()"
           >
-            <i class="ri-arrow-left-s-line text-base leading-none" aria-hidden="true"></i>
+            <i
+              class="ri-arrow-left-s-line text-base leading-none"
+              aria-hidden="true"
+            ></i>
           </button>
 
           <button
@@ -119,7 +122,10 @@ function toLinear(m: MonthCoord): number {
             [attr.aria-label]="'Next year'"
             (click)="onNextYear()"
           >
-            <i class="ri-arrow-right-s-line text-base leading-none" aria-hidden="true"></i>
+            <i
+              class="ri-arrow-right-s-line text-base leading-none"
+              aria-hidden="true"
+            ></i>
           </button>
         </div>
 
@@ -387,10 +393,10 @@ export class CalendarMonthComponent {
 
   protected readonly yearLabelClass = cx(
     'flex-1 flex items-center justify-center',
-    'h-8 px-2 rounded-lg',
+    'h-8 px-2 rounded-m',
     'text-sm font-semibold text-text-primary',
     'hover:bg-bg-neutral-1',
-    'transition-[background-color,color,transform] duration-150',
+    'transition-[background-color,color,transform] duration-normal',
     '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
     'active:scale-[0.98]',
     'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
@@ -401,11 +407,16 @@ export class CalendarMonthComponent {
     disabled: boolean,
     isToday: boolean,
   ): string {
-    if (disabled) return cx(calendarCellVariants({ state: 'disabled' }), 'h-10');
-    if (rangeState === 'active') return cx(calendarCellVariants({ state: 'selected' }), 'h-10');
-    if (rangeState === 'start') return cx(calendarCellVariants({ state: 'rangeStart' }), 'h-10');
-    if (rangeState === 'end') return cx(calendarCellVariants({ state: 'rangeEnd' }), 'h-10');
-    if (rangeState === 'middle') return cx(calendarCellVariants({ state: 'rangeMiddle' }), 'h-10');
+    if (disabled)
+      return cx(calendarCellVariants({ state: 'disabled' }), 'h-10');
+    if (rangeState === 'active')
+      return cx(calendarCellVariants({ state: 'selected' }), 'h-10');
+    if (rangeState === 'start')
+      return cx(calendarCellVariants({ state: 'rangeStart' }), 'h-10');
+    if (rangeState === 'end')
+      return cx(calendarCellVariants({ state: 'rangeEnd' }), 'h-10');
+    if (rangeState === 'middle')
+      return cx(calendarCellVariants({ state: 'rangeMiddle' }), 'h-10');
 
     return cx(
       calendarCellVariants({ state: 'default' }),

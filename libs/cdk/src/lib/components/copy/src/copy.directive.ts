@@ -15,7 +15,7 @@ import { NXP_COPY_OPTIONS } from './copy.options';
  * a form-control contract.
  *
  * TODO: hint portal — Taiga binds `TuiHintDirective.content`. Revisit when
- * `NxpHintDirective` lands in `@nxp/cdk`.
+ * `NxpHintDirective` lands in `@ngxpro/cdk`.
  */
 @Directive({
   selector: 'nxp-icon[nxpCopy]',

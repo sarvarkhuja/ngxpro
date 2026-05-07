@@ -11,15 +11,21 @@ import {
 /**
  * RxJS operator that runs the source observable outside Angular's NgZone.
  */
-export function nxpZonefree<T>(zone = inject(NgZone)): MonoTypeOperatorFunction<T> {
+export function nxpZonefree<T>(
+  zone = inject(NgZone),
+): MonoTypeOperatorFunction<T> {
   return (source) =>
-    new Observable((subscriber) => zone.runOutsideAngular(() => source.subscribe(subscriber)));
+    new Observable((subscriber) =>
+      zone.runOutsideAngular(() => source.subscribe(subscriber)),
+    );
 }
 
 /**
  * RxJS operator that ensures all emissions run inside Angular's NgZone.
  */
-export function nxpZonefull<T>(zone = inject(NgZone)): MonoTypeOperatorFunction<T> {
+export function nxpZonefull<T>(
+  zone = inject(NgZone),
+): MonoTypeOperatorFunction<T> {
   return (source) =>
     new Observable((subscriber) =>
       source.subscribe({
@@ -33,7 +39,9 @@ export function nxpZonefull<T>(zone = inject(NgZone)): MonoTypeOperatorFunction<
 /**
  * RxJS operator that runs source outside zone but delivers emissions inside zone.
  */
-export function nxpZoneOptimized<T>(zone = inject(NgZone)): MonoTypeOperatorFunction<T> {
+export function nxpZoneOptimized<T>(
+  zone = inject(NgZone),
+): MonoTypeOperatorFunction<T> {
   return pipe(nxpZonefree(zone), nxpZonefull(zone));
 }
 

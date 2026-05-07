@@ -4,7 +4,7 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 import { TextMorphDirective } from './text-morph.directive';
 
 @Component({

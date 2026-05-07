@@ -15,8 +15,18 @@ export function formatDateRange(range: [Date, Date]): string {
 /** Format MonthCoord as "Month YYYY" */
 export function formatMonth(coord: { year: number; month: number }): string {
   const names = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
   return `${names[coord.month]} ${coord.year}`;
 }

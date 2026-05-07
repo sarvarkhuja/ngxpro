@@ -5,26 +5,20 @@ import {
   input,
 } from '@angular/core';
 import { tv, type VariantProps } from 'tailwind-variants';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 
 const buttonVariants = tv({
   slots: {
     base: [
-      // base
       'group relative inline-flex items-center justify-center whitespace-nowrap font-medium cursor-pointer',
-      // transition — explicit props (never transition-all); 80ms ease-out
-      'transition-[background-color,color,border-color,transform,box-shadow] duration-[80ms] ease-out',
-      // press feedback — responsive scale on active
+      'transition-[background-color,color,border-color,transform,box-shadow] duration-fast ease-out',
       'active:scale-[0.97]',
-      // focus
-      'outline-none focus-visible:ring-1 focus-visible:ring-[#6B97FF]',
-      // disabled
+      'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
       'disabled:pointer-events-none disabled:opacity-50',
     ],
     icon: [
       'shrink-0',
-      // stroke-width animation: 1.5 → 2 on hover
-      '[&_svg]:stroke-[1.5] [&_svg]:transition-[stroke-width] [&_svg]:duration-[80ms] group-hover:[&_svg]:stroke-[2]',
+      '[&_svg]:stroke-[1.5] [&_svg]:transition-[stroke-width] [&_svg]:duration-fast group-hover:[&_svg]:stroke-[2]',
     ],
     spinner: ['shrink-0'],
     content: [''],
@@ -69,32 +63,32 @@ const buttonVariants = tv({
     },
     size: {
       sm: {
-        base: 'h-7 px-3 text-[12px] gap-1 rounded-md',
+        base: 'h-7 px-3 text-[12px] gap-1 rounded-m',
         icon: 'size-3.5',
         spinner: 'size-3.5',
       },
       md: {
-        base: 'h-8 px-4 text-[13px] gap-1.5 rounded-md',
+        base: 'h-8 px-4 text-[13px] gap-1.5 rounded-m',
         icon: 'size-4',
         spinner: 'size-4',
       },
       lg: {
-        base: 'h-9 px-5 text-[14px] gap-1.5 rounded-md',
+        base: 'h-9 px-5 text-[14px] gap-1.5 rounded-m',
         icon: 'size-4',
         spinner: 'size-4',
       },
       'icon-sm': {
-        base: 'size-8 p-0 rounded-md',
+        base: 'size-8 p-0 rounded-m',
         icon: 'size-3.5',
         spinner: 'size-3.5',
       },
       icon: {
-        base: 'size-9 p-0 rounded-md',
+        base: 'size-9 p-0 rounded-m',
         icon: 'size-4',
         spinner: 'size-4',
       },
       'icon-lg': {
-        base: 'size-10 p-0 rounded-md',
+        base: 'size-10 p-0 rounded-m',
         icon: 'size-5',
         spinner: 'size-5',
       },
@@ -164,7 +158,7 @@ export type ButtonSize = NonNullable<
 
       @if (isIconOnly()) {
         <span
-          class="[&_svg]:stroke-[1.5] [&_svg]:transition-[stroke-width] [&_svg]:duration-[80ms] group-hover:[&_svg]:stroke-[2]"
+          class="[&_svg]:stroke-[1.5] [&_svg]:transition-[stroke-width] [&_svg]:duration-fast group-hover:[&_svg]:stroke-[2]"
         >
           <ng-content />
         </span>

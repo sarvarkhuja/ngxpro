@@ -1,8 +1,7 @@
-import { inject, Injectable, type Type } from '@angular/core';
+import { Injectable, type Type } from '@angular/core';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { NXP_LEAVE } from '../../directives/animated.directive';
 import { NxpPortal } from '../portal';
-import { NxpPortalService } from '../portal.service';
 import { NxpModalComponent } from './modal.component';
 
 /**
@@ -17,19 +16,23 @@ import { NxpModalComponent } from './modal.component';
 @Injectable()
 export abstract class NxpModalService<T, K = void> extends NxpPortal<T, K> {
   protected abstract readonly content: Type<unknown>;
-  protected readonly component = NxpModalComponent as Type<NxpModalComponent<T>>;
+  protected readonly component = NxpModalComponent as Type<
+    NxpModalComponent<T>
+  >;
 
   constructor() {
-    super(inject(NxpPortalService));
+    super();
   }
 
   protected override add(
-    component: PolymorpheusComponent<NxpModalComponent<T>>
+    component: PolymorpheusComponent<NxpModalComponent<T>>,
   ): () => void {
     const ref = this.service.add(component);
     const el: HTMLElement = ref.location.nativeElement;
 
-    ref.instance.component.set(new PolymorpheusComponent(this.content as Type<unknown>));
+    ref.instance.component.set(
+      new PolymorpheusComponent(this.content as Type<unknown>),
+    );
 
     return () => {
       ref.instance.component.set(null);
@@ -38,7 +41,7 @@ export abstract class NxpModalService<T, K = void> extends NxpPortal<T, K> {
 
       Promise.allSettled(getAnimations(el))
         .then(async () =>
-          Promise.allSettled(getAnimations(el.firstElementChild))
+          Promise.allSettled(getAnimations(el.firstElementChild)),
         )
         .then(() => ref.destroy());
     };

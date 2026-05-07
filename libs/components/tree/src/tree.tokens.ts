@@ -2,10 +2,12 @@ import { InjectionToken } from '@angular/core';
 import type { NxpTreeController, NxpTreeAccessor } from './tree.interfaces';
 import type { NxpTreeComponent } from './tree.component';
 
-/** Default controller: all items are expanded. */
+/** Default controller: all items are expanded; toggle is a no-op. */
 const DEFAULT_CONTROLLER: NxpTreeController = {
   isExpanded: () => true,
-  toggle: () => {},
+  toggle: () => {
+    /* no-op: default controller treats all items as always expanded */
+  },
 };
 
 /** Token providing the expand/collapse controller for tree items. */

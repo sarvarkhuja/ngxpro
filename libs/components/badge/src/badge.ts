@@ -6,7 +6,7 @@ import { NxpBadgeDirective } from './badge.directive';
  *
  * @example
  * ```typescript
- * import { NxpBadge } from '@nxp/components/badge';
+ * import { NxpBadge } from '@ngxpro/components/badge';
  *
  * @Component({
  *   imports: [...NxpBadge],

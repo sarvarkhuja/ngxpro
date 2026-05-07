@@ -1,4 +1,4 @@
-import { nxpCreateOptions } from '@nxp/cdk';
+import { nxpCreateOptions } from '@ngxpro/cdk';
 
 export interface NxpTooltipOptions {
   /** Icon shown on the trigger icon directive (raw SVG or icon name). */

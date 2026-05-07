@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { NXP_SPRING_FAST } from '@nxp/cdk';
+import { NXP_SPRING_FAST } from '@ngxpro/cdk';
 import { AccordionDirective } from './accordion.directive';
 
 /**
@@ -44,7 +44,7 @@ import { AccordionDirective } from './accordion.directive';
     '[attr.aria-expanded]': 'directive.open()',
     '[class._open]': 'directive.open()',
     class:
-      'relative z-10 flex items-center gap-2.5 rounded-lg px-3 py-2 w-full cursor-pointer outline-none text-[13px] text-left font-medium text-gray-800 dark:text-gray-200 focus-visible:outline-none',
+      'relative z-10 flex items-center gap-2.5 rounded-m px-3 py-2 w-full cursor-pointer outline-none text-[13px] text-left font-medium text-text-primary focus-visible:outline-none',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

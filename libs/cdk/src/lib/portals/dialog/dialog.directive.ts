@@ -18,7 +18,9 @@ import { NxpDialogService } from './dialog.service';
   ],
   hostDirectives: [
     {
-      directive: NxpPortalDirective as typeof NxpPortalDirective<NxpDialogOptions<unknown>>,
+      directive: NxpPortalDirective as typeof NxpPortalDirective<
+        NxpDialogOptions<unknown>
+      >,
       inputs: ['options: nxpDialogOptions', 'open: nxpDialog'],
       outputs: ['openChange: nxpDialogChange'],
     },

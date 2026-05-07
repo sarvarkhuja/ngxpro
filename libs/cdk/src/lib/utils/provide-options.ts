@@ -1,4 +1,8 @@
-import { type FactoryProvider, inject, type InjectionToken } from '@angular/core';
+import {
+  type FactoryProvider,
+  inject,
+  type InjectionToken,
+} from '@angular/core';
 
 /**
  * Creates a factory provider that merges parent options with local overrides.
@@ -13,8 +17,7 @@ export function nxpProvideOptions<T>(
     provide,
     useFactory: (): T => ({
       ...(inject(provide, { optional: true, skipSelf: true }) || fallback),
-      ...(inject(options as any, { optional: true }) ||
-        (typeof options === 'function' ? options() : options)),
+      ...(typeof options === 'function' ? options() : options),
     }),
   };
 }

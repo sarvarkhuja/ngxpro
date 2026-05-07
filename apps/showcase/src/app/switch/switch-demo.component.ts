@@ -6,7 +6,7 @@ import {
   NxpSwitch,
   type NxpSwitchColor,
   type NxpSwitchSize,
-} from '@nxp/components/switch';
+} from '@ngxpro/components/switch';
 
 @Component({
   selector: 'app-switch-demo',
@@ -211,8 +211,8 @@ import {
             Drag interaction
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Click to toggle, or drag the thumb across the track.
-            Hover for pill shape, press for squish.
+            Click to toggle, or drag the thumb across the track. Hover for pill
+            shape, press for squish.
           </p>
           <div class="flex flex-wrap items-center gap-8">
             @for (s of sizes; track s) {

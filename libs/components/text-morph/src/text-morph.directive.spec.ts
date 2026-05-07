@@ -7,7 +7,7 @@ import {
   provideTextMorphOptions,
 } from './text-morph.options';
 import { NXP_TEXT_MORPH_DEFAULT_OPTIONS } from './text-morph.types';
-import { NXP_IS_BROWSER } from '@nxp/cdk';
+import { NXP_IS_BROWSER } from '@ngxpro/cdk';
 
 // Mock Web Animations API for test environment
 function setupAnimationMocks() {

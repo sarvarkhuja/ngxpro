@@ -1,4 +1,4 @@
-import { nxpCreateOptions } from '@nxp/cdk';
+import { nxpCreateOptions } from '@ngxpro/cdk';
 
 export type NxpSwitchSize = 's' | 'm' | 'l';
 export type NxpSwitchColor = 'primary' | 'secondary' | 'danger';
@@ -10,4 +10,8 @@ export interface NxpSwitchOptions {
 }
 
 export const [NXP_SWITCH_OPTIONS, nxpSwitchOptionsProvider] =
-  nxpCreateOptions<NxpSwitchOptions>({ size: 'm', color: 'primary', showIcons: false });
+  nxpCreateOptions<NxpSwitchOptions>({
+    size: 'm',
+    color: 'primary',
+    showIcons: false,
+  });

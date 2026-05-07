@@ -8,7 +8,7 @@ export function clamp(value: number, min: number, max: number): number {
 /**
  * Rounds a number to a given number of decimal places.
  */
-export function round(value: number, decimals: number = 0): number {
+export function round(value: number, decimals = 0): number {
   const factor = 10 ** decimals;
   return Math.round(value * factor) / factor;
 }

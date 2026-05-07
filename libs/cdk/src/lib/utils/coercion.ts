@@ -22,5 +22,7 @@ export function coerceStringArray(
   separator: string | RegExp = /\s+/,
 ): string[] {
   if (Array.isArray(value)) return [...value];
-  return typeof value === 'string' ? value.split(separator).filter(Boolean) : [];
+  return typeof value === 'string'
+    ? value.split(separator).filter(Boolean)
+    : [];
 }

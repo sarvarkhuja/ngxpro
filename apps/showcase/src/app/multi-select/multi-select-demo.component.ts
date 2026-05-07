@@ -2,9 +2,9 @@ import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { nxpItemsHandlersProvider } from '@nxp/cdk';
-import { NxpLabelDirective } from '@nxp/cdk/components/label';
-import { NxpMultiSelectComponent } from '@nxp/components/multi-select';
+import { nxpItemsHandlersProvider } from '@ngxpro/cdk';
+import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
+import { NxpMultiSelectComponent } from '@ngxpro/components/multi-select';
 
 interface Country {
   code: string;

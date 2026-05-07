@@ -1,10 +1,38 @@
 {
-  "name": "@nxp/cdk",
+  "name": "@ngxpro/cdk",
   "version": "0.0.1",
+  "description": "Low-level utilities, directives, tokens, observables, and portals for the ngxpro Angular UI library.",
+  "license": "MIT",
+  "homepage": "https://github.com/SarvarkhujaMurodov/ngxpro#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro.git",
+    "directory": "libs/cdk"
+  },
+  "bugs": {
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro/issues"
+  },
+  "keywords": [
+    "angular",
+    "ngxpro",
+    "cdk",
+    "ui",
+    "components"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "peerDependencies": {
     "@angular/common": "^21.1.0",
     "@angular/core": "^21.1.0",
-    "@taiga-ui/polymorpheus": "^5.0.0"
+    "@angular/forms": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@taiga-ui/polymorpheus": "^5.0.0",
+    "clsx": "^2.1.0",
+    "rxjs": "^7.8.0",
+    "tailwind-merge": "^3.0.0",
+    "tailwind-variants": "^3.0.0"
   },
   "sideEffects": false
 }

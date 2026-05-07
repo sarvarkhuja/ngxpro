@@ -9,7 +9,7 @@ import {
   output,
   untracked,
 } from '@angular/core';
-import { NXP_IS_BROWSER } from '@nxp/cdk';
+import { NXP_IS_BROWSER } from '@ngxpro/cdk';
 import { NXP_TEXT_MORPH_OPTIONS } from './text-morph.options';
 import type { TextMorphBlock, TextMorphMeasures } from './text-morph.types';
 
@@ -223,15 +223,16 @@ export class TextMorphDirective {
     const exitingSet = new Set(exiting);
     const exitingAnchorId = new Map<HTMLElement, string | null>();
 
-    for (let i = 0; i < oldChildren.length; i++) {
-      const child = oldChildren[i]!;
-      if (!exitingSet.has(child)) continue;
+    oldChildren.forEach((child, i) => {
+      if (!exitingSet.has(child)) return;
 
       let anchor: string | null = null;
       // Look forward
       for (let j = i + 1; j < oldChildren.length; j++) {
-        const siblingId = oldChildren[j]!.getAttribute(ATTR_ID) as string;
-        if (newIds.has(siblingId) && !exitingSet.has(oldChildren[j]!)) {
+        const sibling = oldChildren[j];
+        if (!sibling) continue;
+        const siblingId = sibling.getAttribute(ATTR_ID) as string;
+        if (newIds.has(siblingId) && !exitingSet.has(sibling)) {
           anchor = siblingId;
           break;
         }
@@ -239,15 +240,17 @@ export class TextMorphDirective {
       // Look backward if none found forward
       if (!anchor) {
         for (let j = i - 1; j >= 0; j--) {
-          const siblingId = oldChildren[j]!.getAttribute(ATTR_ID) as string;
-          if (newIds.has(siblingId) && !exitingSet.has(oldChildren[j]!)) {
+          const sibling = oldChildren[j];
+          if (!sibling) continue;
+          const siblingId = sibling.getAttribute(ATTR_ID) as string;
+          if (newIds.has(siblingId) && !exitingSet.has(sibling)) {
             anchor = siblingId;
             break;
           }
         }
       }
       exitingAnchorId.set(child, anchor);
-    }
+    });
 
     // Position exiting elements absolutely at their current position
     const parentRect = element.getBoundingClientRect();
@@ -291,13 +294,9 @@ export class TextMorphDirective {
       let dx = 0;
       let dy = 0;
 
-      if (
-        anchorId &&
-        this.prevMeasures[anchorId] &&
-        this.currentMeasures[anchorId]
-      ) {
-        const anchorPrev = this.prevMeasures[anchorId]!;
-        const anchorCurr = this.currentMeasures[anchorId]!;
+      const anchorPrev = anchorId ? this.prevMeasures[anchorId] : undefined;
+      const anchorCurr = anchorId ? this.currentMeasures[anchorId] : undefined;
+      if (anchorPrev && anchorCurr) {
         dx = anchorCurr.x - anchorPrev.x;
         dy = anchorCurr.y - anchorPrev.y;
       }
@@ -472,23 +471,27 @@ export class TextMorphDirective {
         let anchorId: string | null = null;
 
         for (let j = blockIndex - 1; j >= 0; j--) {
-          if (persistentIds.has(blocks[j]!.id)) {
-            anchorId = blocks[j]!.id;
+          const block = blocks[j];
+          if (block && persistentIds.has(block.id)) {
+            anchorId = block.id;
             break;
           }
         }
         if (!anchorId) {
           for (let j = blockIndex + 1; j < blocks.length; j++) {
-            if (persistentIds.has(blocks[j]!.id)) {
-              anchorId = blocks[j]!.id;
+            const block = blocks[j];
+            if (block && persistentIds.has(block.id)) {
+              anchorId = block.id;
               break;
             }
           }
         }
 
-        if (anchorId) {
-          const anchorPrev = this.prevMeasures[anchorId]!;
-          const anchorCurr = this.currentMeasures[anchorId]!;
+        const anchorPrev = anchorId ? this.prevMeasures[anchorId] : undefined;
+        const anchorCurr = anchorId
+          ? this.currentMeasures[anchorId]
+          : undefined;
+        if (anchorPrev && anchorCurr) {
           deltaX = anchorPrev.x - anchorCurr.x;
           deltaY = anchorPrev.y - anchorCurr.y;
         } else if (hasOldPositions) {
@@ -546,27 +549,33 @@ export class TextMorphDirective {
     const byWord = value.includes(' ');
 
     // Intl.Segmenter may not be in all TS lib typings; use runtime check
-    const IntlAny = Intl as any;
-    if (
-      typeof Intl !== 'undefined' &&
-      typeof IntlAny.Segmenter !== 'undefined'
-    ) {
-      const segmenter = new IntlAny.Segmenter(this.resolvedLocale as string, {
+    const SegmenterCtor = (
+      Intl as unknown as {
+        Segmenter?: new (
+          locale: Intl.LocalesArgument,
+          options: { granularity: 'word' | 'grapheme' },
+        ) => {
+          segment(input: string): Iterable<{ segment: string; index: number }>;
+        };
+      }
+    ).Segmenter;
+
+    if (typeof Intl !== 'undefined' && typeof SegmenterCtor !== 'undefined') {
+      const segmenter = new SegmenterCtor(this.resolvedLocale, {
         granularity: byWord ? 'word' : 'grapheme',
       });
-      const iterator = segmenter.segment(value)[Symbol.iterator]();
-      return this.blocksFromSegmenter(iterator);
+      return this.blocksFromSegmenter(segmenter.segment(value));
     }
 
     return this.blocksFallback(value, byWord);
   }
 
   private blocksFromSegmenter(
-    iterator: IterableIterator<{ segment: string; index: number }>,
+    iterable: Iterable<{ segment: string; index: number }>,
   ): TextMorphBlock[] {
     const blocks: TextMorphBlock[] = [];
 
-    for (const segment of iterator) {
+    for (const segment of iterable) {
       if (segment.segment === ' ') {
         blocks.push({ id: `space-${segment.index}`, text: '\u00A0' });
         continue;

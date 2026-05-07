@@ -12,8 +12,12 @@ import {
 } from '@angular/core';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
-import { NxpPortalService, nxpInjectElement, NxpRectAccessor } from '@nxp/cdk';
-import type { NxpContext } from '@nxp/cdk';
+import {
+  NxpPortalService,
+  nxpInjectElement,
+  NxpRectAccessor,
+} from '@ngxpro/cdk';
+import type { NxpContext } from '@ngxpro/cdk';
 import { NXP_TOOLTIP_OPTIONS } from './tooltip.options';
 import type { NxpTooltipOptions } from './tooltip.options';
 import { NxpTooltipComponent, NXP_TOOLTIP_HOST } from './tooltip.component';
@@ -135,7 +139,9 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
     // and suppress the enter animation for a more continuous feel.
     const skip = this.group.shouldSkipDelay();
     this.instantOpen = skip;
-    const delay = skip ? 0 : (this.nxpTooltipShowDelay() ?? this.options.showDelay);
+    const delay = skip
+      ? 0
+      : (this.nxpTooltipShowDelay() ?? this.options.showDelay);
     this.showTimer = setTimeout(() => this.show(), delay);
   }
 
@@ -223,8 +229,10 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
 
     // Asymmetric exit: quick 100ms linear fade-out before destroying
     const el = ref.location.nativeElement as HTMLElement;
-    const direction = ref.instance.resolvedDirection ?? this.nxpTooltipDirection() ?? 'top';
-    const slideOffset = SLIDE_OFFSET[direction as keyof typeof SLIDE_OFFSET] ?? SLIDE_OFFSET.top;
+    const direction =
+      ref.instance.resolvedDirection ?? this.nxpTooltipDirection() ?? 'top';
+    const slideOffset =
+      SLIDE_OFFSET[direction as keyof typeof SLIDE_OFFSET] ?? SLIDE_OFFSET.top;
 
     el.style.transition = `opacity ${EXIT_DURATION_MS}ms linear, transform ${EXIT_DURATION_MS}ms linear`;
     el.style.opacity = '0';

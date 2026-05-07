@@ -6,11 +6,11 @@ import { NxpInputDirective } from './input.directive';
  *
  * @example
  * // Full textfield system:
- * import { NxpTextfieldComponent } from '@nxp/components/textfield';
- * import { NxpLabelDirective } from '@nxp/components/label';
- * import { NxpInputDirective } from '@nxp/components/input';
+ * import { NxpTextfieldComponent } from '@ngxpro/components/textfield';
+ * import { NxpLabelDirective } from '@ngxpro/components/label';
+ * import { NxpInputDirective } from '@ngxpro/components/input';
  *
  * // Standalone:
- * import { NxpInputDirective } from '@nxp/components/input';
+ * import { NxpInputDirective } from '@ngxpro/components/input';
  */
 export const NxpInput = [NxpInputDirective] as const;

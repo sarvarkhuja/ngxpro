@@ -19,10 +19,10 @@ export const focusInput = [
 ] as const;
 
 /**
- * Error input styles (Tremor pattern).
+ * Error input styles — uses semantic status-negative token.
  */
 export const hasErrorInput = [
   'ring-2',
-  'border-red-500 dark:border-red-700',
-  'ring-red-200 dark:ring-red-700/30',
+  'border-status-negative',
+  'ring-status-negative/30',
 ] as const;

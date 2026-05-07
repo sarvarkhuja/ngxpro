@@ -37,9 +37,7 @@ export class NxpRadioDirective<T> {
    * Custom equality function for comparing form control value against each
    * radio option's value. Defaults to strict reference equality.
    */
-  readonly identityMatcher = input<(a: T, b: T) => boolean>(
-    (a, b) => a === b,
-  );
+  readonly identityMatcher = input<(a: T, b: T) => boolean>((a, b) => a === b);
 
   constructor() {
     const accessor = inject(RadioControlValueAccessor, {

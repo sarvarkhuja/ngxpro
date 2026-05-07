@@ -9,7 +9,7 @@ Creates structured list items with consistent spacing and sizing. Supports three
 ### Basic Usage
 
 ```typescript
-import { CellDirective, TitleDirective, SubtitleDirective } from '@nxp/cdk';
+import { CellDirective, TitleDirective, SubtitleDirective } from '@ngxpro/cdk';
 
 @Component({
   selector: 'app-user-list',
@@ -168,7 +168,7 @@ The actions are hidden by default and revealed when the parent cell is hovered. 
 ## Complete Example
 
 ```typescript
-import { CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective } from '@nxp/cdk';
+import { CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective } from '@ngxpro/cdk';
 
 @Component({
   selector: 'app-user-list',

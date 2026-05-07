@@ -18,7 +18,7 @@ import {
   NXP_FLOATING_PRECISION,
   nxpKeyStepValueToPercentage,
   nxpPercentageToKeyStepValue,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';
 
 const THUMB_SIZE = 20;
 const THUMB_SIZE_REST = 16;
@@ -197,12 +197,21 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
     .nxp-range-fill {
       position: absolute;
       height: 100%;
-      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 12%, transparent);
-      transition: left 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
-                  width 160ms cubic-bezier(0.22, 1.2, 0.36, 1);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(17 24 39)) 12%,
+        transparent
+      );
+      transition:
+        left 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
+        width 160ms cubic-bezier(0.22, 1.2, 0.36, 1);
     }
     :host-context(.dark) .nxp-range-fill {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 12%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(243 244 246)) 12%,
+        transparent
+      );
     }
     .nxp-range-dragging .nxp-range-fill {
       transition: none;
@@ -230,9 +239,10 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
       flex-shrink: 0;
       background: var(--nxp-muted-fg, rgb(156 163 175));
       opacity: 0.3;
-      transition: width 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
-                  height 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
-                  opacity 80ms linear;
+      transition:
+        width 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
+        height 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
+        opacity 80ms linear;
     }
     .nxp-range-dot-hovered {
       width: ${DOT_SIZE * 1.25}px;
@@ -269,7 +279,7 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
       width: ${THUMB_SIZE + 4}px;
       height: ${THUMB_SIZE + 4}px;
       border-radius: 9999px;
-      border: 1px solid #6B97FF;
+      border: 1px solid #6b97ff;
       pointer-events: none;
     }
 
@@ -283,11 +293,19 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
 
     /* --- Theme color mode --- */
     :host.nxp-range-themed .nxp-range-fill {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 25%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 25%,
+        transparent
+      );
     }
     :host-context(.dark):host.nxp-range-themed .nxp-range-fill,
     :host.nxp-range-themed:host-context(.dark) .nxp-range-fill {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 30%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 30%,
+        transparent
+      );
     }
     :host.nxp-range-themed .nxp-range-thumb {
       background: var(--nxp-primary, #3b82f6);
@@ -297,10 +315,18 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
       border-color: var(--nxp-primary, #3b82f6);
     }
     :host.nxp-range-themed .nxp-range-track-bg {
-      border-color: color-mix(in srgb, var(--nxp-primary, #3b82f6) 30%, var(--nxp-border, rgb(229 231 235)));
+      border-color: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 30%,
+        var(--nxp-border, rgb(229 231 235))
+      );
     }
     :host.nxp-range-themed .nxp-range-dot {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 40%, var(--nxp-muted-fg, rgb(156 163 175)));
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 40%,
+        var(--nxp-muted-fg, rgb(156 163 175))
+      );
     }
   `,
 })
@@ -321,9 +347,12 @@ export class NxpRangeComponent implements ControlValueAccessor {
   readonly disabled = model(false);
   readonly value = model<[number, number]>([0, 0]);
 
-  private readonly trackElRef = viewChild<ElementRef<HTMLDivElement>>('trackEl');
-  private readonly nativeStartRef = viewChild<ElementRef<HTMLInputElement>>('nativeStart');
-  private readonly nativeEndRef = viewChild<ElementRef<HTMLInputElement>>('nativeEnd');
+  private readonly trackElRef =
+    viewChild<ElementRef<HTMLDivElement>>('trackEl');
+  private readonly nativeStartRef =
+    viewChild<ElementRef<HTMLInputElement>>('nativeStart');
+  private readonly nativeEndRef =
+    viewChild<ElementRef<HTMLInputElement>>('nativeEnd');
 
   readonly isHovered = signal(false);
   readonly isPressed = signal(false);

@@ -1,5 +1,11 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Directive, inject, type OnDestroy, PLATFORM_ID, TemplateRef } from '@angular/core';
+import {
+  Directive,
+  inject,
+  type OnDestroy,
+  PLATFORM_ID,
+  TemplateRef,
+} from '@angular/core';
 import { nxpSetSignal } from '../../utils/set-signal';
 import { NxpDropdownDirective } from './dropdown.directive';
 

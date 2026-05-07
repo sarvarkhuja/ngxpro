@@ -24,7 +24,10 @@ import { cx } from '../../../utils';
 import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
 import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
 import type { NxpNotificationOptions } from './notification.options';
-import { NxpNotificationService, type NxpNotificationState } from './notification.service';
+import {
+  NxpNotificationService,
+  type NxpNotificationState,
+} from './notification.service';
 import { NxpSwipeDismiss } from '../../../directives/swipe-dismiss.directive';
 
 // ── Size helpers ─────────────────────────────────────────────────────────────
@@ -43,35 +46,26 @@ const iconSizeMap: Record<NxpNotificationOptions['size'], string> = {
 
 // ── Appearance color helpers ──────────────────────────────────────────────────
 
-const appearanceHostClasses: Record<NxpNotificationOptions['appearance'], string> = {
-  info: [
-    'border-blue-200 bg-blue-50',
-    'dark:border-blue-800 dark:bg-blue-950',
-  ].join(' '),
-  success: [
-    'border-green-200 bg-green-50',
-    'dark:border-green-800 dark:bg-green-950',
-  ].join(' '),
-  warning: [
-    'border-amber-200 bg-amber-50',
-    'dark:border-amber-800 dark:bg-amber-950',
-  ].join(' '),
-  error: [
-    'border-red-200 bg-red-50',
-    'dark:border-red-800 dark:bg-red-950',
-  ].join(' '),
-  neutral: [
-    'border-gray-200 bg-white',
-    'dark:border-gray-700 dark:bg-gray-900',
-  ].join(' '),
+const appearanceHostClasses: Record<
+  NxpNotificationOptions['appearance'],
+  string
+> = {
+  info: 'border-status-info/30 bg-status-info-pale',
+  success: 'border-status-positive/30 bg-status-positive-pale',
+  warning: 'border-status-warning/30 bg-status-warning-pale',
+  error: 'border-status-negative/30 bg-status-negative-pale',
+  neutral: 'border-border-normal bg-bg-base',
 };
 
-const appearanceIconClasses: Record<NxpNotificationOptions['appearance'], string> = {
-  info: 'text-blue-500 dark:text-blue-400',
-  success: 'text-green-500 dark:text-green-400',
-  warning: 'text-amber-500 dark:text-amber-400',
-  error: 'text-red-500 dark:text-red-400',
-  neutral: 'text-gray-500 dark:text-gray-400',
+const appearanceIconClasses: Record<
+  NxpNotificationOptions['appearance'],
+  string
+> = {
+  info: 'text-status-info',
+  success: 'text-status-positive',
+  warning: 'text-status-warning',
+  error: 'text-status-negative',
+  neutral: 'text-text-tertiary',
 };
 
 const ICON_MAP: Record<string, string> = {
@@ -97,7 +91,7 @@ const ICON_MAP: Record<string, string> = {
     },
   ],
   host: {
-    'role': 'alert',
+    role: 'alert',
     'aria-live': 'polite',
     // Static attributes — set once, not re-evaluated on CD
     'data-nxp-toast': '',
@@ -124,7 +118,9 @@ const ICON_MAP: Record<string, string> = {
     <!-- Icon column -->
     @if (resolvedIcon()) {
       <i
-        [class]="resolvedIcon() + ' ' + resolvedIconSize() + ' ' + iconClasses()"
+        [class]="
+          resolvedIcon() + ' ' + resolvedIconSize() + ' ' + iconClasses()
+        "
         aria-hidden="true"
       ></i>
     }
@@ -133,12 +129,16 @@ const ICON_MAP: Record<string, string> = {
     <div class="flex-1 min-w-0">
       @if (label()) {
         <p [class]="labelClasses()">
-          <ng-container *polymorpheusOutlet="label() as text">{{ text }}</ng-container>
+          <ng-container *polymorpheusOutlet="label() as text">{{
+            text
+          }}</ng-container>
         </p>
       }
       @if (content()) {
         <p [class]="contentClasses()">
-          <ng-container *polymorpheusOutlet="content() as text">{{ text }}</ng-container>
+          <ng-container *polymorpheusOutlet="content() as text">{{
+            text
+          }}</ng-container>
         </p>
       }
     </div>
@@ -211,21 +211,15 @@ export class NxpNotificationComponent implements OnInit {
     return ic;
   });
 
-  readonly resolvedIconSize = computed<string>(
-    () => iconSizeMap[this.size()],
-  );
+  readonly resolvedIconSize = computed<string>(() => iconSizeMap[this.size()]);
 
   // ── Computed: classes ────────────────────────────────────────────────────────
 
   readonly hostClasses = computed(() =>
     cx(
-      // layout
-      'relative flex items-start rounded-lg border shadow-lg',
-      // width to fill container
+      'relative flex items-start rounded-m border shadow-lg',
       'w-[var(--width,356px)]',
-      // size
       sizeClasses[this.size()],
-      // appearance
       appearanceHostClasses[this.appearance()],
     ),
   );
@@ -236,7 +230,7 @@ export class NxpNotificationComponent implements OnInit {
 
   readonly labelClasses = computed(() =>
     cx(
-      'font-semibold leading-snug text-gray-900 dark:text-gray-50',
+      'font-semibold leading-snug text-text-primary',
       this.size() === 's' && 'text-xs',
       this.size() === 'm' && 'text-sm',
       this.size() === 'l' && 'text-base',
@@ -245,7 +239,7 @@ export class NxpNotificationComponent implements OnInit {
 
   readonly contentClasses = computed(() =>
     cx(
-      'leading-snug text-gray-700 dark:text-gray-300',
+      'leading-snug text-text-secondary',
       this.label() && 'mt-0.5',
       this.size() === 's' && 'text-xs',
       this.size() === 'm' && 'text-sm',
@@ -255,9 +249,9 @@ export class NxpNotificationComponent implements OnInit {
 
   readonly closeClasses = computed(() =>
     cx(
-      'shrink-0 -mt-0.5 -mr-1 inline-flex items-center justify-center rounded',
-      'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300',
-      'focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-500',
+      'shrink-0 -mt-0.5 -mr-1 inline-flex items-center justify-center rounded-xs',
+      'text-text-tertiary hover:text-text-primary',
+      'focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus',
       'transition-colors',
       this.size() === 's' && 'h-4 w-4 text-xs',
       this.size() === 'm' && 'h-5 w-5 text-sm',

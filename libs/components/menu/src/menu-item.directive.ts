@@ -1,10 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  inject,
-  output,
-  signal,
-} from '@angular/core';
+import { Directive, ElementRef, inject, output, signal } from '@angular/core';
 
 /**
  * A selectable item inside `NxpMenuComponent`. Host role is
@@ -18,7 +12,7 @@ import {
     role: 'menuitemradio',
     tabindex: '0',
     class:
-      'relative z-10 flex items-center gap-2 px-2 py-1.5 rounded-md text-sm outline-none cursor-default',
+      'relative z-10 flex items-center gap-2 px-2 py-1.5 rounded-s text-sm outline-none cursor-default',
     '[attr.data-proximity-index]': 'index()',
     '[attr.aria-checked]': 'checked() ? "true" : "false"',
     '(click)': 'onClick()',

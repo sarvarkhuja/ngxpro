@@ -27,14 +27,15 @@ import type { NxpPortalContext } from '../portal';
  * starting from `zone` and recursing into its children.
  * Returns `null` when the element is not within the zone at all.
  */
-function findActive(zone: NxpActiveZone, el: Element | null): NxpActiveZone | null {
+function findActive(
+  zone: NxpActiveZone,
+  el: Element | null,
+): NxpActiveZone | null {
   if (!el || !zone.contains(el)) {
     return null;
   }
 
-  const active = [...zone.children].find(
-    (child) => child.contains(el),
-  );
+  const active = [...zone.children].find((child) => child.contains(el));
 
   return active ? findActive(active, el) : zone;
 }
@@ -124,12 +125,22 @@ function nxpGetFocused(doc: Document): Element | null {
         padding: 1.5rem;
       }
       @keyframes nxp-modal-fade {
-        from { opacity: 0; transform: scale(0.97) translateY(0.5rem); }
-        to   { opacity: 1; transform: scale(1)    translateY(0); }
+        from {
+          opacity: 0;
+          transform: scale(0.97) translateY(0.5rem);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
       }
       @keyframes nxp-modal-fade-opacity {
-        from { opacity: 0; }
-        to   { opacity: 1; }
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
       @media (prefers-reduced-motion: reduce) {
         :host.nxp-enter,
@@ -153,14 +164,19 @@ export class NxpModalComponent<T> implements OnInit, OnDestroy {
    * Optional because there may be no parent zone at the root level.
    */
   private readonly parent = (() => {
-    const parentZone = inject(NxpActiveZone, { skipSelf: true, optional: true });
+    const parentZone = inject(NxpActiveZone, {
+      skipSelf: true,
+      optional: true,
+    });
     return parentZone
       ? findActive(parentZone, nxpGetFocused(inject(DOCUMENT)))
       : null;
   })();
 
   readonly context = injectContext<NxpPortalContext<T>>();
-  readonly component = signal<PolymorpheusContent<NxpPortalContext<T>> | null>(null);
+  readonly component = signal<PolymorpheusContent<NxpPortalContext<T>> | null>(
+    null,
+  );
 
   public ngOnInit(): void {
     // Wire this modal's zone into the parent zone tree so focus events

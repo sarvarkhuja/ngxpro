@@ -12,39 +12,25 @@ import {
   viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 
 // ---- Style constants ----
 
 const CELL_BASE = [
   'relative w-10 h-12 flex items-center justify-center',
-  'rounded-md border text-lg font-mono',
-  'cursor-pointer select-none transition-colors duration-150',
+  'rounded-m border text-lg font-mono',
+  'cursor-pointer select-none transition-colors duration-normal',
 ].join(' ');
 
-const CELL_DEFAULT = [
-  'border-gray-300 bg-white text-gray-900',
-  'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-50',
-].join(' ');
+const CELL_DEFAULT = 'border-border-normal bg-bg-base text-text-primary';
 
-const CELL_FOCUSED = [
-  'border-blue-500 ring-2 ring-blue-500/20',
-  'dark:border-blue-400 dark:ring-blue-400/20',
-].join(' ');
+const CELL_FOCUSED = 'border-primary ring-2 ring-primary/20';
 
-const CELL_FILLED = [
-  'border-gray-400',
-  'dark:border-gray-500',
-].join(' ');
+const CELL_FILLED = 'border-border-strong';
 
-const CELL_ERROR = [
-  'border-red-500 ring-2 ring-red-500/20',
-  'dark:border-red-400 dark:ring-red-400/20',
-].join(' ');
+const CELL_ERROR = 'border-status-negative ring-2 ring-status-negative/20';
 
-const CELL_DISABLED = [
-  'bg-gray-50 dark:bg-gray-800 cursor-not-allowed opacity-60',
-].join(' ');
+const CELL_DISABLED = 'bg-bg-neutral-1 cursor-not-allowed opacity-50';
 
 /**
  * PIN / OTP input component.
@@ -174,13 +160,15 @@ export class NxpInputPinComponent implements ControlValueAccessor {
   // ------------------------------------------------------------------ computed
 
   /** Array used to drive the @for loop. */
-  protected readonly cells = computed(() => Array.from({ length: this.length() }));
+  protected readonly cells = computed(() =>
+    Array.from({ length: this.length() }),
+  );
 
   /** The type attribute to set on the hidden input (always 'text' so we can manipulate freely). */
   protected readonly nativeInputType = computed(() => 'text');
 
   protected readonly containerClass = computed(() =>
-    cx('flex gap-2', this.class())
+    cx('flex gap-2', this.class()),
   );
 
   // ------------------------------------------------------------------ CVA
@@ -329,7 +317,8 @@ export class NxpInputPinComponent implements ControlValueAccessor {
       event.preventDefault();
       const current = this.pinValue();
       if (currentPos < current.length) {
-        const newVal = current.slice(0, currentPos) + current.slice(currentPos + 1);
+        const newVal =
+          current.slice(0, currentPos) + current.slice(currentPos + 1);
         el.value = newVal;
         this.pinValue.set(newVal);
         this.valueChange.emit(newVal);

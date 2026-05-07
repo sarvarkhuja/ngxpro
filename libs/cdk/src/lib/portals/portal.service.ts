@@ -19,11 +19,11 @@ export abstract class NxpPortalService {
   add<C>(content: TemplateRef<C>, context?: C): EmbeddedViewRef<C>;
   add<C>(
     content: PolymorpheusComponent<C> | TemplateRef<C>,
-    context?: C
+    context?: C,
   ): ComponentRef<C> | EmbeddedViewRef<C> {
     if (!this.host) {
       throw new Error(
-        'NxpPortalService has no host. Did you forget to add <nxp-root> to your app?'
+        'NxpPortalService has no host. Did you forget to add <nxp-root> to your app?',
       );
     }
     return content instanceof PolymorpheusComponent
@@ -34,7 +34,7 @@ export abstract class NxpPortalService {
   addTemplate<C>(template: TemplateRef<C>, context?: C): EmbeddedViewRef<C> {
     if (!this.host) {
       throw new Error(
-        'NxpPortalService has no host. Did you forget to add <nxp-root> to your app?'
+        'NxpPortalService has no host. Did you forget to add <nxp-root> to your app?',
       );
     }
     return this.host.addTemplate(template, context);

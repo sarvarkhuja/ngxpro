@@ -11,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx, NXP_SPRING_MODERATE, NXP_SPRING_FAST } from '@nxp/cdk';
+import { cx, NXP_SPRING_MODERATE, NXP_SPRING_FAST } from '@ngxpro/cdk';
 import {
   NXP_SWITCH_OPTIONS,
   type NxpSwitchColor,
@@ -113,7 +113,9 @@ const TRACK_BG_TRANSITION = `background-color ${FAST}`;
       [style.height.px]="dims().trackH"
       [style.backgroundColor]="trackBg()"
       [style.transition]="TRACK_BG_TRANSITION"
-      [style.boxShadow]="focused() ? '0 0 0 3px ' + colorSpec().focusRing : 'none'"
+      [style.boxShadow]="
+        focused() ? '0 0 0 3px ' + colorSpec().focusRing : 'none'
+      "
       (pointerenter)="onPointerEnter($event)"
       (pointerleave)="onPointerLeave()"
       (pointerdown)="onPointerDown($event)"
@@ -162,7 +164,9 @@ export class NxpSwitchComponent implements ControlValueAccessor {
 
   // CVA disabled state (set programmatically by reactive forms)
   private readonly cvaDisabled = signal(false);
-  readonly disabled = computed(() => this.disabledInput() || this.cvaDisabled());
+  readonly disabled = computed(
+    () => this.disabledInput() || this.cvaDisabled(),
+  );
 
   // ── Internal state ──
   readonly hovered = signal(false);
@@ -188,31 +192,47 @@ export class NxpSwitchComponent implements ControlValueAccessor {
   protected readonly TRACK_BG_TRANSITION = TRACK_BG_TRANSITION;
 
   // ── CVA callbacks ──
-  private onChange: (value: boolean) => void = () => { /* noop */ };
-  private onTouched: () => void = () => { /* noop */ };
+  private onChange: (value: boolean) => void = () => {
+    /* noop */
+  };
+  private onTouched: () => void = () => {
+    /* noop */
+  };
 
   // ── Computed values ──
 
   readonly dims = computed(() => SIZES[this.size()]);
   readonly colorSpec = computed(() => {
-    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const isDark =
+      typeof document !== 'undefined' &&
+      document.documentElement.classList.contains('dark');
     return { ...COLORS[this.color()], isDark };
   });
 
   readonly trackBg = computed(() => {
     const spec = COLORS[this.color()];
-    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const isDark =
+      typeof document !== 'undefined' &&
+      document.documentElement.classList.contains('dark');
     const isOn = this.checked();
     const isHover = this.hovered();
 
     if (isDark) {
       return isOn
-        ? (isHover ? spec.darkOnHover : spec.darkOn)
-        : (isHover ? spec.darkOffHover : spec.darkOff);
+        ? isHover
+          ? spec.darkOnHover
+          : spec.darkOn
+        : isHover
+          ? spec.darkOffHover
+          : spec.darkOff;
     }
     return isOn
-      ? (isHover ? spec.onHover : spec.on)
-      : (isHover ? spec.offHover : spec.off);
+      ? isHover
+        ? spec.onHover
+        : spec.on
+      : isHover
+        ? spec.offHover
+        : spec.off;
   });
 
   readonly thumbWidth = computed(() => {
@@ -235,9 +255,7 @@ export class NxpSwitchComponent implements ControlValueAccessor {
   readonly thumbX = computed(() => {
     const d = this.dims();
     const extraWidth = this.thumbWidth() - d.thumb;
-    return this.checked()
-      ? d.offset + d.travel - extraWidth
-      : d.offset;
+    return this.checked() ? d.offset + d.travel - extraWidth : d.offset;
   });
 
   readonly thumbTransition = computed(() =>
@@ -335,9 +353,7 @@ export class NxpSwitchComponent implements ControlValueAccessor {
         this.toggle();
       } else {
         // Snap back — re-enable transition and set resting X
-        const restX = this.checked()
-          ? d.offset + d.travel
-          : d.offset;
+        const restX = this.checked() ? d.offset + d.travel : d.offset;
         this.thumbXAnimated.set(restX);
       }
 

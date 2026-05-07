@@ -8,13 +8,16 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { cx, calendarContainerClass } from '@nxp/cdk';
-import { CalendarComponent } from '@nxp/components/calendar';
+import { cx, calendarContainerClass } from '@ngxpro/cdk';
+import { CalendarComponent } from '@ngxpro/components/calendar';
 import type {
   DisabledHandler,
   MarkerHandler,
-} from '@nxp/components/calendar';
-import { DataListComponent, OptionDirective } from '@nxp/components/data-list';
+} from '@ngxpro/components/calendar';
+import {
+  DataListComponent,
+  OptionDirective,
+} from '@ngxpro/components/data-list';
 import { calculateDisabledHandler } from './calculate-disabled-handler';
 import { computeEffectiveMax, computeEffectiveMin } from './day-caps';
 import { DateRangePeriod } from './date-range-period';
@@ -73,11 +76,7 @@ function addMonths(date: Date, n: number): Date {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarComponent, DataListComponent, OptionDirective],
   template: `
-    <div
-      [class]="containerClass()"
-      role="group"
-      aria-label="Date range picker"
-    >
+    <div [class]="containerClass()" role="group" aria-label="Date range picker">
       <nxp-calendar
         class="!rounded-none !border-0 !shadow-none"
         [rangeMode]="true"
@@ -95,7 +94,10 @@ function addMonths(date: Date, n: number): Date {
       />
 
       @if (!items().length) {
-        <div class="w-px bg-border-normal/70 self-stretch" aria-hidden="true"></div>
+        <div
+          class="w-px bg-border-normal/70 self-stretch"
+          aria-hidden="true"
+        ></div>
 
         <nxp-calendar
           class="!rounded-none !border-0 !shadow-none"
@@ -115,7 +117,10 @@ function addMonths(date: Date, n: number): Date {
       }
 
       @if (items().length) {
-        <div class="w-px bg-border-normal/70 self-stretch" aria-hidden="true"></div>
+        <div
+          class="w-px bg-border-normal/70 self-stretch"
+          aria-hidden="true"
+        ></div>
       }
 
       <!--

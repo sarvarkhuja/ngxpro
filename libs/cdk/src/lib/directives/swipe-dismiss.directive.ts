@@ -72,7 +72,9 @@ export class NxpSwipeDismiss implements OnInit, OnDestroy {
     // Don't capture pointer when user interacts with interactive elements
     // (buttons, links, inputs) — capturing would prevent their click events.
     const target = e.target as Element | null;
-    if (target?.closest('button, a, input, select, textarea, [role="button"]')) {
+    if (
+      target?.closest('button, a, input, select, textarea, [role="button"]')
+    ) {
       return;
     }
 
@@ -106,13 +108,11 @@ export class NxpSwipeDismiss implements OnInit, OnDestroy {
 
     if (this.lockedAxis === 'x') {
       const allowed =
-        (dx < 0 && dirs.includes('left')) ||
-        (dx > 0 && dirs.includes('right'));
+        (dx < 0 && dirs.includes('left')) || (dx > 0 && dirs.includes('right'));
       swipeX = allowed ? dx : dx * this.dampen(dx);
     } else {
       const allowed =
-        (dy < 0 && dirs.includes('up')) ||
-        (dy > 0 && dirs.includes('down'));
+        (dy < 0 && dirs.includes('up')) || (dy > 0 && dirs.includes('down'));
       swipeY = allowed ? dy : dy * this.dampen(dy);
     }
 
@@ -144,23 +144,37 @@ export class NxpSwipeDismiss implements OnInit, OnDestroy {
     if (this.lockedAxis === 'x') {
       const vel = Math.abs(dx) / elapsed;
       if (dx < -threshold || (dx < 0 && vel > velThreshold)) {
-        if (dirs.includes('left')) { direction = 'left'; dismissed = true; }
+        if (dirs.includes('left')) {
+          direction = 'left';
+          dismissed = true;
+        }
       } else if (dx > threshold || (dx > 0 && vel > velThreshold)) {
-        if (dirs.includes('right')) { direction = 'right'; dismissed = true; }
+        if (dirs.includes('right')) {
+          direction = 'right';
+          dismissed = true;
+        }
       }
     } else {
       const vel = Math.abs(dy) / elapsed;
       if (dy < -threshold || (dy < 0 && vel > velThreshold)) {
-        if (dirs.includes('up')) { direction = 'up'; dismissed = true; }
+        if (dirs.includes('up')) {
+          direction = 'up';
+          dismissed = true;
+        }
       } else if (dy > threshold || (dy > 0 && vel > velThreshold)) {
-        if (dirs.includes('down')) { direction = 'down'; dismissed = true; }
+        if (dirs.includes('down')) {
+          direction = 'down';
+          dismissed = true;
+        }
       }
     }
 
     if (dismissed && direction) {
       this.el.setAttribute('data-swipe-out', 'true');
       this.el.setAttribute('data-swipe-direction', direction);
-      this.zone.run(() => this.swipeDismissed.emit(direction as NxpSwipeDirection));
+      this.zone.run(() =>
+        this.swipeDismissed.emit(direction as NxpSwipeDirection),
+      );
     } else {
       this.cleanup();
     }

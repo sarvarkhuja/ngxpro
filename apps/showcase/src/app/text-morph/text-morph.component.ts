@@ -1,10 +1,13 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import {
   TextMorphDirective,
   TextMorphComponent as NgxproTextMorph,
-} from '@nxp/components/text-morph';
-import { ButtonComponent } from '@nxp/components/button';
-import { CardComponent } from '@nxp/components/card';
+} from '@ngxpro/components/text-morph';
+import { ButtonComponent } from '@ngxpro/components/button';
+import { CardComponent } from '@ngxpro/components/card';
+import { NxpTooltipDirective } from '@ngxpro/components/tooltip';
+import { nxpWriteToClipboard } from '@ngxpro/cdk';
 
 @Component({
   selector: 'app-text-morph-demo',
@@ -13,11 +16,30 @@ import { CardComponent } from '@nxp/components/card';
     NgxproTextMorph,
     ButtonComponent,
     CardComponent,
+    NxpTooltipDirective,
   ],
   templateUrl: './text-morph.component.html',
   styleUrl: './text-morph.component.scss',
 })
 export class TextMorphDemoComponent {
+  private readonly doc = inject(DOCUMENT);
+
+  // Demo: Tooltip with morphing label
+  readonly copyLabel = signal<'Copy' | 'Copied'>('Copy');
+  readonly copyValue = 'npm install ngxpro/components --legacy-peer-deps';
+  private copyResetId: ReturnType<typeof setTimeout> | null = null;
+
+  async copyToClipboard(): Promise<void> {
+    const ok = await nxpWriteToClipboard(this.copyValue, this.doc);
+    if (!ok) return;
+    this.copyLabel.set('Copied');
+    if (this.copyResetId !== null) clearTimeout(this.copyResetId);
+    this.copyResetId = setTimeout(() => {
+      this.copyLabel.set('Copy');
+      this.copyResetId = null;
+    }, 1500);
+  }
+
   // Demo 1: Simple counter
   readonly count = signal(0);
   readonly countLabel = computed(() => `Count: ${this.count()}`);

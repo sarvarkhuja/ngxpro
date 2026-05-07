@@ -11,7 +11,11 @@ export type NgxproStatus = 'info' | 'success' | 'warning' | 'error';
 /**
  * Appearance variants.
  */
-export type NgxproAppearance = 'primary' | 'secondary' | 'ghost' | 'destructive';
+export type NgxproAppearance =
+  | 'primary'
+  | 'secondary'
+  | 'ghost'
+  | 'destructive';
 
 /**
  * Generic handler for polymorphic content.

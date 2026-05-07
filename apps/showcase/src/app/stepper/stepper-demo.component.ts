@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxpStepper } from '@nxp/components/stepper';
+import { NxpStepper } from '@ngxpro/components/stepper';
 
 @Component({
   selector: 'app-stepper-demo',

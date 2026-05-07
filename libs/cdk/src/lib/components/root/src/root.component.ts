@@ -7,11 +7,18 @@ import {
   signal,
   ViewEncapsulation,
 } from '@angular/core';
-import { NXP_ANIMATIONS_SPEED, NXP_IS_MOBILE, NXP_REDUCED_MOTION } from './root.tokens';
+import {
+  NXP_ANIMATIONS_SPEED,
+  NXP_IS_MOBILE,
+  NXP_REDUCED_MOTION,
+} from './root.tokens';
 import { NxpPlatformDirective } from './platform.directive';
 import { NxpVisualViewportDirective } from './visual-viewport.directive';
 import { NxpPopupsComponent } from './popups.component';
-import { NXP_DROPDOWN_COMPONENT, NxpDropdownComponent } from '../../../portals';
+import {
+  NXP_DROPDOWN_COMPONENT,
+  NxpDropdownComponent,
+} from '../../../portals/dropdown';
 
 @Component({
   selector: 'nxp-root',
@@ -29,18 +36,20 @@ import { NXP_DROPDOWN_COMPONENT, NxpDropdownComponent } from '../../../portals';
   `,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [`
-    nxp-root {
-      position: relative;
-      display: block;
-    }
+  styles: [
+    `
+      nxp-root {
+        position: relative;
+        display: block;
+      }
 
-    .nxp-root-content {
-      position: relative;
-      block-size: 100%;
-      isolation: isolate;
-    }
-  `],
+      .nxp-root-content {
+        position: relative;
+        block-size: 100%;
+        isolation: isolate;
+      }
+    `,
+  ],
   providers: [
     { provide: NXP_DROPDOWN_COMPONENT, useValue: NxpDropdownComponent },
   ],
@@ -56,7 +65,10 @@ import { NXP_DROPDOWN_COMPONENT, NxpDropdownComponent } from '../../../portals';
 export class NxpRootComponent {
   private readonly doc = inject(DOCUMENT);
   private readonly el = inject(ElementRef<HTMLElement>).nativeElement;
-  private readonly child = !!inject(NxpRootComponent, { optional: true, skipSelf: true });
+  private readonly child = !!inject(NxpRootComponent, {
+    optional: true,
+    skipSelf: true,
+  });
 
   protected readonly reducedMotion = inject(NXP_REDUCED_MOTION);
   protected readonly animationsSpeed = inject(NXP_ANIMATIONS_SPEED);

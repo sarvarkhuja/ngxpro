@@ -10,7 +10,7 @@ import {
   NxpDropdown,
   type NxpDropdownAlign,
   type NxpDropdownWidth,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';
 
 type DropdownDirection = 'top' | 'bottom' | null;
 
@@ -41,7 +41,7 @@ type DropdownDirection = 'top' | 'bottom' | null;
           </p>
           <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
             Backed by <code class="font-mono text-xs">NxpDropdown</code> from
-            <code class="font-mono text-xs">@nxp/cdk</code>.
+            <code class="font-mono text-xs">@ngxpro/cdk</code>.
           </p>
         </div>
 
@@ -394,9 +394,17 @@ type DropdownDirection = 'top' | 'bottom' | null;
   `,
 })
 export class DropdownDemoComponent {
-  readonly alignOptions: readonly NxpDropdownAlign[] = ['start', 'center', 'end'];
+  readonly alignOptions: readonly NxpDropdownAlign[] = [
+    'start',
+    'center',
+    'end',
+  ];
   readonly widthOptions: readonly NxpDropdownWidth[] = ['auto', 'fixed', 'min'];
-  readonly directionOptions: readonly DropdownDirection[] = [null, 'top', 'bottom'];
+  readonly directionOptions: readonly DropdownDirection[] = [
+    null,
+    'top',
+    'bottom',
+  ];
 
   readonly align = signal<NxpDropdownAlign>('start');
   readonly direction = signal<DropdownDirection>(null);
@@ -426,4 +434,3 @@ export class DropdownDemoComponent {
     target.set(clamped);
   }
 }
-

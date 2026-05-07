@@ -1,10 +1,4 @@
-import {
-  Directive,
-  HostBinding,
-  computed,
-  input,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Directive, HostBinding, input } from '@angular/core';
 import { cx } from '../utils/cx';
 
 /**
@@ -92,13 +86,11 @@ export class CellDirective {
       spacious: size === 's' ? 'py-[7px]' : size === 'm' ? 'py-4' : 'py-5', // Extra padding for spacious
     };
 
-    // Interactive states (applied via CSS when element is button/label/a)
     const interactiveClasses =
-      '[&:is(button,label,a):not(:disabled)]:hover:bg-gray-50 [&:is(button,label,a):not(:disabled)]:dark:hover:bg-gray-900/50 [&:is(button,label,a):not(:disabled)]:cursor-pointer [&:is(button,label,a):not(:disabled):active]:bg-gray-100 [&:is(button,label,a):not(:disabled):active]:dark:bg-gray-900/70';
+      '[&:is(button,label,a):not(:disabled)]:hover:bg-bg-neutral-1 [&:is(button,label,a):not(:disabled)]:cursor-pointer [&:is(button,label,a):not(:disabled):active]:bg-bg-neutral-2';
 
-    // Focus visible state
     const focusClasses =
-      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:-outline-offset-2';
+      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-border-focus focus-visible:-outline-offset-2';
 
     return cx(
       baseClasses,

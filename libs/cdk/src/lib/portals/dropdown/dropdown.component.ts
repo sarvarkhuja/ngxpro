@@ -39,7 +39,10 @@ const MAX_WIDTH_GAP = 16;
   template: `
     <div class="nxp-dropdown-scroll overflow-auto max-h-full">
       <div
-        *polymorpheusOutlet="directive.content() as text; context: { $implicit: close }"
+        *polymorpheusOutlet="
+          directive.content() as text;
+          context: { $implicit: close }
+        "
         class="nxp-dropdown-primitive"
       >
         {{ text }}
@@ -72,8 +75,14 @@ const MAX_WIDTH_GAP = 16;
         animation: nxp-dropdown-in 0.12s cubic-bezier(0.4, 0, 1, 1) reverse;
       }
       @keyframes nxp-dropdown-in {
-        from { opacity: 0; transform: scale(0.96); }
-        to   { opacity: 1; transform: scale(1); }
+        from {
+          opacity: 0;
+          transform: scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
       @media (prefers-reduced-motion: reduce) {
         :host.nxp-enter,
@@ -84,8 +93,12 @@ const MAX_WIDTH_GAP = 16;
           animation-direction: reverse;
         }
         @keyframes nxp-dropdown-fade {
-          from { opacity: 0; }
-          to   { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
       }
     `,
@@ -94,7 +107,10 @@ const MAX_WIDTH_GAP = 16;
   providers: [
     NxpPositionService,
     nxpPositionAccessorFor('dropdown', NxpDropdownPosition),
-    nxpRectAccessorFor('dropdown', forwardRef(() => NxpDropdownDirective)),
+    nxpRectAccessorFor(
+      'dropdown',
+      forwardRef(() => NxpDropdownDirective),
+    ),
   ],
   hostDirectives: [NxpActiveZone, NxpAnimated],
   host: {
@@ -134,11 +150,14 @@ export class NxpDropdownComponent implements AfterViewInit {
 
   private getStyles(x: number, y: number): Record<string, string> {
     const { maxHeight, minHeight, offset, limitWidth } = this.options;
-    const parent = this.el.offsetParent?.getBoundingClientRect() || EMPTY_CLIENT_RECT;
+    const parent =
+      this.el.offsetParent?.getBoundingClientRect() || EMPTY_CLIENT_RECT;
     const { left = 0, top = 0 } = this.position === 'fixed' ? {} : parent;
     const rect = this.accessor.getClientRect();
     const viewport = this.viewport.getClientRect();
-    const zoom = (this.directive.el as HTMLElement & { currentCSSZoom?: number }).currentCSSZoom ?? 1;
+    const zoom =
+      (this.directive.el as HTMLElement & { currentCSSZoom?: number })
+        .currentCSSZoom ?? 1;
     const above = rect.top - viewport.top - 2 * offset;
     const below = viewport.top + viewport.height - y - offset;
     const available = y > rect.bottom ? below : above;
@@ -166,7 +185,8 @@ export class NxpDropdownComponent implements AfterViewInit {
       left: nxpPx(Math.round((x - left) / zoom)),
       maxHeight: nxpPx(Math.round(height / zoom)),
       width: limitWidth === 'fixed' ? nxpPx(Math.round(rect.width / zoom)) : '',
-      minWidth: limitWidth === 'min' ? nxpPx(Math.round(rect.width / zoom)) : '',
+      minWidth:
+        limitWidth === 'min' ? nxpPx(Math.round(rect.width / zoom)) : '',
       maxWidth: nxpPx(Math.round(viewport.width / zoom) - MAX_WIDTH_GAP),
       transformOrigin: `${horizontal} ${vertical}`,
     };

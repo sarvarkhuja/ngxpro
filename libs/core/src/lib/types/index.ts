@@ -6,4 +6,4 @@ export type {
   NgxproStatus,
   NgxproAppearance,
   NgxproStringHandler,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';

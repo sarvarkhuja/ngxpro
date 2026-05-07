@@ -8,8 +8,18 @@ import {
 import { cx, navButtonClass } from '../../../utils';
 
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ] as const;
 
 /**
@@ -32,13 +42,18 @@ const MONTH_NAMES = [
         [attr.aria-label]="'Go to previous month'"
         (click)="prevClick.emit()"
       >
-        <i class="ri-arrow-left-s-line text-base leading-none" aria-hidden="true"></i>
+        <i
+          class="ri-arrow-left-s-line text-base leading-none"
+          aria-hidden="true"
+        ></i>
       </button>
 
       <button
         type="button"
         [class]="labelBtnClass"
-        [attr.aria-label]="'Select year, currently ' + monthName() + ' ' + year()"
+        [attr.aria-label]="
+          'Select year, currently ' + monthName() + ' ' + year()
+        "
         (click)="yearLabelClick.emit()"
       >
         <span class="tabular-nums">{{ monthName() }} {{ year() }}</span>
@@ -51,7 +66,10 @@ const MONTH_NAMES = [
         [attr.aria-label]="'Go to next month'"
         (click)="nextClick.emit()"
       >
-        <i class="ri-arrow-right-s-line text-base leading-none" aria-hidden="true"></i>
+        <i
+          class="ri-arrow-right-s-line text-base leading-none"
+          aria-hidden="true"
+        ></i>
       </button>
     </div>
   `,

@@ -1,7 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CalendarComponent, DisabledHandler, MarkerHandler } from '@nxp/components/calendar';
-
+import {
+  CalendarComponent,
+  DisabledHandler,
+  MarkerHandler,
+} from '@ngxpro/components/calendar';
 
 /**
  * Showcase demo for the CalendarComponent.

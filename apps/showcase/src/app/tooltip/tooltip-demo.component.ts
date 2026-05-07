@@ -1,8 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import {
   NxpTooltipDirective,
@@ -10,7 +6,7 @@ import {
   nxpTooltipOptionsProvider,
   type NxpTooltipDirection,
   type NxpTooltipSize,
-} from '@nxp/components/tooltip';
+} from '@ngxpro/components/tooltip';
 
 @Component({
   selector: 'app-tooltip-demo',
@@ -20,7 +16,12 @@ import {
   templateUrl: './tooltip-demo.component.html',
 })
 export class TooltipDemoComponent {
-  readonly directions: NxpTooltipDirection[] = ['top', 'bottom', 'left', 'right'];
+  readonly directions: NxpTooltipDirection[] = [
+    'top',
+    'bottom',
+    'left',
+    'right',
+  ];
   readonly sizes: NxpTooltipSize[] = ['sm', 'md', 'lg'];
   readonly appearances = ['dark', 'light'];
 

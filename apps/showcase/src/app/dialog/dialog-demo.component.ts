@@ -14,7 +14,7 @@ import {
   type NxpDialogContext,
   type NxpDialogOptions,
   type NxpDialogSize,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';
 import {
   injectContext,
   PolymorpheusComponent,
@@ -617,7 +617,7 @@ class ConfirmDeleteDialogComponent {
           <p class="text-sm text-gray-600 dark:text-gray-400">
             All dialogs, alerts and other overlays are built on top of the low-level
             modal portal from
-            <code class="font-mono text-xs">@nxp/cdk/portals/modal</code>.
+            <code class="font-mono text-xs">@ngxpro/cdk/portals/modal</code>.
             You usually do not use it directly, but extend
             <code class="font-mono text-xs">NxpModalService</code> instead.
           </p>

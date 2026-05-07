@@ -37,7 +37,7 @@ export const NXP_VIEWPORT = new InjectionToken<{
     return {
       type: 'viewport',
       getClientRect(): DOMRect {
-        const vv = (win as any).visualViewport;
+        const vv = win.visualViewport;
         const height = vv?.height ?? 0;
         const offsetTop = vv?.offsetTop ?? 0;
         const rect = {
@@ -83,8 +83,16 @@ export const NXP_SELECTION_STREAM = new InjectionToken<Observable<unknown>>(
 );
 
 export { NXP_FALLBACK_VALUE, nxpFallbackValueProvider } from './fallback-value';
-export { NXP_ITEMS_HANDLERS, NXP_DEFAULT_ITEMS_HANDLERS, nxpItemsHandlersProvider } from './items-handlers';
-export type { NxpStringHandler, NxpIdentityMatcher, NxpItemsHandlers } from './items-handlers';
+export {
+  NXP_ITEMS_HANDLERS,
+  NXP_DEFAULT_ITEMS_HANDLERS,
+  nxpItemsHandlersProvider,
+} from './items-handlers';
+export type {
+  NxpStringHandler,
+  NxpIdentityMatcher,
+  NxpItemsHandlers,
+} from './items-handlers';
 export { NXP_AUXILIARY, nxpAsAuxiliary, nxpInjectAuxiliary } from './auxiliary';
 export { NXP_OPTION_CONTENT, nxpAsOptionContent } from './option-content';
 export { NXP_DATA_LIST_HOST, nxpAsDataListHost } from './data-list';

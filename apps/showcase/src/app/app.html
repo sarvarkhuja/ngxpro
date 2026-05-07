@@ -15,7 +15,7 @@
       </div>
       <nxp-nav class="flex-1 overflow-y-auto p-2">
         @for (item of navItems; track item.path) {
-          <a nxpNavItem [routerLink]="item.path">{{ item.label }}</a>
+        <a nxpNavItem [routerLink]="item.path">{{ item.label }}</a>
         }
       </nxp-nav>
     </aside>

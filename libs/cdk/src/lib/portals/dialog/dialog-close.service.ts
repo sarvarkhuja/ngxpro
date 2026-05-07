@@ -6,7 +6,7 @@ import { filter, map, take } from 'rxjs';
 /** Token for external close triggers (e.g. router navigation). */
 export const NXP_DIALOGS_CLOSE = new InjectionToken<Observable<unknown>>(
   'NXP_DIALOGS_CLOSE',
-  { factory: () => merge() }
+  { factory: () => merge() },
 );
 
 /**
@@ -23,11 +23,9 @@ export class NxpDialogCloseService extends Observable<unknown> {
       merge(
         fromEvent<KeyboardEvent>(this.doc, 'keydown').pipe(
           filter(
-            (e) =>
-              e.key?.toLowerCase() === 'escape' &&
-              !e.defaultPrevented
+            (e) => e.key?.toLowerCase() === 'escape' && !e.defaultPrevented,
           ),
-          map(() => ({}))
+          map(() => ({})),
         ),
         fromEvent<MouseEvent>(this.doc, 'mousedown').pipe(
           filter((e) => {
@@ -35,9 +33,9 @@ export class NxpDialogCloseService extends Observable<unknown> {
             return !this.elRef.nativeElement.contains(target);
           }),
           take(1),
-          map(() => ({}))
-        )
-      ).subscribe(subscriber)
+          map(() => ({})),
+        ),
+      ).subscribe(subscriber),
     );
   }
 }

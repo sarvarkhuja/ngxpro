@@ -113,7 +113,9 @@ export class NxpSliderComponent implements ControlValueAccessor, OnInit {
    * When key steps are active the native input always operates on 0–totalSteps.
    * Otherwise it mirrors the declared min/max.
    */
-  protected readonly effectiveMin = computed(() => (this.keySteps() ? 0 : this.min()));
+  protected readonly effectiveMin = computed(() =>
+    this.keySteps() ? 0 : this.min(),
+  );
   protected readonly effectiveMax = computed(() =>
     this.keySteps() ? this._totalSteps() : this.max(),
   );
@@ -125,7 +127,9 @@ export class NxpSliderComponent implements ControlValueAccessor, OnInit {
    * Total discrete steps when key steps are active.
    * Always an integer (non-integer step counts are invalid for native range inputs).
    */
-  private readonly _totalSteps = computed(() => Math.round(100 / (this.step() || 1)));
+  private readonly _totalSteps = computed(() =>
+    Math.round(100 / (this.step() || 1)),
+  );
 
   // ---------------------------------------------------------------------------
   // ControlValueAccessor plumbing

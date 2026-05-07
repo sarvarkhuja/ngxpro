@@ -6,7 +6,7 @@ import {
   NxpRadio,
   type NxpRadioSize,
   type NxpRadioColor,
-} from '@nxp/cdk/components/radio';
+} from '@ngxpro/cdk/components/radio';
 
 interface Fruit {
   id: number;

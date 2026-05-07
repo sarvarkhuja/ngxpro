@@ -48,8 +48,10 @@ export function nxpFindProximityIndex(
 
   const containerRect = container.getBoundingClientRect();
   const mousePos = axis === 'x' ? clientX : clientY;
-  const scrollOffset = axis === 'x' ? container.scrollLeft : container.scrollTop;
-  const borderOffset = axis === 'x' ? container.clientLeft : container.clientTop;
+  const scrollOffset =
+    axis === 'x' ? container.scrollLeft : container.scrollTop;
+  const borderOffset =
+    axis === 'x' ? container.clientLeft : container.clientTop;
   const containerEdge = axis === 'x' ? containerRect.left : containerRect.top;
 
   let closestIndex: number | null = null;

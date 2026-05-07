@@ -5,8 +5,8 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { cx, NXP_DATA_LIST_HOST, NXP_ITEMS_HANDLERS } from '@nxp/cdk';
-import { NXP_TEXTFIELD_ACCESSOR } from '@nxp/cdk/components/textfield';
+import { cx, NXP_DATA_LIST_HOST, NXP_ITEMS_HANDLERS } from '@ngxpro/cdk';
+import { NXP_TEXTFIELD_ACCESSOR } from '@ngxpro/cdk/components/textfield';
 
 /**
  * Option item rendered inside a Select or ComboBox dropdown.
@@ -51,7 +51,11 @@ import { NXP_TEXTFIELD_ACCESSOR } from '@nxp/cdk/components/textfield';
         stroke-width="2.5"
         aria-hidden="true"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4.5 12.75l6 6 9-13.5"
+        />
       </svg>
     }
   `,
@@ -59,7 +63,9 @@ import { NXP_TEXTFIELD_ACCESSOR } from '@nxp/cdk/components/textfield';
 export class NxpSelectOptionComponent<T = unknown> {
   private readonly handlers = inject(NXP_ITEMS_HANDLERS);
   private readonly host = inject(NXP_DATA_LIST_HOST, { optional: true });
-  private readonly accessor = inject(NXP_TEXTFIELD_ACCESSOR, { optional: true });
+  private readonly accessor = inject(NXP_TEXTFIELD_ACCESSOR, {
+    optional: true,
+  });
 
   readonly value = input.required<T>();
 
@@ -78,15 +84,15 @@ export class NxpSelectOptionComponent<T = unknown> {
 
   protected readonly classes = computed(() =>
     cx(
-      'flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-1.5',
+      'flex w-full cursor-pointer items-center gap-2 rounded-s px-3 py-1.5',
       'text-sm font-medium text-left',
-      'transition-colors duration-100 select-none',
+      'transition-colors duration-fast select-none',
       'outline-none focus-visible:outline focus-visible:outline-2',
-      'focus-visible:outline-offset-1 focus-visible:outline-blue-500',
+      'focus-visible:outline-offset-1 focus-visible:outline-border-focus',
       this.isSelected()
-        ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-        : ['text-gray-700 dark:text-gray-300', 'hover:bg-gray-100 dark:hover:bg-gray-800'],
-      this.isDisabled() && 'opacity-40 cursor-not-allowed pointer-events-none',
+        ? 'bg-primary/10 text-text-action'
+        : ['text-text-secondary', 'hover:bg-bg-neutral-1'],
+      this.isDisabled() && 'opacity-50 cursor-not-allowed pointer-events-none',
     ),
   );
 

@@ -4,8 +4,8 @@ import {
   ButtonComponent as NxpButton,
   type ButtonVariant,
   type ButtonSize,
-} from '@nxp/components/button';
-import { TextMorphComponent } from '@nxp/components/text-morph';
+} from '@ngxpro/components/button';
+import { TextMorphComponent } from '@ngxpro/components/text-morph';
 
 @Component({
   selector: 'app-button-demo',

@@ -12,12 +12,10 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx, inputVariants } from '@nxp/cdk';
-import {
-  CalendarMonthComponent,
-} from '@nxp/components/calendar-month';
-import type { MonthCoord } from '@nxp/components/calendar-month';
-import { formatMonth } from '@nxp/components/input-date';
+import { cx, inputVariants } from '@ngxpro/cdk';
+import { CalendarMonthComponent } from '@ngxpro/components/calendar-month';
+import type { MonthCoord } from '@ngxpro/components/calendar-month';
+import { formatMonth } from '@ngxpro/components/input-date';
 
 /**
  * Month picker input with calendar-month dropdown.
@@ -87,15 +85,24 @@ import { formatMonth } from '@nxp/components/input-date';
 
       <span
         class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none select-none
-               transition-[color,transform] duration-150
+               transition-[color,transform] duration-normal
                [transition-timing-function:cubic-bezier(0.23,1,0.32,1)]"
         [class.text-text-tertiary]="!isOpen()"
         [class.text-text-action]="isOpen()"
         [class.scale-110]="isOpen()"
         aria-hidden="true"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-          <path fill-rule="evenodd" d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z" clip-rule="evenodd"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="h-4 w-4"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
+            clip-rule="evenodd"
+          />
         </svg>
       </span>
 
@@ -168,11 +175,15 @@ export class InputMonthComponent implements ControlValueAccessor {
     this._onTouched = fn;
   }
 
-  setDisabledState(_isDisabled: boolean): void {}
+  setDisabledState(_isDisabled: boolean): void {
+    /*noop*/
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
-    if (!(this.el.nativeElement as HTMLElement).contains(event.target as Node)) {
+    if (
+      !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
+    ) {
       this.isOpen.set(false);
     }
   }

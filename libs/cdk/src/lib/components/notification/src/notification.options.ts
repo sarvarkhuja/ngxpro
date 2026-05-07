@@ -66,7 +66,10 @@ export const NXP_NOTIFICATION_OPTIONS =
 
 export function nxpNotificationOptionsProvider(
   options: Partial<NxpNotificationOptions>,
-): { provide: typeof NXP_NOTIFICATION_OPTIONS; useValue: NxpNotificationOptions } {
+): {
+  provide: typeof NXP_NOTIFICATION_OPTIONS;
+  useValue: NxpNotificationOptions;
+} {
   return {
     provide: NXP_NOTIFICATION_OPTIONS,
     useValue: { ...NXP_NOTIFICATION_DEFAULT_OPTIONS, ...options },

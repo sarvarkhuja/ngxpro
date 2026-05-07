@@ -7,7 +7,7 @@ import {
   NxpSliderVisualComponent,
   NxpSliderComfortableComponent,
   type NxpKeySteps,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';
 
 // ---------------------------------------------------------------------------
 // Data
@@ -334,7 +334,10 @@ const filterModes = ['LP', 'BP', 'HP', 'Notch'];
           Theme Color
         </h2>
         <p class="text-[13px] text-gray-500 dark:text-gray-400">
-          When <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded text-[12px]">themeColor</code>
+          When
+          <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded text-[12px]"
+            >themeColor</code
+          >
           is true, sliders use the primary theme color instead of neutral gray.
         </p>
         <div class="flex flex-col gap-1">
@@ -393,7 +396,10 @@ const filterModes = ['LP', 'BP', 'HP', 'Notch'];
           CDK Primitive
         </h2>
         <p class="text-[13px] text-gray-500 dark:text-gray-400">
-          The low-level <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded text-[12px]">nxpSlider</code>
+          The low-level
+          <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded text-[12px]"
+            >nxpSlider</code
+          >
           attribute directive on a native range input.
         </p>
         <input
@@ -502,7 +508,8 @@ export class SliderDemoComponent {
 
   readonly fmtPercent = (v: number) => `${v}%`;
   readonly fmtHz = (v: number) => `${v} Hz`;
-  readonly fmtFreq = (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${v} Hz`;
+  readonly fmtFreq = (v: number) =>
+    v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${v} Hz`;
   readonly fmtDb = (v: number) => {
     const db = ((v - 50) / 50) * 12;
     return `${db >= 0 ? '+' : ''}${db.toFixed(1)} dB`;
@@ -534,5 +541,6 @@ export class SliderDemoComponent {
   readonly fmtQuality = (v: number) => qualityLabels[v];
   readonly fmtFilter = (v: number) => filterModes[v];
   readonly fmtOversample = (v: number) => `${Math.pow(2, v)}x`;
-  readonly fmtPriority = (v: number) => ['None', 'Low', 'Medium', 'High', 'Critical'][v];
+  readonly fmtPriority = (v: number) =>
+    ['None', 'Low', 'Medium', 'High', 'Critical'][v];
 }

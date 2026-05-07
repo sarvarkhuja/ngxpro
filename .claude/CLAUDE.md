@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Angular UI component library (`@nxp/*`) built from scratch. Architecture patterns from Taiga UI, styling from Tremor via Tailwind CSS. **NOT built on top of Taiga UI** — Taiga is reference-only for architecture. All styling is 100% Tailwind.
+Angular UI component library (`@ngxpro/*`) built from scratch. Architecture patterns from Taiga UI, styling from Tremor via Tailwind CSS. **NOT built on top of Taiga UI** — Taiga is reference-only for architecture. All styling is 100% Tailwind.
 
 - **Nx 22.5** monorepo, **Angular 21.1**, **Tailwind CSS v4**, **TypeScript 5.9**
 - Test runner: **Vitest** (via `@angular/build:unit-test` and `@nx/angular:unit-test`)
@@ -37,7 +37,7 @@ npx nx serve showcase
 npm install --legacy-peer-deps
 
 # Generate a new library
-npx nx generate @nx/angular:library libs/[name] --name=[name] --importPath=@nxp/[name] --publishable --buildable
+npx nx generate @nx/angular:library libs/[name] --name=[name] --importPath=@ngxpro/[name] --publishable --buildable
 
 # Reset Nx daemon (if it doesn't detect new projects)
 npx nx reset
@@ -47,21 +47,23 @@ npx nx reset
 
 Four library packages under `libs/`, each built with `ng-packagr`:
 
-| Package | Import | Purpose |
-|---------|--------|---------|
-| `@nxp/cdk` | `libs/cdk/` | Low-level utilities, directives, tokens, observables, portals (dropdown, dialog, modal, popup), classes (control, driver, vehicle) |
-| `@nxp/core` | `libs/core/` | Foundation services (ThemeService, BreakpointService, FormatService), pipes (amount, currency, number, relative-time), tokens |
-| `@nxp/components` | `libs/components/` | 30+ UI components via **secondary entry points** (e.g., `@nxp/components/accordion`) |
-| `@nxp/blocks` | `libs/blocks/` | Higher-level composed blocks (charts, kpi-cards, tables) |
-| `@nxp/fintech` | `libs/fintech/` | Fintech domain blocks (placeholder) |
+| Package              | Import             | Purpose                                                                                                                            |
+| -------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `@ngxpro/cdk`        | `libs/cdk/`        | Low-level utilities, directives, tokens, observables, portals (dropdown, dialog, modal, popup), classes (control, driver, vehicle) |
+| `@ngxpro/core`       | `libs/core/`       | Foundation services (ThemeService, BreakpointService, FormatService), pipes (amount, currency, number, relative-time), tokens      |
+| `@ngxpro/components` | `libs/components/` | 30+ UI components via **secondary entry points** (e.g., `@ngxpro/components/accordion`)                                            |
+| `@ngxpro/blocks`     | `libs/blocks/`     | Higher-level composed blocks (charts, kpi-cards, tables)                                                                           |
+| `@ngxpro/fintech`    | `libs/fintech/`    | Fintech domain blocks (placeholder)                                                                                                |
 
 **Showcase app** at `apps/showcase/` — Angular app with lazy-loaded demo pages for each component.
 
 ### Dependency order
+
 `cdk` ← `core` ← `components` ← `blocks` ← `fintech`
 
 ### Secondary Entry Points
-Components use secondary entry points via `ng-package.json` files in subdirectories. Each component lives in `libs/components/[name]/` with its own `ng-package.json` and `src/index.ts`. Import as `@nxp/components/accordion`, not from the barrel.
+
+Components use secondary entry points via `ng-package.json` files in subdirectories. Each component lives in `libs/components/[name]/` with its own `ng-package.json` and `src/index.ts`. Import as `@ngxpro/components/accordion`, not from the barrel.
 
 CDK also has secondary entry points under `libs/cdk/src/lib/components/` (icon, copy, link, checkbox, radio, textfield, label, input, calendar, root, notification, dropdown).
 
@@ -82,12 +84,15 @@ All components follow these conventions:
 - **Prefix**: all selectors use `nxp` prefix
 
 ### Textfield System
+
 Three-part composition using DI tokens (`NXP_TEXTFIELD`, `NXP_LABEL`, `NXP_TEXTFIELD_ACCESSOR`):
+
 - `NxpTextfieldComponent` — wrapper with border/focus/error states
 - `NxpLabelDirective` — floating label when inside textfield
 - `NxpInputDirective` — transparent input inside textfield
 
 ### Portal System (CDK)
+
 Dropdown, dialog, modal, and popup portals live in `libs/cdk/src/lib/portals/`. These handle overlay positioning, focus trapping, close-on-escape, and click-outside behavior.
 
 ## Styling
@@ -95,7 +100,7 @@ Dropdown, dialog, modal, and popup portals live in `libs/cdk/src/lib/portals/`. 
 - **Tailwind v4** — uses `@use 'tailwindcss'` syntax (not v3's `@tailwind` directives)
 - PostCSS configured via `.postcssrc.json` with `@tailwindcss/postcss`
 - Dark mode: class-based (`dark:` prefix)
-- Focus styles: reusable constants `focusRing`, `focusInput`, `hasErrorInput` from `@nxp/cdk`
+- Focus styles: reusable constants `focusRing`, `focusInput`, `hasErrorInput` from `@ngxpro/cdk`
 - SVG loader configured in showcase: `"loader": { ".svg": "text" }`
 
 ## CI

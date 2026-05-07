@@ -58,8 +58,48 @@
     }
   },
   "release": {
+    "projects": ["cdk", "core", "components", "blocks", "fintech"],
+    "projectsRelationship": "fixed",
+    "releaseTag": {
+      "pattern": "v{version}"
+    },
     "version": {
-      "preVersionCommand": "npx nx run-many -t build"
+      "preVersionCommand": "npx nx run-many -t build --parallel=3 -p cdk,core,components,blocks,fintech",
+      "specifierSource": "conventional-commits",
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk",
+      "manifestRootsToUpdate": ["{projectRoot}", "dist/{projectRoot}"]
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github",
+        "file": "CHANGELOG.md"
+      },
+      "projectChangelogs": false,
+      "automaticFromRef": true
+    },
+    "conventionalCommits": {
+      "types": {
+        "feat": { "semverBump": "minor", "changelog": { "title": "Features" } },
+        "fix": { "semverBump": "patch", "changelog": { "title": "Bug Fixes" } },
+        "perf": {
+          "semverBump": "patch",
+          "changelog": { "title": "Performance" }
+        },
+        "refactor": {
+          "semverBump": "patch",
+          "changelog": { "title": "Refactors" }
+        },
+        "docs": {
+          "semverBump": "none",
+          "changelog": { "title": "Documentation" }
+        },
+        "build": { "semverBump": "none", "changelog": false },
+        "ci": { "semverBump": "none", "changelog": false },
+        "chore": { "semverBump": "none", "changelog": false },
+        "test": { "semverBump": "none", "changelog": false },
+        "style": { "semverBump": "none", "changelog": false }
+      }
     }
   }
 }

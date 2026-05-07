@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { NXP_DOCUMENT } from '@nxp/cdk';
+import { NXP_DOCUMENT } from '@ngxpro/cdk';
 
 export type NgxproTheme = 'light' | 'dark' | 'system';
 

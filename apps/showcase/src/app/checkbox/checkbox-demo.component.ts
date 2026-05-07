@@ -11,7 +11,7 @@ import {
   NxpCheckbox,
   type NxpCheckboxColor,
   type NxpCheckboxSize,
-} from '@nxp/cdk/components/checkbox';
+} from '@ngxpro/cdk/components/checkbox';
 
 @Component({
   selector: 'app-checkbox-demo',

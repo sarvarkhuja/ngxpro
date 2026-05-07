@@ -7,7 +7,10 @@ import { BehaviorSubject } from 'rxjs';
  * Extends BehaviorSubject<boolean> and Observable<boolean>.
  */
 @Injectable()
-export class NxpDropdownDriver extends BehaviorSubject<boolean> implements NxpDriver {
+export class NxpDropdownDriver
+  extends BehaviorSubject<boolean>
+  implements NxpDriver
+{
   public readonly type = 'dropdown';
   constructor() {
     super(false);

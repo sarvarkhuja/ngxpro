@@ -1,10 +1,5 @@
-import {
-  Directive,
-  computed,
-  inject,
-  input,
-} from '@angular/core';
-import { cx } from '@nxp/cdk';
+import { Directive, computed, inject, input } from '@angular/core';
+import { cx } from '@ngxpro/cdk';
 import {
   NXP_BADGE_COLORS,
   NXP_BADGE_OPTIONS,
@@ -67,9 +62,9 @@ export class NxpBadgeDirective {
     const isDot = this.variant() === 'dot';
 
     return cx(
-      'inline-flex items-center font-medium rounded-md select-none whitespace-nowrap',
+      'inline-flex items-center font-medium rounded-s select-none whitespace-nowrap',
       SIZE_CLASSES[this.size()],
-      isDot && 'border border-gray-200 text-gray-700 dark:border-gray-700/80 dark:text-gray-300',
+      isDot && 'border border-border-normal text-text-secondary',
       this.class(),
     );
   });

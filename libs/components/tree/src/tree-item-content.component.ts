@@ -4,7 +4,7 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { cx } from '@nxp/cdk';
+import { cx } from '@ngxpro/cdk';
 import { NxpTreeItemComponent } from './tree-item.component';
 import { NXP_TREE_LEVEL } from './tree.tokens';
 
@@ -20,10 +20,7 @@ import { NXP_TREE_LEVEL } from './tree.tokens';
 @Component({
   selector: 'nxp-tree-item-content',
   template: `
-    <div
-      [class]="rowClasses"
-      [style.padding-left.px]="indentPx()"
-    >
+    <div [class]="rowClasses" [style.padding-left.px]="indentPx()">
       @if (item.expandable()) {
         <button
           type="button"
@@ -48,7 +45,7 @@ import { NXP_TREE_LEVEL } from './tree.tokens';
       } @else {
         <span class="size-5 shrink-0"></span>
       }
-      <span class="flex-1 truncate text-sm text-gray-900 dark:text-gray-50">
+      <span class="flex-1 truncate text-sm text-text-primary">
         <ng-content />
       </span>
     </div>
@@ -66,22 +63,22 @@ export class NxpTreeItemContentComponent {
   readonly indentPx = computed(() => Math.max(0, this.level) * 16 + 4);
 
   readonly rowClasses = cx(
-    'group flex cursor-pointer select-none items-center gap-1 rounded-md py-1 pr-2',
-    'text-gray-700 dark:text-gray-300',
-    'hover:bg-gray-100 dark:hover:bg-gray-800',
-    'focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-1',
+    'group flex cursor-pointer select-none items-center gap-1 rounded-s py-1 pr-2',
+    'text-text-secondary',
+    'hover:bg-bg-neutral-1',
+    'focus-within:ring-1 focus-within:ring-border-focus focus-within:ring-offset-1',
   );
 
   readonly toggleClasses = cx(
-    'flex shrink-0 items-center justify-center rounded',
-    'size-5 text-gray-400 dark:text-gray-500',
-    'hover:text-gray-600 dark:hover:text-gray-300',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+    'flex shrink-0 items-center justify-center rounded-xs',
+    'size-5 text-text-tertiary',
+    'hover:text-text-primary',
+    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
   );
 
   readonly chevronClasses = () =>
     cx(
-      'size-4 shrink-0 transition-transform duration-150 ease-[cubic-bezier(0.87,0,0.13,1)]',
+      'size-4 shrink-0 transition-transform duration-normal ease-[cubic-bezier(0.87,0,0.13,1)]',
       this.item.expanded() && 'rotate-90',
     );
 }

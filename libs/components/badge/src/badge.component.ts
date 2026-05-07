@@ -1,18 +1,16 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NxpBadgeDirective } from './badge.directive';
 
 @Component({
   selector: 'nxp-badge',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  hostDirectives: [{
-    directive: NxpBadgeDirective,
-    inputs: ['variant', 'size', 'color', 'class'],
-  }],
+  hostDirectives: [
+    {
+      directive: NxpBadgeDirective,
+      inputs: ['variant', 'size', 'color', 'class'],
+    },
+  ],
   template: `
     @if (badge.variant() === 'dot') {
       <span

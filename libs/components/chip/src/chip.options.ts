@@ -1,6 +1,6 @@
-import { nxpCreateOptions } from '@nxp/cdk';
+import { nxpCreateOptions } from '@ngxpro/cdk';
 
-export type NxpChipSize = 'xs' | 's' | 'm';
+export type NxpChipSize = 'sm' | 'md' | 'lg';
 export type NxpChipAppearance =
   | 'neutral'
   | 'primary'
@@ -15,4 +15,4 @@ export interface NxpChipOptions {
 }
 
 export const [NXP_CHIP_OPTIONS, nxpChipOptionsProvider] =
-  nxpCreateOptions<NxpChipOptions>({ size: 's', appearance: 'neutral' });
+  nxpCreateOptions<NxpChipOptions>({ size: 'md', appearance: 'neutral' });

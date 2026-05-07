@@ -86,19 +86,19 @@ export abstract class NxpAnimatedProximityBase {
   /** Rect of the active item, or null. */
   protected readonly activeRect = computed<NxpItemRect | null>(() => {
     const idx = this.activeIdx();
-    return idx === null ? null : this.itemRects()[idx] ?? null;
+    return idx === null ? null : (this.itemRects()[idx] ?? null);
   });
 
   /** Rect of the hovered item, or null. */
   protected readonly hoverRect = computed<NxpItemRect | null>(() => {
     const idx = this.hoveredIndex();
-    return idx === null ? null : this.itemRects()[idx] ?? null;
+    return idx === null ? null : (this.itemRects()[idx] ?? null);
   });
 
   /** Rect of the focused item, or null. */
   protected readonly focusRect = computed<NxpItemRect | null>(() => {
     const idx = this.focusedIndex();
-    return idx === null ? null : this.itemRects()[idx] ?? null;
+    return idx === null ? null : (this.itemRects()[idx] ?? null);
   });
 
   /** True when hovering an item that is not the active one. */
@@ -165,7 +165,13 @@ export abstract class NxpAnimatedProximityBase {
     this.rafId = requestAnimationFrame(() => {
       this.rafId = null;
       this.hoveredIndex.set(
-        nxpFindProximityIndex(this.hostEl, this.itemRects(), clientX, clientY, this.axis),
+        nxpFindProximityIndex(
+          this.hostEl,
+          this.itemRects(),
+          clientX,
+          clientY,
+          this.axis,
+        ),
       );
     });
   }

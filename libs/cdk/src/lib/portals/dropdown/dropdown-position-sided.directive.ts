@@ -1,5 +1,8 @@
 import { Directive, inject, input } from '@angular/core';
-import { nxpAsPositionAccessor, NxpPositionAccessor } from '../../classes/accessors';
+import {
+  nxpAsPositionAccessor,
+  NxpPositionAccessor,
+} from '../../classes/accessors';
 import { NXP_VIEWPORT } from '../../tokens';
 import { EMPTY_CLIENT_RECT } from '../../constants';
 import type { NxpPoint } from '../../types';
@@ -12,7 +15,10 @@ import { NxpDropdownPosition } from './dropdown-position.directive';
  */
 @Directive({
   selector: '[nxpDropdownSided]',
-  providers: [NxpDropdownPosition, nxpAsPositionAccessor(NxpDropdownPositionSided)],
+  providers: [
+    NxpDropdownPosition,
+    nxpAsPositionAccessor(NxpDropdownPositionSided),
+  ],
 })
 export class NxpDropdownPositionSided extends NxpPositionAccessor {
   private readonly options = inject(NXP_DROPDOWN_OPTIONS);
@@ -25,10 +31,12 @@ export class NxpDropdownPositionSided extends NxpPositionAccessor {
   public readonly type = 'dropdown';
 
   public getPosition(rect: DOMRect): NxpPoint {
-    if (this.nxpDropdownSided() === false) return this.vertical.getPosition(rect);
+    if (this.nxpDropdownSided() === false)
+      return this.vertical.getPosition(rect);
 
     const { height, width } = rect;
-    const hostRect = this.vertical.accessor?.getClientRect() ?? EMPTY_CLIENT_RECT;
+    const hostRect =
+      this.vertical.accessor?.getClientRect() ?? EMPTY_CLIENT_RECT;
     const viewport = this.viewport.getClientRect();
     const { direction, offset } = this.options;
     const adjusted = this.vertical.getAlign(this.options.align);
@@ -46,10 +54,14 @@ export class NxpDropdownPositionSided extends NxpPositionAccessor {
       bottom: hostRect.top - this.nxpDropdownSidedOffset() - 1,
     } as const;
     const better = available.top > available.bottom ? 'top' : 'bottom';
-    const maxLeft = available.left > available.right ? position.left : position.right;
+    const maxLeft =
+      available.left > available.right ? position.left : position.right;
     const left = available[align] > width ? position[align] : maxLeft;
 
-    if ((available[this.previous] > height && direction) || this.previous === better) {
+    if (
+      (available[this.previous] > height && direction) ||
+      this.previous === better
+    ) {
       this.vertical.direction.next(this.previous);
       return [left, position[this.previous]];
     }

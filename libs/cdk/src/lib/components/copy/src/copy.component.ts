@@ -21,10 +21,8 @@ import { NXP_COPY_OPTIONS } from './copy.options';
 const copyVariants = tv({
   base: [
     'group relative inline-flex items-center gap-2 max-w-full min-w-0',
-    'rounded-md border border-gray-200 bg-gray-50 px-3',
-    'dark:border-gray-800 dark:bg-gray-900',
+    'rounded-m border border-border-normal bg-bg-neutral-1 px-3',
     'cursor-pointer',
-    // Fade-mask at the right edge so long content visually gives way to the action icon.
     '[mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)]',
   ],
   variants: {
@@ -39,7 +37,9 @@ const copyVariants = tv({
   },
 });
 
-export type NxpCopySize = NonNullable<VariantProps<typeof copyVariants>['size']>;
+export type NxpCopySize = NonNullable<
+  VariantProps<typeof copyVariants>['size']
+>;
 
 /**
  * Copyable value pill with click-to-copy behavior.
@@ -50,7 +50,7 @@ export type NxpCopySize = NonNullable<VariantProps<typeof copyVariants>['size']>
  * `NXP_COPY_OPTIONS.successTimeout` ms after a successful copy.
  *
  * TODO: swap the inline feedback overlay for `NxpHintDirective` once a
- * hint primitive lands in `@nxp/cdk`.
+ * hint primitive lands in `@ngxpro/cdk`.
  *
  * @example
  * <nxp-copy>api-key-1234</nxp-copy>
@@ -62,7 +62,7 @@ export type NxpCopySize = NonNullable<VariantProps<typeof copyVariants>['size']>
     <span #content class="min-w-0 truncate"><ng-content /></span>
     <button
       type="button"
-      class="nxp-copy__btn absolute right-1 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded p-1 text-gray-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-visible:opacity-100 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+      class="nxp-copy__btn absolute right-1 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-xs p-1 text-text-tertiary opacity-0 transition-opacity duration-normal group-hover:opacity-100 focus-visible:opacity-100 hover:text-text-primary"
       [attr.aria-label]="copied() ? 'Copied' : 'Copy'"
       (click)="copy($event); $event.stopPropagation()"
     >
@@ -82,7 +82,7 @@ export type NxpCopySize = NonNullable<VariantProps<typeof copyVariants>['size']>
     </button>
     @if (copied()) {
       <span
-        class="nxp-copy__feedback absolute inset-x-0 bottom-full mb-1 text-center text-xs text-emerald-600 dark:text-emerald-400"
+        class="nxp-copy__feedback absolute inset-x-0 bottom-full mb-1 text-center text-xs text-status-positive"
         aria-live="polite"
       >
         Copied
@@ -103,8 +103,7 @@ export class NxpCopyComponent implements OnDestroy {
   /** Normalized size to align with `NxpTextfieldSize` (`sm | md | lg`). */
   readonly size = input<NxpCopySize>('md');
 
-  protected readonly contentRef =
-    viewChild<ElementRef<HTMLElement>>('content');
+  protected readonly contentRef = viewChild<ElementRef<HTMLElement>>('content');
   protected readonly copied = signal(false);
 
   private timeoutId: ReturnType<typeof setTimeout> | null = null;

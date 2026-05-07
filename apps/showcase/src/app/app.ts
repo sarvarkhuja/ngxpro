@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
-import { NxpRootComponent } from '@nxp/cdk/components/root';
-import { NxpNavComponent, NxpNavItemDirective } from '@nxp/components/menu';
+import { NxpRootComponent } from '@ngxpro/cdk/components/root';
+import { NxpNavComponent, NxpNavItemDirective } from '@ngxpro/components/menu';
 import { ThemeSwitcherComponent } from './components/theme-switcher.component';
 
 interface NavItem {

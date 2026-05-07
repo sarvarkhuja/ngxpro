@@ -310,7 +310,7 @@ To use these examples in your application:
 1. Import the directives:
 
 ```typescript
-import { CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective } from '@nxp/cdk';
+import { CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective } from '@ngxpro/cdk';
 ```
 
 2. Add to your component's imports:

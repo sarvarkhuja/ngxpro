@@ -77,13 +77,17 @@ export function nxpRectAccessorFor(
 /**
  * Creates an ExistingProvider that registers a class as a NxpPositionAccessor.
  */
-export function nxpAsPositionAccessor(accessor: Type<NxpPositionAccessor>): ExistingProvider {
+export function nxpAsPositionAccessor(
+  accessor: Type<NxpPositionAccessor>,
+): ExistingProvider {
   return nxpProvide(NxpPositionAccessor, accessor, true);
 }
 
 /**
  * Creates an ExistingProvider that registers a class as a NxpRectAccessor.
  */
-export function nxpAsRectAccessor(accessor: Type<NxpRectAccessor>): ExistingProvider {
+export function nxpAsRectAccessor(
+  accessor: Type<NxpRectAccessor>,
+): ExistingProvider {
   return nxpProvide(NxpRectAccessor, accessor, true);
 }

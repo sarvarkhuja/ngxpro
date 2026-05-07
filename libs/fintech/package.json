@@ -1,6 +1,26 @@
 {
-  "name": "@nxp/fintech",
+  "name": "@ngxpro/fintech",
   "version": "0.0.1",
+  "description": "Fintech-domain blocks built on top of @ngxpro/blocks.",
+  "license": "MIT",
+  "homepage": "https://github.com/SarvarkhujaMurodov/ngxpro#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro.git",
+    "directory": "libs/fintech"
+  },
+  "bugs": {
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro/issues"
+  },
+  "keywords": [
+    "angular",
+    "ngxpro",
+    "fintech"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "peerDependencies": {
     "@angular/common": "^21.1.0",
     "@angular/core": "^21.1.0"

@@ -8,24 +8,20 @@ import {
   input,
   signal,
   viewChild,
-  viewChildren,
-  type QueryList,
 } from '@angular/core';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import {
+  type ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  FormsModule,
+} from '@angular/forms';
 import {
   cx,
   nxpSanitizeText,
   nxpGetClipboardDataText,
-  nxpInjectElement,
-  focusInput,
   NXP_ITEMS_HANDLERS,
   type NxpItemsHandlers,
-} from '@nxp/cdk';
-import {
-  NXP_TEXTFIELD,
-  type NxpTextfieldComponent,
-} from '@nxp/cdk/components/textfield';
-import type { NxpChipSize } from '@nxp/components/chip';
+} from '@ngxpro/cdk';
+import type { NxpChipSize } from '@ngxpro/components/chip';
 import { NxpInputChipItemComponent } from './input-chip-item.component';
 import { NXP_INPUT_CHIP_OPTIONS } from './input-chip.options';
 
@@ -49,7 +45,7 @@ import { NXP_INPUT_CHIP_OPTIONS } from './input-chip.options';
       }
       <input
         #nativeInput
-        class="min-w-[4rem] flex-1 bg-transparent outline-none text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 disabled:cursor-not-allowed"
+        class="min-w-[4rem] flex-1 bg-transparent outline-none text-sm text-text-primary placeholder:text-text-tertiary disabled:cursor-not-allowed"
         [disabled]="disabled()"
         [placeholder]="value().length ? '' : placeholder()"
         [ngModel]="inputValue()"
@@ -80,12 +76,11 @@ import { NXP_INPUT_CHIP_OPTIONS } from './input-chip.options';
 })
 export class NxpInputChipComponent<T = string> implements ControlValueAccessor {
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly el = nxpInjectElement();
   private readonly options = inject(NXP_INPUT_CHIP_OPTIONS);
   private readonly handlers = inject<NxpItemsHandlers<T>>(NXP_ITEMS_HANDLERS);
-  private readonly textfield = inject(NXP_TEXTFIELD, { optional: true });
 
-  private readonly nativeInputRef = viewChild<ElementRef<HTMLInputElement>>('nativeInput');
+  private readonly nativeInputRef =
+    viewChild<ElementRef<HTMLInputElement>>('nativeInput');
 
   /** Separator used to split typed text into multiple chips. */
   readonly separator = input<RegExp | string>(this.options.separator);
@@ -94,7 +89,7 @@ export class NxpInputChipComponent<T = string> implements ControlValueAccessor {
   /** Placeholder text shown when no chips exist. */
   readonly placeholder = input('');
   /** Chip size variant. */
-  readonly chipSize = input<NxpChipSize>('s');
+  readonly chipSize = input<NxpChipSize>('md');
   /** Additional host CSS classes. */
   readonly class = input('');
 
@@ -104,16 +99,20 @@ export class NxpInputChipComponent<T = string> implements ControlValueAccessor {
   readonly focused = signal(false);
   readonly disabled = signal(false);
 
-  private onChange: (value: T[]) => void = () => {};
-  private onTouched: () => void = () => {};
+  private onChange: (value: T[]) => void = () => {
+    /*noop*/
+  };
+  private onTouched: () => void = () => {
+    /*noop*/
+  };
 
   readonly hostClasses = computed(() =>
     cx(
-      'relative flex flex-wrap rounded-md border transition-colors duration-150 cursor-text',
-      'bg-white dark:bg-gray-950',
-      'border-gray-300 dark:border-gray-800',
+      'relative flex flex-wrap rounded-m border transition-colors duration-normal cursor-text',
+      'bg-bg-base',
+      'border-border-normal',
       this.focused() && 'ring-2 ring-primary/30 border-primary',
-      this.disabled() && 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-gray-900',
+      this.disabled() && 'opacity-50 cursor-not-allowed bg-bg-neutral-1',
       this.class(),
     ),
   );
@@ -172,9 +171,10 @@ export class NxpInputChipComponent<T = string> implements ControlValueAccessor {
     const raw = rawValue ?? this.inputValue();
     if (!raw.trim()) return;
 
-    const items = typeof this.separator() === 'string'
-      ? raw.split(this.separator() as string)
-      : raw.split(this.separator() as RegExp);
+    const items =
+      typeof this.separator() === 'string'
+        ? raw.split(this.separator() as string)
+        : raw.split(this.separator() as RegExp);
 
     const valid = items
       .map((item) => nxpSanitizeText(item) as unknown as T)
@@ -249,8 +249,11 @@ export class NxpInputChipComponent<T = string> implements ControlValueAccessor {
 
   private setValue(items: T[]): void {
     const result = this.unique()
-      ? items.filter((item, i, arr) =>
-          arr.findIndex((other) => this.handlers.identityMatcher()(item, other)) === i,
+      ? items.filter(
+          (item, i, arr) =>
+            arr.findIndex((other) =>
+              this.handlers.identityMatcher()(item, other),
+            ) === i,
         )
       : items;
     this.value.set(result);

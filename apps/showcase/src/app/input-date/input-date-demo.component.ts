@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { InputDateComponent } from '@nxp/components/input-date';
+import { InputDateComponent } from '@ngxpro/components/input-date';
 import type {
   DisabledHandler,
   MarkerHandler,
-} from '@nxp/components/calendar';
+} from '@ngxpro/components/calendar';
 
 @Component({
   selector: 'app-input-date-demo',
@@ -123,9 +123,7 @@ import type {
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
                 <code class="font-mono">{{
-                  boundedDate()
-                    ? boundedDate()!.toLocaleDateString()
-                    : 'null'
+                  boundedDate() ? boundedDate()!.toLocaleDateString() : 'null'
                 }}</code>
               </p>
             </div>
@@ -148,9 +146,7 @@ import type {
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
                 <code class="font-mono">{{
-                  weekdayDate()
-                    ? weekdayDate()!.toLocaleDateString()
-                    : 'null'
+                  weekdayDate() ? weekdayDate()!.toLocaleDateString() : 'null'
                 }}</code>
               </p>
             </div>
@@ -198,9 +194,7 @@ import type {
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
                 <code class="font-mono">{{
-                  markerDate()
-                    ? markerDate()!.toLocaleDateString()
-                    : 'null'
+                  markerDate() ? markerDate()!.toLocaleDateString() : 'null'
                 }}</code>
               </p>
             </div>
@@ -222,9 +216,7 @@ import type {
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Value:
                 <code class="font-mono">{{
-                  sundayDate()
-                    ? sundayDate()!.toLocaleDateString()
-                    : 'null'
+                  sundayDate() ? sundayDate()!.toLocaleDateString() : 'null'
                 }}</code>
               </p>
             </div>
@@ -317,7 +309,9 @@ import type {
                   <td class="px-4 py-2 font-mono">disabledHandler</td>
                   <td class="px-4 py-2 font-mono">DisabledHandler | null</td>
                   <td class="px-4 py-2 font-mono">null</td>
-                  <td class="px-4 py-2">Callback to disable individual dates</td>
+                  <td class="px-4 py-2">
+                    Callback to disable individual dates
+                  </td>
                 </tr>
                 <tr>
                   <td class="px-4 py-2 font-mono">markerHandler</td>

@@ -21,7 +21,14 @@ function nxpPointToClientRect(x: number, y: number): DOMRect {
     x,
     y,
     toJSON: () =>
-      JSON.stringify({ top: y, left: x, bottom: y, right: x, width: 0, height: 0 }),
+      JSON.stringify({
+        top: y,
+        left: x,
+        bottom: y,
+        right: x,
+        width: 0,
+        height: 0,
+      }),
   };
 }
 
@@ -52,7 +59,9 @@ export class NxpDropdownContext extends NxpRectAccessor {
 
   protected readonly sub = merge(
     nxpTypedFromEvent(this.doc, 'pointerdown'),
-    nxpTypedFromEvent(this.doc, 'keydown').pipe(filter(({ key }) => key === 'Escape')),
+    nxpTypedFromEvent(this.doc, 'keydown').pipe(
+      filter(({ key }) => key === 'Escape'),
+    ),
     nxpTypedFromEvent(this.doc, 'contextmenu', { capture: true }),
   )
     .pipe(

@@ -146,10 +146,7 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
         </div>
 
         <!-- Fill (z-3) -->
-        <div
-          class="nxp-sc-pips-fill"
-          [style.width]="pipsFillWidth()"
-        ></div>
+        <div class="nxp-sc-pips-fill" [style.width]="pipsFillWidth()"></div>
 
         <!-- Handle line (z-3) -->
         <div
@@ -249,8 +246,14 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
       animation: nxp-sc-fade-in 100ms ease forwards;
     }
     @keyframes nxp-sc-fade-in {
-      from { opacity: 0; transform: translateX(-50%) translateY(4px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
     }
     .nxp-sc-tooltip-label {
       font-size: 12px;
@@ -274,11 +277,19 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
       bottom: 0;
       pointer-events: none;
       z-index: 3;
-      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 8%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(17 24 39)) 8%,
+        transparent
+      );
       transition: opacity 150ms linear;
     }
     :host-context(.dark) .nxp-sc-hover-preview {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 8%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(243 244 246)) 8%,
+        transparent
+      );
     }
 
     /* --- Container --- */
@@ -306,7 +317,7 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
       padding: 0 16px;
     }
     .nxp-sc-container.nxp-sc-focused {
-      outline-color: #6B97FF;
+      outline-color: #6b97ff;
     }
     .nxp-sc-container.nxp-sc-disabled {
       opacity: 0.5;
@@ -333,24 +344,41 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
       z-index: 3;
       top: 8px;
       bottom: 8px;
-      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 25%, transparent);
-      transition: top 80ms cubic-bezier(0.22, 1, 0.36, 1),
-                  bottom 80ms cubic-bezier(0.22, 1, 0.36, 1),
-                  background-color 80ms cubic-bezier(0.22, 1, 0.36, 1),
-                  left 80ms cubic-bezier(0.22, 1, 0.36, 1);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(17 24 39)) 25%,
+        transparent
+      );
+      transition:
+        top 80ms cubic-bezier(0.22, 1, 0.36, 1),
+        bottom 80ms cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 80ms cubic-bezier(0.22, 1, 0.36, 1),
+        left 80ms cubic-bezier(0.22, 1, 0.36, 1);
     }
     :host-context(.dark) .nxp-sc-handle-line {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 25%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(243 244 246)) 25%,
+        transparent
+      );
     }
     .nxp-sc-handle-active {
       top: 7px;
       bottom: 7px;
     }
     .nxp-sc-handle-hovered {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 50%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(17 24 39)) 50%,
+        transparent
+      );
     }
     :host-context(.dark) .nxp-sc-handle-hovered {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 50%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(243 244 246)) 50%,
+        transparent
+      );
     }
     .nxp-sc-handle-focused {
       background: var(--nxp-fg, rgb(17 24 39)) !important;
@@ -387,7 +415,9 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
       border-radius: 9999px;
       background: var(--nxp-muted-fg, rgb(156 163 175));
       opacity: 0.3;
-      transition: background-color 80ms ease, opacity 80ms ease;
+      transition:
+        background-color 80ms ease,
+        opacity 80ms ease;
     }
     .nxp-sc-pip-dot-active {
       background: var(--nxp-fg, rgb(17 24 39));
@@ -433,11 +463,19 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
       bottom: 0;
       pointer-events: none;
       z-index: 3;
-      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 8%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(17 24 39)) 8%,
+        transparent
+      );
       transition: width 80ms cubic-bezier(0.22, 1, 0.36, 1);
     }
     :host-context(.dark) .nxp-sc-pips-fill {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 8%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(243 244 246)) 8%,
+        transparent
+      );
     }
 
     /* --- PIPS: text layer --- */
@@ -479,11 +517,19 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
       top: 0;
       bottom: 0;
       pointer-events: none;
-      background: color-mix(in srgb, var(--nxp-fg, rgb(17 24 39)) 8%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(17 24 39)) 8%,
+        transparent
+      );
       transition: width 80ms cubic-bezier(0.22, 1, 0.36, 1);
     }
     :host-context(.dark) .nxp-sc-scrubber-fill {
-      background: color-mix(in srgb, var(--nxp-fg, rgb(243 244 246)) 8%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-fg, rgb(243 244 246)) 8%,
+        transparent
+      );
     }
 
     /* --- SCRUBBER: label + value --- */
@@ -523,35 +569,67 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
 
     /* --- Theme color mode --- */
     :host.nxp-slider-themed .nxp-sc-pips-fill {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 15%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 15%,
+        transparent
+      );
     }
     :host-context(.dark):host.nxp-slider-themed .nxp-sc-pips-fill,
     :host.nxp-slider-themed:host-context(.dark) .nxp-sc-pips-fill {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 20%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 20%,
+        transparent
+      );
     }
     :host.nxp-slider-themed .nxp-sc-scrubber-fill {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 15%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 15%,
+        transparent
+      );
     }
     :host-context(.dark):host.nxp-slider-themed .nxp-sc-scrubber-fill,
     :host.nxp-slider-themed:host-context(.dark) .nxp-sc-scrubber-fill {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 20%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 20%,
+        transparent
+      );
     }
     :host.nxp-slider-themed .nxp-sc-handle-line {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 40%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 40%,
+        transparent
+      );
     }
     :host.nxp-slider-themed .nxp-sc-handle-hovered {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 60%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 60%,
+        transparent
+      );
     }
     :host.nxp-slider-themed .nxp-sc-handle-focused {
       background: var(--nxp-primary, #3b82f6) !important;
     }
     :host-context(.dark):host.nxp-slider-themed .nxp-sc-handle-line,
     :host.nxp-slider-themed:host-context(.dark) .nxp-sc-handle-line {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 40%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 40%,
+        transparent
+      );
     }
     :host-context(.dark):host.nxp-slider-themed .nxp-sc-handle-hovered,
     :host.nxp-slider-themed:host-context(.dark) .nxp-sc-handle-hovered {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 60%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 60%,
+        transparent
+      );
     }
     :host-context(.dark):host.nxp-slider-themed .nxp-sc-handle-focused,
     :host.nxp-slider-themed:host-context(.dark) .nxp-sc-handle-focused {
@@ -565,17 +643,29 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
       background: var(--nxp-primary, #3b82f6);
     }
     :host.nxp-slider-themed .nxp-sc-container {
-      border-color: color-mix(in srgb, var(--nxp-primary, #3b82f6) 30%, var(--nxp-border, rgb(229 231 235)));
+      border-color: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 30%,
+        var(--nxp-border, rgb(229 231 235))
+      );
     }
     :host.nxp-slider-themed .nxp-sc-container.nxp-sc-focused {
       outline-color: var(--nxp-primary, #3b82f6);
     }
     :host.nxp-slider-themed .nxp-sc-hover-preview {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 10%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 10%,
+        transparent
+      );
     }
     :host-context(.dark):host.nxp-slider-themed .nxp-sc-hover-preview,
     :host.nxp-slider-themed:host-context(.dark) .nxp-sc-hover-preview {
-      background: color-mix(in srgb, var(--nxp-primary, #3b82f6) 12%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--nxp-primary, #3b82f6) 12%,
+        transparent
+      );
     }
     :host.nxp-slider-themed .nxp-sc-tooltip-label {
       background: var(--nxp-primary, #3b82f6);
@@ -605,7 +695,10 @@ export class NxpSliderComfortableComponent implements ControlValueAccessor {
   readonly step = input(1);
   readonly variant = input<NxpSliderComfortableVariant>('pips');
   readonly label = input<string | undefined>(undefined);
-  readonly formatValueFn = input<(v: number) => string>((v: number) => String(v), { alias: 'formatValue' });
+  readonly formatValueFn = input<(v: number) => string>(
+    (v: number) => String(v),
+    { alias: 'formatValue' },
+  );
   readonly disabled = input(false);
   /** When true, use the theme primary color (`--nxp-primary`) instead of neutral gray. */
   readonly themeColor = input(false);
@@ -620,8 +713,10 @@ export class NxpSliderComfortableComponent implements ControlValueAccessor {
   // View children
   // ---------------------------------------------------------------------------
 
-  private readonly containerElRef = viewChild<ElementRef<HTMLDivElement>>('containerEl');
-  private readonly nativeInputRef = viewChild<ElementRef<HTMLInputElement>>('nativeInput');
+  private readonly containerElRef =
+    viewChild<ElementRef<HTMLDivElement>>('containerEl');
+  private readonly nativeInputRef =
+    viewChild<ElementRef<HTMLInputElement>>('nativeInput');
 
   // ---------------------------------------------------------------------------
   // State
@@ -714,7 +809,10 @@ export class NxpSliderComfortableComponent implements ControlValueAccessor {
     effect(() => {
       const hovered = this.isHovered();
       if (hovered) {
-        this.hoverDelayTimer = setTimeout(() => this.showHoverTooltip.set(true), 100);
+        this.hoverDelayTimer = setTimeout(
+          () => this.showHoverTooltip.set(true),
+          100,
+        );
       } else {
         if (this.hoverDelayTimer) clearTimeout(this.hoverDelayTimer);
         this.showHoverTooltip.set(false);
@@ -749,7 +847,7 @@ export class NxpSliderComfortableComponent implements ControlValueAccessor {
     this._onTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean): void {
+  setDisabledState?(_isDisabled: boolean): void {
     // disabled is an input
   }
 
@@ -833,7 +931,13 @@ export class NxpSliderComfortableComponent implements ControlValueAccessor {
     if (this.variant() === 'pips') {
       const pipCount = this.pipSteps().length;
       if (pipCount <= 1) return mn;
-      const index = Math.max(0, Math.min(pipCount - 1, Math.round((clamped / rect.width) * (pipCount - 1))));
+      const index = Math.max(
+        0,
+        Math.min(
+          pipCount - 1,
+          Math.round((clamped / rect.width) * (pipCount - 1)),
+        ),
+      );
       return this.pipSteps()[index];
     } else {
       const raw = mn + (clamped / rect.width) * (mx - mn);
@@ -860,11 +964,17 @@ export class NxpSliderComfortableComponent implements ControlValueAccessor {
     if (this.variant() === 'pips') {
       const pipCount = this.pipSteps().length;
       if (pipCount <= 1) return;
-      const index = Math.max(0, Math.min(pipCount - 1, Math.round((clamped / w) * (pipCount - 1))));
+      const index = Math.max(
+        0,
+        Math.min(pipCount - 1, Math.round((clamped / w) * (pipCount - 1))),
+      );
       snappedVal = this.pipSteps()[index];
     } else {
       const raw = mn + (clamped / w) * (mx - mn);
-      snappedVal = Math.max(mn, Math.min(mx, Math.round((raw - mn) / s) * s + mn));
+      snappedVal = Math.max(
+        mn,
+        Math.min(mx, Math.round((raw - mn) / s) * s + mn),
+      );
     }
 
     const snappedPercent = mx === mn ? 0 : (snappedVal - mn) / (mx - mn);
@@ -883,6 +993,11 @@ export class NxpSliderComfortableComponent implements ControlValueAccessor {
     const left = Math.min(handleX, edgeX);
     const width = Math.abs(edgeX - handleX);
 
-    this.hoverPreview.set({ left, width, snappedValue: snappedVal, cursorX: snappedX });
+    this.hoverPreview.set({
+      left,
+      width,
+      snappedValue: snappedVal,
+      cursorX: snappedX,
+    });
   }
 }

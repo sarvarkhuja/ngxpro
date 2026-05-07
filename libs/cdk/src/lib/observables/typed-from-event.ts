@@ -14,7 +14,10 @@ export function nxpTypedFromEvent<E extends keyof DocumentEventMap>(
   event: E,
   options?: AddEventListenerOptions,
 ): Observable<DocumentEventMap[E]>;
-export function nxpTypedFromEvent<T extends Element, E extends keyof HTMLElementEventMap>(
+export function nxpTypedFromEvent<
+  T extends Element,
+  E extends keyof HTMLElementEventMap,
+>(
   target: T,
   event: E,
   options?: AddEventListenerOptions,

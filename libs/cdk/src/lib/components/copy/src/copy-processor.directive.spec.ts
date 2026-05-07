@@ -8,7 +8,9 @@ import {
 @Component({
   standalone: true,
   imports: [NxpCopyProcessorDirective],
-  template: `<div [nxpCopyProcessor]="transform" data-testid="target">lorem</div>`,
+  template: `<div [nxpCopyProcessor]="transform" data-testid="target">
+    lorem
+  </div>`,
 })
 class HostComponent {
   transform: NxpStringTransformer = (s) => s.toUpperCase();

@@ -4,7 +4,9 @@ import { Directive, InjectionToken } from '@angular/core';
  * Token provided by `NxpTextfieldEndDirective` so `NxpTextfieldComponent`
  * can detect a projected trailing adornment via `contentChild(NXP_TEXTFIELD_END)`.
  */
-export const NXP_TEXTFIELD_END = new InjectionToken<unknown>('NXP_TEXTFIELD_END');
+export const NXP_TEXTFIELD_END = new InjectionToken<unknown>(
+  'NXP_TEXTFIELD_END',
+);
 
 /**
  * Marker directive for projecting an interactive trailing element into

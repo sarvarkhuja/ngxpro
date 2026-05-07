@@ -5,8 +5,8 @@ import {
   DataListComponent,
   OptionDirective,
   OptGroupDirective,
-} from '@nxp/components/data-list';
-import { NxpCheckboxDirective } from '@nxp/cdk/components/checkbox';
+} from '@ngxpro/components/data-list';
+import { NxpCheckboxDirective } from '@ngxpro/cdk/components/checkbox';
 
 // ------------------------------------------------------------------ types
 
@@ -54,7 +54,7 @@ interface Permission {
         <!-- ── Hero ───────────────────────────────────────────────────────── -->
         <div class="space-y-3">
           <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-            @nxp/components/data-list
+            @ngxpro/components/data-list
           </span>
           <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
             DataList
@@ -412,9 +412,21 @@ export class DataListDemoComponent {
 
   readonly permissions: Permission[] = [
     { label: 'Read', description: 'View resources and data', enabled: true },
-    { label: 'Write', description: 'Create and modify resources', enabled: true },
-    { label: 'Delete', description: 'Remove resources permanently', enabled: false },
-    { label: 'Admin', description: 'Full system administration', enabled: false },
+    {
+      label: 'Write',
+      description: 'Create and modify resources',
+      enabled: true,
+    },
+    {
+      label: 'Delete',
+      description: 'Remove resources permanently',
+      enabled: false,
+    },
+    {
+      label: 'Admin',
+      description: 'Full system administration',
+      enabled: false,
+    },
   ];
 
   completedCount = () => this.todos.filter((t) => t.done).length;
@@ -426,27 +438,56 @@ export class DataListDemoComponent {
 
   // ------------------------------------------------------------------ Filter demos
   readonly countries = [
-    'Argentina', 'Australia', 'Brazil', 'Canada', 'China',
-    'France', 'Germany', 'India', 'Italy', 'Japan',
-    'Mexico', 'Netherlands', 'Norway', 'South Korea',
-    'Spain', 'Sweden', 'Switzerland', 'United Kingdom', 'United States',
+    'Argentina',
+    'Australia',
+    'Brazil',
+    'Canada',
+    'China',
+    'France',
+    'Germany',
+    'India',
+    'Italy',
+    'Japan',
+    'Mexico',
+    'Netherlands',
+    'Norway',
+    'South Korea',
+    'Spain',
+    'Sweden',
+    'Switzerland',
+    'United Kingdom',
+    'United States',
   ];
   readonly countryFilter = signal('');
   readonly selectedCountry = signal<string | null>(null);
   readonly filteredCountries = () => {
     const q = this.countryFilter().toLowerCase();
-    return q ? this.countries.filter((c) => c.toLowerCase().includes(q)) : this.countries;
+    return q
+      ? this.countries.filter((c) => c.toLowerCase().includes(q))
+      : this.countries;
   };
 
   readonly languages = [
-    'TypeScript', 'JavaScript', 'Python', 'Rust', 'Go',
-    'Java', 'C#', 'C++', 'Ruby', 'Swift', 'Kotlin', 'Dart',
+    'TypeScript',
+    'JavaScript',
+    'Python',
+    'Rust',
+    'Go',
+    'Java',
+    'C#',
+    'C++',
+    'Ruby',
+    'Swift',
+    'Kotlin',
+    'Dart',
   ];
   readonly langFilter = signal('');
   readonly selectedLangs = signal(new Set<string>());
   readonly filteredLanguages = () => {
     const q = this.langFilter().toLowerCase();
-    return q ? this.languages.filter((l) => l.toLowerCase().includes(q)) : this.languages;
+    return q
+      ? this.languages.filter((l) => l.toLowerCase().includes(q))
+      : this.languages;
   };
   readonly selectedLangsDisplay = () => [...this.selectedLangs()].join(', ');
 

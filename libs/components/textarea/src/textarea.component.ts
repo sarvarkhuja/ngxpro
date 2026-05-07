@@ -1,6 +1,5 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
+  Directive,
   ElementRef,
   OnInit,
   computed,
@@ -15,7 +14,7 @@ import {
   NXP_TEXTFIELD,
   nxpAsTextfieldAccessor,
   type NxpTextfieldAccessor,
-} from '@nxp/cdk';
+} from '@ngxpro/cdk';
 import { NXP_TEXTAREA_OPTIONS } from './textarea.options';
 
 /**
@@ -44,17 +43,15 @@ import { NXP_TEXTAREA_OPTIONS } from './textarea.options';
  * <textarea nxpTextarea [limit]="500" placeholder="Max 500 chars"></textarea>
  * ```
  */
-@Component({
+@Directive({
   selector: 'textarea[nxpTextarea]',
   standalone: true,
-  template: '',
   providers: [nxpAsTextfieldAccessor(NxpTextareaComponent)],
   host: {
     '[class]': 'hostClasses()',
     '[id]': 'inputId()',
     '(input)': 'onInput()',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NxpTextareaComponent implements NxpTextfieldAccessor, OnInit {
   private readonly el = inject(ElementRef<HTMLTextAreaElement>).nativeElement;
@@ -103,10 +100,9 @@ export class NxpTextareaComponent implements NxpTextfieldAccessor, OnInit {
   readonly hostClasses = computed(() => {
     if (this.textfield && !this.textfield.hasLabel()) {
       return cx(
-        // Box-mode textfield (no label): wrapper border/bg; textarea is transparent
         'block w-full bg-transparent border-0 outline-none ring-0',
-        'text-gray-900 dark:text-gray-50 sm:text-sm',
-        'placeholder:text-gray-400 dark:placeholder:text-gray-500',
+        'text-text-primary sm:text-sm',
+        'placeholder:text-text-tertiary',
         'disabled:cursor-not-allowed',
         'px-3 py-1.5',
         'resize-none overflow-auto',
@@ -119,15 +115,13 @@ export class NxpTextareaComponent implements NxpTextfieldAccessor, OnInit {
       !!this.textfield?.hasLabel() && this.textfield.hasError();
     const showError = this.hasError() || textfieldError;
 
-    // Standalone OR form-field textfield (with label) — Tremor Textarea.tsx
     return cx(
-      'flex min-h-[4rem] w-full rounded-md border px-3 py-1.5 shadow-xs outline-hidden transition-colors sm:text-sm',
-      'text-gray-900 dark:text-gray-50',
-      'border-gray-300 dark:border-gray-800',
-      'bg-white dark:bg-gray-950',
-      'placeholder:text-gray-400 dark:placeholder:text-gray-500',
-      'disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-300',
-      'dark:disabled:border-gray-700 dark:disabled:bg-gray-800 dark:disabled:text-gray-500',
+      'flex min-h-[4rem] w-full rounded-m border px-3 py-1.5 shadow-sm outline-hidden transition-colors sm:text-sm',
+      'text-text-primary',
+      'border-border-normal',
+      'bg-bg-base',
+      'placeholder:text-text-tertiary',
+      'disabled:cursor-not-allowed disabled:border-border-normal disabled:bg-bg-neutral-1 disabled:text-text-tertiary',
       'resize-none overflow-auto',
       'whitespace-pre-wrap break-words',
       ...focusInput,
@@ -148,10 +142,15 @@ export class NxpTextareaComponent implements NxpTextfieldAccessor, OnInit {
   private resize(): void {
     const el = this.el;
     // Use the document root font-size as the rem base (typically 16px)
-    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const rootFontSize =
+      parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
 
-    const minPx = (this.effectiveMin() * this.LINE_HEIGHT_REM + this.PADDING_V_REM) * rootFontSize;
-    const maxPx = (this.effectiveMax() * this.LINE_HEIGHT_REM + this.PADDING_V_REM) * rootFontSize;
+    const minPx =
+      (this.effectiveMin() * this.LINE_HEIGHT_REM + this.PADDING_V_REM) *
+      rootFontSize;
+    const maxPx =
+      (this.effectiveMax() * this.LINE_HEIGHT_REM + this.PADDING_V_REM) *
+      rootFontSize;
 
     // Temporarily reset height so scrollHeight reflects actual content
     el.style.height = 'auto';

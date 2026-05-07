@@ -14,20 +14,16 @@ import { cx } from '../../../utils';
 
 export const linkVariants = tv({
   base: [
-    'inline-flex items-center gap-1 font-medium transition-colors duration-150',
+    'inline-flex items-center gap-1 font-medium transition-colors duration-normal',
     'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
     'disabled:pointer-events-none disabled:opacity-50',
   ],
   variants: {
     variant: {
-      default:
-        'text-gray-900 hover:text-gray-700 dark:text-gray-50 dark:hover:text-gray-300',
-      muted:
-        'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
-      brand:
-        'text-action hover:text-primary-pressed',
-      danger:
-        'text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400',
+      default: 'text-text-primary hover:text-text-secondary',
+      muted: 'text-text-secondary hover:text-text-primary',
+      brand: 'text-text-action hover:text-primary-pressed',
+      danger: 'text-status-negative hover:text-status-negative/80',
     },
     size: {
       sm: 'text-xs',
@@ -41,7 +37,9 @@ export const linkVariants = tv({
   },
 });
 
-export type LinkVariant = NonNullable<VariantProps<typeof linkVariants>['variant']>;
+export type LinkVariant = NonNullable<
+  VariantProps<typeof linkVariants>['variant']
+>;
 export type LinkSize = NonNullable<VariantProps<typeof linkVariants>['size']>;
 
 // ---------------------------------------------------------------------------
@@ -63,7 +61,11 @@ export const NXP_LINK_OPTIONS = new InjectionToken<NxpLinkOptions>(
 export function nxpLinkOptionsProvider(options: Partial<NxpLinkOptions>) {
   return {
     provide: NXP_LINK_OPTIONS,
-    useValue: { variant: 'brand', underline: true, ...options } satisfies NxpLinkOptions,
+    useValue: {
+      variant: 'brand',
+      underline: true,
+      ...options,
+    } satisfies NxpLinkOptions,
   };
 }
 
@@ -119,6 +121,10 @@ export class NxpLinkDirective {
 
   readonly hostClasses = computed(() => {
     const base = linkVariants({ variant: this.variant(), size: this.size() });
-    return cx(base, this.underline() && 'underline underline-offset-4', this.class());
+    return cx(
+      base,
+      this.underline() && 'underline underline-offset-4',
+      this.class(),
+    );
   });
 }

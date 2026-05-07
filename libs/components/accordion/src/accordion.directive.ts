@@ -1,4 +1,10 @@
-import { Directive, ElementRef, inject, model, HostListener } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  inject,
+  model,
+  HostListener,
+} from '@angular/core';
 import { AccordionComponent } from './accordion.component';
 
 /**
@@ -6,7 +12,7 @@ import { AccordionComponent } from './accordion.component';
  *
  * Use with button + nxp-expand for flexible accordion items.
  * Pairs with AccordionComponent: each directive matches the expand at the same index.
- * Use nxpCell, nxpTitle, nxpSubtitle for layout (from @nxp/cdk).
+ * Use nxpCell, nxpTitle, nxpSubtitle for layout (from @ngxpro/cdk).
  *
  * @example
  * <nxp-accordion>
@@ -31,7 +37,8 @@ export class AccordionDirective {
   private readonly accordion = inject(AccordionComponent, { optional: true });
 
   /** The host DOM element (used by AccordionComponent for rect measurement). */
-  public readonly hostEl: HTMLElement = inject(ElementRef<HTMLElement>).nativeElement;
+  public readonly hostEl: HTMLElement = inject(ElementRef<HTMLElement>)
+    .nativeElement;
 
   /** Whether this accordion item is open. Supports two-way binding via [nxpAccordion]. */
   readonly open = model<boolean>(false);

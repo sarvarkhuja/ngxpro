@@ -1,4 +1,4 @@
-import type { DisabledHandler } from '@nxp/components/calendar';
+import type { DisabledHandler } from '@ngxpro/components/calendar';
 
 /** Start of day (strip time). */
 function startOfDay(d: Date): Date {

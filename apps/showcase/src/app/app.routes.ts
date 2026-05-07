@@ -249,8 +249,6 @@ export const appRoutes: Route[] = [
   {
     path: 'range',
     loadComponent: () =>
-      import('./range/range-demo.component').then(
-        (m) => m.RangeDemoComponent,
-      ),
+      import('./range/range-demo.component').then((m) => m.RangeDemoComponent),
   },
 ];

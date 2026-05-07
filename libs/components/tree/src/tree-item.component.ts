@@ -7,8 +7,12 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ExpandComponent } from '@nxp/cdk';
-import { NXP_TREE_CONTROLLER, NXP_TREE_LEVEL, NXP_TREE_NODE } from './tree.tokens';
+import { ExpandComponent } from '@ngxpro/cdk';
+import {
+  NXP_TREE_CONTROLLER,
+  NXP_TREE_LEVEL,
+  NXP_TREE_NODE,
+} from './tree.tokens';
 
 /**
  * Node wrapper for a single tree item. Handles expandability detection and

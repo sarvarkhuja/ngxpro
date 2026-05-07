@@ -20,14 +20,18 @@ describe('nxpWriteToClipboard', () => {
     } else {
       // Remove stub we installed during the test.
       try {
-        delete (globalThis.navigator as unknown as Record<string, unknown>)['clipboard'];
+        delete (globalThis.navigator as unknown as Record<string, unknown>)[
+          'clipboard'
+        ];
       } catch {
         /* noop */
       }
     }
   });
 
-  function stubClipboard(impl: { writeText: (t: string) => Promise<void> } | null): void {
+  function stubClipboard(
+    impl: { writeText: (t: string) => Promise<void> } | null,
+  ): void {
     Object.defineProperty(globalThis.navigator, 'clipboard', {
       value: impl,
       configurable: true,
@@ -51,9 +55,9 @@ describe('nxpWriteToClipboard', () => {
     });
 
     const execCommand = vi.fn().mockReturnValue(true);
-    const originalExec = (
-      document as unknown as Record<string, unknown>
-    )['execCommand'];
+    const originalExec = (document as unknown as Record<string, unknown>)[
+      'execCommand'
+    ];
     (document as unknown as Record<string, unknown>)['execCommand'] =
       execCommand;
 
@@ -70,14 +74,18 @@ describe('nxpWriteToClipboard', () => {
   it('returns false when no document is available and none provided', async () => {
     // Preserve and temporarily shadow the global `document` reference.
     const hadDocument = 'document' in globalThis;
-    const originalDocument = (globalThis as unknown as Record<string, unknown>)['document'];
+    const originalDocument = (globalThis as unknown as Record<string, unknown>)[
+      'document'
+    ];
     try {
-      (globalThis as unknown as Record<string, unknown>)['document'] = undefined;
+      (globalThis as unknown as Record<string, unknown>)['document'] =
+        undefined;
       const ok = await nxpWriteToClipboard('x', undefined);
       expect(ok).toBe(false);
     } finally {
       if (hadDocument) {
-        (globalThis as unknown as Record<string, unknown>)['document'] = originalDocument;
+        (globalThis as unknown as Record<string, unknown>)['document'] =
+          originalDocument;
       }
     }
   });

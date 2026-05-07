@@ -27,22 +27,30 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 })
 export class NxpSegmentedDirective implements AfterContentChecked {
   private component!: { update(index: number): void };
-  private readonly el = inject(ElementRef<HTMLElement>).nativeElement as HTMLElement;
+  private readonly el = inject(ElementRef<HTMLElement>)
+    .nativeElement as HTMLElement;
 
   private readonly links = contentChildren(RouterLinkActive);
-  private readonly linkElements = contentChildren(RouterLinkActive, { read: ElementRef });
+  private readonly linkElements = contentChildren(RouterLinkActive, {
+    read: ElementRef,
+  });
   private readonly controls = contentChildren(NgControl, { descendants: true });
-  private readonly radios = contentChildren(RadioControlValueAccessor, { descendants: true });
+  private readonly radios = contentChildren(RadioControlValueAccessor, {
+    descendants: true,
+  });
 
   private readonly controls$ = toObservable(this.controls);
 
   constructor() {
     this.controls$
       .pipe(
-        switchMap(([control]) =>
-          new Observable<unknown>((sub) =>
-            control?.valueChanges?.pipe(startWith(control.value)).subscribe(sub),
-          ),
+        switchMap(
+          ([control]) =>
+            new Observable<unknown>((sub) =>
+              control?.valueChanges
+                ?.pipe(startWith(control.value))
+                .subscribe(sub),
+            ),
         ),
         map((value) => this.radios().findIndex((r) => r.value === value)),
         takeUntilDestroyed(),
@@ -61,7 +69,6 @@ export class NxpSegmentedDirective implements AfterContentChecked {
   setComponent(component: { update(index: number): void }): void {
     this.component = component;
   }
-
 
   ngAfterContentChecked(): void {
     const index = this.links().findIndex(({ isActive }) => isActive);

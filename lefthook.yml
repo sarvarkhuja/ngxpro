@@ -1,0 +1,6 @@
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: '*.{ts,tsx,js,mjs,html,scss,json,md,yml,yaml}'
+      run: npx --no-install prettier --check {staged_files}

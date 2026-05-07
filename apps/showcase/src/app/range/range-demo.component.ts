@@ -2,7 +2,7 @@ import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NxpRangeComponent, type NxpKeySteps } from '@nxp/components/range';
+import { NxpRangeComponent, type NxpKeySteps } from '@ngxpro/components/range';
 
 @Component({
   selector: 'app-range-demo',
@@ -140,7 +140,9 @@ import { NxpRangeComponent, type NxpKeySteps } from '@nxp/components/range';
             Constraints (margin & limit)
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">margin</code>
+            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded"
+              >margin</code
+            >
             enforces minimum distance;
             <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">limit</code>
             enforces maximum distance.

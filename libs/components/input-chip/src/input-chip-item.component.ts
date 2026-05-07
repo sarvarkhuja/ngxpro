@@ -3,15 +3,14 @@ import {
   Component,
   ElementRef,
   computed,
-  inject,
   input,
   output,
   signal,
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { cx } from '@nxp/cdk';
-import { CHIP_SIZE_CLASSES, type NxpChipSize } from '@nxp/components/chip';
+import { cx } from '@ngxpro/cdk';
+import { CHIP_SIZE_CLASSES, type NxpChipSize } from '@ngxpro/components/chip';
 
 @Component({
   selector: 'nxp-input-chip-item',
@@ -33,7 +32,8 @@ import { CHIP_SIZE_CLASSES, type NxpChipSize } from '@nxp/components/chip';
       class="truncate"
       [class.hidden]="editing()"
       [class.block]="!editing()"
-    >{{ displayText() }}</span>
+      >{{ displayText() }}</span
+    >
     @if (interactive() && !editing()) {
       <button
         type="button"
@@ -44,8 +44,19 @@ import { CHIP_SIZE_CLASSES, type NxpChipSize } from '@nxp/components/chip';
         (pointerdown)="$event.preventDefault()"
         aria-label="Remove"
       >
-        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          class="h-3 w-3"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </button>
     }
@@ -61,7 +72,8 @@ import { CHIP_SIZE_CLASSES, type NxpChipSize } from '@nxp/components/chip';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NxpInputChipItemComponent {
-  private readonly editInputRef = viewChild<ElementRef<HTMLInputElement>>('editInput');
+  private readonly editInputRef =
+    viewChild<ElementRef<HTMLInputElement>>('editInput');
 
   /** The chip item value. */
   readonly item = input.required<unknown>();
@@ -74,7 +86,7 @@ export class NxpInputChipItemComponent {
   /** Whether the chip is disabled. */
   readonly chipDisabled = input(false);
   /** Chip size. */
-  readonly size = input<NxpChipSize>('s');
+  readonly size = input<NxpChipSize>('md');
 
   /** Emitted when the chip should be removed. */
   readonly remove = output<void>();
@@ -89,21 +101,26 @@ export class NxpInputChipItemComponent {
   readonly hostClasses = computed(() => {
     const s = this.size();
     return cx(
-      'inline-flex items-center rounded-full font-medium select-none whitespace-nowrap transition-colors cursor-pointer',
-      'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
+      'inline-flex items-center rounded-full font-medium select-none whitespace-nowrap transition-colors duration-fast cursor-pointer',
+      'bg-bg-neutral-1 text-text-secondary',
       CHIP_SIZE_CLASSES[s],
       this.chipDisabled() && 'opacity-50 pointer-events-none',
-      this.editing() && 'ring-2 ring-primary/30 bg-white dark:bg-gray-900',
+      this.editing() && 'ring-2 ring-primary/30 bg-bg-base',
     );
   });
 
   readonly removeButtonSize = computed(() => {
     const s = this.size();
-    return s === 'xs' ? 'h-3.5 w-3.5' : s === 's' ? 'h-4 w-4' : 'h-5 w-5';
+    return s === 'sm' ? 'h-3.5 w-3.5' : s === 'md' ? 'h-4 w-4' : 'h-5 w-5';
   });
 
   edit(): void {
-    if (!this.editable() || !this.interactive() || typeof this.item() !== 'string') return;
+    if (
+      !this.editable() ||
+      !this.interactive() ||
+      typeof this.item() !== 'string'
+    )
+      return;
     this.internal.set(this.text());
     this.editing.set(true);
     // Focus the edit input after view update

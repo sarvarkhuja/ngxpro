@@ -17,10 +17,10 @@ import {
   nxpInjectElement,
   nxpPx,
   NxpRectAccessor,
-} from '@nxp/cdk';
-import { cx } from '@nxp/cdk';
-import { NXP_SPRING_MODERATE } from '@nxp/cdk';
-import type { NxpContext, NxpPoint } from '@nxp/cdk';
+} from '@ngxpro/cdk';
+import { cx } from '@ngxpro/cdk';
+import { NXP_SPRING_MODERATE } from '@ngxpro/cdk';
+import type { NxpContext, NxpPoint } from '@ngxpro/cdk';
 import { NXP_TOOLTIP_OPTIONS } from './tooltip.options';
 import { NxpTooltipPosition } from './tooltip-position';
 import type { NxpTooltipDirection } from './tooltip-position';
@@ -33,9 +33,8 @@ const SIZE_CLASSES: Record<NxpTooltipSize, string> = {
 };
 
 const APPEARANCE_CLASSES: Record<string, string> = {
-  dark: 'bg-gray-900 text-white dark:bg-gray-950 dark:text-gray-100',
-  light:
-    'bg-white text-gray-900 border border-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700',
+  dark: 'bg-text-primary text-bg-base',
+  light: 'bg-bg-base text-text-primary border border-border-normal',
 };
 
 /**
@@ -148,15 +147,15 @@ export class NxpTooltipComponent implements AfterViewInit {
     // For the light appearance, only show the two border sides that face outward
     // (away from the tooltip body) so the inner edges don't create a visible line.
     const borderByDirection: Record<string, string> = {
-      top: 'border-b border-r border-gray-200 dark:border-gray-700',
-      bottom: 'border-t border-l border-gray-200 dark:border-gray-700',
-      left: 'border-t border-r border-gray-200 dark:border-gray-700',
-      right: 'border-b border-l border-gray-200 dark:border-gray-700',
+      top: 'border-b border-r border-border-normal',
+      bottom: 'border-t border-l border-border-normal',
+      left: 'border-t border-r border-border-normal',
+      right: 'border-b border-l border-border-normal',
     };
     const colorClass =
       appearance === 'light'
-        ? `bg-white dark:bg-gray-800 ${borderByDirection[direction]}`
-        : 'bg-gray-900 dark:bg-gray-950';
+        ? `bg-bg-base ${borderByDirection[direction]}`
+        : 'bg-text-primary';
 
     const posClass = {
       top: 'bottom-[-4px] left-1/2 -translate-x-1/2',

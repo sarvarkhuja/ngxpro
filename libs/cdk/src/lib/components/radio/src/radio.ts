@@ -6,7 +6,7 @@ import { NxpRadioDirective } from './radio.directive';
  *
  * @example
  * ```typescript
- * import { NxpRadio } from '@nxp/components/radio';
+ * import { NxpRadio } from '@ngxpro/components/radio';
  *
  * @Component({
  *   imports: [...NxpRadio],

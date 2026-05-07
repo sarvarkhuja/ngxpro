@@ -3,7 +3,9 @@ import { Observable } from 'rxjs';
 /**
  * Creates an Observable from a resize observer on the given element.
  */
-export function fromResizeObserver(element: Element): Observable<ResizeObserverEntry[]> {
+export function fromResizeObserver(
+  element: Element,
+): Observable<ResizeObserverEntry[]> {
   return new Observable<ResizeObserverEntry[]>((subscriber) => {
     const observer = new ResizeObserver((entries) => subscriber.next(entries));
     observer.observe(element);

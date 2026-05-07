@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxpDropdown } from '@nxp/cdk';
-import { NxpMenu } from '@nxp/components/menu';
+import { NxpDropdown } from '@ngxpro/cdk';
+import { NxpMenu } from '@ngxpro/components/menu';
 
 @Component({
   selector: 'app-menu-demo',

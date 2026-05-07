@@ -1,9 +1,30 @@
 {
-  "name": "@nxp/core",
+  "name": "@ngxpro/core",
   "version": "0.0.1",
+  "description": "Foundation services (Theme, Breakpoint, Format), pipes, and tokens for the ngxpro Angular UI library.",
+  "license": "MIT",
+  "homepage": "https://github.com/SarvarkhujaMurodov/ngxpro#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro.git",
+    "directory": "libs/core"
+  },
+  "bugs": {
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro/issues"
+  },
+  "keywords": [
+    "angular",
+    "ngxpro",
+    "core",
+    "services"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "peerDependencies": {
-    "@angular/common": "^21.1.0",
-    "@angular/core": "^21.1.0"
+    "@angular/core": "^21.1.0",
+    "@ngxpro/cdk": "*"
   },
   "sideEffects": false
 }

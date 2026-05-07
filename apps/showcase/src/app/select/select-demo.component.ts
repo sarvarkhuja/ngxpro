@@ -2,16 +2,16 @@ import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NxpDropdownContent } from '@nxp/cdk';
-import { NxpInputDirective } from '@nxp/cdk/components/input';
-import { NxpLabelDirective } from '@nxp/cdk/components/label';
+import { NxpDropdownContent } from '@ngxpro/cdk';
+import { NxpInputDirective } from '@ngxpro/cdk/components/input';
+import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
 import {
   NxpTextfieldComponent,
   NxpTextfieldOptionsDirective,
-} from '@nxp/cdk/components/textfield';
-import { DataListComponent } from '@nxp/components/data-list';
-import { NxpSelectOptionComponent } from '@nxp/components/combo-box';
-import { NxpSelectDirective } from '@nxp/components/select';
+} from '@ngxpro/cdk/components/textfield';
+import { DataListComponent } from '@ngxpro/components/data-list';
+import { NxpSelectOptionComponent } from '@ngxpro/components/combo-box';
+import { NxpSelectDirective } from '@ngxpro/components/select';
 
 interface Country {
   code: string;
@@ -81,9 +81,10 @@ const FRUITS = [
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div
+      class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8"
+    >
       <div class="max-w-4xl mx-auto space-y-10">
-
         <div>
           <a
             routerLink="/"
@@ -91,26 +92,44 @@ const FRUITS = [
           >
             &larr; Back to home
           </a>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Select</h1>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+            Select
+          </h1>
           <p class="mt-2 text-gray-600 dark:text-gray-400">
-            <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded">input[nxpSelect]</code>
+            <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+              >input[nxpSelect]</code
+            >
             inside
-            <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded">nxp-textfield</code>
-            — strict dropdown picker. The input is read-only; the user must select from the list.
+            <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+              >nxp-textfield</code
+            >
+            — strict dropdown picker. The input is read-only; the user must
+            select from the list.
           </p>
         </div>
 
         <!-- String items -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">String items</h2>
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            String items
+          </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Click or press Space / Enter to open; Escape to close.
-            Selecting an option closes the dropdown and updates the form value.
+            Click or press Space / Enter to open; Escape to close. Selecting an
+            option closes the dropdown and updates the form value.
           </p>
           <div class="max-w-md">
             <nxp-textfield class="w-full" [nxpTextfieldCleaner]="true">
               <label nxpLabel for="fruit">Favourite fruit</label>
-              <input nxpInput nxpSelect id="fruit" type="text" placeholder=" " [formControl]="fruitCtrl" />
+              <input
+                nxpInput
+                nxpSelect
+                id="fruit"
+                type="text"
+                placeholder=" "
+                [formControl]="fruitCtrl"
+              />
               <ng-template nxpDropdown>
                 <nxp-data-list>
                   @for (item of fruits; track item) {
@@ -126,19 +145,30 @@ const FRUITS = [
         </section>
 
         <!-- Object items -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
             Object items with custom stringify
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
             Items are
-            <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded text-xs">&#123; code, name &#125;</code>
+            <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded text-xs"
+              >&#123; code, name &#125;</code
+            >
             objects. A custom stringify shows the country name.
           </p>
           <div class="max-w-md">
             <nxp-textfield class="w-full" [nxpTextfieldCleaner]="true">
               <label nxpLabel for="country">Country</label>
-              <input nxpInput nxpSelect id="country" type="text" placeholder=" " [formControl]="countryCtrl" />
+              <input
+                nxpInput
+                nxpSelect
+                id="country"
+                type="text"
+                placeholder=" "
+                [formControl]="countryCtrl"
+              />
               <ng-template nxpDropdown>
                 <nxp-data-list>
                   @for (item of countries; track item.code) {
@@ -154,12 +184,23 @@ const FRUITS = [
         </section>
 
         <!-- Disabled -->
-        <section class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Disabled</h2>
+        <section
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        >
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Disabled
+          </h2>
           <div class="max-w-md">
             <nxp-textfield class="w-full">
               <label nxpLabel for="fruit-disabled">Favourite fruit</label>
-              <input nxpInput nxpSelect id="fruit-disabled" type="text" placeholder=" " [formControl]="disabledCtrl" />
+              <input
+                nxpInput
+                nxpSelect
+                id="fruit-disabled"
+                type="text"
+                placeholder=" "
+                [formControl]="disabledCtrl"
+              />
               <ng-template nxpDropdown>
                 <nxp-data-list>
                   @for (item of fruits; track item) {
@@ -170,7 +211,6 @@ const FRUITS = [
             </nxp-textfield>
           </div>
         </section>
-
       </div>
     </div>
   `,
@@ -181,5 +221,8 @@ export class SelectDemoComponent {
 
   readonly fruitCtrl = new FormControl<string | null>(null);
   readonly countryCtrl = new FormControl<Country | null>(null);
-  readonly disabledCtrl = new FormControl<string | null>({ value: 'Mango', disabled: true });
+  readonly disabledCtrl = new FormControl<string | null>({
+    value: 'Mango',
+    disabled: true,
+  });
 }

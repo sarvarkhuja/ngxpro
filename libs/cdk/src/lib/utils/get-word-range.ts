@@ -10,7 +10,10 @@ export function nxpGetWordRange(currentRange: Range): Range {
   const { ownerDocument } = startContainer;
   if (!ownerDocument) return range;
 
-  const treeWalker = ownerDocument.createTreeWalker(ownerDocument.body, NodeFilter.SHOW_TEXT);
+  const treeWalker = ownerDocument.createTreeWalker(
+    ownerDocument.body,
+    NodeFilter.SHOW_TEXT,
+  );
   treeWalker.currentNode = startContainer;
 
   do {
@@ -40,13 +43,18 @@ export function nxpGetWordRange(currentRange: Range): Range {
     const container = treeWalker.currentNode;
     const textContent = container.textContent || '';
     const content =
-      container === endContainer ? textContent.slice(endOffset + 1) : textContent;
+      container === endContainer
+        ? textContent.slice(endOffset + 1)
+        : textContent;
     const offset = [
       content.indexOf(' '),
       content.lastIndexOf('\n'),
       content.indexOf(CHAR_NO_BREAK_SPACE),
       content.indexOf(CHAR_ZERO_WIDTH_SPACE),
-    ].reduce((r, i) => (r === -1 || i === -1 ? Math.max(r, i) : Math.min(r, i)), -1);
+    ].reduce(
+      (r, i) => (r === -1 || i === -1 ? Math.max(r, i) : Math.min(r, i)),
+      -1,
+    );
     range.setEnd(container, textContent.length);
     if (offset !== -1) {
       range.setEnd(container, offset + textContent.length - content.length);

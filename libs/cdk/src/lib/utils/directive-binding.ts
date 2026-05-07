@@ -10,30 +10,38 @@ import {
 } from '@angular/core';
 import { nxpSetSignal } from './set-signal';
 
+type BindingResult<I> = I extends Signal<unknown> ? I : WritableSignal<I>;
+
 /**
  * Creates a reactive binding between a local signal and a directive's input/output.
  * Syncs value changes via effect, calling ngOnChanges if present.
  */
-export function nxpDirectiveBinding<T, G extends keyof T, I extends Signal<any> | any>(
+export function nxpDirectiveBinding<T, G extends keyof T, I>(
   token: ProviderToken<T>,
   key: G,
   initial: I,
   options: InjectOptions = { self: true },
-): I extends Signal<any> ? I : WritableSignal<I> {
-  const result: any = isSignal(initial) ? initial : signal(initial);
-  const directive: any = inject(token, options);
-  const output = directive?.[`${String(key)}Change`];
+): BindingResult<I> {
+  const result = (
+    isSignal(initial) ? initial : signal(initial)
+  ) as BindingResult<I>;
+  const directive = inject(token, options) as Record<string, unknown> | null;
   if (!directive) return result;
-  let previous: any;
+  const keyStr = String(key);
+  const output = directive[`${keyStr}Change`] as
+    | { emit?: (value: unknown) => void }
+    | undefined;
+  let previous: unknown;
   effect(() => {
-    const value: any = result();
+    const value: unknown = (result as unknown as Signal<unknown>)();
     if (previous === value) return;
-    if (isSignal(directive[key])) {
-      nxpSetSignal(directive[key] as any, value);
+    const prop = directive[keyStr];
+    if (isSignal(prop)) {
+      nxpSetSignal(prop as WritableSignal<unknown>, value);
     } else {
-      directive[key] = value;
+      directive[keyStr] = value;
     }
-    directive.ngOnChanges?.({});
+    (directive['ngOnChanges'] as ((changes: object) => void) | undefined)?.({});
     output?.emit?.(value);
     previous = value;
   });

@@ -185,27 +185,16 @@ export class CalendarComponent implements OnInit {
   // ------------------------------------------------------------------ lifecycle
 
   ngOnInit(): void {
-    // Determine the initial view from the value or the explicit inputs
     const val = this.value();
-    let initYear = this.year();
-    let initMonth = this.month();
+    const reference =
+      val instanceof Date
+        ? val
+        : Array.isArray(val) && val[0] instanceof Date
+          ? (val[0] as Date)
+          : new Date();
 
-    if (initYear === undefined || initMonth === undefined) {
-      if (val instanceof Date) {
-        initYear ??= val.getFullYear();
-        initMonth ??= val.getMonth();
-      } else if (Array.isArray(val) && val.length > 0 && val[0] instanceof Date) {
-        initYear ??= (val[0] as Date).getFullYear();
-        initMonth ??= (val[0] as Date).getMonth();
-      } else {
-        const today = new Date();
-        initYear ??= today.getFullYear();
-        initMonth ??= today.getMonth();
-      }
-    }
-
-    this.viewedYear.set(initYear!);
-    this.viewedMonth.set(initMonth!);
+    this.viewedYear.set(this.year() ?? reference.getFullYear());
+    this.viewedMonth.set(this.month() ?? reference.getMonth());
   }
 
   // ------------------------------------------------------------------ handlers
