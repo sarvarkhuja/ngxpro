@@ -1,4 +1,4 @@
-import { Directive, HostBinding } from '@angular/core';
+import { Directive } from '@angular/core';
 import { cx } from '../utils/cx';
 
 /**
@@ -29,10 +29,11 @@ import { cx } from '../utils/cx';
  */
 @Directive({
   selector: '[nxpSubtitle]',
-  standalone: true,
+  host: {
+    '[class]': 'hostClasses',
+  },
 })
 export class SubtitleDirective {
-  @HostBinding('class')
   protected get hostClasses(): string {
     return cx('flex items-center gap-1', 'text-sm text-text-secondary');
   }

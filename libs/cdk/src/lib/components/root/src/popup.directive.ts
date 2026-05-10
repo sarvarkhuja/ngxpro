@@ -11,7 +11,6 @@ import { NxpPopupService } from './popup.service';
 
 @Directive({
   selector: 'ng-template[nxpPopup]',
-  standalone: true,
 })
 export class NxpPopupDirective implements OnChanges, OnDestroy {
   private readonly template = inject(TemplateRef);

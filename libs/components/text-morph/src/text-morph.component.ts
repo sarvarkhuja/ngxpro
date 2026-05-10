@@ -9,7 +9,6 @@ import { TextMorphDirective } from './text-morph.directive';
 
 @Component({
   selector: 'nxp-text-morph',
-  standalone: true,
   hostDirectives: [
     {
       directive: TextMorphDirective,

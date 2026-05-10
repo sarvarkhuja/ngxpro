@@ -1,31 +1,31 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { focusInput, hasErrorInput } from '../../../utils';
-import { cx } from '../../../utils';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from '@angular/core';
+import { focusInput, hasErrorInput } from '@ngxpro/cdk';
+import { cx } from '@ngxpro/cdk';
 
 /**
- * Input directive styled with Tremor patterns.
- * Apply to native `<input>` elements.
- *
- * @example
- * <input nxp-input placeholder="Enter text..." />
- * <input nxp-input [hasError]="true" />
+ * @deprecated Prefer the `nxpInput` directive from `@nxp/cdk/components/input`.
+ * Kept for backward compatibility with existing `[nxp-input]` selector usage.
  */
 @Component({
   selector: '[nxp-input]',
   template: ``,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.aria-invalid]': 'hasError() || null',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent {
-  /** Whether the input has a validation error. */
   readonly hasError = input(false);
 
-  /** Additional CSS classes. */
   readonly class = input<string>('');
 
-  readonly hostClasses = () =>
+  readonly hostClasses = computed(() =>
     cx(
       'relative block w-full appearance-none rounded-m border px-3 py-2 shadow-sm outline-none transition sm:text-sm',
       'border-border-normal',
@@ -36,5 +36,6 @@ export class InputComponent {
       ...focusInput,
       this.hasError() && hasErrorInput,
       this.class(),
-    );
+    ),
+  );
 }

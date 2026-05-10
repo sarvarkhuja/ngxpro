@@ -5,12 +5,11 @@ import {
 } from '@angular/core';
 
 import { NxpPopupService } from './popup.service';
-import { NxpPortalService } from '../../../portals/portal.service';
-import { NxpPortals } from '../../../portals/portals.directive';
+import { NxpPortalService } from '@ngxpro/cdk';
+import { NxpPortals } from '@ngxpro/cdk';
 
 @Component({
   selector: 'nxp-popups',
-  standalone: true,
   template: `<ng-content /><ng-container #vcr />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,

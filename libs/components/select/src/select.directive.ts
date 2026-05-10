@@ -37,7 +37,6 @@ import {
  */
 @Directive({
   selector: 'input[nxpSelect]',
-  standalone: true,
   providers: [
     nxpAsTextfieldAccessor(NxpSelectDirective),
     nxpAsControl(NxpSelectDirective),

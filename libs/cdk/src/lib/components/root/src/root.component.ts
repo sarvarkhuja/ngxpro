@@ -15,14 +15,10 @@ import {
 import { NxpPlatformDirective } from './platform.directive';
 import { NxpVisualViewportDirective } from './visual-viewport.directive';
 import { NxpPopupsComponent } from './popups.component';
-import {
-  NXP_DROPDOWN_COMPONENT,
-  NxpDropdownComponent,
-} from '../../../portals/dropdown';
+import { NXP_DROPDOWN_COMPONENT, NxpDropdownComponent } from '@ngxpro/cdk';
 
 @Component({
   selector: 'nxp-root',
-  standalone: true,
   imports: [NxpPopupsComponent],
   template: `
     <div class="nxp-root-content">

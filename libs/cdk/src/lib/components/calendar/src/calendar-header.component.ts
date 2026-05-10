@@ -5,7 +5,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { cx, navButtonClass } from '../../../utils';
+import { cx, navButtonClass } from '@ngxpro/cdk';
 
 const MONTH_NAMES = [
   'January',
@@ -31,7 +31,6 @@ const MONTH_NAMES = [
  */
 @Component({
   selector: 'nxp-calendar-header',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex items-center justify-between gap-1 pb-3">
@@ -89,21 +88,17 @@ export class CalendarHeaderComponent {
   protected readonly prevDisabled = computed(() => {
     const minDate = this.min();
     if (!minDate) return false;
-    return (
-      this.year() < minDate.getFullYear() ||
-      (this.year() === minDate.getFullYear() &&
-        this.month() <= minDate.getMonth())
-    );
+    const current = this.year() * 12 + this.month();
+    const limit = minDate.getFullYear() * 12 + minDate.getMonth();
+    return current <= limit;
   });
 
   protected readonly nextDisabled = computed(() => {
     const maxDate = this.max();
     if (!maxDate) return false;
-    return (
-      this.year() > maxDate.getFullYear() ||
-      (this.year() === maxDate.getFullYear() &&
-        this.month() >= maxDate.getMonth())
-    );
+    const current = this.year() * 12 + this.month();
+    const limit = maxDate.getFullYear() * 12 + maxDate.getMonth();
+    return current >= limit;
   });
 
   protected readonly navBtnClass = navButtonClass;

@@ -26,7 +26,6 @@ import { NXP_TEXTFIELD_ACCESSOR } from '@ngxpro/cdk/components/textfield';
  */
 @Component({
   selector: 'nxp-select-option',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     role: 'option',

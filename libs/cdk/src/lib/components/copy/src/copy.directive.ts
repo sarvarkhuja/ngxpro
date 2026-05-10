@@ -1,6 +1,6 @@
 import { Directive, OnDestroy, inject, signal } from '@angular/core';
-import { NXP_DOCUMENT, NXP_TEXTFIELD } from '../../../tokens';
-import { nxpWriteToClipboard } from '../../../utils';
+import { NXP_DOCUMENT, NXP_TEXTFIELD } from '@ngxpro/cdk';
+import { nxpWriteToClipboard } from '@ngxpro/cdk';
 import { NXP_COPY_OPTIONS } from './copy.options';
 
 /**
@@ -19,16 +19,18 @@ import { NXP_COPY_OPTIONS } from './copy.options';
  */
 @Directive({
   selector: 'nxp-icon[nxpCopy]',
-  standalone: true,
   host: {
     '(click)': 'onClick()',
+    '(keydown.enter)': 'onKey($event)',
+    '(keydown.space)': 'onKey($event)',
     '[style.cursor]': '"pointer"',
     '[style.pointerEvents]': 'textfield.hasValue() ? null : "none"',
     '[style.opacity]': 'textfield.hasValue() ? null : "0.5"',
     '[attr.aria-label]': 'copied() ? "Copied" : "Copy"',
     '[attr.title]': 'copied() ? "Copied" : "Copy"',
     '[attr.role]': '"button"',
-    '[attr.tabindex]': '0',
+    '[attr.tabindex]': 'textfield.hasValue() ? 0 : -1',
+    '[attr.aria-disabled]': 'textfield.hasValue() ? null : "true"',
   },
 })
 export class NxpCopyDirective implements OnDestroy {
@@ -39,6 +41,11 @@ export class NxpCopyDirective implements OnDestroy {
   protected readonly copied = signal(false);
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
   private destroyed = false;
+
+  protected onKey(event: Event): void {
+    event.preventDefault();
+    void this.onClick();
+  }
 
   protected async onClick(): Promise<void> {
     const raw = this.textfield.value();

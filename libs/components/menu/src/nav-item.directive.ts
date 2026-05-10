@@ -16,7 +16,6 @@ import { filter } from 'rxjs/operators';
  */
 @Directive({
   selector: 'a[nxpNavItem]',
-  standalone: true,
   host: {
     role: 'menuitem',
     tabindex: '0',

@@ -28,7 +28,6 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
 
 @Component({
   selector: 'nxp-range',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {

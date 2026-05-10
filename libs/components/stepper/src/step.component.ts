@@ -22,7 +22,6 @@ export type StepState = 'error' | 'normal' | 'pass';
  */
 @Component({
   selector: 'nxp-step, button[nxpStep], a[nxpStep]',
-  standalone: true,
   template: `
     <!-- Step indicator circle -->
     <span [class]="indicatorClasses()" aria-hidden="true">

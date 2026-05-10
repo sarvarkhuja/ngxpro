@@ -11,7 +11,6 @@ import { NxpDialogService } from './dialog.service';
  */
 @Directive({
   selector: 'ng-template[nxpDialog]',
-  standalone: true,
   providers: [
     NxpDialogService,
     { provide: NxpPortal, useExisting: NxpDialogService },

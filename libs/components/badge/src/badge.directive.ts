@@ -37,7 +37,6 @@ const DOT_SIZE: Record<NxpBadgeSize, number> = {
  */
 @Directive({
   selector: '[nxpBadge]',
-  standalone: true,
   host: {
     '[class]': 'hostClasses()',
     '[style]': 'hostStyles()',

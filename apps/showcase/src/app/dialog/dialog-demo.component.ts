@@ -16,10 +16,10 @@ import {
   type NxpDialogSize,
 } from '@ngxpro/cdk';
 import {
-  injectContext,
-  PolymorpheusComponent,
-  type PolymorpheusContent,
-} from '@taiga-ui/polymorpheus';
+  nxpInjectContext,
+  NxpDynamicComponent,
+  type NxpDynamicContent,
+} from '@ngxpro/cdk/dynamic';
 
 // ---------------------------------------------------------------------------
 // Inline component used by the "Open with component" demo section
@@ -58,7 +58,7 @@ interface DeleteData {
   `,
 })
 class ConfirmDeleteDialogComponent {
-  readonly context = injectContext<NxpDialogContext<boolean, DeleteData>>();
+  readonly context = nxpInjectContext<NxpDialogContext<boolean, DeleteData>>();
 }
 
 @Component({
@@ -392,21 +392,21 @@ class ConfirmDeleteDialogComponent {
           <p class="text-sm text-gray-600 dark:text-gray-400">
             Pass a standalone component as dialog content. The component injects
             its context via
-            <code class="font-mono text-xs">injectContext&lt;NxpDialogContext&gt;()</code>
+            <code class="font-mono text-xs">nxpInjectContext&lt;NxpDialogContext&gt;()</code>
             and calls
             <code class="font-mono text-xs">context.completeWith(value)</code>
             to return a result.
           </p>
 
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <!-- Via PolymorpheusComponent -->
+            <!-- Via NxpDynamicComponent -->
             <div class="space-y-3">
               <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Via PolymorpheusComponent
+                Via NxpDynamicComponent
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Wrap the component with
-                <code class="font-mono text-xs">new PolymorpheusComponent(MyComponent)</code>
+                <code class="font-mono text-xs">new NxpDynamicComponent(MyComponent)</code>
                 and pass it directly to
                 <code class="font-mono text-xs">dialogService.open()</code>.
                 Use the <code class="font-mono text-xs">data</code> option to
@@ -455,11 +455,11 @@ class ConfirmDeleteDialogComponent {
             <p class="text-gray-500">// 1. Define a standalone component</p>
             <p><span class="text-purple-400">&#64;Component</span>(&#123; standalone: <span class="text-blue-400">true</span>, template: <span class="text-green-400">&#96;...&#96;</span> &#125;)</p>
             <p><span class="text-yellow-300">class</span> ConfirmDialogComponent &#123;</p>
-            <p class="pl-4">readonly context = <span class="text-cyan-400">injectContext</span>&lt;<span class="text-yellow-200">NxpDialogContext</span>&lt;<span class="text-yellow-200">boolean</span>, &#123; itemName: <span class="text-yellow-200">string</span> &#125;&gt;&gt;();</p>
+            <p class="pl-4">readonly context = <span class="text-cyan-400">nxpInjectContext</span>&lt;<span class="text-yellow-200">NxpDialogContext</span>&lt;<span class="text-yellow-200">boolean</span>, &#123; itemName: <span class="text-yellow-200">string</span> &#125;&gt;&gt;();</p>
             <p>&#125;</p>
             <br />
-            <p class="text-gray-500">// 2a. Open via PolymorpheusComponent</p>
-            <p>dialogService.<span class="text-cyan-400">open</span>(<span class="text-yellow-300">new</span> <span class="text-cyan-400">PolymorpheusComponent</span>(ConfirmDialogComponent), &#123;</p>
+            <p class="text-gray-500">// 2a. Open via NxpDynamicComponent</p>
+            <p>dialogService.<span class="text-cyan-400">open</span>(<span class="text-yellow-300">new</span> <span class="text-cyan-400">NxpDynamicComponent</span>(ConfirmDialogComponent), &#123;</p>
             <p class="pl-4">label: <span class="text-green-400">'Confirm Delete'</span>, data: &#123; itemName: <span class="text-green-400">'file.pdf'</span> &#125;</p>
             <p>&#125;).<span class="text-cyan-400">subscribe</span>(confirmed => &#123; ... &#125;);</p>
             <br />
@@ -597,10 +597,10 @@ class ConfirmDeleteDialogComponent {
                   </td>
                 </tr>
                 <tr>
-                  <td class="px-4 py-2 font-mono">PolymorpheusComponent</td>
+                  <td class="px-4 py-2 font-mono">NxpDynamicComponent</td>
                   <td class="px-4 py-2">
                     <code class="font-mono text-xs"
-                      >dialogService.open(new PolymorpheusComponent(MyComponent), opts)</code
+                      >dialogService.open(new NxpDynamicComponent(MyComponent), opts)</code
                     >
                     — lower-level, full control over injector
                   </td>
@@ -677,12 +677,12 @@ class ConfirmDeleteDialogComponent {
               <p class="pl-4">
                 <span class="text-yellow-300">readonly</span>
                 context =
-                injectContext&lt;NxpPortalContext&lt;T&gt;&gt;();
+                nxpInjectContext&lt;NxpPortalContext&lt;T&gt;&gt;();
               </p>
               <p class="pl-4">
                 <span class="text-yellow-300">readonly</span>
                 component =
-                signal&lt;PolymorpheusContent&lt;NxpPortalContext&lt;T&gt;&gt; |
+                signal&lt;NxpDynamicContent&lt;NxpPortalContext&lt;T&gt;&gt; |
                 null&gt;(<span class="text-blue-400">null</span>);
               </p>
               <p>&#125;</p>
@@ -758,7 +758,7 @@ export class DialogDemoComponent {
     if (!tpl) return;
     this.dialogService
       .open(
-        tpl as PolymorpheusContent,
+        tpl as NxpDynamicContent,
         {
           label: 'Rich Content',
           size: 'm',
@@ -772,7 +772,7 @@ export class DialogDemoComponent {
     if (!tpl) return;
     this.dialogService
       .open<string>(
-        tpl as PolymorpheusContent,
+        tpl as NxpDynamicContent,
         {
           label: 'Confirm Action',
           closable: true,
@@ -792,7 +792,7 @@ export class DialogDemoComponent {
 
   openDeleteWithComponent(): void {
     this.dialogService
-      .open<boolean>(new PolymorpheusComponent(ConfirmDeleteDialogComponent), {
+      .open<boolean>(new NxpDynamicComponent(ConfirmDeleteDialogComponent), {
         label: 'Confirm Delete',
         size: 's',
         data: { itemName: 'annual-report.pdf' },

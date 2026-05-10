@@ -20,7 +20,7 @@ import { NXP_TREE_LEVEL } from './tree.tokens';
 @Component({
   selector: 'nxp-tree-item-content',
   template: `
-    <div [class]="rowClasses" [style.padding-left.px]="indentPx()">
+    <div [class]="rowClasses()" [style.padding-left.px]="indentPx()">
       @if (item.expandable()) {
         <button
           type="button"
@@ -45,7 +45,7 @@ import { NXP_TREE_LEVEL } from './tree.tokens';
       } @else {
         <span class="size-5 shrink-0"></span>
       }
-      <span class="flex-1 truncate text-sm text-text-primary">
+      <span class="min-w-0 flex-1 text-sm text-text-primary">
         <ng-content />
       </span>
     </div>
@@ -62,23 +62,27 @@ export class NxpTreeItemContentComponent {
   /** Left padding in pixels based on nesting depth. */
   readonly indentPx = computed(() => Math.max(0, this.level) * 16 + 4);
 
-  readonly rowClasses = cx(
-    'group flex cursor-pointer select-none items-center gap-1 rounded-s py-1 pr-2',
-    'text-text-secondary',
-    'hover:bg-bg-neutral-1',
-    'focus-within:ring-1 focus-within:ring-border-focus focus-within:ring-offset-1',
+  readonly rowClasses = computed(() =>
+    cx(
+      'group flex select-none items-center gap-1.5 rounded-s py-1 pr-2',
+      'text-text-secondary transition-colors duration-fast',
+      'hover:bg-bg-neutral-1',
+      this.item.expandable() ? 'cursor-pointer' : 'cursor-default',
+    ),
   );
 
   readonly toggleClasses = cx(
     'flex shrink-0 items-center justify-center rounded-xs',
-    'size-5 text-text-tertiary',
-    'hover:text-text-primary',
-    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
+    'size-5 text-text-tertiary transition-colors duration-fast',
+    'group-hover:text-text-primary',
+    'outline-none focus-visible:outline focus-visible:outline-2',
+    'focus-visible:outline-offset-1 focus-visible:outline-border-focus',
   );
 
-  readonly chevronClasses = () =>
+  readonly chevronClasses = computed(() =>
     cx(
       'size-4 shrink-0 transition-transform duration-normal ease-[cubic-bezier(0.87,0,0.13,1)]',
       this.item.expanded() && 'rotate-90',
-    );
+    ),
+  );
 }

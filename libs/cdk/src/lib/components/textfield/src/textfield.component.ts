@@ -13,13 +13,10 @@ import {
   NXP_TEXTFIELD_OPTIONS,
   type NxpTextfieldSize,
 } from './textfield.options';
-import { cx } from '../../../utils';
-import {
-  NxpDropdownDirective,
-  NxpDropdownOpen,
-} from '../../../portals/dropdown';
+import { cx } from '@ngxpro/cdk';
+import { NxpDropdownDirective, NxpDropdownOpen } from '@ngxpro/cdk';
 import { NXP_TEXTFIELD_END } from './textfield-end.directive';
-import { nxpAsDataListHost, NxpDataListHost } from '../../../tokens';
+import { nxpAsDataListHost, NxpDataListHost } from '@ngxpro/cdk';
 import {
   NXP_TEXTFIELD,
   nxpAsTextfieldAccessor,
@@ -30,7 +27,6 @@ import {
 
 @Component({
   selector: 'nxp-textfield',
-  standalone: true,
   template: `
     <ng-content select="label[nxpLabel]" />
     <div [class]="innerClasses()">

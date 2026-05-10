@@ -9,10 +9,10 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {
-  injectContext,
-  PolymorpheusOutlet,
-  type PolymorpheusContent,
-} from '@taiga-ui/polymorpheus';
+  nxpInjectContext,
+  NxpDynamicOutlet,
+  type NxpDynamicContent,
+} from '@ngxpro/cdk/dynamic';
 import { NxpActiveZone } from '../../directives/active-zone.directive';
 import { NxpAnimated } from '../../directives/animated.directive';
 import { NxpFocusTrap } from '../../directives/focus-trap.directive';
@@ -70,13 +70,12 @@ function nxpGetFocused(doc: Document): Element | null {
  */
 @Component({
   selector: 'nxp-modal',
-  standalone: true,
-  imports: [PolymorpheusOutlet],
+  imports: [NxpDynamicOutlet],
   template: `
     <div class="nxp-modal-backdrop" aria-hidden="true"></div>
     <div class="nxp-modal-scroll">
       <div class="nxp-modal-content">
-        <ng-container *polymorpheusOutlet="component(); context: context" />
+        <ng-container *nxpDynamicOutlet="component(); context: context" />
       </div>
     </div>
   `,
@@ -173,8 +172,8 @@ export class NxpModalComponent<T> implements OnInit, OnDestroy {
       : null;
   })();
 
-  readonly context = injectContext<NxpPortalContext<T>>();
-  readonly component = signal<PolymorpheusContent<NxpPortalContext<T>> | null>(
+  readonly context = nxpInjectContext<NxpPortalContext<T>>();
+  readonly component = signal<NxpDynamicContent<NxpPortalContext<T>> | null>(
     null,
   );
 

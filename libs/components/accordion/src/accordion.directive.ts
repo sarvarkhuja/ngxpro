@@ -21,7 +21,6 @@ import { AccordionComponent } from './accordion.component';
  */
 @Directive({
   selector: 'button[nxpAccordion], nxp-accordion-trigger[nxpAccordion]',
-  standalone: true,
   host: {
     '[attr.aria-expanded]': 'open()',
     '[class._open]': 'open()',

@@ -30,7 +30,6 @@ import { NXP_BLOCK_GROUP } from './block.options';
  */
 @Component({
   selector: 'nxp-block-group',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: NXP_BLOCK_GROUP, useExisting: NxpBlockGroupComponent },

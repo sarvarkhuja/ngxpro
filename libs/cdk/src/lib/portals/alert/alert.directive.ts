@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { injectContext } from '@taiga-ui/polymorpheus';
+import { nxpInjectContext } from '@ngxpro/cdk/dynamic';
 import { NxpAnimated } from '../../directives/animated.directive';
 import { NxpSwipeDismiss } from '../../directives/swipe-dismiss.directive';
 
@@ -17,7 +17,6 @@ export interface NxpPositionOptions {
  * (touch swipe-to-dismiss gesture) as host directives.
  */
 @Directive({
-  standalone: true,
   hostDirectives: [
     NxpAnimated,
     {
@@ -34,7 +33,7 @@ export interface NxpPositionOptions {
   },
 })
 export class NxpAlertDirective {
-  protected readonly context = injectContext<NxpPositionOptions>();
+  protected readonly context = nxpInjectContext<NxpPositionOptions>();
 
   protected hostClasses(): string {
     return 'm-1';

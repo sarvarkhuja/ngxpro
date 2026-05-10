@@ -25,7 +25,6 @@ import { NxpNavItemDirective } from './nav-item.directive';
  */
 @Component({
   selector: 'nxp-nav',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ng-content />

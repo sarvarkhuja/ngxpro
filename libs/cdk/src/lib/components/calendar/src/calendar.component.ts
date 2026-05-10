@@ -9,7 +9,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { cx, calendarContainerClass } from '../../../utils';
+import { cx, calendarContainerClass } from '@ngxpro/cdk';
 import { CalendarHeaderComponent } from './calendar-header.component';
 import { CalendarSheetComponent } from './calendar-sheet.component';
 import { CalendarYearComponent } from './calendar-year.component';
@@ -43,7 +43,6 @@ import type {
  */
 @Component({
   selector: 'nxp-calendar',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CalendarHeaderComponent,

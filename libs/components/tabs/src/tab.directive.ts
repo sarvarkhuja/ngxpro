@@ -37,7 +37,6 @@ export const NXP_TAB_ACTIVATE = 'nxp-tab-activate';
  */
 @Directive({
   selector: 'button[nxpTab], a[nxpTab]',
-  standalone: true,
   host: {
     '[attr.role]': '"tab"',
     // Default to focusable. NxpTabsDirective overrides via setAttribute to

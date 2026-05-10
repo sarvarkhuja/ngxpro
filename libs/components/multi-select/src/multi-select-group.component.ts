@@ -35,7 +35,6 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
  */
 @Component({
   selector: 'nxp-multi-select-group, div[nxpMultiSelectGroup]',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     role: 'group',

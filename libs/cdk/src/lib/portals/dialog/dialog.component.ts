@@ -17,7 +17,7 @@ import {
 } from 'rxjs';
 import { of } from 'rxjs';
 import type { Observable } from 'rxjs';
-import { injectContext, PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
+import { nxpInjectContext, NxpDynamicOutlet } from '@ngxpro/cdk/dynamic';
 import type { NxpDialogContext } from './dialog.options';
 import { NXP_DIALOGS_CLOSE } from './dialog-close.service';
 import { NxpDialogCloseService } from './dialog-close.service';
@@ -30,8 +30,7 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
 
 @Component({
   selector: 'nxp-dialog',
-  standalone: true,
-  imports: [PolymorpheusOutlet],
+  imports: [NxpDynamicOutlet],
   template: `
     @if (context.closable) {
       <button
@@ -71,9 +70,7 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
       </header>
     }
 
-    <ng-container
-      *polymorpheusOutlet="context.content as text; context: context"
-    >
+    <ng-container *nxpDynamicOutlet="context.content as text; context: context">
       <header class="mb-4">
         <h2
           [id]="context.id"
@@ -140,7 +137,7 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
 })
 export class NxpDialogComponent<O, I> {
   protected readonly close$ = new Subject<void>();
-  protected readonly context = injectContext<NxpDialogContext<O, I>>();
+  protected readonly context = nxpInjectContext<NxpDialogContext<O, I>>();
 
   protected readonly primitive =
     typeof this.context.content === 'function' ||

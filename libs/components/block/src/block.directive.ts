@@ -67,7 +67,6 @@ const APPEARANCE_GROUP_CLASSES: Record<NxpBlockAppearance, string> = {
  */
 @Directive({
   selector: 'label[nxpBlock],input[nxpBlock]',
-  standalone: true,
   host: {
     '[class]': 'hostClasses()',
   },

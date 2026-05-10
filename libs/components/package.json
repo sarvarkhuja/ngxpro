@@ -31,7 +31,6 @@
     "@angular/router": "^21.1.0",
     "@ngxpro/cdk": "*",
     "@ngxpro/core": "*",
-    "@taiga-ui/polymorpheus": "^5.0.0",
     "rxjs": "^7.8.0",
     "tailwind-variants": "^3.0.0"
   },

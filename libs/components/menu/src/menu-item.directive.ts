@@ -7,7 +7,6 @@ import { Directive, ElementRef, inject, output, signal } from '@angular/core';
  */
 @Directive({
   selector: '[nxpMenuItem]',
-  standalone: true,
   host: {
     role: 'menuitemradio',
     tabindex: '0',

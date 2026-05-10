@@ -10,25 +10,29 @@ import {
   OnInit,
   output,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  outputToObservable,
+  takeUntilDestroyed,
+} from '@angular/core/rxjs-interop';
 import {
   EMPTY,
   fromEvent,
+  merge,
   of,
   repeat,
   switchMap,
   takeUntil,
   timer,
 } from 'rxjs';
-import { cx } from '../../../utils';
-import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
-import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
+import { cx } from '@ngxpro/cdk';
+import { NxpDynamicOutlet } from '@ngxpro/cdk/dynamic';
+import type { NxpDynamicContent } from '@ngxpro/cdk/dynamic';
 import type { NxpNotificationOptions } from './notification.options';
 import {
   NxpNotificationService,
   type NxpNotificationState,
 } from './notification.service';
-import { NxpSwipeDismiss } from '../../../directives/swipe-dismiss.directive';
+import { NxpSwipeDismiss } from '@ngxpro/cdk';
 
 // ── Size helpers ─────────────────────────────────────────────────────────────
 
@@ -80,8 +84,7 @@ const ICON_MAP: Record<string, string> = {
 
 @Component({
   selector: 'nxp-notification',
-  standalone: true,
-  imports: [PolymorpheusOutlet],
+  imports: [NxpDynamicOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [
     {
@@ -91,9 +94,10 @@ const ICON_MAP: Record<string, string> = {
     },
   ],
   host: {
-    role: 'alert',
-    'aria-live': 'polite',
-    // Static attributes — set once, not re-evaluated on CD
+    // role/aria-live differ by appearance: error/warning interrupt assertively,
+    // routine info/success/neutral toasts announce politely.
+    '[attr.role]': 'ariaRole()',
+    '[attr.aria-live]': 'ariaLive()',
     'data-nxp-toast': '',
     'data-swipe-out': 'false',
     '[class]': 'hostClasses()',
@@ -129,14 +133,14 @@ const ICON_MAP: Record<string, string> = {
     <div class="flex-1 min-w-0">
       @if (label()) {
         <p [class]="labelClasses()">
-          <ng-container *polymorpheusOutlet="label() as text">{{
+          <ng-container *nxpDynamicOutlet="label() as text">{{
             text
           }}</ng-container>
         </p>
       }
       @if (content()) {
         <p [class]="contentClasses()">
-          <ng-container *polymorpheusOutlet="content() as text">{{
+          <ng-container *nxpDynamicOutlet="content() as text">{{
             text
           }}</ng-container>
         </p>
@@ -160,8 +164,8 @@ export class NxpNotificationComponent implements OnInit {
   // ── Inputs ──────────────────────────────────────────────────────────────────
 
   readonly appearance = input<NxpNotificationOptions['appearance']>('info');
-  readonly label = input<PolymorpheusContent>('');
-  readonly content = input<PolymorpheusContent>('');
+  readonly label = input<NxpDynamicContent>('');
+  readonly content = input<NxpDynamicContent>('');
   readonly icon = input<string | ((appearance: string) => string)>('');
   readonly size = input<NxpNotificationOptions['size']>('m');
   readonly closable = input<boolean>(true);
@@ -200,6 +204,17 @@ export class NxpNotificationComponent implements OnInit {
   readonly isMountedOrRemoving = computed(() => {
     const state = this.notificationState();
     return state === 'mounted' || state === 'removing';
+  });
+
+  /** error/warning are alerts; everything else is a polite status. */
+  readonly ariaRole = computed(() => {
+    const a = this.appearance();
+    return a === 'error' || a === 'warning' ? 'alert' : 'status';
+  });
+
+  readonly ariaLive = computed(() => {
+    const a = this.appearance();
+    return a === 'error' || a === 'warning' ? 'assertive' : 'polite';
   });
 
   // ── Computed: icon resolution ─────────────────────────────────────────────
@@ -250,12 +265,14 @@ export class NxpNotificationComponent implements OnInit {
   readonly closeClasses = computed(() =>
     cx(
       'shrink-0 -mt-0.5 -mr-1 inline-flex items-center justify-center rounded-xs',
+      // WCAG 2.5.8: 24×24 minimum hit target across all sizes; icon font-size still scales.
+      'min-h-6 min-w-6',
       'text-text-tertiary hover:text-text-primary',
       'focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus',
       'transition-colors',
-      this.size() === 's' && 'h-4 w-4 text-xs',
-      this.size() === 'm' && 'h-5 w-5 text-sm',
-      this.size() === 'l' && 'h-6 w-6 text-base',
+      this.size() === 's' && 'text-xs',
+      this.size() === 'm' && 'text-sm',
+      this.size() === 'l' && 'text-base',
     ),
   );
 
@@ -272,21 +289,29 @@ export class NxpNotificationComponent implements OnInit {
       }
     });
 
-    // Wire swipe-dismiss to dismissed output
+    // Wire swipe-dismiss to dismissed output. `swipeDismissed` is an
+    // `OutputEmitterRef`; convert to Observable so we can compose teardown.
     const swipeDismiss = inject(NxpSwipeDismiss);
-    swipeDismiss.swipeDismissed.subscribe(() => this.dismissed.emit());
+    outputToObservable(swipeDismiss.swipeDismissed)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.dismissed.emit());
   }
 
-  // ── Auto-close (Taiga pattern: pause on mouseenter, resume on mouseleave) ───
+  // ── Auto-close: pause when toast has focus (keyboard) or pointer hover ──
 
   ngOnInit(): void {
     const el = this.el.nativeElement;
+    const pause$ = merge(fromEvent(el, 'mouseenter'), fromEvent(el, 'focusin'));
+    const resume$ = merge(
+      fromEvent(el, 'mouseleave'),
+      fromEvent(el, 'focusout'),
+    );
 
     of(this.autoClose())
       .pipe(
         switchMap((ms) => (ms ? timer(ms) : EMPTY)),
-        takeUntil(fromEvent(el, 'mouseenter')),
-        repeat({ delay: () => fromEvent(el, 'mouseleave') }),
+        takeUntil(pause$),
+        repeat({ delay: () => resume$ }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => this.dismissed.emit());

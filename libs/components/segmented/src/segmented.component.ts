@@ -55,7 +55,6 @@ import {
  */
 @Component({
   selector: 'nxp-segmented',
-  standalone: true,
   template: `
     <ng-content />
     <!-- Animated sliding indicator — sits behind children via z-index -->

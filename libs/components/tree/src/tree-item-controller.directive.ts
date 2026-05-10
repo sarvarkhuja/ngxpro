@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { nxpProvide } from '@ngxpro/cdk';
 import { NXP_TREE_CONTROLLER } from './tree.tokens';
 import type { NxpTreeController } from './tree.interfaces';
@@ -21,6 +21,9 @@ import { NxpTreeItemComponent } from './tree-item.component';
   providers: [nxpProvide(NXP_TREE_CONTROLLER, NxpTreeItemControllerDirective)],
 })
 export class NxpTreeItemControllerDirective implements NxpTreeController {
+  /** Accepts the bare `nxpTreeController` attribute as well as a `[nxpTreeController]="true"` binding form. The value is unused. */
+  readonly nxpTreeController = input<unknown>();
+
   private readonly stateMap = new WeakMap<NxpTreeItemComponent, boolean>();
 
   isExpanded(item: NxpTreeItemComponent): boolean {

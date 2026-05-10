@@ -7,13 +7,13 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { focusInput, hasErrorInput } from '../../../utils';
-import { cx } from '../../../utils';
+import { focusInput, hasErrorInput } from '@ngxpro/cdk';
+import { cx } from '@ngxpro/cdk';
 import {
   NXP_TEXTFIELD,
   NxpTextfieldAccessor,
   nxpAsTextfieldAccessor,
-} from '../../textfield/src/textfield-accessor';
+} from '@ngxpro/cdk/components/textfield';
 
 /**
  * Input directive — applies Tremor-style classes to native `<input>` and `<textarea>` elements,
@@ -35,9 +35,9 @@ import {
  */
 @Directive({
   selector: 'input[nxpInput], textarea[nxpInput]',
-  standalone: true,
   host: {
     '[class]': 'classes()',
+    '[attr.aria-invalid]': 'hasError() || null',
     '(input)': 'syncFromHost()',
     '(change)': 'syncFromHost()',
   },

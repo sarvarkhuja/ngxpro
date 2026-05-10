@@ -10,7 +10,6 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Directive({
   selector: '[nxpVisualViewport]',
-  standalone: true,
 })
 export class NxpVisualViewportDirective implements OnInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);

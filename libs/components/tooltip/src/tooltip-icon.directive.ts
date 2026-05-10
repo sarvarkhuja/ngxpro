@@ -22,7 +22,6 @@ import { NXP_TOOLTIP_OPTIONS } from './tooltip.options';
  */
 @Component({
   selector: 'nxp-tooltip-icon',
-  standalone: true,
   hostDirectives: [
     {
       directive: NxpTooltipDirective,

@@ -44,7 +44,6 @@ export type NxpSliderComfortableVariant = 'pips' | 'scrubber';
  */
 @Component({
   selector: 'nxp-slider-comfortable',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {

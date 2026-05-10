@@ -9,9 +9,9 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import {
-  POLYMORPHEUS_CONTEXT,
-  type PolymorpheusComponent,
-} from '@taiga-ui/polymorpheus';
+  NXP_DYNAMIC_CONTEXT,
+  type NxpDynamicComponent,
+} from '@ngxpro/cdk/dynamic';
 import { NxpPortalService } from './portal.service';
 
 @Directive()
@@ -28,13 +28,13 @@ export abstract class NxpPortals {
     inject(NxpPortalService).attach(this);
   }
 
-  addComponent<C>(component: PolymorpheusComponent<C>): ComponentRef<C> {
-    // Access internal injector from PolymorpheusComponent (matches Taiga pattern)
+  addComponent<C>(component: NxpDynamicComponent<C>): ComponentRef<C> {
+    // Access internal injector from NxpDynamicComponent
     const context = (
       component as unknown as {
         i?: { get: (t: unknown, o?: { optional: boolean }) => unknown };
       }
-    ).i?.get(POLYMORPHEUS_CONTEXT, { optional: true });
+    ).i?.get(NXP_DYNAMIC_CONTEXT, { optional: true });
     const injector = component.createInjector(
       this.injector,
       context ?? undefined,

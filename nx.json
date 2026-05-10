@@ -58,13 +58,20 @@
     }
   },
   "release": {
-    "projects": ["cdk", "core", "components", "blocks", "fintech"],
+    "projects": [
+      "cdk",
+      "core",
+      "components",
+      "blocks",
+      "fintech",
+      "addon-doc-lib"
+    ],
     "projectsRelationship": "fixed",
     "releaseTag": {
       "pattern": "v{version}"
     },
     "version": {
-      "preVersionCommand": "npx nx run-many -t build --parallel=3 -p cdk,core,components,blocks,fintech",
+      "preVersionCommand": "npx nx run-many -t build --parallel=1 -p cdk,core,components,blocks,fintech",
       "specifierSource": "conventional-commits",
       "currentVersionResolver": "git-tag",
       "fallbackCurrentVersionResolver": "disk",
@@ -80,25 +87,56 @@
     },
     "conventionalCommits": {
       "types": {
-        "feat": { "semverBump": "minor", "changelog": { "title": "Features" } },
-        "fix": { "semverBump": "patch", "changelog": { "title": "Bug Fixes" } },
+        "feat": {
+          "semverBump": "minor",
+          "changelog": {
+            "title": "Features"
+          }
+        },
+        "fix": {
+          "semverBump": "patch",
+          "changelog": {
+            "title": "Bug Fixes"
+          }
+        },
         "perf": {
           "semverBump": "patch",
-          "changelog": { "title": "Performance" }
+          "changelog": {
+            "title": "Performance"
+          }
         },
         "refactor": {
           "semverBump": "patch",
-          "changelog": { "title": "Refactors" }
+          "changelog": {
+            "title": "Refactors"
+          }
         },
         "docs": {
           "semverBump": "none",
-          "changelog": { "title": "Documentation" }
+          "changelog": {
+            "title": "Documentation"
+          }
         },
-        "build": { "semverBump": "none", "changelog": false },
-        "ci": { "semverBump": "none", "changelog": false },
-        "chore": { "semverBump": "none", "changelog": false },
-        "test": { "semverBump": "none", "changelog": false },
-        "style": { "semverBump": "none", "changelog": false }
+        "build": {
+          "semverBump": "none",
+          "changelog": false
+        },
+        "ci": {
+          "semverBump": "none",
+          "changelog": false
+        },
+        "chore": {
+          "semverBump": "none",
+          "changelog": false
+        },
+        "test": {
+          "semverBump": "none",
+          "changelog": false
+        },
+        "style": {
+          "semverBump": "none",
+          "changelog": false
+        }
       }
     }
   }

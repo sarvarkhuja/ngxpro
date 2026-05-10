@@ -31,7 +31,6 @@ import { NxpStepComponent } from './step.component';
  */
 @Component({
   selector: 'nxp-stepper',
-  standalone: true,
   template: `<ng-content />`,
   host: {
     '[class]': 'hostClasses()',

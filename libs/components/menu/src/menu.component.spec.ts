@@ -4,7 +4,6 @@ import { NxpMenuComponent } from './menu.component';
 import { NxpMenuItemDirective } from './menu-item.directive';
 
 @Component({
-  standalone: true,
   imports: [NxpMenuComponent, NxpMenuItemDirective],
   template: `
     <nxp-menu

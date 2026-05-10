@@ -13,6 +13,5 @@ import { Directive } from '@angular/core';
  */
 @Directive({
   selector: '[nxpItem]',
-  standalone: true,
 })
 export class ItemDirective {}

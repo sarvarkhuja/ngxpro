@@ -125,7 +125,6 @@ export type ButtonSize = NonNullable<
 
 @Component({
   selector: 'nxp-button, nxp-a-button, button[nxpButton], a[nxpButton]',
-  standalone: true,
   template: `
     @if (loading()) {
       <!-- Invisible content preserves layout dimensions -->

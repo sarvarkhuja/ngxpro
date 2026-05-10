@@ -1,10 +1,10 @@
 import { type Signal, type WritableSignal } from '@angular/core';
 import { nxpDirectiveBinding } from '../../utils/directive-binding';
-import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
+import type { NxpDynamicContent } from '@ngxpro/cdk/dynamic';
 import { NxpDropdownDirective } from './dropdown.directive';
 import { NxpDropdownOpen } from './dropdown-open.directive';
 
-type C = PolymorpheusContent;
+type C = NxpDynamicContent;
 
 /**
  * Creates a reactive binding to the nxpDropdown input of NxpDropdownDirective.

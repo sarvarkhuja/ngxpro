@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  HostListener,
   input,
   OnInit,
   output,
@@ -72,9 +71,11 @@ function addMonths(date: Date, n: number): Date {
  */
 @Component({
   selector: 'nxp-calendar-range',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarComponent, DataListComponent, OptionDirective],
+  host: {
+    '(document:keydown.escape)': 'onEsc($event)',
+  },
   template: `
     <div [class]="containerClass()" role="group" aria-label="Date range picker">
       <nxp-calendar
@@ -230,8 +231,12 @@ export class CalendarRangeComponent implements OnInit {
   /** Saved value before a pick starts, used for ESC-cancel. */
   protected readonly previousValue = signal<[Date, Date] | null>(null);
 
-  /** The month shown in the LEFT calendar. Right always shows leftMonth+1. */
-  protected readonly leftMonth = signal<Date>(new Date());
+  /**
+   * The month shown in the LEFT calendar. Right always shows leftMonth+1.
+   * Placeholder value is overwritten in ngOnInit before first render so
+   * construction-time `new Date()` does not run during SSR/tests.
+   */
+  protected readonly leftMonth = signal<Date>(new Date(2000, 0, 1));
 
   /** Which preset period is currently active (if any). */
   protected readonly activeItem = signal<DateRangePeriod | null>(null);
@@ -320,7 +325,6 @@ export class CalendarRangeComponent implements OnInit {
   }
 
   /** ESC cancels an in-progress pick and restores the previous value. */
-  @HostListener('document:keydown.escape', ['$event'])
   protected onEsc(event: Event): void {
     if (!this.pickedStart()) return;
     event.stopPropagation();

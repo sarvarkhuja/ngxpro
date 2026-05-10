@@ -29,7 +29,6 @@ import { NxpMenuItemDirective } from './menu-item.directive';
  */
 @Component({
   selector: 'nxp-menu',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ng-content />

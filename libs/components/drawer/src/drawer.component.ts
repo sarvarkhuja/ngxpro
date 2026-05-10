@@ -29,7 +29,6 @@ import {
  */
 @Component({
   selector: 'nxp-drawer',
-  standalone: true,
   template: `
     <aside class="nxp-drawer__aside">
       <div class="nxp-drawer__scroll">

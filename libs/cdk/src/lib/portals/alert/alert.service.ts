@@ -1,5 +1,5 @@
 import { type ComponentRef, Injectable } from '@angular/core';
-import type { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import type { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 import { NxpPortal } from '../portal';
 import { NxpPositionOptions } from './alert.directive';
 import { NXP_LEAVE } from '../../directives/animated.directive';
@@ -20,16 +20,14 @@ export abstract class NxpAlertService<
 > extends NxpPortal<T, K> {
   private readonly concurrency: number;
   private readonly current = new Map<unknown, ComponentRef<unknown>>();
-  private readonly queue = new Set<PolymorpheusComponent<unknown>>();
+  private readonly queue = new Set<NxpDynamicComponent<unknown>>();
 
   constructor(concurrency: number) {
     super();
     this.concurrency = Math.min(concurrency, 5);
   }
 
-  protected override add(
-    component: PolymorpheusComponent<unknown>,
-  ): () => void {
+  protected override add(component: NxpDynamicComponent<unknown>): () => void {
     if (this.current.size < this.concurrency) {
       this.current.set(component, this.service.add(component));
     } else {

@@ -57,7 +57,6 @@ function setupAnimationMocks() {
 }
 
 @Component({
-  standalone: true,
   imports: [TextMorphDirective],
   template: `
     <span
@@ -92,7 +91,6 @@ class TestHostComponent {
 }
 
 @Component({
-  standalone: true,
   imports: [TextMorphComponent],
   template: `
     <nxp-text-morph

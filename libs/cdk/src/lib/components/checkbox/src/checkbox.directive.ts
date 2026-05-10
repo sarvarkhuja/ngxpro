@@ -2,12 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
+  forwardRef,
   inject,
   input,
 } from '@angular/core';
+import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { NXP_CHECKBOX_OPTIONS } from './checkbox.options';
-import { cx } from '../../../utils';
+import { cx } from '@ngxpro/cdk';
 
 export type NxpCheckboxDirectiveSize = 's' | 'm' | 'l';
 export type NxpCheckboxDirectiveColor = 'primary' | 'secondary' | 'danger';
@@ -16,28 +19,38 @@ export type NxpCheckboxDirectiveColor = 'primary' | 'secondary' | 'danger';
  * Checkbox input directive — applies to native `<input type="checkbox">` elements.
  *
  * Styled purely via `:checked` / `:indeterminate` / `:disabled` pseudo-classes,
- * so native state drives the visuals with no Angular-side mirroring. Integrates
- * with Reactive Forms via Angular's built-in CheckboxControlValueAccessor — use
- * with `formControl`, `formControlName`, or `[(ngModel)]`.
+ * so native state drives the visuals with no Angular-side mirroring. Provides
+ * a tri-state `ControlValueAccessor`: `true` checks, `false` unchecks, `null`
+ * sets indeterminate — making it usable with `[(ngModel)]` for parent rows of
+ * a checkbox tree.
  *
  * @example
- * <!-- Basic -->
+ * <!-- Boolean -->
  * <input type="checkbox" nxpCheckbox [formControl]="ctrl" />
  *
  * @example
- * <!-- Variants -->
- * <input type="checkbox" nxpCheckbox size="l" color="danger" />
+ * <!-- Tri-state via ngModel; null = indeterminate -->
+ * <input type="checkbox" nxpCheckbox
+ *        [ngModel]="state" (ngModelChange)="onToggle($event)" />
  */
 @Component({
   selector: 'input[type="checkbox"][nxpCheckbox]',
-  standalone: true,
   template: '',
   host: {
     '[class]': 'hostClasses()',
     '[attr.data-size]': 'size()',
     '[attr.data-color]': 'color()',
     '[class.nxp-checkbox]': 'true',
+    '(change)': 'onNativeChange()',
+    '(blur)': 'onTouched()',
   },
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NxpCheckboxDirective),
+      multi: true,
+    },
+  ],
   styles: [
     `
       /* Checkmark on :checked — pure CSS, flips the instant the browser's
@@ -59,8 +72,9 @@ export type NxpCheckboxDirectiveColor = 'primary' | 'secondary' | 'danger';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NxpCheckboxDirective {
+export class NxpCheckboxDirective implements ControlValueAccessor {
   private readonly options = inject(NXP_CHECKBOX_OPTIONS);
+  private readonly elRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
 
   /** Size of the checkbox. Defaults to option value ('m'). */
   readonly size = input<NxpCheckboxDirectiveSize>(
@@ -72,6 +86,43 @@ export class NxpCheckboxDirective {
 
   /** Additional CSS classes. */
   readonly class = input<string>('');
+
+  private onChange: (value: boolean) => void = () => {
+    /* noop until form registers */
+  };
+  onTouched: () => void = () => {
+    /* noop until form registers */
+  };
+
+  /** Mirror form state onto the native element. `null` flips indeterminate. */
+  writeValue(value: boolean | null): void {
+    const el = this.elRef.nativeElement;
+    el.checked = value === true;
+    el.indeterminate = value === null;
+  }
+
+  registerOnChange(fn: (value: boolean) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.elRef.nativeElement.disabled = isDisabled;
+  }
+
+  /**
+   * The browser auto-clears `indeterminate` on user interaction, so we just
+   * forward the resolved boolean. Consumers can re-set `null` from outside
+   * if their domain logic needs to roll back to indeterminate.
+   */
+  onNativeChange(): void {
+    const el = this.elRef.nativeElement;
+    el.indeterminate = false;
+    this.onChange(el.checked);
+  }
 
   readonly hostClasses = computed(() => {
     const size = this.size();

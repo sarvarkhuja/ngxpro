@@ -45,7 +45,6 @@ import { NXP_TEXTAREA_OPTIONS } from './textarea.options';
  */
 @Directive({
   selector: 'textarea[nxpTextarea]',
-  standalone: true,
   providers: [nxpAsTextfieldAccessor(NxpTextareaComponent)],
   host: {
     '[class]': 'hostClasses()',

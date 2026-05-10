@@ -28,7 +28,6 @@ import { NxpSelectOptionComponent } from './select-option.component';
 
 @Directive({
   selector: 'input[nxpComboBox]',
-  standalone: true,
   providers: [
     nxpAsOptionContent(NxpSelectOptionComponent),
     nxpAsTextfieldAccessor(NxpComboBoxDirective),

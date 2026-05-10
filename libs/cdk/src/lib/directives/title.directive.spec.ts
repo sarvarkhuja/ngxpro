@@ -4,7 +4,6 @@ import { TitleDirective } from './title.directive';
 import { SubtitleDirective } from './cell-subtitle.directive';
 
 @Component({
-  standalone: true,
   imports: [TitleDirective, SubtitleDirective],
   template: `
     <div [nxpTitle]="size" data-testid="title">
@@ -133,6 +132,6 @@ describe('SubtitleDirective', () => {
     expect(element.classList.contains('items-center')).toBe(true);
     expect(element.classList.contains('gap-1')).toBe(true);
     expect(element.classList.contains('text-sm')).toBe(true);
-    expect(element.classList.contains('text-gray-600')).toBe(true);
+    expect(element.classList.contains('text-text-secondary')).toBe(true);
   });
 });

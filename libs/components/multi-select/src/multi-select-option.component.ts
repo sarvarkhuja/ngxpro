@@ -25,7 +25,6 @@ import { NxpMultiSelectComponent } from './multi-select.component';
  */
 @Component({
   selector: 'nxp-multi-select-option',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     role: 'option',

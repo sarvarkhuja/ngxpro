@@ -15,7 +15,6 @@ import {
  * This mirrors the `tuiWithStyles` pattern used in Taiga UI.
  */
 @Component({
-  standalone: true,
   template: '',
   styles: [
     `
@@ -116,7 +115,6 @@ class NxpConnectedStyles {}
  */
 @Directive({
   selector: 'nxp-stepper[nxpConnected]',
-  standalone: true,
   host: { class: 'nxp-connected' },
 })
 export class NxpConnectedDirective {

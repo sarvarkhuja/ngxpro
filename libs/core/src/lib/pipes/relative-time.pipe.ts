@@ -9,7 +9,7 @@ import { NowService } from '../services/now.service';
  * @example
  * {{ pastDate | nxpRelativeTime }} => "2 hours ago"
  */
-@Pipe({ name: 'nxpRelativeTime', standalone: true, pure: false })
+@Pipe({ name: 'nxpRelativeTime', pure: false })
 export class RelativeTimePipe implements PipeTransform {
   private readonly format = inject(FormatService);
   private readonly nowService = inject(NowService);

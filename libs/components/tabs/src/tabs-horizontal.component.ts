@@ -17,7 +17,6 @@ import { NxpTabsAnimatedBase } from './tabs-animated-base';
  */
 @Component({
   selector: 'nxp-tabs:not([vertical])',
-  standalone: true,
   template: `
     <ng-content />
 

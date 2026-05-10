@@ -27,7 +27,6 @@ import { NXP_INPUT_CHIP_OPTIONS } from './input-chip.options';
 
 @Component({
   selector: 'nxp-input-chip',
-  standalone: true,
   imports: [NxpInputChipItemComponent, FormsModule],
   template: `
     <div class="flex flex-wrap items-center gap-1 min-h-[inherit] w-full p-1.5">

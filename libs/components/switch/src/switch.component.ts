@@ -100,7 +100,6 @@ const TRACK_BG_TRANSITION = `background-color ${FAST}`;
 
 @Component({
   selector: 'nxp-switch',
-  standalone: true,
   template: `
     <button
       #track

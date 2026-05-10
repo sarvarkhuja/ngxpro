@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
+import type { NxpDynamicContent } from '@ngxpro/cdk/dynamic';
 
 export interface NxpNotificationOptions {
   /** Visual appearance / severity level. */
@@ -19,9 +19,9 @@ export interface NxpNotificationOptions {
   /** Whether to render a close (×) button. */
   closable: boolean;
   /** Optional bold title above the message content. */
-  label: PolymorpheusContent;
+  label: NxpDynamicContent;
   /** Default message body content (can be overridden at call-site). */
-  content: PolymorpheusContent;
+  content: NxpDynamicContent;
   /** Position of the notification stack on screen. */
   position:
     | 'top-right'

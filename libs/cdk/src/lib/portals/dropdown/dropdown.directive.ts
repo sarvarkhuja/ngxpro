@@ -14,10 +14,10 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
-  PolymorpheusComponent,
-  type PolymorpheusContent,
-  PolymorpheusTemplate,
-} from '@taiga-ui/polymorpheus';
+  NxpDynamicComponent,
+  type NxpDynamicContent,
+  NxpDynamicTemplate,
+} from '@ngxpro/cdk/dynamic';
 import { Subject, throttleTime } from 'rxjs';
 import { nxpZonefreeScheduler } from '../../observables/zone';
 import { nxpAsVehicle, NxpVehicle } from '../../classes/vehicle';
@@ -81,19 +81,18 @@ export class NxpDropdownDirective
   public readonly ref = signal<ComponentRef<unknown> | null>(null);
   public readonly el = nxpInjectElement();
   public readonly type = 'dropdown';
-  public readonly component = new PolymorpheusComponent(
+  public readonly component = new NxpDynamicComponent(
     inject(NXP_DROPDOWN_COMPONENT),
     inject(INJECTOR),
   );
 
   public readonly nxpDropdown =
-    input<PolymorpheusContent<NxpContext<() => void>>>();
-  public readonly content = computed<
-    PolymorpheusContent<NxpContext<() => void>>
-  >((content = this.nxpDropdown()) =>
-    content instanceof TemplateRef
-      ? new PolymorpheusTemplate(content, this.cdr)
-      : content,
+    input<NxpDynamicContent<NxpContext<() => void>>>();
+  public readonly content = computed<NxpDynamicContent<NxpContext<() => void>>>(
+    (content = this.nxpDropdown()) =>
+      content instanceof TemplateRef
+        ? new NxpDynamicTemplate(content, this.cdr)
+        : content,
   );
 
   public get position(): 'absolute' | 'fixed' {

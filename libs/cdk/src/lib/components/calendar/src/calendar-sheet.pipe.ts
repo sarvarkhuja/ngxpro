@@ -15,7 +15,6 @@ import type { WeekStart } from './calendar.types';
 @Pipe({
   name: 'calendarSheet',
   pure: true,
-  standalone: true,
 })
 export class CalendarSheetPipe implements PipeTransform {
   transform(year: number, month: number, weekStart: WeekStart): Date[][] {

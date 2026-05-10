@@ -3,7 +3,6 @@ import { NxpBadgeDirective } from './badge.directive';
 
 @Component({
   selector: 'nxp-badge',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [
     {

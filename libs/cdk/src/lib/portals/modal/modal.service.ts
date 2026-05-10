@@ -1,5 +1,5 @@
 import { Injectable, type Type } from '@angular/core';
-import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 import { NXP_LEAVE } from '../../directives/animated.directive';
 import { NxpPortal } from '../portal';
 import { NxpModalComponent } from './modal.component';
@@ -25,13 +25,13 @@ export abstract class NxpModalService<T, K = void> extends NxpPortal<T, K> {
   }
 
   protected override add(
-    component: PolymorpheusComponent<NxpModalComponent<T>>,
+    component: NxpDynamicComponent<NxpModalComponent<T>>,
   ): () => void {
     const ref = this.service.add(component);
     const el: HTMLElement = ref.location.nativeElement;
 
     ref.instance.component.set(
-      new PolymorpheusComponent(this.content as Type<unknown>),
+      new NxpDynamicComponent(this.content as Type<unknown>),
     );
 
     return () => {

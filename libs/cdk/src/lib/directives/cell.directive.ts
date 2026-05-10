@@ -1,4 +1,4 @@
-import { Directive, HostBinding, input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { cx } from '../utils/cx';
 
 /**
@@ -40,10 +40,10 @@ import { cx } from '../utils/cx';
  */
 @Directive({
   selector: '[nxpCell]',
-  standalone: true,
   host: {
     '[attr.data-size]': 'size()',
     '[attr.data-height]': 'height()',
+    '[class]': 'hostClasses',
   },
 })
 export class CellDirective {
@@ -65,7 +65,6 @@ export class CellDirective {
    */
   readonly height = input<'compact' | 'normal' | 'spacious'>('normal');
 
-  @HostBinding('class')
   protected get hostClasses(): string {
     const size = this.size();
     const heightMode = this.height();

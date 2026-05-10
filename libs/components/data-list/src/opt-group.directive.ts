@@ -18,7 +18,6 @@ import { cx } from '@ngxpro/cdk';
  */
 @Directive({
   selector: '[nxpOptGroup]',
-  standalone: true,
   host: {
     role: 'group',
     '[attr.aria-label]': 'label()',

@@ -10,12 +10,13 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": ["es2022", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@ngxpro/cdk": ["libs/cdk/src/index.ts"],
+      "@ngxpro/cdk/dynamic": ["libs/cdk/src/lib/dynamic/src/index.ts"],
       "@ngxpro/core": ["libs/core/src/index.ts"],
       "@ngxpro/components": ["libs/components/src/index.ts"],
       "@ngxpro/components/accordion": [
@@ -110,7 +111,36 @@
       "@ngxpro/components/drawer": ["libs/components/drawer/src/index.ts"],
       "@ngxpro/components/switch": ["libs/components/switch/src/index.ts"],
       "@ngxpro/components/menu": ["libs/components/menu/src/index.ts"],
-      "@ngxpro/components/range": ["libs/components/range/src/index.ts"]
+      "@ngxpro/components/range": ["libs/components/range/src/index.ts"],
+      "@ngxpro/addon-doc-lib": ["libs/addon-doc-lib/src/index.ts"],
+      "@ngxpro/addon-doc-lib/types": ["libs/addon-doc-lib/types/src/index.ts"],
+      "@ngxpro/addon-doc-lib/utils": ["libs/addon-doc-lib/utils/src/index.ts"],
+      "@ngxpro/addon-doc-lib/tokens": [
+        "libs/addon-doc-lib/tokens/src/index.ts"
+      ],
+      "@ngxpro/addon-doc-lib/code": ["libs/addon-doc-lib/code/src/index.ts"],
+      "@ngxpro/addon-doc-lib/copy": ["libs/addon-doc-lib/copy/src/index.ts"],
+      "@ngxpro/addon-doc-lib/tab": ["libs/addon-doc-lib/tab/src/index.ts"],
+      "@ngxpro/addon-doc-lib/toc": ["libs/addon-doc-lib/toc/src/index.ts"],
+      "@ngxpro/addon-doc-lib/theme-switcher": [
+        "libs/addon-doc-lib/theme-switcher/src/index.ts"
+      ],
+      "@ngxpro/addon-doc-lib/example": [
+        "libs/addon-doc-lib/example/src/index.ts"
+      ],
+      "@ngxpro/addon-doc-lib/api": ["libs/addon-doc-lib/api/src/index.ts"],
+      "@ngxpro/addon-doc-lib/demo": ["libs/addon-doc-lib/demo/src/index.ts"],
+      "@ngxpro/addon-doc-lib/page": ["libs/addon-doc-lib/page/src/index.ts"],
+      "@ngxpro/addon-doc-lib/source-code": [
+        "libs/addon-doc-lib/source-code/src/index.ts"
+      ],
+      "@ngxpro/addon-doc-lib/header": [
+        "libs/addon-doc-lib/header/src/index.ts"
+      ],
+      "@ngxpro/addon-doc-lib/navigation": [
+        "libs/addon-doc-lib/navigation/src/index.ts"
+      ],
+      "@ngxpro/addon-doc-lib/main": ["libs/addon-doc-lib/main/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

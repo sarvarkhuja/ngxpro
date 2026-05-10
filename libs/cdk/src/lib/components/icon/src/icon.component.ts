@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { cx } from '../../../utils';
+import { cx } from '@ngxpro/cdk';
 import { NXP_ICON_OPTIONS, type NxpIconOptions } from './icon.options';
 import { NXP_ICON_RESOLVER } from './icon-resolver.token';
 
@@ -39,7 +39,6 @@ const REMIX_ICON_CLASS = /^ri-[\w-]+$/;
  */
 @Component({
   selector: 'nxp-icon',
-  standalone: true,
   template: `
     @if (isRemixClass()) {
       <span [class]="remixSizeClasses()">

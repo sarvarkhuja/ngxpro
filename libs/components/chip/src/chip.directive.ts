@@ -23,7 +23,6 @@ const APPEARANCE_CLASSES: Record<NxpChipAppearance, string> = {
 
 @Directive({
   selector: '[nxpChip]',
-  standalone: true,
   host: {
     '[class]': 'hostClasses()',
     '[attr.data-size]': 'size()',

@@ -51,7 +51,6 @@ const CELL_DISABLED = 'bg-bg-neutral-1 cursor-not-allowed opacity-50';
  */
 @Component({
   selector: 'nxp-input-pin',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {

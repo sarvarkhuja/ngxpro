@@ -1,5 +1,5 @@
-import { Directive, HostListener, inject, input } from '@angular/core';
-import { NXP_WINDOW } from '../../../tokens';
+import { Directive, inject, input } from '@angular/core';
+import { NXP_WINDOW } from '@ngxpro/cdk';
 
 /**
  * Transformer applied to selected text before it hits the clipboard.
@@ -16,14 +16,15 @@ export type NxpStringTransformer = (text: string) => string;
  */
 @Directive({
   selector: '[nxpCopyProcessor]',
-  standalone: true,
+  host: {
+    '(copy)': 'onCopy($event)',
+  },
 })
 export class NxpCopyProcessorDirective {
   private readonly win = inject(NXP_WINDOW);
 
   readonly nxpCopyProcessor = input<NxpStringTransformer>((text) => text);
 
-  @HostListener('copy', ['$event'])
   protected onCopy(event: ClipboardEvent): void {
     const selected = this.win?.getSelection()?.toString() ?? '';
     if (!selected) {

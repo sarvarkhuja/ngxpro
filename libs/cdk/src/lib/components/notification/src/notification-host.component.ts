@@ -11,8 +11,8 @@ import {
   type NxpNotification,
 } from './notification.service';
 import type { NxpNotificationOptions } from './notification.options';
-import { NXP_TOAST_GAP } from '../../../constants';
-import { NXP_VISIBLE_TOASTS } from '../../../constants';
+import { NXP_TOAST_GAP } from '@ngxpro/cdk';
+import { NXP_VISIBLE_TOASTS } from '@ngxpro/cdk';
 
 // ── Position parsing helpers ─────────────────────────────────────────────────
 
@@ -35,7 +35,10 @@ function containerClasses(pos: NxpNotificationOptions['position']): string {
   const y = parseY(pos);
   const x = parseX(pos);
 
-  const base = 'fixed z-[999999999] box-border p-0 m-0 list-none outline-none';
+  // z-[100] sits above page-level popups (z-50) without the magic-number tax
+  // of z-[999999999]. Coordinate with dropdown/modal layers if those ever get
+  // tokenized.
+  const base = 'fixed z-[100] box-border p-0 m-0 list-none outline-none';
   const yClass = y === 'top' ? 'top-6' : 'bottom-6';
 
   let xClass: string;
@@ -55,23 +58,56 @@ const ALL_POSITIONS = [
   'bottom-center',
 ] as NxpNotificationOptions['position'][];
 
+// Position parsing is pure and static — precompute once instead of recomputing
+// per-CD via template-bound methods.
+type PositionInfo = {
+  readonly containerClass: string;
+  readonly yPos: YPosition;
+  readonly xPos: XPosition;
+  readonly ariaLabel: string;
+};
+
+const POSITION_LABELS: Record<NxpNotificationOptions['position'], string> = {
+  'top-right': 'top right',
+  'top-left': 'top left',
+  'top-center': 'top center',
+  'bottom-right': 'bottom right',
+  'bottom-left': 'bottom left',
+  'bottom-center': 'bottom center',
+};
+
+const POSITION_INFO = ALL_POSITIONS.reduce(
+  (acc, pos) => {
+    acc[pos] = {
+      containerClass: containerClasses(pos),
+      yPos: parseY(pos),
+      xPos: parseX(pos),
+      ariaLabel: `Notifications, ${POSITION_LABELS[pos]}`,
+    };
+    return acc;
+  },
+  {} as Record<NxpNotificationOptions['position'], PositionInfo>,
+);
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 @Component({
   selector: 'nxp-notification-host',
-  standalone: true,
   imports: [NxpNotificationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @for (pos of positions; track pos) {
       @let group = byPosition()[pos];
+      @let info = positionInfo[pos];
       @if (group && group.length > 0) {
         <ol
           data-nxp-toaster
-          [class]="containerClass(pos)"
-          [attr.data-y-position]="yPosition(pos)"
-          [attr.data-x-position]="xPosition(pos)"
-          [attr.aria-label]="'Notifications ' + pos"
+          role="region"
+          aria-live="polite"
+          [class]="info.containerClass"
+          [attr.data-y-position]="info.yPos"
+          [attr.data-x-position]="info.xPos"
+          [attr.aria-label]="info.ariaLabel"
           [style.--width.px]="356"
           [style.--gap.px]="gap"
           [style.--front-toast-height]="frontHeight(pos)"
@@ -120,6 +156,9 @@ export class NxpNotificationHostComponent {
   /** All position keys — iterated in template. */
   protected readonly positions = ALL_POSITIONS;
 
+  /** Static position metadata (container class, axis labels, aria label). */
+  protected readonly positionInfo = POSITION_INFO;
+
   /** Tracked heights per notification id. */
   private readonly heights = signal<Map<string, number>>(new Map());
 
@@ -134,18 +173,6 @@ export class NxpNotificationHostComponent {
     }
     return map;
   });
-
-  protected containerClass(pos: NxpNotificationOptions['position']): string {
-    return containerClasses(pos);
-  }
-
-  protected yPosition(pos: NxpNotificationOptions['position']): YPosition {
-    return parseY(pos);
-  }
-
-  protected xPosition(pos: NxpNotificationOptions['position']): XPosition {
-    return parseX(pos);
-  }
 
   /** Get front toast height CSS value for a position group. */
   protected frontHeight(pos: NxpNotificationOptions['position']): string {

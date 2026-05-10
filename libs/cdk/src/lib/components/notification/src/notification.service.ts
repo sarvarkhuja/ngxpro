@@ -1,11 +1,11 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
+import type { NxpDynamicContent } from '@ngxpro/cdk/dynamic';
 import {
   NXP_NOTIFICATION_OPTIONS,
   type NxpNotificationOptions,
 } from './notification.options';
-import { NXP_TIME_BEFORE_UNMOUNT } from '../../../constants';
+import { NXP_TIME_BEFORE_UNMOUNT } from '@ngxpro/cdk';
 
 // ── Notification state ──────────────────────────────────────────────────────
 
@@ -19,7 +19,7 @@ export interface NxpNotification<T = unknown> {
   /** Resolved options (merged with defaults). */
   readonly options: NxpNotificationOptions & {
     data?: T;
-    content: PolymorpheusContent;
+    content: NxpDynamicContent;
   };
   /** Call this to programmatically dismiss the notification. */
   readonly dismiss: () => void;
@@ -33,6 +33,9 @@ export interface NxpNotification<T = unknown> {
 export class NxpNotificationService {
   private readonly defaultOptions = inject(NXP_NOTIFICATION_OPTIONS);
   private _counter = 0;
+
+  /** Per-id completion subjects so callers of `open()` learn when a notification is fully removed. */
+  private readonly completions = new Map<string, Subject<void>>();
 
   /** Live list of active notifications (signal). */
   readonly notifications = signal<NxpNotification[]>([]);
@@ -48,13 +51,13 @@ export class NxpNotificationService {
    * @returns        An Observable that completes when the notification is dismissed.
    */
   open<T = unknown>(
-    content: PolymorpheusContent,
+    content: NxpDynamicContent,
     options?: Partial<NxpNotificationOptions & { data?: T }>,
   ): Observable<void> {
     const id = `nxp-notif-${++this._counter}`;
     const resolved: NxpNotificationOptions & {
       data?: T;
-      content: PolymorpheusContent;
+      content: NxpDynamicContent;
     } = {
       ...this.defaultOptions,
       ...options,
@@ -62,6 +65,7 @@ export class NxpNotificationService {
     };
 
     const subject$ = new Subject<void>();
+    this.completions.set(id, subject$);
 
     const notification: NxpNotification<T> = {
       id,
@@ -72,8 +76,6 @@ export class NxpNotificationService {
 
     this.notifications.update((list) => [...list, notification]);
 
-    // Return observable that completes when dismissed.
-    subject$.subscribe({ complete: () => this.dismiss(id) });
     return subject$.asObservable();
   }
 
@@ -99,11 +101,24 @@ export class NxpNotificationService {
     // After exit animation duration, actually remove from list
     setTimeout(() => {
       this.notifications.update((l) => l.filter((n) => n.id !== id));
+      this.completeSubject(id);
     }, NXP_TIME_BEFORE_UNMOUNT);
   }
 
   /** Dismiss all active notifications. */
   dismissAll(): void {
+    const ids = this.notifications().map((n) => n.id);
     this.notifications.set([]);
+    for (const id of ids) {
+      this.completeSubject(id);
+    }
+  }
+
+  private completeSubject(id: string): void {
+    const subject$ = this.completions.get(id);
+    if (subject$) {
+      subject$.complete();
+      this.completions.delete(id);
+    }
   }
 }

@@ -16,6 +16,10 @@ export {
   NXP_TREE_NODE,
   NXP_TREE_LEVEL,
 } from './tree.tokens';
+export {
+  nxpComputeTreeChecked,
+  nxpToggleTreeChecked,
+} from './tree-checkbox.utils';
 
 import { NxpTreeComponent } from './tree.component';
 import { NxpTreeItemComponent } from './tree-item.component';

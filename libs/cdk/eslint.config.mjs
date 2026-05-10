@@ -25,6 +25,15 @@ export default [
     rules: {
       '@angular-eslint/no-input-rename': 'off',
       '@angular-eslint/no-output-rename': 'off',
+      '@nx/enforce-module-boundaries': [
+        'error',
+        {
+          enforceBuildableLibDependency: true,
+          allowCircularSelfDependency: true,
+          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
+          depConstraints: [{ sourceTag: '*', onlyDependOnLibsWithTags: ['*'] }],
+        },
+      ],
     },
   },
   {

@@ -30,7 +30,6 @@ import { RadioControlValueAccessor } from '@angular/forms';
  */
 @Directive({
   selector: 'input[type="radio"][nxpRadio][identityMatcher]',
-  standalone: true,
 })
 export class NxpRadioDirective<T> {
   /**

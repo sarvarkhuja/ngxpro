@@ -8,8 +8,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
-import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
+import { NxpDynamicOutlet } from '@ngxpro/cdk/dynamic';
+import type { NxpDynamicContent } from '@ngxpro/cdk/dynamic';
 import { map, takeWhile } from 'rxjs';
 import {
   NxpPositionService,
@@ -65,7 +65,7 @@ const TRANSFORM_ORIGIN: Record<NxpTooltipDirection, string> = {
  */
 export interface NxpTooltipHost extends NxpRectAccessor {
   readonly el: HTMLElement;
-  tooltipContent(): PolymorpheusContent<NxpContext<void>>;
+  tooltipContent(): NxpDynamicContent<NxpContext<void>>;
   nxpTooltipAppearance(): string;
   nxpTooltipSize(): NxpTooltipSize;
   hide(): void;
@@ -91,15 +91,14 @@ export const NXP_TOOLTIP_HOST = new InjectionToken<NxpTooltipHost>(
  */
 @Component({
   selector: 'nxp-tooltip',
-  standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [PolymorpheusOutlet],
+  imports: [NxpDynamicOutlet],
   template: `
     <!-- Arrow -->
     <span [class]="arrowClasses()" aria-hidden="true"></span>
 
     <!-- Content -->
-    <div *polymorpheusOutlet="host.tooltipContent() as text">
+    <div *nxpDynamicOutlet="host.tooltipContent() as text">
       {{ text }}
     </div>
   `,

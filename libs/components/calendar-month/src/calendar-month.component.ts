@@ -69,13 +69,12 @@ function toLinear(m: MonthCoord): number {
  */
 @Component({
   selector: 'nxp-calendar-month',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarYearComponent],
   template: `
     <div
       [class]="containerClass()"
-      role="application"
+      role="group"
       [attr.aria-label]="'Month picker'"
     >
       @if (isYearPickerShown) {

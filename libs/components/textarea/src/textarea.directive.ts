@@ -28,7 +28,6 @@ import { cx } from '@ngxpro/cdk';
  */
 @Component({
   selector: 'nxp-textarea-counter',
-  standalone: true,
   template: `
     <span [class]="classes()">{{ current() }} / {{ limit() }}</span>
   `,
@@ -60,7 +59,6 @@ export class NxpTextareaCounterComponent {
  */
 @Directive({
   selector: 'textarea[nxpTextarea][limit]',
-  standalone: true,
   providers: [
     {
       provide: NG_VALIDATORS,

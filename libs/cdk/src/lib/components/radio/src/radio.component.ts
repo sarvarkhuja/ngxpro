@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 import { NXP_RADIO_OPTIONS } from './radio.options';
-import { cx } from '../../../utils';
+import { cx } from '@ngxpro/cdk';
 
 export type NxpRadioSize = 's' | 'm' | 'l';
 export type NxpRadioColor = 'primary' | 'secondary' | 'danger';
@@ -37,7 +37,6 @@ export type NxpRadioColor = 'primary' | 'secondary' | 'danger';
  */
 @Component({
   selector: 'input[type="radio"][nxpRadio]',
-  standalone: true,
   template: '',
   host: {
     '[class]': 'hostClasses()',

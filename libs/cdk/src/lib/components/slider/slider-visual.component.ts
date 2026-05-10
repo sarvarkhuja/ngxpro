@@ -56,7 +56,6 @@ export type NxpSliderValuePosition =
  */
 @Component({
   selector: 'nxp-slider-visual',
-  standalone: true,
   imports: [NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [

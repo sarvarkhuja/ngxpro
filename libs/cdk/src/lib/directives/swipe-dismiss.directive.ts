@@ -23,7 +23,6 @@ export type NxpSwipeDirection = 'left' | 'right' | 'up' | 'down';
  */
 @Directive({
   selector: '[nxpSwipeDismiss]',
-  standalone: true,
   exportAs: 'nxpSwipeDismiss',
 })
 export class NxpSwipeDismiss implements OnInit, OnDestroy {

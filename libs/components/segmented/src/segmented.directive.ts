@@ -20,7 +20,6 @@ import { map, startWith, switchMap } from 'rxjs/operators';
  * - NgControl / radio integration: watches form control value changes to sync active index
  */
 @Directive({
-  standalone: true,
   host: {
     '(click)': 'onHostClick($event.target)',
   },

@@ -251,4 +251,13 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./range/range-demo.component').then((m) => m.RangeDemoComponent),
   },
+  {
+    path: 'tree',
+    loadComponent: () =>
+      import('./tree/tree-demo.component').then((m) => m.TreeDemoComponent),
+  },
+  {
+    path: 'doc',
+    loadChildren: () => import('./doc/doc.routes').then((m) => m.docRoutes),
+  },
 ];

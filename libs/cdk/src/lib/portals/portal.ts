@@ -6,10 +6,10 @@ import {
   type Type,
 } from '@angular/core';
 import {
-  POLYMORPHEUS_CONTEXT,
-  PolymorpheusComponent,
-  type PolymorpheusContent,
-} from '@taiga-ui/polymorpheus';
+  NXP_DYNAMIC_CONTEXT,
+  NxpDynamicComponent,
+  type NxpDynamicContent,
+} from '@ngxpro/cdk/dynamic';
 import { Observable, type Observer } from 'rxjs';
 import { nxpGenerateId } from '../utils/generate-id';
 import { NxpPortalService } from './portal.service';
@@ -17,7 +17,7 @@ import { NxpPortalService } from './portal.service';
 /** Context passed to portal content (observer + portal options). */
 export type NxpPortalContext<T, O = void> = T & {
   readonly $implicit: Observer<O>;
-  readonly content: PolymorpheusContent<NxpPortalContext<T, O>>;
+  readonly content: NxpDynamicContent<NxpPortalContext<T, O>>;
   readonly createdAt: number;
   readonly id: string;
   completeWith(value: O): void;
@@ -37,18 +37,18 @@ export abstract class NxpPortal<T, K = void> {
   protected readonly service = inject(NxpPortalService);
 
   open<G = void>(
-    content: PolymorpheusContent<NxpPortalContext<T, K extends void ? G : K>>,
+    content: NxpDynamicContent<NxpPortalContext<T, K extends void ? G : K>>,
     options: Partial<T> = {},
   ): Observable<K extends void ? G : K> {
     return new Observable((observer) =>
       this.add(
-        new PolymorpheusComponent(
+        new NxpDynamicComponent(
           this.component,
           Injector.create({
             parent: this.injector,
             providers: [
               {
-                provide: POLYMORPHEUS_CONTEXT,
+                provide: NXP_DYNAMIC_CONTEXT,
                 useValue: {
                   ...this.options,
                   ...options,
@@ -70,7 +70,7 @@ export abstract class NxpPortal<T, K = void> {
   }
 
   /** Override in subclasses (e.g. alert) for concurrency/queue. */
-  protected add(component: PolymorpheusComponent<unknown>): () => void {
+  protected add(component: NxpDynamicComponent<unknown>): () => void {
     const ref = this.service.add(component);
     return () => ref.destroy();
   }

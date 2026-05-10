@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 import { tv, type VariantProps } from 'tailwind-variants';
-import { cx } from '../../../utils';
+import { cx } from '@ngxpro/cdk';
 
 // ---------------------------------------------------------------------------
 // Variants
@@ -99,7 +99,6 @@ export function nxpLinkOptionsProvider(options: Partial<NxpLinkOptions>) {
  */
 @Directive({
   selector: 'a[nxpLink], button[nxpLink]',
-  standalone: true,
   host: {
     '[class]': 'hostClasses()',
   },

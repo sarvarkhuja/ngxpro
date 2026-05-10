@@ -6,7 +6,7 @@ import {
   model,
   output,
 } from '@angular/core';
-import { dayCellVariants } from '../../../utils';
+import { dayCellVariants } from '@ngxpro/cdk';
 import { CalendarSheetPipe } from './calendar-sheet.pipe';
 import type {
   DayRange,
@@ -42,7 +42,6 @@ function startOfDay(d: Date): Date {
  */
 @Component({
   selector: 'nxp-calendar-sheet',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarSheetPipe],
   template: `

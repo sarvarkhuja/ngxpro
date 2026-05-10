@@ -1,0 +1,1334 @@
+<div class="paper relative min-h-screen overflow-hidden font-[Manrope]">
+  <!-- Faint blueprint grid -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 grid-paper opacity-50"
+  ></div>
+
+  <!-- ─── Sticky top bar ────────────────────────────────────────────── -->
+  <div
+    class="sticky top-0 z-20 border-b backdrop-blur-md"
+    style="
+      border-color: var(--rule);
+      background-color: color-mix(in oklch, var(--paper) 88%, transparent);
+    "
+  >
+    <div
+      class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3"
+    >
+      <div class="flex items-center gap-3 text-[11px]">
+        <a
+          routerLink="/"
+          class="font-jbm uppercase tracking-[0.18em] opacity-60 transition-opacity hover:opacity-100"
+        >
+          ← showcase
+        </a>
+        <span class="opacity-25">/</span>
+        <span class="font-jbm uppercase tracking-[0.18em] opacity-60">
+          components
+        </span>
+        <span class="opacity-25">/</span>
+        <span class="font-jbm uppercase tracking-[0.18em]">tree</span>
+      </div>
+      <div
+        class="font-jbm hidden items-center gap-3 text-[10px] uppercase tracking-[0.2em] opacity-55 sm:flex"
+      >
+        <span>v0.x</span>
+        <span class="opacity-30">·</span>
+        <span>MIT</span>
+        <span class="opacity-30">·</span>
+        <span>types ✓</span>
+        <span class="opacity-30">·</span>
+        <span>standalone ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-6 pb-32 pt-12 sm:px-10 lg:pt-16">
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- HERO                                                              -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <header class="rise" style="animation-delay: 0ms">
+      <div
+        class="font-jbm flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] opacity-55"
+      >
+        <span>component</span>
+        <span class="opacity-40">·</span>
+        <span>&#64;ngxpro/components/tree</span>
+      </div>
+
+      <div class="grid grid-cols-12 items-start gap-x-8 pt-6 lg:pt-8">
+        <div class="col-span-12 lg:col-span-7">
+          <h1
+            class="font-jbm text-[clamp(2.25rem,5vw,3.75rem)] font-medium leading-[1] tracking-tight"
+          >
+            nxp-tree
+          </h1>
+          <p class="mt-5 max-w-xl text-[15px] leading-relaxed opacity-75">
+            Recursive, generic tree primitive. Provide a list of root values, a
+            <code class="font-jbm">childrenHandler</code>, and an optional
+            <code class="font-jbm">[content]</code> template — the component
+            renders itself, recursively, with depth, expansion state, and a
+            chevron toggle handled for you.
+          </p>
+        </div>
+
+        <div class="col-span-12 mt-8 lg:col-span-5 lg:mt-0">
+          <!-- Install hint -->
+          <div
+            class="font-jbm flex items-center justify-between border px-3 py-2.5 text-[12px]"
+            style="border-color: var(--rule); background-color: var(--paper)"
+          >
+            <span class="opacity-50">$</span>
+            <span class="flex-1 truncate pl-2 opacity-90">
+              npm install &#64;ngxpro/components
+            </span>
+            <span class="opacity-40">⌘C</span>
+          </div>
+
+          <!-- Metric strip -->
+          <dl
+            class="mt-3 grid grid-cols-2 gap-px border"
+            style="border-color: var(--rule); background-color: var(--rule)"
+          >
+            @for (m of metrics; track m.label) {
+              <div class="px-3 py-2.5" style="background-color: var(--paper)">
+                <dt
+                  class="font-jbm text-[9.5px] uppercase tracking-[0.18em] opacity-50"
+                >
+                  {{ m.label }}
+                </dt>
+                <dd class="font-jbm mt-1 text-sm tabular-nums">
+                  {{ m.value }}
+                </dd>
+                <dd class="mt-0.5 text-[11px] leading-snug opacity-55">
+                  {{ m.detail }}
+                </dd>
+              </div>
+            }
+          </dl>
+        </div>
+      </div>
+
+      <!-- Type signature line -->
+      <div
+        class="mt-10 overflow-x-auto border px-4 py-3"
+        style="
+          border-color: var(--rule);
+          background-color: color-mix(in oklch, var(--accent) 4%, var(--paper));
+        "
+      >
+        <code
+          class="font-jbm whitespace-nowrap text-[12px] tabular-nums opacity-85"
+        >
+          <span class="opacity-60">declare</span>
+          class
+          <span style="color: var(--accent)">NxpTreeComponent</span
+          ><span class="opacity-50">&lt;T&gt;</span> {{ '{' }} value: T;
+          childrenHandler: (item: T) =&gt; readonly T[]; content?:
+          TemplateRef&lt;NxpTreeItemContext&lt;T&gt;&gt; {{ '}' }}
+        </code>
+      </div>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- § 01 — QUICKSTART                                                 -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="mt-24 rise" style="animation-delay: 100ms">
+      <div class="flex items-end pb-6">
+        <span
+          class="font-jbm text-[11px] font-medium uppercase tracking-[0.22em] opacity-60"
+        >
+          § 01
+        </span>
+        <span class="leader"></span>
+        <h2 class="font-jbm text-xl font-medium tracking-tight md:text-2xl">
+          Quickstart
+        </h2>
+      </div>
+      <p class="mb-6 max-w-2xl text-sm leading-relaxed opacity-65">
+        Three pieces of furniture: a controller (state container), a tree node
+        (data source), and an optional template (row renderer). All nodes start
+        collapsed. State lives in a per-tree
+        <code class="font-jbm">WeakMap</code>.
+      </p>
+
+      <div
+        class="grid grid-cols-12 gap-px border"
+        style="border-color: var(--rule); background-color: var(--rule)"
+      >
+        <!-- Code -->
+        <div
+          class="col-span-12 lg:col-span-7"
+          style="background-color: var(--paper)"
+        >
+          <div class="code-pane h-full">
+            <div
+              class="flex items-center justify-between border-b border-stone-800 px-4 py-2.5"
+            >
+              <div class="flex items-center gap-1.5">
+                <span class="size-2.5 rounded-full bg-stone-700"></span>
+                <span class="size-2.5 rounded-full bg-stone-700"></span>
+                <span class="size-2.5 rounded-full bg-stone-700"></span>
+              </div>
+              <span
+                class="font-jbm text-[10px] uppercase tracking-[0.2em] text-stone-500"
+              >
+                tree-demo.component.ts
+              </span>
+            </div>
+            <pre
+              class="overflow-x-auto px-5 py-5"
+            ><code class="font-jbm"><span class="text-fuchsia-300">import</span> {{ '{' }} Component {{ '}' }} <span class="text-fuchsia-300">from</span> <span class="text-amber-300">'&#64;angular/core'</span>;
+<span class="text-fuchsia-300">import</span> {{ '{' }} NxpTree {{ '}' }} <span class="text-fuchsia-300">from</span> <span class="text-amber-300">'&#64;ngxpro/components/tree'</span>;
+
+<span class="text-stone-500">// 1. Define your data shape</span>
+<span class="text-fuchsia-300">interface</span> <span class="text-emerald-300">FileNode</span> {{ '{' }}
+  name: <span class="text-emerald-300">string</span>;
+  children?: <span class="text-emerald-300">FileNode</span>[];
+{{ '}' }}
+
+<span class="text-fuchsia-300">&#64;Component</span>({{ '{' }}
+  imports: [NxpTree],
+  template: <span class="text-amber-300">`</span>
+    <span class="text-stone-100">&lt;div</span> <span class="text-sky-300">nxpTreeController</span><span class="text-stone-100">&gt;</span>
+      <span class="text-stone-100">&lt;nxp-tree</span>
+        <span class="text-sky-300">[value]</span>=<span class="text-amber-300">"root"</span>
+        <span class="text-sky-300">[childrenHandler]</span>=<span class="text-amber-300">"getChildren"</span>
+        <span class="text-sky-300">[content]</span>=<span class="text-amber-300">"row"</span> <span class="text-stone-100">/&gt;</span>
+    <span class="text-stone-100">&lt;/div&gt;</span>
+
+    <span class="text-stone-100">&lt;ng-template</span> <span class="text-sky-300">#row</span> <span class="text-fuchsia-300">let-item</span><span class="text-stone-100">&gt;</span>
+      {{ '{{' }} item.name {{ '}}' }}
+    <span class="text-stone-100">&lt;/ng-template&gt;</span>
+  <span class="text-amber-300">`</span>,
+{{ '}' }})
+<span class="text-fuchsia-300">export class</span> <span class="text-emerald-300">DemoComponent</span> {{ '{' }}
+  <span class="text-fuchsia-300">readonly</span> root: FileNode = <span class="text-stone-500">/* ... */</span>;
+  <span class="text-fuchsia-300">readonly</span> getChildren = (n: FileNode) =&gt; n.children ?? [];
+{{ '}' }}</code></pre>
+          </div>
+        </div>
+
+        <!-- Live mini-demo -->
+        <aside
+          class="col-span-12 flex flex-col lg:col-span-5"
+          style="background-color: var(--paper)"
+        >
+          <div
+            class="flex items-baseline justify-between border-b px-5 py-3"
+            style="border-color: var(--rule)"
+          >
+            <span
+              class="font-jbm text-[10px] uppercase tracking-[0.2em] opacity-50"
+            >
+              live · ngxpro/ —
+            </span>
+            <span class="font-jbm text-[10px] tabular-nums opacity-40">
+              {{ repoCount() }} entries
+            </span>
+          </div>
+          <div class="flex-1 px-4 py-4">
+            <div nxpTreeController>
+              @for (item of repoTree; track item.name) {
+                <nxp-tree
+                  [value]="item"
+                  [childrenHandler]="getRepoChildren"
+                  [content]="repoTpl"
+                />
+              }
+            </div>
+          </div>
+          <div
+            class="border-t px-5 py-3 text-[11.5px] leading-relaxed opacity-65"
+            style="border-color: var(--rule)"
+          >
+            Click any chevron — state is per-instance, non-reactive, bridged to
+            a signal in
+            <code class="font-jbm">ngDoCheck</code>.
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- § 02 — API REFERENCE                                              -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="mt-24 rise" style="animation-delay: 180ms">
+      <div class="flex items-end pb-6">
+        <span
+          class="font-jbm text-[11px] font-medium uppercase tracking-[0.22em] opacity-60"
+        >
+          § 02
+        </span>
+        <span class="leader"></span>
+        <h2 class="font-jbm text-xl font-medium tracking-tight md:text-2xl">
+          API reference
+        </h2>
+      </div>
+      <p class="mb-10 max-w-2xl text-sm leading-relaxed opacity-65">
+        The package exports six declarations, four DI tokens and four type
+        signatures. Below: every public surface, grouped by selector.
+      </p>
+
+      <div class="space-y-10">
+        @for (group of apiGroups; track group.symbol) {
+          <article
+            class="border"
+            style="border-color: var(--rule); background-color: var(--paper)"
+          >
+            <header
+              class="flex flex-col gap-1 border-b px-5 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+              style="border-color: var(--rule)"
+            >
+              <div class="flex items-baseline gap-3">
+                <code
+                  class="font-jbm text-[15px] font-medium tracking-tight"
+                  style="color: var(--accent)"
+                >
+                  {{ group.symbol }}
+                </code>
+                <span
+                  class="font-jbm text-[10px] uppercase tracking-[0.18em] opacity-50"
+                >
+                  {{ group.kind }}
+                </span>
+              </div>
+            </header>
+
+            <p
+              class="border-b px-5 py-3 text-[13px] leading-relaxed opacity-75"
+              style="border-color: var(--rule)"
+            >
+              {{ group.blurb }}
+            </p>
+
+            <!-- Header row (md+) -->
+            <div
+              class="api-table hidden border-b px-5 py-2 md:block"
+              style="border-color: var(--rule)"
+            >
+              <dl>
+                <span
+                  class="font-jbm text-[9.5px] uppercase tracking-[0.18em] opacity-45"
+                >
+                  name
+                </span>
+                <span
+                  class="font-jbm text-[9.5px] uppercase tracking-[0.18em] opacity-45"
+                >
+                  type
+                </span>
+                <span
+                  class="font-jbm text-[9.5px] uppercase tracking-[0.18em] opacity-45"
+                >
+                  default
+                </span>
+                <span
+                  class="font-jbm text-[9.5px] uppercase tracking-[0.18em] opacity-45"
+                >
+                  description
+                </span>
+              </dl>
+            </div>
+
+            <!-- Rows -->
+            <div
+              class="api-table divide-y"
+              style="--tw-divide-opacity: 1; border-color: var(--rule)"
+            >
+              @for (row of group.rows; track row.name) {
+                <div
+                  class="px-5 py-3"
+                  style="
+                    border-color: var(--rule);
+                    border-bottom: 1px solid var(--rule);
+                  "
+                >
+                  <dl class="items-baseline">
+                    <dt
+                      class="flex flex-wrap items-center gap-2 md:flex-nowrap"
+                    >
+                      <code class="font-jbm text-[12.5px]">{{ row.name }}</code>
+                      <span class="api-pill" [attr.data-kind]="row.kind">
+                        {{ row.kind }}
+                      </span>
+                    </dt>
+                    <dd
+                      class="font-jbm mt-1 truncate text-[12px] opacity-80 md:mt-0"
+                    >
+                      {{ row.type }}
+                    </dd>
+                    <dd
+                      class="font-jbm mt-1 text-[12px] opacity-65 md:mt-0"
+                      [class.italic]="row.default === '—'"
+                    >
+                      {{ row.default }}
+                    </dd>
+                    <dd
+                      class="mt-1 text-[12.5px] leading-snug opacity-80 md:mt-0"
+                    >
+                      {{ row.description }}
+                    </dd>
+                  </dl>
+                </div>
+              }
+            </div>
+          </article>
+        }
+      </div>
+
+      <!-- Types -->
+      <div class="mt-10 grid grid-cols-12 gap-8">
+        <div class="col-span-12 lg:col-span-7">
+          <h3
+            class="font-jbm mb-3 text-[10px] uppercase tracking-[0.22em] opacity-55"
+          >
+            types
+          </h3>
+          <div class="code-pane">
+            <pre
+              class="overflow-x-auto px-5 py-5"
+            ><code class="font-jbm"><span class="text-fuchsia-300">interface</span> <span class="text-emerald-300">NxpTreeController</span> {{ '{' }}
+  isExpanded(item: NxpTreeItemComponent): <span class="text-emerald-300">boolean</span>;
+  toggle(item: NxpTreeItemComponent): <span class="text-emerald-300">void</span>;
+{{ '}' }}
+
+<span class="text-fuchsia-300">interface</span> <span class="text-emerald-300">NxpTreeAccessor</span>&lt;T&gt; {{ '{' }}
+  register(item: NxpTreeItemComponent, value: T): <span class="text-emerald-300">void</span>;
+  unregister(item: NxpTreeItemComponent): <span class="text-emerald-300">void</span>;
+{{ '}' }}
+
+<span class="text-fuchsia-300">interface</span> <span class="text-emerald-300">NxpTreeItemContext</span>&lt;T&gt; {{ '{' }}
+  <span class="text-fuchsia-300">readonly</span> $implicit: T;
+  <span class="text-fuchsia-300">readonly</span> node: NxpTreeItemComponent;
+{{ '}' }}
+
+<span class="text-fuchsia-300">type</span> <span class="text-emerald-300">NxpTreeHandler</span>&lt;T&gt; = (item: T) =&gt; <span class="text-fuchsia-300">readonly</span> T[];</code></pre>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-5">
+          <h3
+            class="font-jbm mb-3 text-[10px] uppercase tracking-[0.22em] opacity-55"
+          >
+            tokens
+          </h3>
+          <ul class="space-y-2.5">
+            @for (t of tokens; track t.name) {
+              <li
+                class="border px-3 py-2.5"
+                style="
+                  border-color: var(--rule);
+                  background-color: var(--paper);
+                "
+              >
+                <div class="font-jbm text-[12px]" style="color: var(--accent)">
+                  {{ t.name }}
+                </div>
+                <div
+                  class="font-jbm mt-0.5 text-[10.5px] uppercase tracking-[0.16em] opacity-55"
+                >
+                  {{ t.type }}
+                </div>
+                <div class="mt-1.5 text-[12px] leading-snug opacity-75">
+                  {{ t.detail }}
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- § 03 — CONTROLLER MODES                                           -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="mt-24 rise" style="animation-delay: 260ms">
+      <div class="flex items-end pb-6">
+        <span
+          class="font-jbm text-[11px] font-medium uppercase tracking-[0.22em] opacity-60"
+        >
+          § 03
+        </span>
+        <span class="leader"></span>
+        <h2 class="font-jbm text-xl font-medium tracking-tight md:text-2xl">
+          Controller modes
+        </h2>
+      </div>
+      <p class="mb-8 max-w-2xl text-sm leading-relaxed opacity-65">
+        Two directives share the
+        <code class="font-jbm">[nxpTreeController]</code>
+        selector. The selector you reach for depends on whether you want to key
+        expansion by component instance or by data value.
+      </p>
+
+      <div
+        class="grid grid-cols-1 gap-px border lg:grid-cols-2"
+        style="border-color: var(--rule); background-color: var(--rule)"
+      >
+        <!-- ── Mode A: WeakMap fallback ───────────────────────────────── -->
+        <article class="flex flex-col" style="background-color: var(--paper)">
+          <header class="border-b px-5 py-4" style="border-color: var(--rule)">
+            <div
+              class="font-jbm text-[10px] uppercase tracking-[0.2em] opacity-55"
+            >
+              variant A · default
+            </div>
+            <div class="mt-1 flex items-baseline gap-2">
+              <code
+                class="font-jbm text-base font-medium tracking-tight"
+                style="color: var(--accent)"
+              >
+                [nxpTreeController]
+              </code>
+            </div>
+            <div
+              class="font-jbm mt-2 text-[11px] uppercase tracking-[0.16em] opacity-55"
+            >
+              keyed by · component instance
+            </div>
+          </header>
+
+          <div class="code-pane">
+            <pre
+              class="overflow-x-auto px-4 py-4"
+            ><code class="font-jbm text-[11.5px]"><span class="text-stone-100">&lt;div</span> <span class="text-sky-300">nxpTreeController</span><span class="text-stone-100">&gt;</span>
+  <span class="text-stone-100">&lt;nxp-tree</span>
+    <span class="text-sky-300">[value]</span>=<span class="text-amber-300">"item"</span>
+    <span class="text-sky-300">[childrenHandler]</span>=<span class="text-amber-300">"fn"</span> <span class="text-stone-100">/&gt;</span>
+<span class="text-stone-100">&lt;/div&gt;</span></code></pre>
+          </div>
+
+          <div class="px-5 py-4 text-[12.5px] leading-relaxed opacity-80">
+            Implemented with
+            <code class="font-jbm">WeakMap&lt;Item, boolean&gt;</code>. No
+            hooks, no events. State is bound to the component, so re-rendering
+            the underlying data clears expansion.
+          </div>
+
+          <div class="border-t px-5 py-4" style="border-color: var(--rule)">
+            <div
+              class="font-jbm mb-3 text-[10px] uppercase tracking-[0.2em] opacity-50"
+            >
+              live
+            </div>
+            <div nxpTreeController>
+              @for (item of repoTree; track item.name) {
+                <nxp-tree
+                  [value]="item"
+                  [childrenHandler]="getRepoChildren"
+                  [content]="repoTpl"
+                />
+              }
+            </div>
+          </div>
+        </article>
+
+        <!-- ── Mode B: typed Map controller ───────────────────────────── -->
+        <article class="flex flex-col" style="background-color: var(--paper)">
+          <header class="border-b px-5 py-4" style="border-color: var(--rule)">
+            <div
+              class="font-jbm text-[10px] uppercase tracking-[0.2em] opacity-55"
+            >
+              variant B · typed
+            </div>
+            <div class="mt-1 flex items-baseline gap-2">
+              <code
+                class="font-jbm text-base font-medium tracking-tight"
+                style="color: var(--accent)"
+              >
+                [nxpTreeController][map]
+              </code>
+            </div>
+            <div
+              class="font-jbm mt-2 text-[11px] uppercase tracking-[0.16em] opacity-55"
+            >
+              keyed by · data value · emits (toggled)
+            </div>
+          </header>
+
+          <div class="code-pane">
+            <pre
+              class="overflow-x-auto px-4 py-4"
+            ><code class="font-jbm text-[11.5px]"><span class="text-stone-100">&lt;div</span> <span class="text-sky-300">nxpTreeController</span> <span class="text-sky-300">map</span>
+     <span class="text-sky-300">(toggled)</span>=<span class="text-amber-300">"log($event)"</span><span class="text-stone-100">&gt;</span>
+  <span class="text-fuchsia-300">&#64;for</span> (n <span class="text-fuchsia-300">of</span> tree; <span class="text-fuchsia-300">track</span> n) {{ '{' }}
+    <span class="text-stone-100">&lt;nxp-tree-item</span>
+      <span class="text-sky-300">[nxpTreeNode]</span>=<span class="text-amber-300">"n"</span><span class="text-stone-100">&gt;</span>
+      <span class="text-stone-100">&lt;nxp-tree-item-content&gt;</span>
+        {{ '{{' }} n.name {{ '}}' }}
+      <span class="text-stone-100">&lt;/nxp-tree-item-content&gt;</span>
+      <span class="text-stone-500">&lt;!-- recurse --&gt;</span>
+    <span class="text-stone-100">&lt;/nxp-tree-item&gt;</span>
+  {{ '}' }}
+<span class="text-stone-100">&lt;/div&gt;</span></code></pre>
+          </div>
+
+          <div class="px-5 py-4 text-[12.5px] leading-relaxed opacity-80">
+            Implemented with
+            <code class="font-jbm">Map&lt;T, boolean&gt;</code>. Each row
+            registers itself via <code class="font-jbm">[nxpTreeNode]</code>;
+            <code class="font-jbm">(toggled)</code> emits the data value. State
+            survives template re-renders.
+          </div>
+
+          <!-- Live: hand-rolled tree with [nxpTreeNode] -->
+          <div class="border-t px-5 py-4" style="border-color: var(--rule)">
+            <div
+              class="font-jbm mb-3 flex items-center justify-between text-[10px] uppercase tracking-[0.2em]"
+            >
+              <span class="opacity-50">live</span>
+              <button
+                type="button"
+                class="font-jbm border px-2 py-0.5 text-[9.5px] uppercase tracking-[0.18em] opacity-60 transition-opacity hover:opacity-100"
+                style="border-color: var(--rule)"
+                (click)="clearLog()"
+              >
+                clear log
+              </button>
+            </div>
+
+            <div nxpTreeController map (toggled)="logManualToggle($event)">
+              @for (root of manualTree; track root.name) {
+                <nxp-tree-item [nxpTreeNode]="root">
+                  <nxp-tree-item-content>
+                    <span class="font-jbm text-[12.5px]">
+                      {{ root.name }}{{ root.kind === 'folder' ? '/' : '' }}
+                    </span>
+                  </nxp-tree-item-content>
+                  @for (child of root.children ?? []; track child.name) {
+                    <nxp-tree
+                      [value]="child"
+                      [childrenHandler]="noChildren"
+                      [content]="manualLeafTpl"
+                    />
+                  }
+                </nxp-tree-item>
+              }
+            </div>
+
+            <!-- Event log -->
+            <div
+              class="mt-4 border-l-2 pl-3"
+              style="border-color: var(--accent)"
+            >
+              <div
+                class="font-jbm mb-1.5 text-[9.5px] uppercase tracking-[0.18em] opacity-55"
+              >
+                (toggled) event log
+              </div>
+              @if (toggleLog().length === 0) {
+                <div class="font-jbm text-[11.5px] italic opacity-45">
+                  — toggle a row to see events
+                </div>
+              } @else {
+                <ul class="space-y-0.5">
+                  @for (line of toggleLog(); track $index) {
+                    <li class="font-jbm text-[11.5px] tabular-nums opacity-80">
+                      {{ line }}
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- § 04 — CUSTOM ROW TEMPLATES                                       -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="mt-24 rise" style="animation-delay: 340ms">
+      <div class="flex items-end pb-6">
+        <span
+          class="font-jbm text-[11px] font-medium uppercase tracking-[0.22em] opacity-60"
+        >
+          § 04
+        </span>
+        <span class="leader"></span>
+        <h2 class="font-jbm text-xl font-medium tracking-tight md:text-2xl">
+          Custom row templates
+        </h2>
+      </div>
+      <p class="mb-8 max-w-2xl text-sm leading-relaxed opacity-65">
+        The <code class="font-jbm">[content]</code> input takes a
+        <code class="font-jbm"
+          >TemplateRef&lt;NxpTreeItemContext&lt;T&gt;&gt;</code
+        >. Whatever you project is wrapped in a
+        <code class="font-jbm">&lt;nxp-tree-item-content&gt;</code> — the
+        chevron and indent are already handled.
+      </p>
+
+      <div
+        class="grid grid-cols-12 gap-px border"
+        style="border-color: var(--rule); background-color: var(--rule)"
+      >
+        <!-- Code -->
+        <div
+          class="col-span-12 lg:col-span-6"
+          style="background-color: var(--paper)"
+        >
+          <div class="code-pane h-full">
+            <div
+              class="flex items-center justify-between border-b border-stone-800 px-4 py-2.5"
+            >
+              <span
+                class="font-jbm text-[10px] uppercase tracking-[0.2em] text-stone-500"
+              >
+                org-chart.template.html
+              </span>
+            </div>
+            <pre
+              class="overflow-x-auto px-5 py-5"
+            ><code class="font-jbm text-[12px]"><span class="text-stone-100">&lt;nxp-tree</span>
+  <span class="text-sky-300">[value]</span>=<span class="text-amber-300">"person"</span>
+  <span class="text-sky-300">[childrenHandler]</span>=<span class="text-amber-300">"getReports"</span>
+  <span class="text-sky-300">[content]</span>=<span class="text-amber-300">"row"</span> <span class="text-stone-100">/&gt;</span>
+
+<span class="text-stone-100">&lt;ng-template</span> <span class="text-sky-300">#row</span> <span class="text-fuchsia-300">let-p</span><span class="text-stone-100">&gt;</span>
+  <span class="text-stone-100">&lt;span</span> <span class="text-sky-300">class</span>=<span class="text-amber-300">"avatar"</span><span class="text-stone-100">&gt;</span>
+    {{ '{{' }} initials(p.name) {{ '}}' }}
+  <span class="text-stone-100">&lt;/span&gt;</span>
+  <span class="text-stone-100">&lt;span&gt;</span>{{ '{{' }} p.name {{ '}}' }}<span class="text-stone-100">&lt;/span&gt;</span>
+  <span class="text-stone-100">&lt;span</span> <span class="text-sky-300">class</span>=<span class="text-amber-300">"role"</span><span class="text-stone-100">&gt;</span>
+    {{ '{{' }} p.role {{ '}}' }}
+  <span class="text-stone-100">&lt;/span&gt;</span>
+  <span class="text-stone-100">&lt;span</span> <span class="text-sky-300">[class]</span>=<span class="text-amber-300">"statusClass(p.status)"</span><span class="text-stone-100">&gt;&lt;/span&gt;</span>
+<span class="text-stone-100">&lt;/ng-template&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <!-- Demo -->
+        <div
+          class="col-span-12 lg:col-span-6"
+          style="background-color: var(--paper)"
+        >
+          <div
+            class="flex items-baseline justify-between border-b px-5 py-3"
+            style="border-color: var(--rule)"
+          >
+            <span
+              class="font-jbm text-[10px] uppercase tracking-[0.2em] opacity-50"
+            >
+              live · directory
+            </span>
+            <span class="font-jbm text-[10px] tabular-nums opacity-40">
+              {{ orgCount() }} people
+            </span>
+          </div>
+          <div class="px-3 py-3 sm:px-5 sm:py-4">
+            <div nxpTreeController>
+              @for (person of orgTree; track person.name) {
+                <nxp-tree
+                  [value]="person"
+                  [childrenHandler]="getOrgChildren"
+                  [content]="orgTpl"
+                />
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- § 05 — GENERIC TYPING                                             -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="mt-24 rise" style="animation-delay: 420ms">
+      <div class="flex items-end pb-6">
+        <span
+          class="font-jbm text-[11px] font-medium uppercase tracking-[0.22em] opacity-60"
+        >
+          § 05
+        </span>
+        <span class="leader"></span>
+        <h2 class="font-jbm text-xl font-medium tracking-tight md:text-2xl">
+          Generic typing &lt;T&gt;
+        </h2>
+      </div>
+      <p class="mb-8 max-w-2xl text-sm leading-relaxed opacity-65">
+        <code class="font-jbm">NxpTreeComponent&lt;T&gt;</code> is generic; the
+        type parameter flows through <code class="font-jbm">[value]</code>,
+        <code class="font-jbm">[childrenHandler]</code> and the
+        <code class="font-jbm">$implicit</code> variable inside your template.
+        Discriminated unions stay narrow.
+      </p>
+
+      <div
+        class="grid grid-cols-12 gap-px border"
+        style="border-color: var(--rule); background-color: var(--rule)"
+      >
+        <div
+          class="col-span-12 lg:col-span-7"
+          style="background-color: var(--paper)"
+        >
+          <div class="code-pane h-full">
+            <div
+              class="flex items-center justify-between border-b border-stone-800 px-4 py-2.5"
+            >
+              <span
+                class="font-jbm text-[10px] uppercase tracking-[0.2em] text-stone-500"
+              >
+                json-tree.types.ts
+              </span>
+            </div>
+            <pre
+              class="overflow-x-auto px-5 py-5"
+            ><code class="font-jbm text-[12px]"><span class="text-fuchsia-300">type</span> <span class="text-emerald-300">JsonType</span>
+  = <span class="text-amber-300">'object'</span> | <span class="text-amber-300">'array'</span>
+  | <span class="text-amber-300">'string'</span> | <span class="text-amber-300">'number'</span>
+  | <span class="text-amber-300">'boolean'</span> | <span class="text-amber-300">'null'</span>;
+
+<span class="text-fuchsia-300">interface</span> <span class="text-emerald-300">JsonNode</span> {{ '{' }}
+  <span class="text-fuchsia-300">readonly</span> key: <span class="text-emerald-300">string</span>;
+  <span class="text-fuchsia-300">readonly</span> type: JsonType;
+  <span class="text-fuchsia-300">readonly</span> value?: <span class="text-emerald-300">JsonValue</span>;
+  <span class="text-fuchsia-300">readonly</span> children?: <span class="text-fuchsia-300">readonly</span> JsonNode[];
+{{ '}' }}
+
+<span class="text-stone-500">// inferred: NxpTreeHandler&lt;JsonNode&gt;</span>
+<span class="text-fuchsia-300">const</span> getChildren = (n: JsonNode) =&gt;
+  n.children ?? [];
+
+<span class="text-stone-500">// $implicit: JsonNode (narrowed)</span>
+<span class="text-stone-100">&lt;ng-template</span> <span class="text-sky-300">#row</span> <span class="text-fuchsia-300">let-node</span><span class="text-stone-100">&gt;</span>
+  <span class="text-fuchsia-300">&#64;if</span> (node.type === <span class="text-amber-300">'string'</span>) {{ '{' }}
+    <span class="text-stone-100">&lt;span&gt;</span><span class="text-amber-300">"</span>{{ '{{' }} node.value {{ '}}' }}<span class="text-amber-300">"</span><span class="text-stone-100">&lt;/span&gt;</span>
+  {{ '}' }}
+<span class="text-stone-100">&lt;/ng-template&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <div
+          class="col-span-12 flex flex-col lg:col-span-5"
+          style="background-color: var(--paper)"
+        >
+          <div
+            class="flex items-baseline justify-between border-b px-5 py-3"
+            style="border-color: var(--rule)"
+          >
+            <span
+              class="font-jbm text-[10px] uppercase tracking-[0.2em] opacity-50"
+            >
+              live · ·json
+            </span>
+          </div>
+          <div class="flex-1 px-3 py-3">
+            <div nxpTreeController>
+              @for (node of jsonTree; track node.key) {
+                <nxp-tree
+                  [value]="node"
+                  [childrenHandler]="getJsonChildren"
+                  [content]="jsonTpl"
+                />
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- § 06 — PATTERNS                                                   -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="mt-24 rise" style="animation-delay: 500ms">
+      <div class="flex items-end pb-6">
+        <span
+          class="font-jbm text-[11px] font-medium uppercase tracking-[0.22em] opacity-60"
+        >
+          § 06
+        </span>
+        <span class="leader"></span>
+        <h2 class="font-jbm text-xl font-medium tracking-tight md:text-2xl">
+          Patterns
+        </h2>
+      </div>
+      <p class="mb-8 max-w-2xl text-sm leading-relaxed opacity-65">
+        Two more shapes — different children handlers, different template rules.
+        Same component, no special cases.
+      </p>
+
+      <div
+        class="grid grid-cols-1 gap-px border lg:grid-cols-2"
+        style="border-color: var(--rule); background-color: var(--rule)"
+      >
+        <!-- Sitemap -->
+        <article class="flex flex-col" style="background-color: var(--paper)">
+          <header class="border-b px-5 py-3" style="border-color: var(--rule)">
+            <div class="flex items-baseline justify-between">
+              <code class="font-jbm text-[13px]" style="color: var(--accent)">
+                getSitemapChildren
+              </code>
+              <span
+                class="font-jbm text-[10px] uppercase tracking-[0.16em] opacity-50"
+              >
+                NxpTreeHandler&lt;PageNode&gt;
+              </span>
+            </div>
+            <div class="mt-0.5 text-[12px] opacity-65">
+              State chip on the right rail; arrow if the page is a redirect.
+            </div>
+          </header>
+          <div class="flex-1 px-3 py-3">
+            <div nxpTreeController>
+              @for (page of sitemapTree; track page.path) {
+                <nxp-tree
+                  [value]="page"
+                  [childrenHandler]="getSitemapChildren"
+                  [content]="sitemapTpl"
+                />
+              }
+            </div>
+          </div>
+        </article>
+
+        <!-- Taxonomy -->
+        <article class="flex flex-col" style="background-color: var(--paper)">
+          <header class="border-b px-5 py-3" style="border-color: var(--rule)">
+            <div class="flex items-baseline justify-between">
+              <code class="font-jbm text-[13px]" style="color: var(--accent)">
+                getTaxonChildren
+              </code>
+              <span
+                class="font-jbm text-[10px] uppercase tracking-[0.16em] opacity-50"
+              >
+                NxpTreeHandler&lt;TaxonNode&gt;
+              </span>
+            </div>
+            <div class="mt-0.5 text-[12px] opacity-65">
+              7 levels deep. Italic flag toggles per-row typography.
+            </div>
+          </header>
+          <div class="flex-1 px-3 py-3">
+            <div nxpTreeController>
+              @for (taxon of taxonomyTree; track taxon.name) {
+                <nxp-tree
+                  [value]="taxon"
+                  [childrenHandler]="getTaxonChildren"
+                  [content]="taxonTpl"
+                />
+              }
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- § 07 — ARCHITECTURE                                               -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="mt-24 rise" style="animation-delay: 580ms">
+      <div class="flex items-end pb-6">
+        <span
+          class="font-jbm text-[11px] font-medium uppercase tracking-[0.22em] opacity-60"
+        >
+          § 07
+        </span>
+        <span class="leader"></span>
+        <h2 class="font-jbm text-xl font-medium tracking-tight md:text-2xl">
+          Architecture
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-12 gap-8">
+        <!-- DI provider chain -->
+        <div class="col-span-12 lg:col-span-7">
+          <h3
+            class="font-jbm mb-3 text-[10px] uppercase tracking-[0.22em] opacity-55"
+          >
+            DI provider chain
+          </h3>
+          <div class="code-pane">
+            <pre
+              class="overflow-x-auto px-5 py-5"
+            ><code class="font-jbm text-[12px] leading-[1.7]"><span class="text-stone-500">// each &lt;nxp-tree&gt; bumps NXP_TREE_LEVEL via useFactory</span>
+&lt;nxp-tree&gt;                       <span class="text-stone-500">// level = 0</span>
+ ├── provides NXP_TREE_NODE
+ ├── provides NXP_TREE_LEVEL = (parent ?? -1) + 1
+ │
+ └── &lt;nxp-tree-item&gt;
+      ├── inject(NXP_TREE_LEVEL)         <span class="text-stone-500">→ 0</span>
+      ├── inject(NXP_TREE_CONTROLLER)    <span class="text-stone-500">→ controller</span>
+      ├── contentChildren(NXP_TREE_NODE) <span class="text-stone-500">→ children()</span>
+      │
+      └── &lt;nxp-tree-item-content&gt;
+           ├── inject(NxpTreeItemComponent)
+           ├── inject(NXP_TREE_LEVEL)    <span class="text-stone-500">→ indent</span>
+           └── chevron + slot
+
+&lt;nxp-tree&gt;                       <span class="text-stone-500">// level = 1 (recursed)</span>
+ └── &lt;nxp-tree-item&gt; …
+</code></pre>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="col-span-12 lg:col-span-5">
+          <h3
+            class="font-jbm mb-3 text-[10px] uppercase tracking-[0.22em] opacity-55"
+          >
+            notes
+          </h3>
+          <ul class="space-y-3 text-[13px] leading-relaxed">
+            <li
+              class="border-l-2 pl-3 opacity-85"
+              style="border-color: var(--accent)"
+            >
+              <span
+                class="font-jbm text-[11px] uppercase tracking-[0.16em] opacity-70"
+              >
+                non-reactive bridge
+              </span>
+              <div class="mt-1">
+                The controller stores expansion in a plain
+                <code class="font-jbm">WeakMap</code> /
+                <code class="font-jbm">Map</code>, not a signal. Each tree-item
+                re-reads it in <code class="font-jbm">ngDoCheck</code> and
+                writes the result into a local signal — same trick
+                <code class="font-jbm">Taiga-ui/cdk</code> uses.
+              </div>
+            </li>
+            <li
+              class="border-l-2 pl-3 opacity-85"
+              style="border-color: var(--accent)"
+            >
+              <span
+                class="font-jbm text-[11px] uppercase tracking-[0.16em] opacity-70"
+              >
+                content vs. view children
+              </span>
+              <div class="mt-1">
+                Inner <code class="font-jbm">&lt;nxp-tree&gt;</code> is
+                content-projected into
+                <code class="font-jbm">&lt;nxp-tree-item&gt;</code>, so the item
+                queries them via
+                <code class="font-jbm">contentChildren(NXP_TREE_NODE)</code>
+                — not <code class="font-jbm">viewChildren</code>.
+              </div>
+            </li>
+            <li
+              class="border-l-2 pl-3 opacity-85"
+              style="border-color: var(--accent)"
+            >
+              <span
+                class="font-jbm text-[11px] uppercase tracking-[0.16em] opacity-70"
+              >
+                expand animation
+              </span>
+              <div class="mt-1">
+                Driven by <code class="font-jbm">&lt;nxp-expand&gt;</code> from
+                <code class="font-jbm">&#64;ngxpro/cdk</code>; the chevron
+                rotates 90°, the row indents 16 px per level.
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- § 08 — SELECTION STATE (checkboxes)                              -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="mt-24 rise" style="animation-delay: 660ms">
+      <div class="flex items-end pb-6">
+        <span
+          class="font-jbm text-[11px] font-medium uppercase tracking-[0.22em] opacity-60"
+        >
+          § 08
+        </span>
+        <span class="leader"></span>
+        <h2 class="font-jbm text-xl font-medium tracking-tight md:text-2xl">
+          Selection state
+        </h2>
+      </div>
+      <p class="mb-8 max-w-2xl text-sm leading-relaxed opacity-65">
+        The tree component does not own selection — but it composes cleanly with
+        <code class="font-jbm">nxpCheckbox</code>, the
+        <code class="font-jbm">nxpMapper</code> pipe, and two pure helpers from
+        the package: <code class="font-jbm">nxpComputeTreeChecked</code> derives
+        a parent's <code class="font-jbm">boolean | null</code> state from its
+        descendants; <code class="font-jbm">nxpToggleTreeChecked</code> cascades
+        a click down the subtree, returning a fresh
+        <code class="font-jbm">Map</code> so the pure pipe re-evaluates.
+      </p>
+
+      <div
+        class="grid grid-cols-12 gap-px border"
+        style="border-color: var(--rule); background-color: var(--rule)"
+      >
+        <!-- Code -->
+        <div
+          class="col-span-12 lg:col-span-7"
+          style="background-color: var(--paper)"
+        >
+          <div class="code-pane h-full">
+            <div
+              class="flex items-center justify-between border-b border-stone-800 px-4 py-2.5"
+            >
+              <span
+                class="font-jbm text-[10px] uppercase tracking-[0.2em] text-stone-500"
+              >
+                checkbox-tree.component.ts
+              </span>
+            </div>
+            <pre
+              class="overflow-x-auto px-5 py-5"
+            ><code class="font-jbm text-[12px]"><span class="text-stone-500">// Tri-state map: leaves only — parents are derived.</span>
+<span class="text-fuchsia-300">readonly</span> map = signal&lt;<span class="text-emerald-300">ReadonlyMap</span>&lt;Node, <span class="text-emerald-300">boolean</span> | <span class="text-fuchsia-300">null</span>&gt;&gt;(<span class="text-fuchsia-300">new</span> Map());
+
+<span class="text-fuchsia-300">readonly</span> getValue = (n: Node, m: Map&lt;Node, <span class="text-emerald-300">boolean</span> | <span class="text-fuchsia-300">null</span>&gt;) =&gt;
+  nxpComputeTreeChecked(n, m, <span class="text-fuchsia-300">this</span>.handler);
+
+<span class="text-fuchsia-300">readonly</span> onChecked = (n: Node, v: <span class="text-emerald-300">boolean</span>) =&gt;
+  <span class="text-fuchsia-300">this</span>.map.set(
+    nxpToggleTreeChecked(n, v, <span class="text-fuchsia-300">this</span>.map(), <span class="text-fuchsia-300">this</span>.handler),
+  );
+
+<span class="text-stone-500">// template ─────────────────────────────────────────</span>
+<span class="text-stone-100">&lt;div</span> <span class="text-sky-300">[nxpTreeController]</span>=<span class="text-amber-300">"true"</span><span class="text-stone-100">&gt;</span>
+  <span class="text-fuchsia-300">&#64;for</span> (item <span class="text-fuchsia-300">of</span> data.children; <span class="text-fuchsia-300">track</span> item) {{ '{' }}
+    <span class="text-stone-100">&lt;nxp-tree</span>
+      <span class="text-sky-300">[childrenHandler]</span>=<span class="text-amber-300">"handler"</span>
+      <span class="text-sky-300">[content]</span>=<span class="text-amber-300">"content"</span>
+      <span class="text-sky-300">[value]</span>=<span class="text-amber-300">"item"</span> <span class="text-stone-100">/&gt;</span>
+  {{ '}' }}
+<span class="text-stone-100">&lt;/div&gt;</span>
+
+<span class="text-stone-100">&lt;ng-template</span> <span class="text-sky-300">#content</span> <span class="text-fuchsia-300">let-item</span><span class="text-stone-100">&gt;</span>
+  <span class="text-stone-100">&lt;label</span> <span class="text-sky-300">nxpLabel</span><span class="text-stone-100">&gt;</span>
+    <span class="text-stone-100">&lt;input</span>
+      <span class="text-sky-300">nxpCheckbox</span>
+      <span class="text-sky-300">type</span>=<span class="text-amber-300">"checkbox"</span>
+      <span class="text-sky-300">[ngModel]</span>=<span class="text-amber-300">"item | nxpMapper: getValue : map()"</span>
+      <span class="text-sky-300">(ngModelChange)</span>=<span class="text-amber-300">"onChecked(item, $event)"</span> <span class="text-stone-100">/&gt;</span>
+    <span class="text-stone-100">&lt;small&gt;</span>{{ '{{' }} item.text {{ '}}' }}<span class="text-stone-100">&lt;/small&gt;</span>
+  <span class="text-stone-100">&lt;/label&gt;</span>
+<span class="text-stone-100">&lt;/ng-template&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <!-- Live demo -->
+        <aside
+          class="col-span-12 flex flex-col lg:col-span-5"
+          style="background-color: var(--paper)"
+        >
+          <div
+            class="flex items-baseline justify-between border-b px-5 py-3"
+            style="border-color: var(--rule)"
+          >
+            <span
+              class="font-jbm text-[10px] uppercase tracking-[0.2em] opacity-50"
+            >
+              live · resources/
+            </span>
+            <button
+              type="button"
+              class="font-jbm border px-2 py-0.5 text-[9.5px] uppercase tracking-[0.18em] opacity-60 transition-opacity hover:opacity-100"
+              style="border-color: var(--rule)"
+              (click)="clearSelection()"
+            >
+              reset
+            </button>
+          </div>
+
+          <div class="flex-1 px-3 py-3 sm:px-5 sm:py-4">
+            <div [nxpTreeController]="true">
+              @for (item of selectableData.children ?? []; track item.text) {
+                <nxp-tree
+                  [childrenHandler]="selectableHandler"
+                  [content]="selectionTpl"
+                  [value]="item"
+                />
+              }
+            </div>
+          </div>
+
+          <div class="border-t px-5 py-3" style="border-color: var(--rule)">
+            <div
+              class="font-jbm mb-1.5 text-[9.5px] uppercase tracking-[0.18em] opacity-55"
+            >
+              selected leaves · {{ selectedLeaves().length }}
+            </div>
+            @if (selectedLeaves().length === 0) {
+              <div class="font-jbm text-[11.5px] italic opacity-45">
+                — toggle a checkbox to see selection
+              </div>
+            } @else {
+              <ul class="flex flex-wrap gap-1.5">
+                @for (leaf of selectedLeaves(); track leaf) {
+                  <li
+                    class="font-jbm border px-1.5 py-px text-[10.5px] tabular-nums opacity-85"
+                    style="border-color: var(--rule)"
+                  >
+                    {{ leaf }}
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+      class="mt-24 flex flex-col items-baseline justify-between gap-2 border-t pt-6 sm:flex-row"
+      style="border-color: var(--rule)"
+    >
+      <span class="font-jbm text-[10px] uppercase tracking-[0.22em] opacity-50">
+        apps/showcase/src/app/tree/tree-demo.component.ts
+      </span>
+      <span class="font-jbm text-[10px] uppercase tracking-[0.22em] opacity-50">
+        &#64;ngxpro/components/tree · MIT
+      </span>
+    </footer>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- Templates                                                            -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+
+<!-- ── Repo file row ── -->
+<ng-template #repoTpl let-item>
+  <span class="marker-row inline-flex w-full items-center gap-2.5">
+    @if (item.kind === 'folder') {
+      <span class="font-jbm text-[12.5px] tracking-tight">
+        {{ item.name }}
+        <span class="opacity-40">/</span>
+      </span>
+    } @else {
+      <span class="font-jbm text-[10px] uppercase tracking-[0.18em] opacity-40">
+        {{ item.ext }}
+      </span>
+      <span class="font-jbm text-[12.5px] tracking-tight opacity-85">
+        {{ item.name }}
+      </span>
+      <span
+        class="ml-auto font-jbm text-[10px] tabular-nums opacity-40"
+        aria-hidden="true"
+      >
+        {{ item.size }}
+      </span>
+    }
+  </span>
+</ng-template>
+
+<!-- ── Org person row ── -->
+<ng-template #orgTpl let-person>
+  <span class="flex w-full min-w-0 items-center gap-3 py-0.5">
+    <span
+      class="grid size-8 shrink-0 place-items-center rounded-none border font-jbm text-[10.5px] tracking-tight"
+      [class]="orgInitialClass(person.team)"
+      aria-hidden="true"
+    >
+      {{ initials(person.name) }}
+    </span>
+    <span class="flex min-w-0 flex-1 flex-col leading-tight">
+      <span class="truncate text-[13px] font-medium tracking-tight">
+        {{ person.name }}
+      </span>
+      <span class="font-jbm truncate text-[11px] opacity-60">
+        {{ person.role }}
+      </span>
+    </span>
+    <span class="flex shrink-0 items-center gap-2.5">
+      <span
+        class="font-jbm hidden text-[10px] uppercase tracking-[0.18em] opacity-50 sm:inline"
+      >
+        {{ teamLabel(person.team) }}
+      </span>
+      <span
+        class="size-1.5 rounded-full"
+        [class]="statusClass(person.status)"
+        [attr.aria-label]="statusLabel(person.status)"
+      ></span>
+    </span>
+  </span>
+</ng-template>
+
+<!-- ── JSON node row ── -->
+<ng-template #jsonTpl let-node>
+  <span class="flex w-full items-baseline gap-2.5">
+    <span class="json-key text-[12.5px] tracking-tight">
+      {{ node.key }}
+    </span>
+    @if (node.type === 'object' || node.type === 'array') {
+      <span class="font-jbm text-[10px] uppercase tracking-[0.16em] opacity-45">
+        {{ node.type }}
+      </span>
+    } @else {
+      <span class="font-jbm opacity-30">:</span>
+      <span
+        class="font-jbm truncate text-[12.5px]"
+        [class]="jsonValueClass(node.type)"
+      >
+        {{ jsonValueLabel(node) }}
+      </span>
+    }
+  </span>
+</ng-template>
+
+<!-- ── Sitemap row ── -->
+<ng-template #sitemapTpl let-page>
+  <span class="flex w-full min-w-0 items-baseline gap-2.5">
+    <span class="font-jbm truncate text-[12.5px] tracking-tight">
+      {{ page.title }}
+    </span>
+    <span class="font-jbm truncate text-[10.5px] opacity-45" aria-hidden="true">
+      {{ page.path }}
+    </span>
+    @if (page.state && page.state !== 'live') {
+      <span
+        class="ml-auto inline-flex items-center gap-1 border px-1.5 py-px font-jbm text-[9px] uppercase tracking-[0.18em]"
+        [class]="stateClass(page.state)"
+      >
+        {{ page.state }}
+      </span>
+    }
+  </span>
+</ng-template>
+
+<!-- ── Manual leaf row (used by the typed-controller demo) ── -->
+<ng-template #manualLeafTpl let-leaf>
+  <span class="font-jbm text-[12.5px] opacity-90">{{ leaf.name }}</span>
+</ng-template>
+
+<!-- ── Selection row (checkbox tree) ── -->
+<ng-template #selectionTpl let-item>
+  <label
+    nxpLabel
+    class="inline-flex w-full cursor-pointer items-center gap-2 py-0.5"
+  >
+    <input
+      nxpCheckbox
+      type="checkbox"
+      size="s"
+      [ngModel]="item | nxpMapper: getSelectionValue : selectionMap()"
+      (ngModelChange)="onSelectionChecked(item, $event)"
+    />
+    <small class="font-jbm text-[12.5px] tracking-tight opacity-90">
+      {{ item.text }}
+    </small>
+  </label>
+</ng-template>
+
+<!-- ── Taxonomy row ── -->
+<ng-template #taxonTpl let-taxon>
+  <span class="flex w-full items-baseline gap-2.5">
+    <span
+      class="font-jbm w-[3.75rem] shrink-0 text-[9.5px] uppercase tracking-[0.18em] opacity-45"
+    >
+      {{ taxon.rank }}
+    </span>
+    <span
+      class="font-jbm text-[12.5px] tracking-tight"
+      [class.italic]="taxon.italic"
+      [class.font-medium]="!taxon.italic"
+    >
+      {{ taxon.name }}
+    </span>
+  </span>
+</ng-template>

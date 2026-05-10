@@ -1,6 +1,6 @@
 import { Directive, computed, input } from '@angular/core';
-import { cx } from '../../../utils';
-import { NXP_LABEL } from '../../../tokens';
+import { cx } from '@ngxpro/cdk';
+import { NXP_LABEL } from '@ngxpro/cdk';
 
 /**
  * Label directive (Tremor styling).
@@ -11,7 +11,6 @@ import { NXP_LABEL } from '../../../tokens';
  */
 @Directive({
   selector: 'label[nxpLabel]',
-  standalone: true,
   providers: [{ provide: NXP_LABEL, useExisting: NxpLabelDirective }],
   host: {
     '[class]': 'classes()',

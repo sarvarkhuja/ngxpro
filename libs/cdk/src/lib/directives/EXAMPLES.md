@@ -5,7 +5,6 @@
 ```typescript
 @Component({
   selector: 'app-user-list-demo',
-  standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective],
   template: `
     <div class="space-y-2 max-w-md">
@@ -43,7 +42,6 @@ export class UserListDemoComponent {}
 ```typescript
 @Component({
   selector: 'app-menu-demo',
-  standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective],
   template: `
     <nav class="w-64 bg-white dark:bg-gray-900 rounded-lg shadow-sm">
@@ -88,7 +86,6 @@ export class MenuDemoComponent {}
 ```typescript
 @Component({
   selector: 'app-actions-demo',
-  standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective],
   template: `
     <div class="space-y-2 max-w-2xl">
@@ -145,7 +142,6 @@ export class ActionsDemoComponent {
 ```typescript
 @Component({
   selector: 'app-heights-demo',
-  standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective],
   template: `
     <div class="space-y-4 max-w-md">
@@ -189,7 +185,6 @@ export class HeightsDemoComponent {}
 ```typescript
 @Component({
   selector: 'app-sizes-demo',
-  standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective],
   template: `
     <div class="space-y-2 max-w-md">
@@ -227,7 +222,6 @@ export class SizesDemoComponent {}
 ```typescript
 @Component({
   selector: 'app-title-sizes-demo',
-  standalone: true,
   imports: [TitleDirective, SubtitleDirective],
   template: `
     <div class="space-y-6 max-w-md">
@@ -261,7 +255,6 @@ export class TitleSizesDemoComponent {}
 ```typescript
 @Component({
   selector: 'app-notifications-demo',
-  standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective],
   template: `
     <div class="max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-lg">
@@ -317,7 +310,6 @@ import { CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective 
 
 ```typescript
 @Component({
-  standalone: true,
   imports: [
     CellDirective,
     TitleDirective,

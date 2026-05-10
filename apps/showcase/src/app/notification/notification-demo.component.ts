@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { interval, take } from 'rxjs';
 import { TitleCasePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 import {
   NxpNotificationOptions,
   NxpNotificationHostComponent,
@@ -21,9 +21,9 @@ import {
 type Appearance = NxpNotificationOptions['appearance'];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Rich toast bodies — each rendered via PolymorpheusComponent.
+// Rich toast bodies — each rendered via NxpDynamicComponent.
 // Per-toast data is supplied through dedicated InjectionTokens and a custom
-// Injector passed as the 2nd argument of `new PolymorpheusComponent(C, injector)`.
+// Injector passed as the 2nd argument of `new NxpDynamicComponent(C, injector)`.
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface UndoData {
@@ -325,7 +325,7 @@ interface RichDemo {
                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900"
               >
                 <i class="ri-component-line" aria-hidden="true"></i>
-                PolymorpheusComponent
+                NxpDynamicComponent
               </span>
             </div>
             <p class="text-base text-gray-600 dark:text-gray-400">
@@ -333,7 +333,7 @@ interface RichDemo {
               is a standalone
               <code
                 class="font-mono text-[13px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800"
-                >PolymorpheusComponent</code
+                >NxpDynamicComponent</code
               >
               with its own state, layout, and actions — provided per-toast via a
               custom
@@ -435,7 +435,7 @@ interface RichDemo {
                 <h3
                   class="text-base font-semibold text-gray-900 dark:text-white"
                 >
-                  PolymorpheusComponent
+                  NxpDynamicComponent
                 </h3>
               </div>
               <pre
@@ -447,7 +447,7 @@ interface RichDemo {
 &#125;);
 
 service.<span class="text-cyan-300">open</span>(
-  <span class="text-purple-300">new</span> <span class="text-cyan-300">PolymorpheusComponent</span>(UndoToast, injector),
+  <span class="text-purple-300">new</span> <span class="text-cyan-300">NxpDynamicComponent</span>(UndoToast, injector),
   &#123; appearance: <span class="text-emerald-300">'neutral'</span> &#125;,
 );</code></pre>
               <button
@@ -688,7 +688,7 @@ export class NotificationDemoComponent {
       parent: this.injector,
       providers: [{ provide: UNDO_DATA, useValue: data }],
     });
-    this.service.open(new PolymorpheusComponent(UndoToastComponent, injector), {
+    this.service.open(new NxpDynamicComponent(UndoToastComponent, injector), {
       appearance: 'neutral',
       icon: () => '',
       autoClose: 5000,
@@ -704,15 +704,12 @@ export class NotificationDemoComponent {
       parent: this.injector,
       providers: [{ provide: UPLOAD_DATA, useValue: data }],
     });
-    this.service.open(
-      new PolymorpheusComponent(UploadToastComponent, injector),
-      {
-        appearance: 'neutral',
-        icon: () => '',
-        label: 'Uploading',
-        autoClose: false,
-      },
-    );
+    this.service.open(new NxpDynamicComponent(UploadToastComponent, injector), {
+      appearance: 'neutral',
+      icon: () => '',
+      label: 'Uploading',
+      autoClose: false,
+    });
   }
 
   private openMessage(): void {
@@ -730,7 +727,7 @@ export class NotificationDemoComponent {
       providers: [{ provide: MESSAGE_DATA, useValue: data }],
     });
     this.service.open(
-      new PolymorpheusComponent(MessageToastComponent, injector),
+      new NxpDynamicComponent(MessageToastComponent, injector),
       {
         appearance: 'neutral',
         icon: () => '',
@@ -750,14 +747,11 @@ export class NotificationDemoComponent {
       parent: this.injector,
       providers: [{ provide: INVITE_DATA, useValue: data }],
     });
-    this.service.open(
-      new PolymorpheusComponent(InviteToastComponent, injector),
-      {
-        appearance: 'neutral',
-        icon: 'ri-user-add-line',
-        autoClose: false,
-      },
-    );
+    this.service.open(new NxpDynamicComponent(InviteToastComponent, injector), {
+      appearance: 'neutral',
+      icon: 'ri-user-add-line',
+      autoClose: false,
+    });
   }
 
   private openRelease(): void {
@@ -772,7 +766,7 @@ export class NotificationDemoComponent {
       providers: [{ provide: RELEASE_DATA, useValue: data }],
     });
     this.service.open(
-      new PolymorpheusComponent(ReleaseToastComponent, injector),
+      new NxpDynamicComponent(ReleaseToastComponent, injector),
       {
         appearance: 'success',
         icon: () => '',

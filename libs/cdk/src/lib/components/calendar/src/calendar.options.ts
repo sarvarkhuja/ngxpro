@@ -1,4 +1,4 @@
-import { nxpCreateOptions } from '../../../utils';
+import { nxpCreateOptions } from '@ngxpro/cdk';
 import type { CalendarOptions } from './calendar-options.interface';
 
 export type { CalendarOptions };

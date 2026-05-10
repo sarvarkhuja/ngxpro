@@ -20,7 +20,6 @@ import { NXP_TABS_OPTIONS, type NxpTabsSize } from './tabs.options';
  * Exposes `moveFocus(current, step)` for keyboard navigation.
  */
 @Directive({
-  standalone: true,
   host: {
     '[attr.data-size]': 'size()',
     '[attr.role]': '"tablist"',

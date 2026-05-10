@@ -5,7 +5,7 @@ import {
   type Injector,
   type Type,
 } from '@angular/core';
-import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 import type { Observable } from 'rxjs';
 import type { NxpDialogOptions } from './dialog.options';
 import { NxpDialogService } from './dialog.service';
@@ -30,7 +30,7 @@ export function nxpDialog<D, R = void>(
   const { injector: _i, ...options } = opts;
 
   return (data) =>
-    dialogService.open(new PolymorpheusComponent(component, injector), {
+    dialogService.open(new NxpDynamicComponent(component, injector), {
       ...options,
       data,
     } as Partial<NxpDialogOptions<D>>);

@@ -76,5 +76,7 @@
       "Bash(npx ngc:*)",
       "Bash(grep:*)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": ["angular-cli"],
+  "enableAllProjectMcpServers": true
 }

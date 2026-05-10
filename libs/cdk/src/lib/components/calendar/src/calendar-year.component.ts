@@ -8,7 +8,7 @@ import {
   output,
   ViewChild,
 } from '@angular/core';
-import { cx, calendarCellVariants } from '../../../utils';
+import { cx, calendarCellVariants } from '@ngxpro/cdk';
 
 /** Number of years to show on each side of the current year. */
 const YEAR_RANGE = 100;
@@ -21,7 +21,6 @@ const YEAR_RANGE = 100;
  */
 @Component({
   selector: 'nxp-calendar-year',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div

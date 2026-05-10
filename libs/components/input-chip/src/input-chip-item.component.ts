@@ -14,7 +14,6 @@ import { CHIP_SIZE_CLASSES, type NxpChipSize } from '@ngxpro/components/chip';
 
 @Component({
   selector: 'nxp-input-chip-item',
-  standalone: true,
   imports: [FormsModule],
   template: `
     <input

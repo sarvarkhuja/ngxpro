@@ -5,7 +5,6 @@ export type NxpPlatform = 'web' | 'mobile';
 
 @Directive({
   selector: '[nxpPlatform]',
-  standalone: true,
   host: {
     '[attr.data-platform]': 'platform',
   },

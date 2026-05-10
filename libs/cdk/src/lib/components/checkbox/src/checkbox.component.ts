@@ -12,7 +12,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { NXP_CHECKBOX_OPTIONS } from './checkbox.options';
-import { cx } from '../../../utils';
+import { cx } from '@ngxpro/cdk';
 
 export type NxpCheckboxSize = 's' | 'm' | 'l';
 export type NxpCheckboxColor = 'primary' | 'secondary' | 'danger';
@@ -37,7 +37,6 @@ const SIZE_RADIUS: Record<NxpCheckboxSize, string> = {
  */
 @Component({
   selector: 'nxp-checkbox',
-  standalone: true,
   template: `
     <input
       type="checkbox"

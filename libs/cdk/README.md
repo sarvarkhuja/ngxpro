@@ -14,7 +14,6 @@ npm install @ngxpro/cdk --legacy-peer-deps
 
 - `@angular/common` ^21.1
 - `@angular/core` ^21.1
-- `@taiga-ui/polymorpheus` ^5.0
 
 ## Usage
 
@@ -25,6 +24,7 @@ import { cx } from '@ngxpro/cdk';
 // Secondary entry points
 import { NxpIconComponent, nxpIconsProvider } from '@ngxpro/cdk/components/icon';
 import { NxpDropdownComponent } from '@ngxpro/cdk/portals/dropdown';
+import { NxpDynamicComponent, NxpDynamicOutlet } from '@ngxpro/cdk/dynamic';
 ```
 
 ## License

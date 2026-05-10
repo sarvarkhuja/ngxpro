@@ -34,7 +34,7 @@ function signSymbolFor(value: number, sign: AmountSign): AmountSignSymbol {
  * {{ 1234.56 | nxpAmount:'EUR':'end' }}  // "1,234.56 €"
  * {{ -1234.56 | nxpAmount:'USD' }}       // "−$1,234.56"
  */
-@Pipe({ name: 'nxpAmount', standalone: true })
+@Pipe({ name: 'nxpAmount' })
 export class AmountPipe implements PipeTransform {
   private readonly options: NgxproAmountOptions = inject(NXP_AMOUNT_OPTIONS);
   private readonly cache = new Map<string, Intl.NumberFormat>();

@@ -10,8 +10,8 @@ import {
   OnDestroy,
   PLATFORM_ID,
 } from '@angular/core';
-import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
-import type { PolymorpheusContent } from '@taiga-ui/polymorpheus';
+import { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
+import type { NxpDynamicContent } from '@ngxpro/cdk/dynamic';
 import {
   NxpPortalService,
   nxpInjectElement,
@@ -55,7 +55,6 @@ const EXIT_DURATION_MS = 100;
   // `nxp-tooltip-icon` already applies this directive through `hostDirectives`.
   // Excluding that host prevents Angular from matching the same directive twice.
   selector: '[nxpTooltip]:not(nxp-tooltip-icon)',
-  standalone: true,
   host: {
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
@@ -94,8 +93,8 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
   /** Whether the current open should skip the enter animation (skip-delay). */
   private instantOpen = false;
 
-  /** The tooltip content — string, TemplateRef, or PolymorpheusComponent. */
-  readonly nxpTooltip = input<PolymorpheusContent<NxpContext<void>>>('');
+  /** The tooltip content — string, TemplateRef, or NxpDynamicComponent. */
+  readonly nxpTooltip = input<NxpDynamicContent<NxpContext<void>>>('');
 
   /** Preferred opening direction. Falls back to options default. */
   readonly nxpTooltipDirection = input<
@@ -124,7 +123,7 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
   readonly nxpTooltipDescribe = input<string | null>(null);
 
   /** Resolved content (re-exposed so NxpTooltipComponent can read it). */
-  tooltipContent(): PolymorpheusContent<NxpContext<void>> {
+  tooltipContent(): NxpDynamicContent<NxpContext<void>> {
     return this.nxpTooltip();
   }
 
@@ -220,7 +219,7 @@ export class NxpTooltipDirective implements OnDestroy, NxpRectAccessor {
       ],
     });
 
-    const component = new PolymorpheusComponent(
+    const component = new NxpDynamicComponent(
       NxpTooltipComponent,
       childInjector,
     );

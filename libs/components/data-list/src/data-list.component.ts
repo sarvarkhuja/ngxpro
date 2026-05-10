@@ -47,7 +47,6 @@ import {
  */
 @Component({
   selector: 'nxp-data-list',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     role: 'listbox',

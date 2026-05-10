@@ -27,7 +27,6 @@ import { DataListComponent } from './data-list.component';
  */
 @Directive({
   selector: 'button[nxpOption]',
-  standalone: true,
   host: {
     role: 'option',
     type: 'button',

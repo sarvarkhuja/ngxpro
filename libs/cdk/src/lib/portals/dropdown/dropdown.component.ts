@@ -6,7 +6,7 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
+import { NxpDynamicOutlet } from '@ngxpro/cdk/dynamic';
 import { map, takeWhile } from 'rxjs';
 import { EMPTY_CLIENT_RECT } from '../../constants';
 import { NxpAnimated } from '../../directives/animated.directive';
@@ -35,11 +35,11 @@ const MAX_WIDTH_GAP = 16;
  */
 @Component({
   selector: 'nxp-dropdown',
-  imports: [PolymorpheusOutlet],
+  imports: [NxpDynamicOutlet],
   template: `
     <div class="nxp-dropdown-scroll overflow-auto max-h-full">
       <div
-        *polymorpheusOutlet="
+        *nxpDynamicOutlet="
           directive.content() as text;
           context: { $implicit: close }
         "

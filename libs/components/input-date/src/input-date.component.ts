@@ -12,7 +12,13 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cx, inputVariants, NXP_DOCUMENT, NXP_IS_BROWSER } from '@ngxpro/cdk';
+import {
+  cx,
+  hasErrorInput,
+  inputVariants,
+  NXP_DOCUMENT,
+  NXP_IS_BROWSER,
+} from '@ngxpro/cdk';
 import { CalendarComponent } from '@ngxpro/components/calendar';
 import type {
   DisabledHandler,
@@ -41,7 +47,6 @@ import { formatDate, parseDate } from './date-input.utils';
  */
 @Component({
   selector: 'nxp-input-date',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarComponent],
   providers: [
@@ -76,6 +81,7 @@ import { formatDate, parseDate } from './date-input.utils';
     <div class="relative w-full">
       <input
         type="text"
+        [id]="inputId() || null"
         [class]="inputClass()"
         [value]="inputValue()"
         [placeholder]="placeholder()"
@@ -86,7 +92,11 @@ import { formatDate, parseDate } from './date-input.utils';
         (keydown.escape)="close()"
         aria-haspopup="dialog"
         [attr.aria-expanded]="isOpen()"
-        [attr.aria-label]="placeholder()"
+        [attr.aria-label]="
+          ariaLabelledBy() ? null : (ariaLabel() ?? placeholder())
+        "
+        [attr.aria-labelledby]="ariaLabelledBy() || null"
+        [attr.aria-invalid]="hasError() || null"
         autocomplete="off"
       />
 
@@ -150,11 +160,20 @@ export class InputDateComponent implements ControlValueAccessor {
   readonly markerHandler = input<MarkerHandler | null>(null);
   readonly class = input<string>('');
 
+  /** Forwards an `id` to the inner input so consumers can pair a `<label for="...">`. */
+  readonly inputId = input<string>('');
+  /** Accessible name override; falls back to placeholder when not set. */
+  readonly ariaLabel = input<string | null>(null);
+  /** Reference to a labelling element by id; takes precedence over `ariaLabel`. */
+  readonly ariaLabelledBy = input<string | null>(null);
+  /** Marks the input as invalid (sets `aria-invalid`); style hook for callers wiring form validity. */
+  readonly hasError = input<boolean>(false);
+
   protected readonly isOpen = signal(false);
   protected readonly inputValue = signal('');
 
   protected readonly inputClass = computed(() =>
-    cx(inputVariants(), this.class()),
+    cx(inputVariants(), this.hasError() ? hasErrorInput : '', this.class()),
   );
 
   constructor() {

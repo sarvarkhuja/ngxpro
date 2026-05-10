@@ -13,7 +13,6 @@ import { CellDirective, TitleDirective, SubtitleDirective } from '@ngxpro/cdk';
 
 @Component({
   selector: 'app-user-list',
-  standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective],
   template: `
     <div nxpCell="m">
@@ -172,7 +171,6 @@ import { CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective 
 
 @Component({
   selector: 'app-user-list',
-  standalone: true,
   imports: [CellDirective, TitleDirective, SubtitleDirective, CellActionsDirective],
   template: `
     <div class="space-y-2">

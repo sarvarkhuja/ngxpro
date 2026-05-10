@@ -1,0 +1,47 @@
+{
+  "name": "@ngxpro/addon-doc-lib",
+  "version": "0.0.1",
+  "description": "ngxpro-native documentation portal kit (navigation, page shell, code/example/api/demo, theme switcher) — modern Angular standalone components styled with Tailwind CSS v4.",
+  "license": "MIT",
+  "homepage": "https://github.com/SarvarkhujaMurodov/ngxpro#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro.git",
+    "directory": "libs/addon-doc-lib"
+  },
+  "bugs": {
+    "url": "https://github.com/SarvarkhujaMurodov/ngxpro/issues"
+  },
+  "keywords": [
+    "angular",
+    "ngxpro",
+    "documentation",
+    "docs",
+    "addon-doc",
+    "tailwind",
+    "design-system"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "peerDependencies": {
+    "@angular/cdk": "^21.1.0",
+    "@angular/common": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@ngxpro/cdk": "*",
+    "@ngxpro/core": "*",
+    "@ngxpro/components": "*",
+    "ngx-highlightjs": "^14.0.1",
+    "rxjs": "^7.8.0",
+    "tailwind-variants": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "ngx-highlightjs": {
+      "optional": true
+    }
+  },
+  "sideEffects": false
+}

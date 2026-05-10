@@ -1,4 +1,4 @@
-import { Directive, HostBinding } from '@angular/core';
+import { Directive } from '@angular/core';
 import { cx } from '../utils/cx';
 
 /**
@@ -26,10 +26,11 @@ import { cx } from '../utils/cx';
  */
 @Directive({
   selector: '[nxpCellActions]',
-  standalone: true,
+  host: {
+    '[class]': 'hostClasses',
+  },
 })
 export class CellActionsDirective {
-  @HostBinding('class')
   protected get hostClasses(): string {
     return cx(
       'absolute right-0 z-10 flex items-center gap-2',

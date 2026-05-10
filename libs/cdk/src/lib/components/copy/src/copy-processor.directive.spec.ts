@@ -6,7 +6,6 @@ import {
 } from './copy-processor.directive';
 
 @Component({
-  standalone: true,
   imports: [NxpCopyProcessorDirective],
   template: `<div [nxpCopyProcessor]="transform" data-testid="target">
     lorem

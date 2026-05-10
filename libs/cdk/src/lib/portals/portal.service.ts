@@ -4,7 +4,7 @@ import {
   Injectable,
   type TemplateRef,
 } from '@angular/core';
-import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 import { NxpPortals } from './portals.directive';
 
 @Injectable()
@@ -15,10 +15,10 @@ export abstract class NxpPortalService {
     this.host = host;
   }
 
-  add<C>(content: PolymorpheusComponent<C>): ComponentRef<C>;
+  add<C>(content: NxpDynamicComponent<C>): ComponentRef<C>;
   add<C>(content: TemplateRef<C>, context?: C): EmbeddedViewRef<C>;
   add<C>(
-    content: PolymorpheusComponent<C> | TemplateRef<C>,
+    content: NxpDynamicComponent<C> | TemplateRef<C>,
     context?: C,
   ): ComponentRef<C> | EmbeddedViewRef<C> {
     if (!this.host) {
@@ -26,7 +26,7 @@ export abstract class NxpPortalService {
         'NxpPortalService has no host. Did you forget to add <nxp-root> to your app?',
       );
     }
-    return content instanceof PolymorpheusComponent
+    return content instanceof NxpDynamicComponent
       ? this.host.addComponent(content)
       : this.host.addTemplate(content as TemplateRef<C>, context);
   }

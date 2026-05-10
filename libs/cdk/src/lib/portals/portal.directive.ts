@@ -1,6 +1,6 @@
 import { Directive, inject, input } from '@angular/core';
 import { outputFromObservable, toObservable } from '@angular/core/rxjs-interop';
-import { PolymorpheusTemplate } from '@taiga-ui/polymorpheus';
+import { NxpDynamicTemplate } from '@ngxpro/cdk/dynamic';
 import { endWith, ignoreElements, share } from 'rxjs';
 import { nxpIfMap } from '../observables';
 import type { NxpPortalContext } from './portal';
@@ -12,7 +12,7 @@ import { NxpPortal } from './portal';
  * Pattern from Taiga UI TuiPortalDirective.
  */
 @Directive()
-export class NxpPortalDirective<T> extends PolymorpheusTemplate<
+export class NxpPortalDirective<T> extends NxpDynamicTemplate<
   NxpPortalContext<T>
 > {
   private readonly portal = inject(NxpPortal<T>);

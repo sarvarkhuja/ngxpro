@@ -30,7 +30,6 @@ export const NXP_TEXTFIELD_END = new InjectionToken<unknown>(
  */
 @Directive({
   selector: '[nxpTextfieldEnd]',
-  standalone: true,
   providers: [
     { provide: NXP_TEXTFIELD_END, useExisting: NxpTextfieldEndDirective },
   ],

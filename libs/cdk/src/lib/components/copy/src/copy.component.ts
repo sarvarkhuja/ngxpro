@@ -10,8 +10,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { tv, type VariantProps } from 'tailwind-variants';
-import { cx, nxpWriteToClipboard } from '../../../utils';
-import { NXP_DOCUMENT } from '../../../tokens';
+import { cx, nxpWriteToClipboard } from '@ngxpro/cdk';
+import { NXP_DOCUMENT } from '@ngxpro/cdk';
 import { NXP_COPY_OPTIONS } from './copy.options';
 
 // ---------------------------------------------------------------------------
@@ -57,7 +57,6 @@ export type NxpCopySize = NonNullable<
  */
 @Component({
   selector: 'nxp-copy',
-  standalone: true,
   template: `
     <span #content class="min-w-0 truncate"><ng-content /></span>
     <button

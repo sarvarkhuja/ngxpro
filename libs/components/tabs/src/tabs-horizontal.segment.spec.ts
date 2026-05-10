@@ -4,7 +4,6 @@ import { NxpTabDirective } from './tab.directive';
 import { NxpTabsHorizontal } from './tabs-horizontal.component';
 
 @Component({
-  standalone: true,
   imports: [NxpTabsHorizontal, NxpTabDirective],
   template: `
     <nxp-tabs

@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { CellActionsDirective } from './cell-actions.directive';
 
 @Component({
-  standalone: true,
   imports: [CellActionsDirective],
   template: `
     <div nxpCellActions data-testid="actions">

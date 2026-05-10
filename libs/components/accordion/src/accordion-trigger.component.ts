@@ -25,7 +25,6 @@ import { AccordionDirective } from './accordion.directive';
  */
 @Component({
   selector: 'nxp-accordion-trigger[nxpAccordion]',
-  standalone: true,
   hostDirectives: [AccordionDirective],
   template: `
     <span class="flex-1 min-w-0 text-left">

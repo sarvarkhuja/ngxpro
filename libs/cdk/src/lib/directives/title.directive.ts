@@ -1,4 +1,4 @@
-import { Directive, HostBinding, input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { cx } from '../utils/cx';
 
 /**
@@ -51,9 +51,9 @@ import { cx } from '../utils/cx';
  */
 @Directive({
   selector: '[nxpTitle]',
-  standalone: true,
   host: {
     '[attr.data-size]': 'size() || null',
+    '[class]': 'hostClasses',
   },
 })
 export class TitleDirective {
@@ -67,7 +67,6 @@ export class TitleDirective {
    */
   readonly size = input<'s' | 'm' | 'l' | ''>('', { alias: 'nxpTitle' });
 
-  @HostBinding('class')
   protected get hostClasses(): string {
     const size = this.size();
 
