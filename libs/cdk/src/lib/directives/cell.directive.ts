@@ -70,7 +70,7 @@ export class CellDirective {
     const heightMode = this.height();
 
     const baseClasses =
-      'group/cell flex items-center relative text-left transition-colors box-content isolate';
+      'group/cell flex items-center relative text-left transition-colors duration-normal box-content isolate';
 
     // Size-based classes
     const sizeClasses = {
@@ -82,7 +82,7 @@ export class CellDirective {
     // Height modifier classes
     const heightClasses: Record<string, string> = {
       compact: 'py-0',
-      spacious: size === 's' ? 'py-[7px]' : size === 'm' ? 'py-4' : 'py-5', // Extra padding for spacious
+      spacious: size === 's' ? 'py-[7px]' : size === 'm' ? 'py-4' : 'py-8', // Extra padding for spacious — design scale jumps 16→32
     };
 
     const interactiveClasses =

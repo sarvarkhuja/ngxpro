@@ -2,6 +2,14 @@
 @import 'remixicon/fonts/remixicon.css';
 @import './theme.config'; /* ← edit this file to customize the theme */
 
+/* highlight.js base theme — used by nxp-doc-code (via ngx-highlightjs).
+   Light theme loads globally; dark variant is nested under .dark so its
+   rules only win when ThemeService applies the dark class on <html>. */
+@import 'highlight.js/styles/github.css';
+.dark {
+  @import 'highlight.js/styles/github-dark.css';
+}
+
 /* Class-based dark mode: ThemeService adds/removes .dark on <html> */
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -53,8 +61,13 @@
   --color-text-primary: var(--nxp-text-primary);
   --color-text-secondary: var(--nxp-text-secondary);
   --color-text-tertiary: var(--nxp-text-tertiary);
+  --color-text-quaternary: var(--nxp-text-quaternary);
   --color-text-on-accent: var(--nxp-text-on-accent);
   --color-text-action: var(--nxp-text-action);
+
+  /* Surface — overlay backdrop & selection highlight (design-system §2). */
+  --color-overlay-backdrop: var(--nxp-overlay-backdrop);
+  --color-selection-bg: var(--nxp-selection-bg);
 
   /* Border */
   --color-border-normal: var(--nxp-border-normal);
@@ -72,20 +85,86 @@
   --color-status-warning-pale: var(--nxp-status-warning-pale);
   --color-status-info-pale: var(--nxp-status-info-pale);
 
-  /* Radius */
-  --radius-xs: var(--nxp-radius-xs);
-  --radius-s: var(--nxp-radius-s);
-  --radius-m: var(--nxp-radius-m);
-  --radius-l: var(--nxp-radius-l);
-  --radius-xl: var(--nxp-radius-xl);
+  /* Workflow accents — used contextually (Develop → Preview → Ship) */
+  --color-accent-develop: var(--nxp-accent-develop);
+  --color-accent-preview: var(--nxp-accent-preview);
+  --color-accent-ship: var(--nxp-accent-ship);
+
+  /* Pill badge palette */
+  --color-badge-blue-bg: var(--nxp-badge-blue-bg);
+  --color-badge-blue-text: var(--nxp-badge-blue-text);
+
+  /* Radius — Vercel scale */
+  --radius-xs: var(--nxp-radius-xs); /* 2px */
+  --radius-sm: var(--nxp-radius-sm); /* 4px */
+  --radius-m: var(--nxp-radius-m); /* 6px — buttons */
+  --radius-lg: var(--nxp-radius-lg); /* 8px — cards */
+  --radius-xl: var(--nxp-radius-xl); /* 12px — image cards */
+  --radius-2xl: var(--nxp-radius-2xl); /* 64px — nav pills */
 
   /* Font */
   --font-sans: var(--nxp-font-sans);
+  --font-mono: var(--nxp-font-mono);
+
+  /* Letter-spacing — Geist's signature negative tracking */
+  --tracking-display: var(--nxp-tracking-display);
+  --tracking-hero: var(--nxp-tracking-hero);
+  --tracking-section: var(--nxp-tracking-section);
+  --tracking-card: var(--nxp-tracking-card);
+  --tracking-body: var(--nxp-tracking-body);
+
+  /* Shadow — shadow-as-border + Vercel multi-layer card stack */
+  --shadow-border: var(--nxp-shadow-border);
+  --shadow-border-light: var(--nxp-shadow-border-light);
+  --shadow-elevation: var(--nxp-shadow-elevation);
+  --shadow-elevation-lg: var(--nxp-shadow-elevation-lg);
+  --shadow-card: var(--nxp-shadow-card);
+  --shadow-card-lg: var(--nxp-shadow-card-lg);
+  --shadow-focus-ring: var(--nxp-shadow-focus-ring);
+  --shadow-lift: var(--nxp-shadow-lift);
+  --shadow-toast: var(--nxp-shadow-toast);
+
+  /* Input shadow stack — auto-flips dark mode via the underlying tokens */
+  --shadow-input-hover: var(--nxp-shadow-input-hover);
+  --shadow-input-focus: var(--nxp-shadow-input-focus);
+  --shadow-input-error: var(--nxp-shadow-input-error);
 
   /* Duration — use `duration-fast | duration-normal | duration-slow` Tailwind utilities */
   --duration-fast: var(--nxp-duration-fast);
   --duration-normal: var(--nxp-duration-normal);
   --duration-slow: var(--nxp-duration-slow);
+}
+
+/*
+ * ─── Geist global typography defaults ───────────────────────────────────────
+ * Enable OpenType ligatures globally (Geist treats `liga` as structural).
+ * Soften dark text to #171717 (not pure black) for micro-warmth.
+ */
+html {
+  font-feature-settings:
+    'liga' on,
+    'calt' on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background-color: var(--nxp-bg-base);
+  color: var(--nxp-text-primary);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--nxp-font-mono);
+  font-feature-settings:
+    'liga' on,
+    'calt' on,
+    'tnum' on;
+}
+
+::selection {
+  background-color: var(--nxp-selection-bg);
+  color: var(--nxp-text-primary);
 }
 
 /*

@@ -37,7 +37,7 @@ import { CHIP_SIZE_CLASSES, type NxpChipSize } from '@ngxpro/components/chip';
       <button
         type="button"
         tabindex="-1"
-        class="flex shrink-0 items-center justify-center rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10"
+        class="flex shrink-0 items-center justify-center rounded-full transition-colors hover:bg-text-primary/10"
         [class]="removeButtonSize()"
         (click)="$event.stopPropagation(); remove.emit()"
         (pointerdown)="$event.preventDefault()"
@@ -100,11 +100,11 @@ export class NxpInputChipItemComponent {
   readonly hostClasses = computed(() => {
     const s = this.size();
     return cx(
-      'inline-flex items-center rounded-full font-medium select-none whitespace-nowrap transition-colors duration-fast cursor-pointer',
+      'inline-flex items-center rounded-full font-medium select-none whitespace-nowrap transition-shadow duration-fast cursor-pointer',
       'bg-bg-neutral-1 text-text-secondary',
       CHIP_SIZE_CLASSES[s],
       this.chipDisabled() && 'opacity-50 pointer-events-none',
-      this.editing() && 'ring-2 ring-primary/30 bg-bg-base',
+      this.editing() && 'shadow-input-focus bg-bg-base',
     );
   });
 

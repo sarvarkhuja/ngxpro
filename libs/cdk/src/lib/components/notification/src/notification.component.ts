@@ -39,7 +39,7 @@ import { NxpSwipeDismiss } from '@ngxpro/cdk';
 const sizeClasses: Record<NxpNotificationOptions['size'], string> = {
   s: 'p-3 gap-2 text-xs min-w-[280px] max-w-xs',
   m: 'p-4 gap-3 text-sm min-w-[320px] max-w-sm',
-  l: 'p-5 gap-3 text-base min-w-[360px] max-w-md',
+  l: 'p-4 gap-3 text-base min-w-[360px] max-w-md',
 };
 
 const iconSizeMap: Record<NxpNotificationOptions['size'], string> = {
@@ -50,15 +50,21 @@ const iconSizeMap: Record<NxpNotificationOptions['size'], string> = {
 
 // ── Appearance color helpers ──────────────────────────────────────────────────
 
+// `shadow-toast` reads the `--toast-border` CSS custom property to colorize
+// the 1px shadow-as-border ring per status. Setting that var inline keeps
+// the shadow stack expressed once in theme tokens, not duplicated per variant.
 const appearanceHostClasses: Record<
   NxpNotificationOptions['appearance'],
   string
 > = {
-  info: 'border-status-info/30 bg-status-info-pale',
-  success: 'border-status-positive/30 bg-status-positive-pale',
-  warning: 'border-status-warning/30 bg-status-warning-pale',
-  error: 'border-status-negative/30 bg-status-negative-pale',
-  neutral: 'border-border-normal bg-bg-base',
+  info: '[--toast-border:var(--nxp-status-info)] shadow-toast bg-status-info-pale',
+  success:
+    '[--toast-border:var(--nxp-status-positive)] shadow-toast bg-status-positive-pale',
+  warning:
+    '[--toast-border:var(--nxp-status-warning)] shadow-toast bg-status-warning-pale',
+  error:
+    '[--toast-border:var(--nxp-status-negative)] shadow-toast bg-status-negative-pale',
+  neutral: 'shadow-card-lg bg-bg-base',
 };
 
 const appearanceIconClasses: Record<
@@ -232,7 +238,7 @@ export class NxpNotificationComponent implements OnInit {
 
   readonly hostClasses = computed(() =>
     cx(
-      'relative flex items-start rounded-m border shadow-lg',
+      'relative flex items-start rounded-lg',
       'w-[var(--width,356px)]',
       sizeClasses[this.size()],
       appearanceHostClasses[this.appearance()],
@@ -248,7 +254,9 @@ export class NxpNotificationComponent implements OnInit {
       'font-semibold leading-snug text-text-primary',
       this.size() === 's' && 'text-xs',
       this.size() === 'm' && 'text-sm',
-      this.size() === 'l' && 'text-base',
+      // text-base font-semibold == "Body Semibold" per §3 — needs tracking-body
+      // (-0.32px) for the Geist compression at this size/weight pair.
+      this.size() === 'l' && 'text-base tracking-body',
     ),
   );
 
@@ -268,7 +276,7 @@ export class NxpNotificationComponent implements OnInit {
       // WCAG 2.5.8: 24×24 minimum hit target across all sizes; icon font-size still scales.
       'min-h-6 min-w-6',
       'text-text-tertiary hover:text-text-primary',
-      'focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus',
+      'outline-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus',
       'transition-colors',
       this.size() === 's' && 'text-xs',
       this.size() === 'm' && 'text-sm',

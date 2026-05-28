@@ -96,7 +96,7 @@ function addMonths(date: Date, n: number): Date {
 
       @if (!items().length) {
         <div
-          class="w-px bg-border-normal/70 self-stretch"
+          class="w-px bg-border-normal self-stretch"
           aria-hidden="true"
         ></div>
 
@@ -119,7 +119,7 @@ function addMonths(date: Date, n: number): Date {
 
       @if (items().length) {
         <div
-          class="w-px bg-border-normal/70 self-stretch"
+          class="w-px bg-border-normal self-stretch"
           aria-hidden="true"
         ></div>
       }

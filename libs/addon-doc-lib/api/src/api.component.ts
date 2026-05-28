@@ -28,8 +28,11 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
+      /* Fixed layout so column widths declared on <th> elements (eg.
+         class="w-[25%]") are honored. Set widths per-table at the call site. */
       [nxpDocApi] {
         inline-size: 100%;
+        table-layout: fixed;
       }
       [nxpDocApi] tbody [data-nxp-title] {
         align-items: flex-start;
@@ -46,6 +49,18 @@ import {
       }
       [nxpDocApi] th:last-child {
         text-align: end;
+      }
+      /* Dark-mode fallback values for when the host hasn't defined
+         --nxp-* CSS variables. The vars themselves auto-switch under .dark
+         via the consumer's theme config — these :where(.dark) rules just
+         keep the *fallback* chain dark-aware. */
+      :where(.dark) [nxpDocApi] tbody [data-nxp-title] {
+        box-shadow: 0 1px var(--nxp-border-normal, #262626);
+        background: var(--nxp-bg-neutral-1, #1a1a1a);
+      }
+      :where(.dark) [nxpDocApi] th {
+        color: var(--nxp-text-secondary, #a3a3a3);
+        box-shadow: inset 0 -1px var(--nxp-border-normal, #262626);
       }
       @media (max-width: 768px) {
         [nxpDocApi],

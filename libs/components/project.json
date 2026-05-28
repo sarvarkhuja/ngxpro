@@ -29,7 +29,7 @@
     "test": {
       "executor": "@nx/angular:unit-test",
       "options": {
-        "include": ["src/**/*.spec.ts", "*/src/**/*.spec.ts"]
+        "include": ["**/*.spec.ts", "../**/src/**/*.spec.ts"]
       }
     },
     "lint": {

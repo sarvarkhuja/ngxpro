@@ -43,7 +43,7 @@ export class NxpDropdownPosition extends NxpPositionAccessor {
 
     const hostRect = this.accessor.getClientRect();
     const viewportRect = this.viewport.getClientRect();
-    const { minHeight, direction, offset } = this.options;
+    const { minHeight, maxHeight, direction, offset } = this.options;
     const align = this.getAlign(this.options.align);
     const viewport = {
       top: viewportRect.top - offset,
@@ -56,12 +56,17 @@ export class NxpDropdownPosition extends NxpPositionAccessor {
       top: hostRect.top - 2 * offset - viewport.top,
       bottom: viewport.bottom - hostRect.bottom - 2 * offset,
     } as const;
+    // Clamp against the configured maxHeight so placement asks "does a panel
+    // capped at maxHeight fit?" rather than "does the natural content fit?".
+    // Without this, the first frame measures the unclamped content height of
+    // <nxp-data-list> and locks placement to the wrong side.
+    const effectiveHeight = Math.min(height, maxHeight);
     const rectWidth =
       this.options.limitWidth === 'fixed' ? hostRect.width : width;
     const right = Math.max(hostRect.right - rectWidth, offset);
     const left = hostRect.left + width < viewport.right ? hostRect.left : right;
     const position = {
-      top: hostRect.top - offset - height,
+      top: hostRect.top - offset - effectiveHeight,
       bottom: hostRect.bottom + offset,
       right: Math.max(viewport.left, right),
       center:
@@ -75,7 +80,7 @@ export class NxpDropdownPosition extends NxpPositionAccessor {
 
     if (
       (available[previous] > minHeight && direction) ||
-      available[previous] > height
+      available[previous] > effectiveHeight
     ) {
       this.direction.next(previous);
       return [position[align], position[previous]];

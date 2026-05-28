@@ -63,7 +63,7 @@ import {
 
     @if (empty()) {
       <span
-        class="flex items-center justify-center px-3 py-5 text-sm text-text-tertiary select-none"
+        class="flex items-center justify-center px-3 py-4 text-sm text-text-tertiary select-none"
         role="presentation"
       >
         {{ emptyLabel() }}
@@ -98,7 +98,7 @@ import {
     <!-- Focus ring overlay -->
     @if (focusRect(); as f) {
       <div
-        class="absolute pointer-events-none z-20 rounded-s border border-border-focus"
+        class="absolute pointer-events-none z-20 rounded-s shadow-[0_0_0_1px_var(--nxp-border-focus)]"
         [style.left.px]="f.left - 2"
         [style.top.px]="f.top - 2"
         [style.width.px]="f.width + 4"
@@ -196,18 +196,26 @@ export class DataListComponent
   ngAfterViewChecked(): void {
     this.syncIfItemCountChanged();
 
-    // Count only projected nxpOption buttons — NOT the empty-state placeholder.
-    const projected = this.hostEl.querySelectorAll('button[nxpOption]');
+    // Count any projected option — `button[nxpOption]` sets role="option" via the
+    // directive, and `<nxp-select-option>` sets it on its own host. The empty-state
+    // placeholder uses role="presentation" so it's never matched.
+    const projected = this.hostEl.querySelectorAll('[role="option"]');
     this.empty.set(projected.length === 0);
 
     // Auto-derive selected index from whichever option has aria-selected="true".
     // This lets consumers just use [selected] on nxpOption without needing
     // to also bind [(selectedIndex)] on the data-list.
+    //
+    // Suppress the pill when 0 or 2+ items are selected — multi-select lets the
+    // option itself paint its own selected background (e.g. bg-primary/10), and a
+    // single pill on the first selected row would be misleading.
     if (this.selectedIndex() == null) {
       const items = this.getItems();
-      const idx = items.findIndex(
+      const selected = items.filter(
         (el) => el.getAttribute('aria-selected') === 'true',
       );
+      const idx =
+        selected.length === 1 && selected[0] ? items.indexOf(selected[0]) : -1;
       this.derivedSelectedIndex.set(idx === -1 ? null : idx);
     }
   }

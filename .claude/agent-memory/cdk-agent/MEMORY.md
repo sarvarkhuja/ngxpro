@@ -2,7 +2,7 @@
 
 ## Build Command
 
-Run from `/Users/aki/Documents/GitHub/ngxpro/ngxpro/`:
+Run from `/Users/aki/Documents/GitHub/ngxpro/`:
 
 ```
 npx nx build cdk

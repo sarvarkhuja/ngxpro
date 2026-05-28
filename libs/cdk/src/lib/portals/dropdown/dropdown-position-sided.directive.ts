@@ -38,9 +38,12 @@ export class NxpDropdownPositionSided extends NxpPositionAccessor {
     const hostRect =
       this.vertical.accessor?.getClientRect() ?? EMPTY_CLIENT_RECT;
     const viewport = this.viewport.getClientRect();
-    const { direction, offset } = this.options;
+    const { maxHeight, direction, offset } = this.options;
     const adjusted = this.vertical.getAlign(this.options.align);
     const align = adjusted === 'center' ? 'left' : adjusted;
+    // See NxpDropdownPosition.getPosition for the rationale — placement must
+    // use the maxHeight-clamped panel size, not the natural content height.
+    const effectiveHeight = Math.min(height, maxHeight);
     const available = {
       top: hostRect.bottom - viewport.top,
       left: hostRect.left - offset - viewport.left,
@@ -48,7 +51,8 @@ export class NxpDropdownPositionSided extends NxpPositionAccessor {
       bottom: viewport.bottom - hostRect.top,
     } as const;
     const position = {
-      top: hostRect.bottom - height + this.nxpDropdownSidedOffset() + 1,
+      top:
+        hostRect.bottom - effectiveHeight + this.nxpDropdownSidedOffset() + 1,
       left: hostRect.left - width - offset,
       right: hostRect.right + offset,
       bottom: hostRect.top - this.nxpDropdownSidedOffset() - 1,
@@ -59,7 +63,7 @@ export class NxpDropdownPositionSided extends NxpPositionAccessor {
     const left = available[align] > width ? position[align] : maxLeft;
 
     if (
-      (available[this.previous] > height && direction) ||
+      (available[this.previous] > effectiveHeight && direction) ||
       this.previous === better
     ) {
       this.vertical.direction.next(this.previous);

@@ -19,9 +19,9 @@ export type NxpCheckboxColor = 'primary' | 'secondary' | 'danger';
 
 const SIZE_PX: Record<NxpCheckboxSize, number> = { s: 16, m: 18, l: 22 };
 const SIZE_RADIUS: Record<NxpCheckboxSize, string> = {
-  s: 'var(--nxp-radius-s)',
-  m: 'var(--nxp-radius-s)',
-  l: 'var(--nxp-radius-s)',
+  s: 'var(--nxp-radius-sm)',
+  m: 'var(--nxp-radius-sm)',
+  l: 'var(--nxp-radius-sm)',
 };
 
 /**
@@ -137,7 +137,9 @@ export class NxpCheckboxComponent implements ControlValueAccessor {
     return cx(
       'relative shrink-0 cursor-pointer',
       'border-[1.5px] border-solid',
-      'transition-colors duration-fast ease-out',
+      // Match sister form controls (radio.component, checkbox.directive)
+      // which both use duration-normal for color/border state transitions.
+      'transition-colors duration-normal ease-out',
 
       'border-border-normal bg-bg-base',
       'text-transparent',

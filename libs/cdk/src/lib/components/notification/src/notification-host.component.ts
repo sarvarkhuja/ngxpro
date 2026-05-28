@@ -1,6 +1,11 @@
+import { DOCUMENT } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
+  OnDestroy,
+  Renderer2,
   computed,
   inject,
   signal,
@@ -35,15 +40,18 @@ function containerClasses(pos: NxpNotificationOptions['position']): string {
   const y = parseY(pos);
   const x = parseX(pos);
 
-  // z-[100] sits above page-level popups (z-50) without the magic-number tax
-  // of z-[999999999]. Coordinate with dropdown/modal layers if those ever get
-  // tokenized.
+  // The host element is reparented to document.body in ngAfterViewInit so the
+  // toast columns escape any ancestor stacking context (e.g. `isolate`, CSS
+  // `transform`) that would otherwise trap them behind a fixed header. With
+  // that escape in place, z-[100] is enough to sit above page-level popups
+  // (z-50) without the magic-number tax of z-[999999999].
+  // Position offsets use 32px (in §5 primary scale; skips 20/24).
   const base = 'fixed z-[100] box-border p-0 m-0 list-none outline-none';
-  const yClass = y === 'top' ? 'top-6' : 'bottom-6';
+  const yClass = y === 'top' ? 'top-8' : 'bottom-8';
 
   let xClass: string;
-  if (x === 'left') xClass = 'left-6';
-  else if (x === 'right') xClass = 'right-6';
+  if (x === 'left') xClass = 'left-8';
+  else if (x === 'right') xClass = 'right-8';
   else xClass = 'left-1/2 -translate-x-1/2';
 
   return `${base} ${yClass} ${xClass}`;
@@ -148,10 +156,28 @@ const POSITION_INFO = ALL_POSITIONS.reduce(
     }
   `,
 })
-export class NxpNotificationHostComponent {
+export class NxpNotificationHostComponent implements AfterViewInit, OnDestroy {
+  private readonly document = inject(DOCUMENT);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly renderer = inject(Renderer2);
+
   protected readonly service = inject(NxpNotificationService);
   protected readonly gap = NXP_TOAST_GAP;
   protected interacting = false;
+
+  ngAfterViewInit(): void {
+    // Reparent to <body> so toast columns are not trapped inside an ancestor
+    // stacking context (e.g. `isolate`, `transform`, `filter`) that would
+    // render them behind a fixed header regardless of z-index.
+    this.renderer.appendChild(
+      this.document.body,
+      this.elementRef.nativeElement,
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.elementRef.nativeElement.remove();
+  }
 
   /** All position keys — iterated in template. */
   protected readonly positions = ALL_POSITIONS;

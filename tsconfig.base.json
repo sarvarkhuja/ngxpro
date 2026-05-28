@@ -129,6 +129,9 @@
         "libs/addon-doc-lib/example/src/index.ts"
       ],
       "@ngxpro/addon-doc-lib/api": ["libs/addon-doc-lib/api/src/index.ts"],
+      "@ngxpro/addon-doc-lib/component-page": [
+        "libs/addon-doc-lib/component-page/src/index.ts"
+      ],
       "@ngxpro/addon-doc-lib/demo": ["libs/addon-doc-lib/demo/src/index.ts"],
       "@ngxpro/addon-doc-lib/page": ["libs/addon-doc-lib/page/src/index.ts"],
       "@ngxpro/addon-doc-lib/source-code": [

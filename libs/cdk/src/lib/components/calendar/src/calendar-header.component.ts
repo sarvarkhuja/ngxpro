@@ -5,7 +5,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { cx, navButtonClass } from '@ngxpro/cdk';
+import { cx, focusRing, navButtonClass } from '@ngxpro/cdk';
 
 const MONTH_NAMES = [
   'January',
@@ -103,14 +103,17 @@ export class CalendarHeaderComponent {
 
   protected readonly navBtnClass = navButtonClass;
 
+  // Geist's signature compression: even at 14px, weight-600 text gets the
+  // `tracking-body` (-0.02em) shift so the header reads as part of the same
+  // typographic system as section/card titles (design-system.md §3).
   protected readonly labelBtnClass = cx(
     'flex-1 flex items-center justify-center',
-    'h-8 px-2 rounded-lg',
-    'text-sm font-semibold text-text-primary',
+    'h-8 px-2 rounded-m',
+    'text-sm font-semibold tracking-body text-text-primary',
     'hover:bg-bg-neutral-1',
-    'transition-[background-color,color,transform] duration-150',
+    'transition-[background-color,color,transform] duration-normal',
     '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
     'active:scale-[0.98]',
-    'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
+    ...focusRing,
   );
 }

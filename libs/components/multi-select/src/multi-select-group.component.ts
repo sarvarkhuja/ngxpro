@@ -6,31 +6,52 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { NXP_ITEMS_HANDLERS, NXP_MULTI_SELECT_TEXTS } from '@ngxpro/cdk';
+import { NXP_MULTI_SELECT_TEXTS } from '@ngxpro/cdk';
+import {
+  NXP_TEXTFIELD,
+  NXP_TEXTFIELD_ACCESSOR,
+} from '@ngxpro/cdk/components/textfield';
 import { NxpMultiSelectComponent } from './multi-select.component';
+import { NxpMultiSelectDirective } from './multi-select.directive';
 import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
 
+/** Anything that exposes the multi-select selection mutation API. */
+type MultiSelectHost<T> = {
+  isItemSelected(item: T): boolean;
+  selectedItems(): readonly T[];
+  setItems(items: readonly T[]): void;
+  getIdentity(): (a: T, b: T) => boolean;
+};
+
+function isMultiSelectHost<T>(value: unknown): value is MultiSelectHost<T> {
+  return (
+    value instanceof NxpMultiSelectComponent ||
+    value instanceof NxpMultiSelectDirective
+  );
+}
+
 /**
- * Multi-select group header with "Select All / Deselect All" toggle.
+ * Group header with "Select All / Deselect All" toggle.
  *
- * Wrap option components inside this to add a labeled group with a toggle button.
- * The button text is driven by `NXP_MULTI_SELECT_TEXTS` (injectable for i18n).
+ * Wrap option components inside this to add a labeled group. The button
+ * text comes from `NXP_MULTI_SELECT_TEXTS` (override for i18n).
  *
- * The toggle selects all items in the group when any are missing from the
- * selection, or deselects all when every item in the group is already selected.
- * Items from other groups are preserved.
+ * The toggle adds every group item missing from the selection, or removes
+ * every group item when all are already selected. Items from other groups
+ * are preserved.
+ *
+ * Host resolution mirrors `NxpMultiSelectOptionComponent` — supports both
+ * the wrapper component (`<nxp-multi-select>`) and the textfield-wrapped
+ * directive (`input[nxpMultiSelect]`).
  *
  * @example
  * ```html
  * <nxp-multi-select [formControl]="ctrl" [items]="[]">
- *   <!-- Manually projected content with groups -->
+ *   <div nxpMultiSelectGroup label="Europe">
+ *     <nxp-multi-select-option [value]="france" />
+ *     <nxp-multi-select-option [value]="germany" />
+ *   </div>
  * </nxp-multi-select>
- *
- * <!-- Inside nxp-data-list in custom dropdown: -->
- * <div nxpMultiSelectGroup label="Europe">
- *   <nxp-multi-select-option [value]="france" />
- *   <nxp-multi-select-option [value]="germany" />
- * </div>
  * ```
  */
 @Component({
@@ -45,7 +66,7 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
     <div class="flex items-center justify-between px-3 py-1.5">
       @if (label()) {
         <span
-          class="text-xs font-semibold uppercase tracking-wide text-text-tertiary"
+          class="font-mono text-xs font-medium uppercase text-text-tertiary"
         >
           {{ label() }}
         </span>
@@ -53,7 +74,7 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
       @if (groupValues().length > 0) {
         <button
           type="button"
-          class="text-xs font-medium text-text-action hover:underline focus:outline-none focus:underline"
+          class="text-xs font-medium text-text-action hover:underline outline-none focus-visible:underline"
           (pointerdown)="$event.preventDefault()"
           (click)="toggle()"
           [attr.aria-label]="allSelected() ? texts().none : texts().all"
@@ -66,10 +87,15 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
   `,
 })
 export class NxpMultiSelectGroupComponent<T = unknown> {
-  private readonly multiSelect = inject(NxpMultiSelectComponent, {
+  private readonly directHost = inject(NxpMultiSelectComponent, {
     optional: true,
   }) as NxpMultiSelectComponent<T> | null;
-  private readonly handlers = inject(NXP_ITEMS_HANDLERS);
+  private readonly textfield = inject(NXP_TEXTFIELD, { optional: true }) as {
+    accessor?: () => unknown;
+  } | null;
+  private readonly directAccessor = inject(NXP_TEXTFIELD_ACCESSOR, {
+    optional: true,
+  });
 
   protected readonly texts = inject(NXP_MULTI_SELECT_TEXTS);
 
@@ -86,33 +112,40 @@ export class NxpMultiSelectGroupComponent<T = unknown> {
   /** True when every item in the group is currently selected. */
   protected readonly allSelected = computed(() => {
     const values = this.groupValues();
-    const ms = this.multiSelect;
-    if (!values.length || !ms) return false;
-    return values.every((v) => ms.isItemSelected(v));
+    const host = this.resolveHost();
+    if (!values.length || !host) return false;
+    return values.every((v) => host.isItemSelected(v));
   });
 
   /** Toggle all items in the group on or off. */
   protected toggle(): void {
-    const ms = this.multiSelect;
-    if (!ms) return;
+    const host = this.resolveHost();
+    if (!host) return;
 
     const groupVals = this.groupValues();
-    const matcher = this.handlers.identityMatcher();
-    const current = ms.value();
+    const matcher = host.getIdentity();
+    const current = host.selectedItems();
 
     if (this.allSelected()) {
-      // Deselect all group items, preserve rest
-      ms.setItems(
+      host.setItems(
         current.filter(
           (v) => !groupVals.some((gv) => matcher(v as unknown as T, gv)),
         ),
       );
-    } else {
-      // Add missing group items to selection
-      const toAdd = groupVals.filter(
-        (gv) => !current.some((v) => matcher(v as unknown as T, gv)),
-      );
-      ms.setItems([...current, ...toAdd] as readonly T[]);
+      return;
     }
+
+    const toAdd = groupVals.filter(
+      (gv) => !current.some((v) => matcher(v as unknown as T, gv)),
+    );
+    host.setItems([...current, ...toAdd] as readonly T[]);
+  }
+
+  private resolveHost(): MultiSelectHost<T> | null {
+    if (this.directHost) return this.directHost;
+    const fromTextfield = this.textfield?.accessor?.();
+    if (isMultiSelectHost<T>(fromTextfield)) return fromTextfield;
+    if (isMultiSelectHost<T>(this.directAccessor)) return this.directAccessor;
+    return null;
   }
 }

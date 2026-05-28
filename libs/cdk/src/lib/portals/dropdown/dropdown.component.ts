@@ -37,7 +37,7 @@ const MAX_WIDTH_GAP = 16;
   selector: 'nxp-dropdown',
   imports: [NxpDynamicOutlet],
   template: `
-    <div class="nxp-dropdown-scroll overflow-auto max-h-full">
+    <div class="nxp-dropdown-scroll overflow-auto flex-1 min-h-0">
       <div
         *nxpDynamicOutlet="
           directive.content() as text;
@@ -55,18 +55,21 @@ const MAX_WIDTH_GAP = 16;
         position: absolute;
         z-index: 1000;
         min-width: 10rem;
-        background: white;
-        border-radius: 0.5rem;
-        box-shadow:
-          0 4px 6px -1px rgb(0 0 0 / 0.1),
-          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        background: var(--nxp-bg-base);
+        color: var(--nxp-text-primary);
+        border-radius: var(--nxp-radius-lg);
+        /* Vercel multi-layer card shadow — token auto-flips for dark mode.
+           Replaces a custom stack whose 12% ambient opacity violated the
+           design-system <=10% rule for non-decorative shadows. */
+        box-shadow: var(--nxp-shadow-card-lg);
         overflow: hidden;
+        /* Flex column so the inline max-height set in getStyles() constrains
+           the inner scroll panel — otherwise the panel's percentage max-height
+           collapses to none and content overflows instead of scrolling. */
+        display: flex;
+        flex-direction: column;
         /* transform-origin is set per-open in getStyles() so the panel
            scales in from the edge nearest the trigger, not from center. */
-      }
-      :host-context(.dark) {
-        background: #1f2937;
-        color: white;
       }
       :host.nxp-enter {
         animation: nxp-dropdown-in 0.18s cubic-bezier(0.22, 1.2, 0.36, 1);

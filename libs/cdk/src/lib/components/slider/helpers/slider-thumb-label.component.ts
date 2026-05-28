@@ -25,7 +25,7 @@ import { NxpSliderComponent } from '../slider.component';
     <ng-content />
     @if (slider()) {
       <span
-        class="pointer-events-none absolute -top-8 -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-0.5 text-xs text-white dark:bg-gray-100 dark:text-gray-900"
+        class="pointer-events-none absolute -top-8 -translate-x-1/2 whitespace-nowrap rounded-s bg-primary px-2 py-0.5 text-xs font-mono text-text-on-accent"
         [style.left.%]="thumbOffsetPercent()"
         aria-hidden="true"
       >

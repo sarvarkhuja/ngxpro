@@ -24,10 +24,10 @@ export class CardComponent {
 
   readonly hostClasses = () =>
     cx(
-      'relative block rounded-m border p-6',
-      'border-border-normal',
+      // Design-system spacing skips 20/24px; cards use the next in-scale value (16px).
+      'relative block rounded-lg p-4',
       'bg-bg-base',
-      'shadow-sm',
+      'shadow-card',
       this.class(),
     );
 }

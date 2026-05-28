@@ -46,13 +46,33 @@ export type NxpRadioColor = 'primary' | 'secondary' | 'danger';
   },
   styles: [
     `
-      /* White dot on checked — painted by the browser the instant
-       the native checked pseudo-class matches, with no Angular involvement. */
+      /* Per-variant dot color — flips automatically with theme via the
+         existing token system (no .dark override needed). Each variant
+         picks the token whose contrast pair matches its checked background:
+           primary  bg = --nxp-primary       → dot = --nxp-text-on-accent
+           secondary bg = --nxp-bg-neutral-2 → dot = --nxp-text-primary
+           danger   bg = --nxp-status-negative (red in both modes) → dot = white */
+      :host([data-color='primary']) {
+        --nxp-radio-dot: var(--nxp-text-on-accent);
+      }
+      :host([data-color='secondary']) {
+        --nxp-radio-dot: var(--nxp-text-primary);
+      }
+      :host([data-color='danger']) {
+        --nxp-radio-dot: #ffffff;
+      }
+
+      /* Dot painted by a radial-gradient so the color is themable via CSS
+         variable. Data-URI SVG fill can't read currentColor, hence the gradient.
+         Geometry matches the previous SVG: r=3.5 in a 16-viewBox at 75% size
+         → dot radius = 16.4% of input ≈ 32.8% of closest-side. 1.5%
+         transition zone preserves antialiased edge. */
       :host(:checked) {
-        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='white'/%3E%3C/svg%3E");
-        background-size: 75% 75%;
-        background-position: center;
-        background-repeat: no-repeat;
+        background-image: radial-gradient(
+          circle closest-side,
+          var(--nxp-radio-dot, #ffffff) 31.5%,
+          transparent 33%
+        );
       }
     `,
   ],

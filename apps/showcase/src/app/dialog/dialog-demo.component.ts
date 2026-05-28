@@ -20,6 +20,9 @@ import {
   NxpDynamicComponent,
   type NxpDynamicContent,
 } from '@ngxpro/cdk/dynamic';
+import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
+import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
+import { DialogApiComponent } from './dialog-api.component';
 
 // ---------------------------------------------------------------------------
 // Inline component used by the "Open with component" demo section
@@ -65,36 +68,39 @@ class ConfirmDeleteDialogComponent {
   selector: 'app-dialog-demo',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterModule, NxpDialogDirective],
+  imports: [
+    RouterModule,
+    NxpDialogDirective,
+    NxpDocComponentPage,
+    NxpDocExampleComponent,
+    DialogApiComponent,
+  ],
   template: `
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
-      <div class="max-w-4xl mx-auto space-y-16">
-        <!-- Page header -->
-        <div>
-          <a routerLink="/" class="text-sm text-blue-500 hover:underline"
-            >← Back to home</a
-          >
-          <h1 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white">
-            Dialog
-          </h1>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">
-            Modal dialogs with backdrop, focus trap, enter/leave animations, Esc
-            to close, and click-outside dismiss. Supports programmatic opening
-            via
-            <code class="font-mono text-xs">NxpDialogService</code>
-            and template-based via the
-            <code class="font-mono text-xs">nxpDialog</code> directive.
-          </p>
-        </div>
+    <nxp-doc-component-page
+      header="Dialog"
+      package="cdk"
+      type="component"
+      path="cdk/dialog"
+    >
+      <p class="text-base text-text-secondary mb-6">
+        Modal dialogs with backdrop, focus trap, enter/leave animations, Esc to
+        close, and click-outside dismiss. Supports programmatic opening via
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >NxpDialogService</code
+        >
+        and template-based via the
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >nxpDialog</code
+        >
+        directive.
+      </p>
 
-        <!-- Section: Programmatic (NxpDialogService) -->
-        <section class="space-y-8">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            Programmatic (NxpDialogService)
-          </h2>
-
+      <ng-template nxpExamplesTab>
+        <nxp-doc-example
+          heading="Programmatic (NxpDialogService)"
+          description="Inject NxpDialogService and call open() with a string body or a TemplateRef plus an options object. The simple text dialog, labeled dialog, and required (non-dismissible) dialog all share the same service entry point — only the options differ."
+          [content]="{ HTML: programmaticHtml, TypeScript: programmaticTs }"
+        >
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <!-- Basic string content -->
             <div class="space-y-3">
@@ -149,7 +155,13 @@ class ConfirmDeleteDialogComponent {
               </button>
             </div>
           </div>
+        </nxp-doc-example>
 
+        <nxp-doc-example
+          heading="Size variants"
+          description="Three width scales: small (25 rem), medium (37.5 rem, default), and large (50 rem). The dialog still caps at calc(100vw - 2rem) on narrow viewports."
+          [content]="{ HTML: sizesHtml, TypeScript: sizesTs }"
+        >
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <!-- Size: small -->
             <div class="space-y-3">
@@ -202,16 +214,13 @@ class ConfirmDeleteDialogComponent {
               </button>
             </div>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- Section: Template-based (nxpDialog directive) -->
-        <section class="space-y-8">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            Template-based (nxpDialog directive)
-          </h2>
-
+        <nxp-doc-example
+          heading="Template-based (nxpDialog directive)"
+          description="Use <ng-template nxpDialog> to declare inline dialog content. Two-way bind a boolean signal to control visibility; pass [nxpDialogOptions] for label, size, etc."
+          [content]="{ HTML: templateHtml, TypeScript: templateTs }"
+        >
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
             <!-- Template dialog -->
             <div class="space-y-3">
@@ -289,16 +298,13 @@ class ConfirmDeleteDialogComponent {
               rich layouts, etc.
             </div>
           </ng-template>
-        </section>
+        </nxp-doc-example>
 
-        <!-- Section: With template content via service -->
-        <section class="space-y-8">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            Rich template content via service
-          </h2>
-
+        <nxp-doc-example
+          heading="Rich template content via service"
+          description="Pass a TemplateRef to dialogService.open() for rich custom content. The confirm/cancel pattern uses context.completeWith() to emit a result back to the subscriber."
+          [content]="{ HTML: richHtml, TypeScript: richTs }"
+        >
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div class="space-y-3">
               <h3 class="text-base font-medium text-gray-900 dark:text-white">
@@ -380,24 +386,13 @@ class ConfirmDeleteDialogComponent {
               </footer>
             </div>
           </ng-template>
-        </section>
+        </nxp-doc-example>
 
-        <!-- Section: Component-based dialog -->
-        <section class="space-y-8">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            Component-based dialog
-          </h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Pass a standalone component as dialog content. The component injects
-            its context via
-            <code class="font-mono text-xs">nxpInjectContext&lt;NxpDialogContext&gt;()</code>
-            and calls
-            <code class="font-mono text-xs">context.completeWith(value)</code>
-            to return a result.
-          </p>
-
+        <nxp-doc-example
+          heading="Component-based dialog"
+          description="Pass a standalone component as dialog content. The component injects its context via nxpInjectContext<NxpDialogContext>() and calls context.completeWith(value) to return a result. Two equivalent entry points: NxpDynamicComponent (lower-level) or the nxpDialog() factory (class-field, fully typed)."
+          [content]="{ HTML: componentHtml, TypeScript: componentTs }"
+        >
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
             <!-- Via NxpDynamicComponent -->
             <div class="space-y-3">
@@ -406,11 +401,13 @@ class ConfirmDeleteDialogComponent {
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Wrap the component with
-                <code class="font-mono text-xs">new NxpDynamicComponent(MyComponent)</code>
+                <code class="font-mono text-xs"
+                  >new NxpDynamicComponent(MyComponent)</code
+                >
                 and pass it directly to
-                <code class="font-mono text-xs">dialogService.open()</code>.
-                Use the <code class="font-mono text-xs">data</code> option to
-                send input data.
+                <code class="font-mono text-xs">dialogService.open()</code>. Use
+                the <code class="font-mono text-xs">data</code> option to send
+                input data.
               </p>
               <button
                 type="button"
@@ -432,7 +429,9 @@ class ConfirmDeleteDialogComponent {
               </h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 Call
-                <code class="font-mono text-xs">nxpDialog(MyComponent, opts)</code>
+                <code class="font-mono text-xs"
+                  >nxpDialog(MyComponent, opts)</code
+                >
                 as a class field to create a typed opener function. Invoke it
                 with the data payload — no extra boilerplate needed.
               </p>
@@ -449,248 +448,50 @@ class ConfirmDeleteDialogComponent {
               </p>
             </div>
           </div>
+        </nxp-doc-example>
 
-          <!-- Code snippet -->
-          <div class="rounded-lg bg-gray-900 text-gray-100 text-xs font-mono p-4 overflow-x-auto space-y-1 leading-relaxed">
-            <p class="text-gray-500">// 1. Define a standalone component</p>
-            <p><span class="text-purple-400">&#64;Component</span>(&#123; standalone: <span class="text-blue-400">true</span>, template: <span class="text-green-400">&#96;...&#96;</span> &#125;)</p>
-            <p><span class="text-yellow-300">class</span> ConfirmDialogComponent &#123;</p>
-            <p class="pl-4">readonly context = <span class="text-cyan-400">nxpInjectContext</span>&lt;<span class="text-yellow-200">NxpDialogContext</span>&lt;<span class="text-yellow-200">boolean</span>, &#123; itemName: <span class="text-yellow-200">string</span> &#125;&gt;&gt;();</p>
-            <p>&#125;</p>
-            <br />
-            <p class="text-gray-500">// 2a. Open via NxpDynamicComponent</p>
-            <p>dialogService.<span class="text-cyan-400">open</span>(<span class="text-yellow-300">new</span> <span class="text-cyan-400">NxpDynamicComponent</span>(ConfirmDialogComponent), &#123;</p>
-            <p class="pl-4">label: <span class="text-green-400">'Confirm Delete'</span>, data: &#123; itemName: <span class="text-green-400">'file.pdf'</span> &#125;</p>
-            <p>&#125;).<span class="text-cyan-400">subscribe</span>(confirmed => &#123; ... &#125;);</p>
-            <br />
-            <p class="text-gray-500">// 2b. Open via nxpDialog() factory (class field)</p>
-            <p>readonly openDelete = <span class="text-cyan-400">nxpDialog</span>(ConfirmDialogComponent, &#123; label: <span class="text-green-400">'Confirm Delete'</span> &#125;);</p>
-            <p><span class="text-gray-500">// then call:</span></p>
-            <p><span class="text-purple-400">this</span>.openDelete(&#123; itemName: <span class="text-green-400">'file.pdf'</span> &#125;).<span class="text-cyan-400">subscribe</span>(confirmed => &#123; ... &#125;);</p>
-          </div>
-        </section>
-
-        <!-- Section: API reference -->
-        <section class="space-y-6">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            API reference
-          </h2>
-
-          <h3 class="text-base font-medium text-gray-900 dark:text-white">
-            NxpDialogOptions
-          </h3>
-          <div class="overflow-x-auto">
-            <table
-              class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300"
+        <nxp-doc-example
+          heading="Configurable playground"
+          description="Edit any option in the API tab — label, size, closable, dismissible, required, appearance — then open the dialog to see the live result. Values are persisted to the URL."
+          [content]="{ HTML: playgroundHtml, TypeScript: playgroundTs }"
+        >
+          <div class="space-y-3">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Current options —
+              <code class="font-mono text-xs">label="{{ label() }}"</code>,
+              <code class="font-mono text-xs">size="{{ size() }}"</code>,
+              <code class="font-mono text-xs">closable={{ closable() }}</code
+              >,
+              <code class="font-mono text-xs"
+                >dismissible={{ dismissible() }}</code
+              >, <code class="font-mono text-xs">required={{ required() }}</code
+              >,
+              <code class="font-mono text-xs"
+                >appearance="{{ appearance() }}"</code
+              >.
+            </p>
+            <button
+              type="button"
+              class="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              (click)="openConfigurable()"
             >
-              <thead
-                class="text-xs uppercase bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
-              >
-                <tr>
-                  <th class="px-4 py-2">Option</th>
-                  <th class="px-4 py-2">Type</th>
-                  <th class="px-4 py-2">Default</th>
-                  <th class="px-4 py-2">Description</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr>
-                  <td class="px-4 py-2 font-mono">label</td>
-                  <td class="px-4 py-2 font-mono">string</td>
-                  <td class="px-4 py-2 font-mono">''</td>
-                  <td class="px-4 py-2">Header title text</td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">size</td>
-                  <td class="px-4 py-2 font-mono">'s' | 'm' | 'l'</td>
-                  <td class="px-4 py-2 font-mono">'m'</td>
-                  <td class="px-4 py-2">Dialog width scale</td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">closable</td>
-                  <td class="px-4 py-2 font-mono">boolean | Observable</td>
-                  <td class="px-4 py-2 font-mono">true</td>
-                  <td class="px-4 py-2">
-                    Show close button; allow close via button click
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">dismissible</td>
-                  <td class="px-4 py-2 font-mono">boolean | Observable</td>
-                  <td class="px-4 py-2 font-mono">true</td>
-                  <td class="px-4 py-2">
-                    Allow dismiss via Esc / click outside
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">required</td>
-                  <td class="px-4 py-2 font-mono">boolean</td>
-                  <td class="px-4 py-2 font-mono">false</td>
-                  <td class="px-4 py-2">
-                    If true, dismissing throws an error instead of completing
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">appearance</td>
-                  <td class="px-4 py-2 font-mono">string</td>
-                  <td class="px-4 py-2 font-mono">'default'</td>
-                  <td class="px-4 py-2">
-                    Custom appearance string (set as data attribute)
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">data</td>
-                  <td class="px-4 py-2 font-mono">I</td>
-                  <td class="px-4 py-2 font-mono">undefined</td>
-                  <td class="px-4 py-2">
-                    Arbitrary data passed to dialog content
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              Open configurable dialog
+            </button>
           </div>
+        </nxp-doc-example>
+      </ng-template>
 
-          <h3
-            class="text-base font-medium text-gray-900 dark:text-white mt-6"
-          >
-            Usage patterns
-          </h3>
-          <div class="overflow-x-auto">
-            <table
-              class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300"
-            >
-              <thead
-                class="text-xs uppercase bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
-              >
-                <tr>
-                  <th class="px-4 py-2">Pattern</th>
-                  <th class="px-4 py-2">Usage</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr>
-                  <td class="px-4 py-2 font-mono">NxpDialogService</td>
-                  <td class="px-4 py-2">
-                    Inject and call
-                    <code class="font-mono text-xs"
-                      >dialogService.open(content, options)</code
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">nxpDialog directive</td>
-                  <td class="px-4 py-2">
-                    <code class="font-mono text-xs"
-                      >&lt;ng-template [nxpDialog]="open"&gt;</code
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">nxpDialog() factory</td>
-                  <td class="px-4 py-2">
-                    <code class="font-mono text-xs"
-                      >const open = nxpDialog(MyComponent)</code
-                    >
-                    — returns a typed opener function
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-2 font-mono">NxpDynamicComponent</td>
-                  <td class="px-4 py-2">
-                    <code class="font-mono text-xs"
-                      >dialogService.open(new NxpDynamicComponent(MyComponent), opts)</code
-                    >
-                    — lower-level, full control over injector
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3
-            class="text-base font-medium text-gray-900 dark:text-white mt-8"
-          >
-            Internals: NxpModal (CDK)
-          </h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            All dialogs, alerts and other overlays are built on top of the low-level
-            modal portal from
-            <code class="font-mono text-xs">@ngxpro/cdk/portals/modal</code>.
-            You usually do not use it directly, but extend
-            <code class="font-mono text-xs">NxpModalService</code> instead.
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <p class="font-medium text-gray-900 dark:text-white">
-                <code class="font-mono text-xs">NxpModalComponent</code>
-              </p>
-              <ul class="list-disc list-inside space-y-1">
-                <li>Renders a full-screen backdrop and centred modal panel.</li>
-                <li>Uses <code class="font-mono text-xs">NxpFocusTrap</code> to keep focus inside.</li>
-                <li>Uses <code class="font-mono text-xs">NxpActiveZone</code> to restore focus to the opener.</li>
-                <li>Exposes a <code class="font-mono text-xs">component</code> signal with polymorphic content.</li>
-              </ul>
-
-              <p class="mt-4 font-medium text-gray-900 dark:text-white">
-                <code class="font-mono text-xs">NxpModalService&lt;T, K&gt;</code>
-              </p>
-              <ul class="list-disc list-inside space-y-1">
-                <li>Abstract CDK service that extends <code class="font-mono text-xs">NxpPortal&lt;T, K&gt;</code>.</li>
-                <li>Subclasses provide a concrete <code class="font-mono text-xs">content</code> component and options.</li>
-                <li>Handles enter/leave animations via <code class="font-mono text-xs">NXP_LEAVE</code> and <code class="font-mono text-xs">getAnimations()</code>.</li>
-                <li>Used by <code class="font-mono text-xs">NxpDialogService</code> and other high-level APIs.</li>
-              </ul>
-            </div>
-
-            <div
-              class="rounded-lg bg-gray-900 text-gray-100 text-xs font-mono p-4 overflow-x-auto space-y-1 leading-relaxed"
-            >
-              <p class="text-gray-500">// cd k: libs/cdk/src/lib/portals/modal</p>
-              <p><span class="text-purple-400">&#64;Injectable</span>()</p>
-              <p>
-                <span class="text-yellow-300">abstract class</span>
-                NxpModalService&lt;T, K = void&gt;
-                <span class="text-yellow-300">extends</span>
-                NxpPortal&lt;T, K&gt;
-                &#123;
-              </p>
-              <p class="pl-4">
-                <span class="text-yellow-300">protected abstract readonly</span>
-                content:
-                <span class="text-yellow-200">Type</span>&lt;unknown&gt;;
-              </p>
-              <p class="pl-4">
-                <span class="text-yellow-300">protected readonly</span>
-                component =
-                NxpModalComponent<span class="text-gray-500"> as </span>
-                <span class="text-yellow-200">Type</span>&lt;NxpModalComponent&lt;T&gt;&gt;;
-              </p>
-              <p>&#125;</p>
-              <br />
-              <p>
-                <span class="text-yellow-300">export class</span>
-                NxpModalComponent&lt;T&gt; &#123;
-              </p>
-              <p class="pl-4">
-                <span class="text-yellow-300">readonly</span>
-                context =
-                nxpInjectContext&lt;NxpPortalContext&lt;T&gt;&gt;();
-              </p>
-              <p class="pl-4">
-                <span class="text-yellow-300">readonly</span>
-                component =
-                signal&lt;NxpDynamicContent&lt;NxpPortalContext&lt;T&gt;&gt; |
-                null&gt;(<span class="text-blue-400">null</span>);
-              </p>
-              <p>&#125;</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
+      <ng-template nxpApiTab>
+        <app-dialog-api
+          [(label)]="label"
+          [(size)]="size"
+          [(closable)]="closable"
+          [(dismissible)]="dismissible"
+          [(required)]="required"
+          [(appearance)]="appearance"
+        />
+      </ng-template>
+    </nxp-doc-component-page>
   `,
 })
 export class DialogDemoComponent {
@@ -702,6 +503,14 @@ export class DialogDemoComponent {
   readonly templateWithOptsOpen = signal(false);
   readonly confirmResult = signal<string>('(none)');
   readonly deleteResult = signal<string>('(none)');
+
+  // Shared playground state — two-way bound into <app-dialog-api>
+  readonly label = signal('Configurable dialog');
+  readonly size = signal<NxpDialogSize>('m');
+  readonly closable = signal(true);
+  readonly dismissible = signal(true);
+  readonly required = signal(false);
+  readonly appearance = signal('default');
 
   // Factory-based opener — created once in injection context as a class field
   readonly openDeleteFactory = nxpDialog<DeleteData, boolean>(
@@ -819,4 +628,304 @@ export class DialogDemoComponent {
       },
     });
   }
+
+  openConfigurable(): void {
+    this.dialogService
+      .open(
+        'This dialog reflects the current options from the API tab. Edit the values there and reopen to see the change.',
+        {
+          label: this.label(),
+          size: this.size(),
+          closable: this.closable(),
+          dismissible: this.dismissible(),
+          required: this.required(),
+          appearance: this.appearance(),
+        } as Partial<NxpDialogOptions<unknown>>,
+      )
+      .subscribe();
+  }
+
+  // ── Example source snippets shown inside <nxp-doc-example> tabs ────────────
+  readonly programmaticHtml = `<button type="button" (click)="openSimple()">Open simple dialog</button>
+<button type="button" (click)="openWithLabel()">Open labeled dialog</button>
+<button type="button" (click)="openRequired()">Open required dialog</button>`;
+
+  readonly programmaticTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NxpDialogService, type NxpDialogOptions } from '@ngxpro/cdk';
+
+@Component({
+  selector: 'app-programmatic-dialog',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './programmatic.html',
+})
+export class ProgrammaticDialogExample {
+  private readonly dialogService = inject(NxpDialogService);
+
+  openSimple(): void {
+    this.dialogService
+      .open('This is a simple dialog with text content.', {
+        label: 'Simple Dialog',
+      } as Partial<NxpDialogOptions<unknown>>)
+      .subscribe();
+  }
+
+  openWithLabel(): void {
+    this.dialogService
+      .open('You can close this dialog with X, Esc, or backdrop click.', {
+        label: 'Closable Dialog',
+        closable: true,
+        dismissible: true,
+      } as Partial<NxpDialogOptions<unknown>>)
+      .subscribe();
+  }
+
+  openRequired(): void {
+    this.dialogService
+      .open('This dialog cannot be dismissed. You must click OK.', {
+        label: 'Required Action',
+        closable: false,
+        dismissible: false,
+        required: true,
+      } as Partial<NxpDialogOptions<unknown>>)
+      .subscribe();
+  }
+}`;
+
+  readonly sizesHtml = `<button (click)="openSized('s')">Small</button>
+<button (click)="openSized('m')">Medium</button>
+<button (click)="openSized('l')">Large</button>`;
+
+  readonly sizesTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  NxpDialogService,
+  type NxpDialogOptions,
+  type NxpDialogSize,
+} from '@ngxpro/cdk';
+
+@Component({
+  selector: 'app-sized-dialog',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './sizes.html',
+})
+export class SizedDialogExample {
+  private readonly dialogService = inject(NxpDialogService);
+
+  openSized(size: NxpDialogSize): void {
+    this.dialogService
+      .open(\`This is a \${size}-sized dialog.\`, {
+        label: \`Size: \${size}\`,
+        size,
+      } as Partial<NxpDialogOptions<unknown>>)
+      .subscribe();
+  }
+}`;
+
+  readonly templateHtml = `<button (click)="templateOpen.set(true)">Open template dialog</button>
+
+<ng-template
+  [nxpDialog]="templateOpen()"
+  (nxpDialogChange)="templateOpen.set($event)"
+  [nxpDialogOptions]="{ label: 'Template Dialog' }"
+>
+  <p>This dialog content is declared inline using
+    <code>&lt;ng-template nxpDialog&gt;</code>.
+  </p>
+</ng-template>
+
+<button (click)="templateWithOptsOpen.set(true)">Open with options</button>
+
+<ng-template
+  [nxpDialog]="templateWithOptsOpen()"
+  (nxpDialogChange)="templateWithOptsOpen.set($event)"
+  [nxpDialogOptions]="{ label: 'Custom Options', size: 'l' }"
+>
+  <p>A large-sized dialog with a custom label.</p>
+</ng-template>`;
+
+  readonly templateTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { NxpDialogDirective } from '@ngxpro/cdk';
+
+@Component({
+  selector: 'app-template-dialog',
+  imports: [NxpDialogDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './template.html',
+})
+export class TemplateDialogExample {
+  readonly templateOpen = signal(false);
+  readonly templateWithOptsOpen = signal(false);
+}`;
+
+  readonly richHtml = `<button (click)="openWithTemplate()">Open rich dialog</button>
+<button (click)="openConfirm()">Open confirm dialog</button>
+
+<ng-template #richTpl let-ctx>
+  <p>This dialog is rendered from a TemplateRef passed to
+    NxpDialogService.open().
+  </p>
+</ng-template>
+
+<ng-template #confirmTpl let-ctx>
+  <p>Are you sure you want to proceed?</p>
+  <footer>
+    <button (click)="ctx.$implicit.complete()">Cancel</button>
+    <button (click)="ctx.completeWith('confirmed')">Confirm</button>
+  </footer>
+</ng-template>`;
+
+  readonly richTs = `import { ChangeDetectionStrategy, Component, inject, signal, TemplateRef, viewChild } from '@angular/core';
+import { NxpDialogService, type NxpDialogOptions } from '@ngxpro/cdk';
+import type { NxpDynamicContent } from '@ngxpro/cdk/dynamic';
+
+@Component({
+  selector: 'app-rich-dialog',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './rich.html',
+})
+export class RichDialogExample {
+  private readonly dialogService = inject(NxpDialogService);
+  private readonly richTpl = viewChild<TemplateRef<unknown>>('richTpl');
+  private readonly confirmTpl = viewChild<TemplateRef<unknown>>('confirmTpl');
+
+  readonly confirmResult = signal<string>('(none)');
+
+  openWithTemplate(): void {
+    const tpl = this.richTpl();
+    if (!tpl) return;
+    this.dialogService
+      .open(tpl as NxpDynamicContent, {
+        label: 'Rich Content',
+        size: 'm',
+      } as Partial<NxpDialogOptions<unknown>>)
+      .subscribe();
+  }
+
+  openConfirm(): void {
+    const tpl = this.confirmTpl();
+    if (!tpl) return;
+    this.dialogService
+      .open<string>(tpl as NxpDynamicContent, {
+        label: 'Confirm Action',
+        closable: true,
+        dismissible: true,
+        size: 's',
+      } as Partial<NxpDialogOptions<unknown>>)
+      .subscribe({
+        next: (result) => this.confirmResult.set(result),
+        complete: () => {
+          if (this.confirmResult() === '(none)') {
+            this.confirmResult.set('cancelled');
+          }
+        },
+      });
+  }
+}`;
+
+  readonly componentHtml = `<button (click)="openDeleteWithComponent()">
+  Delete annual-report.pdf
+</button>
+<button (click)="openDeleteWithFactory()">
+  Delete quarterly-data.csv
+</button>`;
+
+  readonly componentTs = `import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  NxpDialogService,
+  nxpDialog,
+  type NxpDialogContext,
+  type NxpDialogOptions,
+} from '@ngxpro/cdk';
+import { nxpInjectContext, NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
+
+interface DeleteData {
+  readonly itemName: string;
+}
+
+@Component({
+  selector: 'app-confirm-delete',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: \`
+    <p>Permanently delete <strong>{{ context.data.itemName }}</strong>?</p>
+    <footer>
+      <button (click)="context.completeWith(false)">Cancel</button>
+      <button (click)="context.completeWith(true)">Delete</button>
+    </footer>
+  \`,
+})
+class ConfirmDeleteDialogComponent {
+  readonly context = nxpInjectContext<NxpDialogContext<boolean, DeleteData>>();
+}
+
+@Component({
+  selector: 'app-component-dialog',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './component.html',
+})
+export class ComponentDialogExample {
+  private readonly dialogService = inject(NxpDialogService);
+  readonly deleteResult = signal<string>('(none)');
+
+  // Factory opener — typed, class-field, fully injection-context aware
+  readonly openDeleteFactory = nxpDialog<DeleteData, boolean>(
+    ConfirmDeleteDialogComponent,
+    { label: 'Confirm Delete', size: 's' },
+  );
+
+  openDeleteWithComponent(): void {
+    this.dialogService
+      .open<boolean>(new NxpDynamicComponent(ConfirmDeleteDialogComponent), {
+        label: 'Confirm Delete',
+        size: 's',
+        data: { itemName: 'annual-report.pdf' },
+      } as Partial<NxpDialogOptions<DeleteData>>)
+      .subscribe((confirmed) =>
+        this.deleteResult.set(confirmed ? 'deleted' : 'cancelled'),
+      );
+  }
+
+  openDeleteWithFactory(): void {
+    this.openDeleteFactory({ itemName: 'quarterly-data.csv' }).subscribe(
+      (confirmed) =>
+        this.deleteResult.set(confirmed ? 'deleted' : 'cancelled'),
+    );
+  }
+}`;
+
+  readonly playgroundHtml = `<button (click)="openConfigurable()">Open configurable dialog</button>`;
+
+  readonly playgroundTs = `import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  NxpDialogService,
+  type NxpDialogOptions,
+  type NxpDialogSize,
+} from '@ngxpro/cdk';
+
+@Component({
+  selector: 'app-playground-dialog',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './playground.html',
+})
+export class PlaygroundDialogExample {
+  private readonly dialogService = inject(NxpDialogService);
+
+  readonly label = signal('Configurable dialog');
+  readonly size = signal<NxpDialogSize>('m');
+  readonly closable = signal(true);
+  readonly dismissible = signal(true);
+  readonly required = signal(false);
+  readonly appearance = signal('default');
+
+  openConfigurable(): void {
+    this.dialogService
+      .open('This dialog reflects the current options.', {
+        label: this.label(),
+        size: this.size(),
+        closable: this.closable(),
+        dismissible: this.dismissible(),
+        required: this.required(),
+        appearance: this.appearance(),
+      } as Partial<NxpDialogOptions<unknown>>)
+      .subscribe();
+  }
+}`;
 }

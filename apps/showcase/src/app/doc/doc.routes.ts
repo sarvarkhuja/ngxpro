@@ -18,7 +18,7 @@ export const docRoutes: Route[] = [
         path: 'button',
         loadComponent: () =>
           import('./doc-button.component').then((m) => m.DocButtonComponent),
-        data: { title: 'Button' },
+        data: { title: 'Doc Page Sample' },
       },
     ],
   },

@@ -124,13 +124,15 @@ import { NxpDocPageTabConnectorDirective } from './page-tab.directive';
           }
         }
       </main>
-      <aside class="w-56 shrink-0 max-lg:hidden">
+      <aside class="w-56 shrink-0 max-lg:hidden empty:hidden">
         <ng-content select="nxp-doc-toc" />
       </aside>
     </div>
   `,
   host: {
-    class: 'block max-w-[70rem] text-base p-12 mx-auto ' + 'max-md:p-4',
+    class:
+      'block max-w-[70rem] text-base p-12 mx-auto max-md:p-4 ' +
+      'bg-bg-base text-text-primary',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [

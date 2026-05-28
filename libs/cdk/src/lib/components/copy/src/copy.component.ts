@@ -21,7 +21,7 @@ import { NXP_COPY_OPTIONS } from './copy.options';
 const copyVariants = tv({
   base: [
     'group relative inline-flex items-center gap-2 max-w-full min-w-0',
-    'rounded-m border border-border-normal bg-bg-neutral-1 px-3',
+    'rounded-m shadow-border bg-bg-neutral-1 px-3 font-mono',
     'cursor-pointer',
     '[mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)]',
   ],
@@ -61,7 +61,7 @@ export type NxpCopySize = NonNullable<
     <span #content class="min-w-0 truncate"><ng-content /></span>
     <button
       type="button"
-      class="nxp-copy__btn absolute right-1 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-xs p-1 text-text-tertiary opacity-0 transition-opacity duration-normal group-hover:opacity-100 focus-visible:opacity-100 hover:text-text-primary"
+      class="nxp-copy__btn absolute right-1 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-xs p-1 text-text-tertiary opacity-0 transition-opacity duration-normal group-hover:opacity-100 focus-visible:opacity-100 hover:text-text-primary outline-none outline-offset-1 focus-visible:outline-2 focus-visible:outline-border-focus"
       [attr.aria-label]="copied() ? 'Copied' : 'Copy'"
       (click)="copy($event); $event.stopPropagation()"
     >

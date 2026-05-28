@@ -115,13 +115,14 @@ function nxpGetFocused(doc: Document): Element | null {
         display: flex;
         flex-direction: column;
       }
-      /* Flex wrapper — grows to fill height so the dialog stays centred */
+      /* Flex wrapper — grows to fill height so the dialog stays centred.
+         Padding is the viewport gutter; in-scale per design §5. */
       .nxp-modal-content {
         flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1.5rem;
+        padding: 2rem;
       }
       @keyframes nxp-modal-fade {
         from {

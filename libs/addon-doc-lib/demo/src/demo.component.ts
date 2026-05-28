@@ -22,11 +22,14 @@ import {
 import { type Params, UrlSerializer, type UrlTree } from '@angular/router';
 import { cx } from '@ngxpro/cdk';
 import { ThemeService } from '@ngxpro/core';
+import { NxpSegmentedComponent } from '@ngxpro/components/segmented';
 import { NxpSwitchComponent } from '@ngxpro/components/switch';
 import { skip } from 'rxjs';
+import { NxpDocCodeComponent } from '@ngxpro/addon-doc-lib/code';
 import {
   NXP_DOC_DEMO_TEXTS,
   NXP_DOC_ICONS,
+  NXP_DOC_PREVIEW_TEXT,
   NXP_DOC_URL_STATE_HANDLER,
 } from '@ngxpro/addon-doc-lib/tokens';
 import type { NxpDocDemoParams } from '@ngxpro/addon-doc-lib/types';
@@ -47,16 +50,18 @@ export class NxpDocJsonPipe implements PipeTransform {
   }
 }
 
+type DemoTab = 'preview' | 'html' | 'typescript';
+
 /**
  * Doc-page playground container. Wraps a small piece of demo UI (passed as a
  * `<ng-template>` content child or projected `<ng-content>`), exposes
  * controls for toggling theme/transparency and inspecting bound form data,
  * and persists state to the URL so deep links reproduce the same playground.
  *
- * Note: the resize handle from Taiga's `tui-doc-demo` is intentionally
- * omitted from v1 — the equivalent `Resizable` directive is not part of
- * `@ngxpro/cdk` yet. The element still respects an externally-driven
- * width via `:host { width: ... }` if a host needs it.
+ * Optional `html` / `typescript` inputs render an `nxp-segmented` tab strip
+ * (Preview / HTML / TypeScript). Code tabs are rendered via `<nxp-doc-code>`,
+ * which provides highlight.js syntax highlighting and a copy-to-clipboard
+ * button.
  */
 @Component({
   selector: 'nxp-doc-demo',
@@ -64,71 +69,96 @@ export class NxpDocJsonPipe implements PipeTransform {
     FormsModule,
     NgTemplateOutlet,
     ReactiveFormsModule,
+    NxpDocCodeComponent,
     NxpDocJsonPipe,
+    NxpSegmentedComponent,
     NxpSwitchComponent,
   ],
   template: `
     <div [class]="settingsClass">
-      <label class="inline-flex items-center gap-2 text-xs">
+      <div class="inline-flex items-center gap-2 text-xs">
         <nxp-switch
           size="s"
           [checked]="dark()"
           (checkedChange)="onModeChange($event)"
         />
         <small>{{ texts()[0] }}</small>
-      </label>
-      <label class="inline-flex items-center gap-2 text-xs">
+      </div>
+      <div class="inline-flex items-center gap-2 text-xs">
         <nxp-switch
           size="s"
           [checked]="opaque()"
           (checkedChange)="changeOpaque($event)"
         />
         <small>{{ texts()[1] }}</small>
-      </label>
-    </div>
-    <div
-      [class]="wrapperClass()"
-      [style.visibility]="rendered() ? 'visible' : 'hidden'"
-    >
-      <div class="flex-1 min-w-0 p-6">
-        <div #content id="demo-content">
-          @if (form) {
-            <form id="nxp-demo-form" [formGroup]="form">
-              <ng-container [ngTemplateOutlet]="template() || null" />
-            </form>
-          }
-          <ng-content />
-        </div>
       </div>
     </div>
-    @if (form) {
-      <div class="p-2">
-        @if (expanded()) {
-          <pre class="bg-bg-base rounded-m p-3 text-xs overflow-auto"
-            >{{ texts()[2] }}: {{ form.value | nxpDocJson }}</pre
-          >
-        }
-        <div class="flex gap-1 p-1">
-          <button type="button" [class]="buttonClass" (click)="toggleDetails()">
-            {{ expanded() ? '−' : '+' }} {{ texts()[2] }}
-          </button>
-          <select
-            [class]="selectClass"
-            [ngModel]="updateOn()"
-            (ngModelChange)="updateOnChange($event)"
-            [ngModelOptions]="{ standalone: true }"
-          >
-            @for (variant of updateOnVariants; track variant) {
-              <option [ngValue]="variant">{{ variant }}</option>
+    @if (tabs().length > 1) {
+      <div class="flex items-center px-3 pb-2">
+        <nxp-segmented size="sm" [(activeItemIndex)]="activeTabIndex">
+          @for (tab of tabs(); track tab.id) {
+            <button type="button">{{ tab.label }}</button>
+          }
+        </nxp-segmented>
+      </div>
+    }
+    @if (activeTab() === 'preview') {
+      <div
+        [class]="wrapperClass()"
+        [style.visibility]="rendered() ? 'visible' : 'hidden'"
+      >
+        <div class="flex-1 min-w-0 p-6">
+          <div #content id="demo-content">
+            @if (form) {
+              <form id="nxp-demo-form" [formGroup]="form">
+                <ng-container [ngTemplateOutlet]="template() || null" />
+              </form>
             }
-          </select>
-          <button form="nxp-demo-form" type="reset" [class]="buttonClass">
-            Reset
-          </button>
-          <button form="nxp-demo-form" type="submit" [class]="buttonClass">
-            Submit
-          </button>
+            <ng-content />
+          </div>
         </div>
+      </div>
+      @if (form) {
+        <div class="p-2">
+          @if (expanded()) {
+            <pre class="bg-bg-base rounded-m p-3 text-xs overflow-auto"
+              >{{ texts()[2] }}: {{ form.value | nxpDocJson }}</pre
+            >
+          }
+          <div class="flex gap-1 p-1">
+            <button
+              type="button"
+              [class]="buttonClass"
+              (click)="toggleDetails()"
+            >
+              {{ expanded() ? '−' : '+' }} {{ texts()[2] }}
+            </button>
+            <select
+              [class]="selectClass"
+              [ngModel]="updateOn()"
+              (ngModelChange)="updateOnChange($event)"
+              [ngModelOptions]="{ standalone: true }"
+            >
+              @for (variant of updateOnVariants; track variant) {
+                <option [ngValue]="variant">{{ variant }}</option>
+              }
+            </select>
+            <button form="nxp-demo-form" type="reset" [class]="buttonClass">
+              Reset
+            </button>
+            <button form="nxp-demo-form" type="submit" [class]="buttonClass">
+              Submit
+            </button>
+          </div>
+        </div>
+      }
+    } @else if (activeTab() === 'html') {
+      <div class="p-2">
+        <nxp-doc-code [code]="html()" language="HTML" />
+      </div>
+    } @else if (activeTab() === 'typescript') {
+      <div class="p-2">
+        <nxp-doc-code [code]="typescript()" language="TypeScript" />
       </div>
     }
   `,
@@ -153,6 +183,7 @@ export class NxpDocDemoComponent implements AfterViewInit {
   );
   protected readonly rendered = signal(false);
   protected readonly icons = inject(NXP_DOC_ICONS);
+  protected readonly previewText = inject(NXP_DOC_PREVIEW_TEXT);
 
   protected readonly dark = signal(
     nxpCoerceValueIsTrue(this.params.darkMode ?? this.themeService.isDark()),
@@ -180,6 +211,28 @@ export class NxpDocDemoComponent implements AfterViewInit {
 
   public readonly control = input<AbstractControl | null>(null);
   public readonly sticky = input(true);
+  /** Optional HTML source — when set, adds an "HTML" tab. */
+  public readonly html = input('');
+  /** Optional TypeScript source — when set, adds a "TypeScript" tab. */
+  public readonly typescript = input('');
+
+  protected readonly activeTabIndex = signal(0);
+
+  protected readonly tabs = computed<readonly { id: DemoTab; label: string }[]>(
+    () => {
+      const list: { id: DemoTab; label: string }[] = [
+        { id: 'preview', label: this.previewText() },
+      ];
+      if (this.html()) list.push({ id: 'html', label: 'HTML' });
+      if (this.typescript())
+        list.push({ id: 'typescript', label: 'TypeScript' });
+      return list;
+    },
+  );
+
+  protected readonly activeTab = computed<DemoTab>(
+    () => this.tabs()[this.activeTabIndex()]?.id ?? 'preview',
+  );
 
   protected readonly settingsClass = cx(
     'flex gap-4 items-center justify-end px-3 py-2',

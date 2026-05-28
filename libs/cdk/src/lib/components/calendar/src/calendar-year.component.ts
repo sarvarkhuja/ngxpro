@@ -25,7 +25,7 @@ const YEAR_RANGE = 100;
   template: `
     <div
       #scrollContainer
-      class="h-60 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin]"
+      class="h-60 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] [mask-image:linear-gradient(to_bottom,transparent_0%,black_8%,black_92%,transparent_100%)]"
       role="listbox"
       [attr.aria-label]="'Select year'"
     >

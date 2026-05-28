@@ -3,6 +3,10 @@
  *
  * Edit this file to customize the design system tokens.
  *
+ * Default theme follows the Vercel/Geist visual language documented in
+ * design-system.md: monochromatic canvas, Geist typography, shadow-as-border
+ * depth, and workflow-specific accent colors used contextually only.
+ *
  * Rules:
  *   • Only set BASE values here — hover/pressed states are derived
  *     automatically via OKLCH lightness shifts in styles.scss.
@@ -15,49 +19,134 @@
 
 /* ── Light mode ── */
 :root {
-  /* Brand — change --nxp-primary to re-skin the entire UI */
-  --nxp-primary: #3b82f6; /* blue-500 */
-  --nxp-secondary: #f3f4f6; /* gray-100 */
+  /* Brand — Vercel Black canvas; primary == foreground for dark CTAs.
+     Change --nxp-primary to re-skin the entire UI. */
+  --nxp-primary: #171717; /* Vercel Black — primary CTA, headings */
+  --nxp-secondary: #fafafa; /* Gray 50 — subtle surface tint */
 
   /* Backgrounds */
-  --nxp-bg-base: #ffffff;
-  --nxp-bg-base-alt: #f9fafb;
-  --nxp-bg-neutral-1: #f3f4f6;
-  --nxp-bg-neutral-2: #e5e7eb;
+  --nxp-bg-base: #ffffff; /* Pure white canvas */
+  --nxp-bg-base-alt: #fafafa; /* Gray 50 — inner highlight, alt surfaces */
+  --nxp-bg-neutral-1: #f3f3f3; /* Gray 50 */
+  --nxp-bg-neutral-2: #ebebeb; /* Gray 100 — borders, dividers */
 
-  /* Text */
-  --nxp-text-primary: #111827;
-  --nxp-text-secondary: #6b7280;
-  --nxp-text-tertiary: #9ca3af;
-  --nxp-text-on-accent: #ffffff;
-  --nxp-text-action: #2563eb;
+  /* Text — Vercel uses #171717 (not #000) for micro-warmth.
+     The four-step scale maps 1:1 onto design-system.md §2:
+       primary    = Gray 900  — headings, primary text
+       secondary  = Gray 600  — description copy
+       tertiary   = Gray 500  — muted links, captions
+       quaternary = Gray 400  — placeholder text, disabled-state text */
+  --nxp-text-primary: #171717; /* Gray 900 */
+  --nxp-text-secondary: #4d4d4d; /* Gray 600 */
+  --nxp-text-tertiary: #666666; /* Gray 500 */
+  --nxp-text-quaternary: #808080; /* Gray 400 — placeholder & disabled */
+  --nxp-text-on-accent: #ffffff; /* White on dark CTA */
+  --nxp-text-action: #0072f5; /* Link Blue */
 
-  /* Border */
-  --nxp-border-normal: #e5e7eb;
-  --nxp-border-strong: #d1d5db;
-  --nxp-border-hover: #d1d5db;
-  --nxp-border-focus: #3b82f6;
+  /* Border — kept as solid colors for backwards compat;
+     prefer shadow-border utilities (.shadow-border) for new components. */
+  --nxp-border-normal: #ebebeb; /* Gray 100 */
+  --nxp-border-strong: #d4d4d4; /* slightly stronger */
+  --nxp-border-hover: #d4d4d4;
+  --nxp-border-focus: hsla(212, 100%, 48%, 1); /* Geist focus blue */
 
-  /* Status */
-  --nxp-status-negative: #ef4444;
-  --nxp-status-positive: #22c55e;
+  /* Status — kept saturated for semantic clarity */
+  --nxp-status-negative: #ff5b4f; /* Ship Red — destructive/error */
+  --nxp-status-positive: #0a72ef; /* Develop Blue — success/info-like */
   --nxp-status-warning: #f59e0b;
-  --nxp-status-info: #3b82f6;
-  --nxp-status-negative-pale: #fef2f2;
-  --nxp-status-positive-pale: #f0fdf4;
+  --nxp-status-info: #0072f5;
+  --nxp-status-negative-pale: #fff5f4;
+  --nxp-status-positive-pale: #ebf5ff;
   --nxp-status-warning-pale: #fffbeb;
-  --nxp-status-info-pale: #eff6ff;
+  --nxp-status-info-pale: #ebf5ff;
 
-  /* Typography */
+  /* Workflow accent palette — used contextually only
+     (Develop → Preview → Ship pipeline metaphor) */
+  --nxp-accent-develop: #0a72ef;
+  --nxp-accent-preview: #de1d8d;
+  --nxp-accent-ship: #ff5b4f;
+
+  /* Geist tinted-pill badge palette */
+  --nxp-badge-blue-bg: #ebf5ff;
+  --nxp-badge-blue-text: #0068d6;
+
+  /* Overlay & selection — design-system.md §2 surface tokens */
+  --nxp-overlay-backdrop: hsla(0, 0%, 98%, 1); /* modal/dialog backdrop */
+  --nxp-selection-bg: hsla(0, 0%, 95%, 1); /* text selection highlight */
+
+  /* Typography — Geist with system fallbacks
+     (loaded via Google Fonts in apps/showcase/src/index.html) */
   --nxp-font-sans:
-    'Manrope', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+  --nxp-font-mono:
+    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono',
+    'Liberation Mono', 'Courier New', monospace;
 
-  /* Radius */
-  --nxp-radius-xs: 0.125rem;
-  --nxp-radius-s: 0.25rem;
-  --nxp-radius-m: 0.5rem;
-  --nxp-radius-l: 0.75rem;
-  --nxp-radius-xl: 1rem;
+  /* Radius — Vercel scale: micro 2, subtle 4, button 6, card 8, image 12,
+     nav 64, pill 9999. */
+  --nxp-radius-xs: 0.125rem; /* 2px — inline code */
+  --nxp-radius-sm: 0.25rem; /* 4px — small containers */
+  --nxp-radius-m: 0.375rem; /* 6px — buttons, links */
+  --nxp-radius-lg: 0.5rem; /* 8px — cards, list items */
+  --nxp-radius-xl: 0.75rem; /* 12px — image, featured cards */
+  --nxp-radius-2xl: 4rem; /* 64px — nav pills */
+  --nxp-radius-pill: 9999px; /* full pill — badges, status chips */
+
+  /* Shadow-as-border tokens — Vercel signature
+     (use via Tailwind utility .shadow-border / .shadow-card) */
+  --nxp-shadow-border: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --nxp-shadow-border-light: 0 0 0 1px rgb(235, 235, 235);
+  --nxp-shadow-elevation: 0 2px 2px rgba(0, 0, 0, 0.04);
+  --nxp-shadow-elevation-lg: 0 8px 8px -8px rgba(0, 0, 0, 0.04);
+  --nxp-shadow-card:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.04),
+    0 0 0 1px #fafafa;
+  --nxp-shadow-card-lg:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.04),
+    0 8px 8px -8px rgba(0, 0, 0, 0.04), inset 0 0 0 1px #fafafa;
+  --nxp-shadow-focus-ring: 0 0 0 2px hsla(212, 100%, 48%, 0.2);
+
+  /* Lift shadow — small elevated control surfaces that sit on a tinted
+     container (tabs/segmented sliding indicator, switch thumb).
+     Two-layer: shadow-as-border + soft 2px drop. No inner highlight ring
+     so the surface composes cleanly against any container background. */
+  --nxp-shadow-lift:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.04);
+
+  /* Toast shadow — colored shadow-as-border + 2-layer soft drop.
+     Border color is parametric via --toast-border (defaults to the neutral
+     border color); set it inline on the toast host to colorize per status.
+     Three-layer: tinted 1px ring + 4px ambient + 16px far-distance fade. */
+  --nxp-shadow-toast:
+    0 0 0 1px
+      color-mix(
+        in srgb,
+        var(--toast-border, var(--nxp-border-normal)) 30%,
+        transparent
+      ),
+    0 2px 4px rgba(0, 0, 0, 0.04), 0 8px 16px -8px rgba(0, 0, 0, 0.08);
+
+  /* Input shadow stack — centralizes the Vercel input chrome.
+     Use via Tailwind: .shadow-input-hover, .shadow-input-focus, .shadow-input-error.
+     Eliminates the repeated `shadow-[...]` + `dark:shadow-[...]` patterns
+     across input/textarea/multi-select/input-chip/input-pin components.
+  */
+  --nxp-shadow-input-hover: 0 0 0 1px rgba(0, 0, 0, 0.16);
+  --nxp-shadow-input-focus:
+    0 0 0 1px var(--nxp-text-quaternary),
+    0 0 0 4px color-mix(in srgb, var(--nxp-text-quaternary) 20%, transparent);
+  --nxp-shadow-input-error:
+    0 0 0 1px var(--nxp-status-negative),
+    0 0 0 4px color-mix(in srgb, var(--nxp-status-negative) 20%, transparent);
+
+  /* Negative letter-spacing scale — Geist's signature compression
+     Apply via Tailwind: tracking-tight-display, tracking-tight-section, etc. */
+  --nxp-tracking-display: -0.06em; /* -2.88px @ 48px */
+  --nxp-tracking-hero: -0.05em; /* -2.4px @ 48px */
+  --nxp-tracking-section: -0.04em; /* -1.28px @ 32px */
+  --nxp-tracking-card: -0.04em; /* -0.96px @ 24px */
+  --nxp-tracking-body: -0.02em; /* -0.32px @ 16px */
 
   /* Duration */
   --nxp-duration-fast: 100ms;
@@ -65,38 +154,74 @@
   --nxp-duration-slow: 200ms;
 }
 
-/* ── Dark mode overrides ── */
+/* ── Dark mode overrides ──
+   Vercel does not formally publish a dark theme for the marketing site,
+   but the Geist design system DOES — these are the dark-mode equivalents
+   that preserve the monochromatic discipline. */
 .dark {
-  /* Brand — hover/pressed derived lighter in dark (see styles.scss) */
-  --nxp-primary: #3b82f6; /* same hue, interactions go lighter */
-  --nxp-secondary: #1f2937; /* gray-800, interactions go lighter */
+  --nxp-primary: #ededed; /* inverted: light primary on dark */
+  --nxp-secondary: #1f1f1f; /* near-black surface */
 
   /* Backgrounds */
-  --nxp-bg-base: #030712;
-  --nxp-bg-base-alt: #111827;
-  --nxp-bg-neutral-1: #1f2937;
-  --nxp-bg-neutral-2: #374151;
+  --nxp-bg-base: #0a0a0a; /* near-black canvas */
+  --nxp-bg-base-alt: #111111;
+  --nxp-bg-neutral-1: #1a1a1a;
+  --nxp-bg-neutral-2: #262626;
 
-  /* Text */
-  --nxp-text-primary: #f9fafb;
-  --nxp-text-secondary: #9ca3af;
-  --nxp-text-tertiary: #6b7280;
-  --nxp-text-on-accent: #ffffff;
-  --nxp-text-action: #60a5fa;
+  /* Text — same 4-step scale, inverted around the dark canvas. */
+  --nxp-text-primary: #ededed;
+  --nxp-text-secondary: #a3a3a3;
+  --nxp-text-tertiary: #737373;
+  --nxp-text-quaternary: #525252; /* placeholder & disabled on dark */
+  --nxp-text-on-accent: #0a0a0a;
+  --nxp-text-action: #3291ff;
 
   /* Border */
-  --nxp-border-normal: #1f2937;
-  --nxp-border-strong: #374151;
-  --nxp-border-hover: #374151;
-  --nxp-border-focus: #3b82f6;
+  --nxp-border-normal: #262626;
+  --nxp-border-strong: #404040;
+  --nxp-border-hover: #404040;
+  --nxp-border-focus: hsla(212, 100%, 60%, 1);
 
   /* Status */
-  --nxp-status-negative: #ef4444;
-  --nxp-status-positive: #22c55e;
+  --nxp-status-negative: #ff5b4f;
+  --nxp-status-positive: #3291ff;
   --nxp-status-warning: #f59e0b;
-  --nxp-status-info: #3b82f6;
-  --nxp-status-negative-pale: #1c0a0a;
-  --nxp-status-positive-pale: #052e16;
+  --nxp-status-info: #3291ff;
+  --nxp-status-negative-pale: #2a0c0a;
+  --nxp-status-positive-pale: #0c1929;
   --nxp-status-warning-pale: #1c1504;
   --nxp-status-info-pale: #0c1929;
+
+  /* Badge */
+  --nxp-badge-blue-bg: #0c1929;
+  --nxp-badge-blue-text: #3291ff;
+
+  /* Overlay & selection — dark equivalents (spec defines light only). */
+  --nxp-overlay-backdrop: hsla(0, 0%, 4%, 1);
+  --nxp-selection-bg: hsla(0, 0%, 20%, 1);
+
+  /* Shadow-as-border (lighter alpha for dark surfaces) */
+  --nxp-shadow-border: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --nxp-shadow-border-light: 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --nxp-shadow-elevation: 0 2px 2px rgba(0, 0, 0, 0.4);
+  --nxp-shadow-elevation-lg: 0 8px 8px -8px rgba(0, 0, 0, 0.4);
+  --nxp-shadow-card:
+    0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px #1a1a1a;
+  --nxp-shadow-card-lg:
+    0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 2px rgba(0, 0, 0, 0.4),
+    0 8px 8px -8px rgba(0, 0, 0, 0.4), inset 0 0 0 1px #1a1a1a;
+  --nxp-shadow-focus-ring: 0 0 0 2px hsla(212, 100%, 60%, 0.25);
+
+  /* Lift shadow (dark mode) */
+  --nxp-shadow-lift:
+    0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 2px rgba(0, 0, 0, 0.4);
+
+  /* Input shadow stack (dark mode) — same Gray-400 monochrome focus as light.
+     The dark `--nxp-text-quaternary` (#525252) reads soft against #0a0a0a,
+     so the halo gets a slightly stronger 30% alpha to stay visible. */
+  --nxp-shadow-input-hover: 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --nxp-shadow-input-focus:
+    0 0 0 1px var(--nxp-text-quaternary),
+    0 0 0 4px color-mix(in srgb, var(--nxp-text-quaternary) 30%, transparent);
 }

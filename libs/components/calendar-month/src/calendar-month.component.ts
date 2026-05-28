@@ -11,6 +11,7 @@ import {
   cx,
   calendarCellVariants,
   calendarContainerClass,
+  focusRing,
   navButtonClass,
 } from '@ngxpro/cdk';
 import { CalendarYearComponent } from '@ngxpro/components/calendar';
@@ -87,7 +88,7 @@ function toLinear(m: MonthCoord): number {
         />
       } @else {
         <div
-          class="flex items-center justify-between gap-1 pb-1"
+          class="flex items-center justify-between gap-1 pb-3"
           role="group"
           [attr.aria-label]="'Year navigation'"
         >
@@ -398,7 +399,7 @@ export class CalendarMonthComponent {
     'transition-[background-color,color,transform] duration-normal',
     '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
     'active:scale-[0.98]',
-    'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
+    ...focusRing,
   );
 
   protected monthBtnClass(
@@ -420,7 +421,9 @@ export class CalendarMonthComponent {
     return cx(
       calendarCellVariants({ state: 'default' }),
       'h-10',
-      isToday ? 'ring-1 ring-inset ring-primary/60' : '',
+      isToday
+        ? 'font-semibold text-text-primary ring-1 ring-inset ring-text-primary/25'
+        : '',
     );
   }
 

@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { AccordionComponent } from './accordion.component';
-import { cx, ExpandComponent } from '@ngxpro/cdk';
+import { cx, ExpandComponent, focusRing } from '@ngxpro/cdk';
 
 /**
  * Individual accordion item with trigger and collapsible content.
@@ -44,7 +44,7 @@ import { cx, ExpandComponent } from '@ngxpro/cdk';
     </nxp-expand>
   `,
   host: {
-    class: 'relative block rounded-l overflow-hidden',
+    class: 'relative block rounded-lg overflow-hidden',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -66,15 +66,15 @@ export class AccordionItemComponent {
   readonly triggerClasses = cx(
     'flex w-full cursor-pointer items-center gap-2.5 rounded-m px-3 py-2 text-left text-[13px] text-text-primary',
     'hover:bg-bg-neutral-1',
-    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
-    'disabled:cursor-default disabled:text-text-tertiary',
+    ...focusRing,
+    'disabled:cursor-default disabled:text-text-quaternary',
   );
 
   readonly iconClasses = () =>
     cx(
       'ri-arrow-right-s-line shrink-0 text-base leading-none text-text-secondary transition-transform duration-normal ease-[cubic-bezier(0.22,1.2,0.36,1)]',
       this.expanded() && 'rotate-90',
-      this.disabled() && '!text-text-tertiary',
+      this.disabled() && '!text-text-quaternary',
     );
 
   toggle(): void {

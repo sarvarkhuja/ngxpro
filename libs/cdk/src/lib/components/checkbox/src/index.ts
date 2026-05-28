@@ -8,6 +8,7 @@ export {
   NxpCheckboxDirective,
   type NxpCheckboxDirectiveSize,
   type NxpCheckboxDirectiveColor,
+  type NxpCheckboxValue,
 } from './checkbox.directive';
 export {
   NXP_CHECKBOX_OPTIONS,

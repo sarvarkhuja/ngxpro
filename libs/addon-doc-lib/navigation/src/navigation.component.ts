@@ -2,8 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Pipe,
-  type PipeTransform,
   computed,
   inject,
   input,
@@ -13,10 +11,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { NavigationEnd, Router, RouterLink, Scroll } from '@angular/router';
-import {
-  AccordionComponent,
-  AccordionItemComponent,
-} from '@ngxpro/components/accordion';
 import { NxpNavComponent, NxpNavItemDirective } from '@ngxpro/components/menu';
 import { NxpIconComponent } from '@ngxpro/cdk/components/icon';
 import { cx, NXP_DOCUMENT } from '@ngxpro/cdk';
@@ -28,10 +22,7 @@ import {
   NXP_DOC_SEARCH_TEXT,
   NXP_DOC_TITLE,
 } from '@ngxpro/addon-doc-lib/tokens';
-import type {
-  NxpDocRoutePage,
-  NxpDocRoutePages,
-} from '@ngxpro/addon-doc-lib/types';
+import type { NxpDocRoutePage } from '@ngxpro/addon-doc-lib/types';
 import { nxpTransliterateKeyboardLayout } from '@ngxpro/addon-doc-lib/utils';
 import { combineLatest, filter, map, mergeMap, type Observable } from 'rxjs';
 
@@ -46,22 +37,15 @@ function uniqBy<T>(array: readonly T[], key: keyof T): readonly T[] {
   );
 }
 
-@Pipe({ name: 'nxpDocPagesAsArray' })
-export class NxpDocPagesAsArrayPipe implements PipeTransform {
-  public transform(pages: readonly NxpDocRoutePage[]): NxpDocRoutePage[] {
-    return [...pages];
-  }
-}
-
 /**
  * Sidebar navigation that drives the doc portal. Composes:
  *
  * - A search input (`<input>` + `<nxp-icon>`) — defaulted to enabled, can
  *   filter pages by title or keywords.
- * - Section headings rendered as `<nxp-accordion>` blocks; the page's
- *   "section" string groups its sub-pages.
- * - Top-level pages without a section rendered as flat `<nxp-nav>` items
- *   driven by Angular Router via `[nxpNavItem]`.
+ * - Section labels rendered as plain headings, each followed by a flat
+ *   `<nxp-nav>` list of that section's pages (subPages flattened in-place).
+ * - Top-level pages without a section rendered as a leading flat `<nxp-nav>`
+ *   list driven by Angular Router via `[nxpNavItem]`.
  *
  * @example
  * <nxp-doc-navigation />
@@ -69,9 +53,6 @@ export class NxpDocPagesAsArrayPipe implements PipeTransform {
 @Component({
   selector: 'nxp-doc-navigation',
   imports: [
-    AccordionComponent,
-    AccordionItemComponent,
-    NxpDocPagesAsArrayPipe,
     NxpIconComponent,
     NxpNavComponent,
     NxpNavItemDirective,
@@ -132,7 +113,7 @@ export class NxpDocPagesAsArrayPipe implements PipeTransform {
       </div>
     }
 
-    <nav class="flex flex-col gap-2">
+    <nav class="flex flex-col gap-4">
       @if (rootPages().length) {
         <nxp-nav class="px-2">
           @for (item of rootPages(); track item.title) {
@@ -156,65 +137,32 @@ export class NxpDocPagesAsArrayPipe implements PipeTransform {
           }
         </nxp-nav>
       }
-      @if (sectionLabels().length) {
-        <nxp-accordion class="w-full">
-          @for (label of sectionLabels(); track label; let li = $index) {
-            <nxp-accordion-item [title]="label">
-              <nxp-nav class="px-1">
-                @for (item of sectionItems()[li]; track item.title) {
-                  @if ('subPages' in item) {
-                    <nxp-accordion-item [title]="item.title">
-                      <nxp-nav class="px-1">
-                        @for (
-                          sub of item.subPages | nxpDocPagesAsArray;
-                          track sub.title
-                        ) {
-                          @if (sub.route.includes('://')) {
-                            <a
-                              nxpNavItem
-                              [attr.rel]="sub.rel"
-                              [href]="sub.route"
-                              [target]="sub.target || '_self'"
-                              >{{ sub.title }}</a
-                            >
-                          } @else {
-                            <a
-                              nxpNavItem
-                              [attr.rel]="sub.rel"
-                              [routerLink]="sub.route"
-                              [fragment]="sub.fragment"
-                              [target]="sub.target || '_self'"
-                              >{{ sub.title }}</a
-                            >
-                          }
-                        }
-                      </nxp-nav>
-                    </nxp-accordion-item>
-                  } @else {
-                    @if (item.route.includes('://')) {
-                      <a
-                        nxpNavItem
-                        [attr.rel]="item.rel"
-                        [href]="item.route"
-                        [target]="item.target || '_self'"
-                        >{{ item.title }}</a
-                      >
-                    } @else {
-                      <a
-                        nxpNavItem
-                        [attr.rel]="item.rel"
-                        [routerLink]="item.route"
-                        [fragment]="item.fragment"
-                        [target]="item.target || '_self'"
-                        >{{ item.title }}</a
-                      >
-                    }
-                  }
-                }
-              </nxp-nav>
-            </nxp-accordion-item>
-          }
-        </nxp-accordion>
+      @for (label of sectionLabels(); track label; let li = $index) {
+        <div class="flex flex-col gap-1">
+          <div [class]="sectionLabelClass">{{ label }}</div>
+          <nxp-nav class="px-2">
+            @for (item of sectionPages()[li]; track item.route) {
+              @if (item.route.includes('://')) {
+                <a
+                  nxpNavItem
+                  [attr.rel]="item.rel"
+                  [href]="item.route"
+                  [target]="item.target || '_self'"
+                  >{{ item.title }}</a
+                >
+              } @else {
+                <a
+                  nxpNavItem
+                  [attr.rel]="item.rel"
+                  [routerLink]="item.route"
+                  [fragment]="item.fragment"
+                  [target]="item.target || '_self'"
+                  >{{ item.title }}</a
+                >
+              }
+            }
+          </nxp-nav>
+        </div>
       }
     </nav>
     <ng-content />
@@ -271,30 +219,25 @@ export class NxpDocNavigationComponent {
 
   protected readonly sectionLabels = this.labels;
 
-  /** Pages grouped per section label, in label order. */
-  protected readonly sectionItems = computed<readonly NxpDocRoutePages[]>(
-    () => {
-      const labels = this.labels();
-      return labels.map((label) =>
-        this.pages.filter((page) => page.section === label),
-      );
-    },
-  );
+  /**
+   * Pages per section label, flattened. Any `subPages` group within a section
+   * contributes its leaf pages in-place — no nested grouping is preserved.
+   */
+  protected readonly sectionPages = computed<
+    ReadonlyArray<readonly NxpDocRoutePage[]>
+  >(() => {
+    const labels = this.labels();
+    return labels.map((label) =>
+      this.pages
+        .filter((page) => page.section === label)
+        .reduce<
+          readonly NxpDocRoutePage[]
+        >((acc, page) => ('subPages' in page ? [...acc, ...page.subPages] : [...acc, page]), []),
+    );
+  });
 
   protected readonly flat = computed<ReadonlyArray<readonly NxpDocRoutePage[]>>(
-    () => {
-      const items = this.sectionItems();
-      return [
-        ...items.map((section) =>
-          section.reduce<readonly NxpDocRoutePage[]>(
-            (acc, page) =>
-              'subPages' in page ? [...acc, ...page.subPages] : [...acc, page],
-            [],
-          ),
-        ),
-        this.rootPages(),
-      ];
-    },
+    () => [...this.sectionPages(), this.rootPages()],
   );
 
   protected readonly filtered = computed(() => {
@@ -311,7 +254,7 @@ export class NxpDocNavigationComponent {
 
   protected readonly searchInputClass = cx(
     'flex-1 min-w-0 bg-transparent outline-none text-sm text-text-primary',
-    'placeholder:text-text-tertiary',
+    'placeholder:text-text-quaternary',
   );
 
   protected readonly resultsClass = cx(
@@ -321,6 +264,10 @@ export class NxpDocNavigationComponent {
 
   protected readonly resultLinkClass = cx(
     'block px-3 py-2 no-underline text-text-primary hover:bg-bg-neutral-1',
+  );
+
+  protected readonly sectionLabelClass = cx(
+    'px-3 text-xs font-medium uppercase tracking-wide text-text-tertiary',
   );
 
   private readonly titleStream$: Observable<string> = combineLatest([

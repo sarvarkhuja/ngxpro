@@ -74,7 +74,7 @@ When adding a new secondary entry point, also add the path mapping in `tsconfig.
 All components follow these conventions:
 
 - **Standalone** components with `OnPush` change detection
-- **Signals** for all inputs: `input()`, `model()`, `signal()`, `computed()` — never `@Input()`
+- **Signals** for all inputs: `input()`, `model()`, `signal()`, `computed()` — never `@Input()`. **Exception:** directives that are `new`'d outside an injection context (e.g. `NxpDynamicTemplate` is instantiated programmatically by `libs/cdk/src/lib/portals/dropdown/dropdown.directive.ts`) must keep the `@Input()` decorator — `input()` calls `assertInInjectionContext()` and throws `NG0203` at runtime. Before converting any `@Input()`, grep for `new <ClassName>(` and confirm there are no programmatic instantiations.
 - **Tailwind classes** for all styling — no component-level SCSS
 - **`cx()` utility** (`twMerge(clsx(...))`) for class merging with conflict resolution
 - **`tailwind-variants` (`tv()`)** for variant management

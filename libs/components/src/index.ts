@@ -28,7 +28,7 @@ export const NXP_COMPONENTS_VERSION = '0.0.1';
 //   import { NxpChipDirective, NxpChip, nxpChipOptionsProvider } from '@ngxpro/components/chip';
 //   import { NxpInputChipDirective, NxpInputChipComponent, NxpInputChip } from '@ngxpro/components/input-chip';
 //   import { NxpComboBox, NxpComboBoxDirective, NxpSelectOptionComponent } from '@ngxpro/components/combo-box';
-//   import { NxpMultiSelect, NxpMultiSelectComponent, NxpMultiSelectOptionComponent, NxpMultiSelectGroupComponent } from '@ngxpro/components/multi-select';
+//   import { NxpMultiSelect, NxpMultiSelectComponent, NxpMultiSelectDirective, NxpMultiSelectOptionComponent, NxpMultiSelectGroupComponent } from '@ngxpro/components/multi-select';
 //   import { NxpInputPinComponent } from '@ngxpro/components/input-pin';
 //   import { DrawerComponent } from '@ngxpro/components/drawer';
 //   import { NxpSwitch, NxpSwitchComponent, NxpSwitchOptions, nxpSwitchOptionsProvider } from '@ngxpro/components/switch';

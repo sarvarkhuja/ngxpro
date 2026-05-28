@@ -45,10 +45,10 @@ function startOfDay(d: Date): Date {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarSheetPipe],
   template: `
-    <div class="grid grid-cols-7 mb-1.5" role="row">
+    <div class="grid grid-cols-7 mb-1" role="row">
       @for (label of weekdayLabels(); track label) {
         <div
-          class="h-7 flex items-center justify-center text-[11px] font-medium tracking-wide uppercase text-text-tertiary select-none"
+          class="h-8 flex items-center justify-center font-mono text-xs font-medium uppercase text-text-tertiary select-none"
           role="columnheader"
           [attr.aria-label]="label"
         >
@@ -210,14 +210,17 @@ export class CalendarSheetComponent {
   /**
    * Wrapper class for the range-middle background strip.
    * Extends edge-to-edge with rounded corners on the start/end cells.
+   * Uses the semantic Gray-50 neutral token (`--nxp-bg-neutral-1`) instead of
+   * a primary-tint alpha — keeps the strip strictly achromatic and ensures it
+   * flips correctly in dark mode, per design-system.md §2.
    */
   protected rangeBgClass(day: Date): string {
     if (!this.rangeMode()) return '';
     const state = this.rangeState(day);
 
-    if (state === 'middle') return 'bg-primary/12';
-    if (state === 'start') return 'bg-primary/12 rounded-l-lg';
-    if (state === 'end') return 'bg-primary/12 rounded-r-lg';
+    if (state === 'middle') return 'bg-bg-neutral-1';
+    if (state === 'start') return 'bg-bg-neutral-1 rounded-l-md';
+    if (state === 'end') return 'bg-bg-neutral-1 rounded-r-md';
     return '';
   }
 

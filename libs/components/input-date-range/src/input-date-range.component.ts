@@ -173,7 +173,13 @@ export class InputDateRangeComponent implements ControlValueAccessor {
   protected readonly inputValue = signal('');
 
   protected readonly inputClass = computed(() =>
-    cx(inputVariants(), this.hasError() ? hasErrorInput : '', this.class()),
+    cx(
+      inputVariants(),
+      // Reserve room for the trailing calendar icon (rendered absolutely).
+      'pr-10',
+      this.hasError() && hasErrorInput,
+      this.class(),
+    ),
   );
 
   constructor() {

@@ -40,54 +40,33 @@ const PRESS_EXTEND = 4;
 const PRESS_SHRINK = 4;
 const DRAG_DEAD_ZONE = 2;
 
-// ── Color maps ──
+// ── Color maps (driven by design tokens; auto-flip in dark mode) ──
 
 interface ColorSpec {
-  readonly on: string;
-  readonly onHover: string;
+  /** ON state: foreground color from a design token. Hover darkens 8% via color-mix. */
+  readonly token: string;
+  /** OFF state: neutral track. */
   readonly off: string;
-  readonly offHover: string;
+  /** Hover variants — small opacity-based shift on top of token. */
   readonly focusRing: string;
-  // Dark mode
-  readonly darkOn: string;
-  readonly darkOnHover: string;
-  readonly darkOff: string;
-  readonly darkOffHover: string;
 }
 
 const COLORS: Record<NxpSwitchColor, ColorSpec> = {
   primary: {
-    on: 'rgb(37, 99, 235)',
-    onHover: 'rgb(29, 78, 216)',
-    off: 'rgb(209, 213, 219)',
-    offHover: 'rgb(186, 191, 199)',
-    focusRing: 'rgba(59, 130, 246, 0.45)',
-    darkOn: 'rgb(96, 165, 250)',
-    darkOnHover: 'rgb(110, 175, 255)',
-    darkOff: 'rgb(75, 85, 99)',
-    darkOffHover: 'rgb(90, 100, 114)',
+    token: 'var(--nxp-primary)',
+    off: 'var(--nxp-bg-neutral-2)',
+    focusRing: 'color-mix(in srgb, var(--nxp-border-focus) 35%, transparent)',
   },
   secondary: {
-    on: 'rgb(75, 85, 99)',
-    onHover: 'rgb(55, 65, 81)',
-    off: 'rgb(209, 213, 219)',
-    offHover: 'rgb(186, 191, 199)',
-    focusRing: 'rgba(107, 114, 128, 0.45)',
-    darkOn: 'rgb(156, 163, 175)',
-    darkOnHover: 'rgb(170, 177, 189)',
-    darkOff: 'rgb(55, 65, 81)',
-    darkOffHover: 'rgb(70, 80, 96)',
+    token: 'var(--nxp-text-secondary)',
+    off: 'var(--nxp-bg-neutral-2)',
+    focusRing: 'color-mix(in srgb, var(--nxp-text-secondary) 35%, transparent)',
   },
   danger: {
-    on: 'rgb(220, 38, 38)',
-    onHover: 'rgb(185, 28, 28)',
-    off: 'rgb(209, 213, 219)',
-    offHover: 'rgb(186, 191, 199)',
-    focusRing: 'rgba(239, 68, 68, 0.45)',
-    darkOn: 'rgb(248, 113, 113)',
-    darkOnHover: 'rgb(255, 130, 130)',
-    darkOff: 'rgb(75, 85, 99)',
-    darkOffHover: 'rgb(90, 100, 114)',
+    token: 'var(--nxp-status-negative)',
+    off: 'var(--nxp-bg-neutral-2)',
+    focusRing:
+      'color-mix(in srgb, var(--nxp-status-negative) 35%, transparent)',
   },
 };
 
@@ -128,7 +107,7 @@ const TRACK_BG_TRANSITION = `background-color ${FAST}`;
       (blur)="focused.set(false)"
     >
       <span
-        class="absolute left-0 block rounded-full bg-white shadow-sm"
+        class="absolute left-0 block rounded-full bg-bg-base shadow-lift"
         [style.width.px]="thumbWidth()"
         [style.height.px]="thumbHeight()"
         [style.top.px]="thumbY()"
@@ -203,33 +182,24 @@ export class NxpSwitchComponent implements ControlValueAccessor {
   // ── Computed values ──
 
   readonly dims = computed(() => SIZES[this.size()]);
-  readonly colorSpec = computed(() => ({
-    ...COLORS[this.color()],
-    isDark: this.theme.isDark(),
-  }));
+  readonly colorSpec = computed(() => COLORS[this.color()]);
 
+  /**
+   * Track background — uses the design token directly so the switch
+   * automatically inherits the active palette in light/dark mode.
+   * Hover darkens by 8% (light) or lightens by 8% (dark) via color-mix.
+   */
   readonly trackBg = computed(() => {
     const spec = COLORS[this.color()];
     const isDark = this.theme.isDark();
     const isOn = this.checked();
     const isHover = this.hovered();
 
-    if (isDark) {
-      return isOn
-        ? isHover
-          ? spec.darkOnHover
-          : spec.darkOn
-        : isHover
-          ? spec.darkOffHover
-          : spec.darkOff;
-    }
-    return isOn
-      ? isHover
-        ? spec.onHover
-        : spec.on
-      : isHover
-        ? spec.offHover
-        : spec.off;
+    const base = isOn ? spec.token : spec.off;
+    if (!isHover) return base;
+    // Hover shift: darken 8% in light mode, lighten 8% in dark mode
+    const shift = isDark ? 'white' : 'black';
+    return `color-mix(in srgb, ${shift} 8%, ${base})`;
   });
 
   readonly thumbWidth = computed(() => {

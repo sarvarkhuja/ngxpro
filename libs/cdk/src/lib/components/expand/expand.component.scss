@@ -42,9 +42,10 @@
 }
 
 .nxp-expand-wrapper {
-  /* CRITICAL: Transition ALL properties for proper collapse animation
-   * Matches NXP_SPRING_MODERATE from @nxp/cdk motion constants. */
-  transition-property: all;
+  /* Specific transitions per design-system §1 engineering principle —
+   * only animate what actually changes (opacity + visibility on collapse).
+   * Matches NXP_SPRING_MODERATE timing from @nxp/cdk motion constants. */
+  transition-property: opacity, visibility;
   transition-duration: 160ms;
   transition-timing-function: cubic-bezier(0.22, 1.2, 0.36, 1);
 

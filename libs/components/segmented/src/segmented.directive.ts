@@ -77,17 +77,19 @@ export class NxpSegmentedDirective implements AfterContentChecked {
   }
 
   protected onHostClick(target: EventTarget | null): void {
-    if (target instanceof Element) {
-      this.updateFromElement(target);
-    }
+    if (!(target instanceof Element)) return;
+    // Block clicks bubbling from disabled items (icons inside <a nxpSegment [disabled]>
+    // for example — anchors don't natively block clicks like <button disabled> does).
+    if (target.closest('[disabled]')) return;
+    this.updateFromElement(target);
   }
 
   private updateFromElement(target: Element): void {
     // Get segment children, excluding the last child (the indicator span)
     const children = Array.from(this.el.children).slice(0, -1);
     const index = children.findIndex((child) => child.contains(target));
-    if (index !== -1) {
-      this.component?.update(index);
-    }
+    if (index === -1) return;
+    if (children[index]?.hasAttribute('disabled')) return;
+    this.component?.update(index);
   }
 }

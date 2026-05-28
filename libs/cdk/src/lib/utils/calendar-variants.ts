@@ -1,21 +1,31 @@
 import { tv } from 'tailwind-variants';
 import { cx } from './cx';
+import { focusRing } from './focus-styles';
 
 const EASE_OUT_STRONG =
   '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]';
 
+/**
+ * Vercel/Geist-aligned interactive base for calendar cells and nav buttons.
+ *
+ * Focus uses the shared `focusRing` constant (2px outline at +2px offset) —
+ * matching the `2px solid hsla(212, 100%, 48%, 1)` treatment defined in
+ * design-system.md (Section 6, Focus level).
+ *
+ * No `will-change-transform` — design philosophy is to strip unnecessary
+ * tokens; the brief hover/active transform doesn't justify a permanent
+ * composite layer per cell.
+ */
 const INTERACTIVE_BASE = [
   'transition-[background-color,color,transform,box-shadow,opacity] duration-normal',
   EASE_OUT_STRONG,
-  'outline-none',
-  'focus-visible:ring-1 focus-visible:ring-border-focus focus-visible:ring-offset-0',
+  ...focusRing,
   'active:scale-[0.97]',
-  'will-change-transform',
 ];
 
 export const dayCellVariants = tv({
   base: [
-    'relative h-9 w-9 rounded-lg',
+    'relative h-9 w-9 rounded-m',
     'text-sm font-medium text-center',
     ...INTERACTIVE_BASE,
   ],
@@ -23,13 +33,13 @@ export const dayCellVariants = tv({
     state: {
       default: 'text-text-primary hover:bg-bg-neutral-1 cursor-pointer',
       active:
-        'bg-primary-hover text-text-on-accent shadow-sm shadow-primary/20 hover:bg-primary-pressed cursor-pointer',
+        'bg-primary text-text-on-accent hover:bg-primary-hover cursor-pointer',
       startEnd:
-        'bg-primary-hover text-text-on-accent shadow-sm shadow-primary/20 hover:bg-primary-pressed cursor-pointer',
+        'bg-primary text-text-on-accent hover:bg-primary-hover cursor-pointer',
       middle:
-        'bg-transparent text-text-action rounded-none hover:bg-primary/15 cursor-pointer active:scale-100',
+        'bg-transparent text-text-primary rounded-none hover:bg-primary/15 cursor-pointer active:scale-100',
       disabled:
-        'opacity-30 cursor-not-allowed pointer-events-none text-text-tertiary',
+        'opacity-50 cursor-not-allowed pointer-events-none text-text-tertiary',
       invisible: 'invisible pointer-events-none',
     },
     adjacent: { true: '', false: '' },
@@ -37,14 +47,29 @@ export const dayCellVariants = tv({
     weekend: { true: '', false: '' },
   },
   compoundVariants: [
-    { adjacent: true, state: 'default', class: 'text-text-tertiary/70' },
-    { today: true, state: 'default', class: 'font-semibold text-text-action' },
-    { weekend: true, state: 'default', class: 'text-status-negative/90' },
+    // Adjacent-month days use the Gray-400 (`--nxp-text-quaternary`) tier —
+    // design-system.md §2 reserves this token for "placeholder text, disabled
+    // states", which matches the muted-but-readable role of adjacent days.
+    { adjacent: true, state: 'default', class: 'text-text-quaternary' },
+    // Weekend: subtle gray muting only.
+    // Design rule: "Don't apply workflow accent colors decoratively" —
+    // Ship Red (#ff5b4f) is reserved for the ship-to-prod workflow context.
+    { weekend: true, state: 'default', class: 'text-text-tertiary' },
+    // Today: monochromatic emphasis via weight + faint inset ring
+    // (no Link Blue — accent colors stay out of decorative use)
+    {
+      today: true,
+      state: 'default',
+      class:
+        'font-semibold text-text-primary ring-1 ring-inset ring-text-primary/25',
+    },
+    // Today + weekend: today's emphasis wins, stays achromatic
     {
       today: true,
       weekend: true,
       state: 'default',
-      class: 'text-status-negative font-semibold',
+      class:
+        'font-semibold text-text-primary ring-1 ring-inset ring-text-primary/25',
     },
   ],
   defaultVariants: {
@@ -56,42 +81,53 @@ export const dayCellVariants = tv({
 });
 
 export const calendarCellVariants = tv({
-  base: ['rounded-lg text-sm font-medium text-center', ...INTERACTIVE_BASE],
+  base: ['rounded-m text-sm font-medium text-center', ...INTERACTIVE_BASE],
   variants: {
     state: {
       default: 'text-text-secondary hover:bg-bg-neutral-1 cursor-pointer',
       selected:
-        'bg-primary-hover text-text-on-accent shadow-sm shadow-primary/20 hover:bg-primary-pressed cursor-pointer',
+        'bg-primary text-text-on-accent hover:bg-primary-hover cursor-pointer',
+      // "Current" (e.g., this year / this month): achromatic — weight + ring,
+      // not Link Blue. Keeps the workflow-accent palette reserved for
+      // pipeline contexts only.
       current:
-        'text-text-action font-semibold hover:bg-bg-neutral-1 cursor-pointer',
+        'font-semibold text-text-primary ring-1 ring-inset ring-text-primary/25 hover:bg-bg-neutral-1 cursor-pointer',
       disabled:
-        'opacity-30 cursor-not-allowed pointer-events-none text-text-tertiary',
+        'opacity-50 cursor-not-allowed pointer-events-none text-text-tertiary',
       rangeStart:
-        'bg-primary-hover text-text-on-accent shadow-sm shadow-primary/20 hover:bg-primary-pressed cursor-pointer rounded-r-none',
+        'bg-primary text-text-on-accent hover:bg-primary-hover cursor-pointer rounded-r-none',
       rangeEnd:
-        'bg-primary-hover text-text-on-accent shadow-sm shadow-primary/20 hover:bg-primary-pressed cursor-pointer rounded-l-none',
+        'bg-primary text-text-on-accent hover:bg-primary-hover cursor-pointer rounded-l-none',
+      // Range middle uses the semantic Gray-50 neutral (`--nxp-bg-neutral-1`)
+      // rather than a primary-tinted transparency. Both render ~Gray-100 in
+      // light mode, but the semantic token is closer to design-system.md's
+      // strict achromatic discipline and flips correctly in dark mode.
       rangeMiddle:
-        'bg-primary/15 text-text-action rounded-none cursor-pointer active:scale-100 hover:bg-primary/20',
+        'bg-bg-neutral-1 text-text-primary rounded-none cursor-pointer active:scale-100 hover:bg-bg-neutral-2',
     },
   },
   defaultVariants: { state: 'default' },
 });
 
+/**
+ * Calendar surface — uses the Vercel signature `shadow-card` token
+ * (multi-layer: 1px shadow-border + 2px ambient + inner #fafafa highlight).
+ * 8px radius (rounded-lg) per the card scale in design-system.md §5.
+ */
 export const calendarContainerClass = cx(
-  'inline-flex rounded-l border border-border-normal bg-bg-base',
-  'shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]',
-  'dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-8px_rgba(0,0,0,0.5)]',
+  'inline-flex rounded-lg bg-bg-base shadow-card',
   'overflow-hidden',
 );
 
 export const navButtonClass = cx(
   'flex items-center justify-center',
-  'h-8 w-8 rounded-lg',
+  'h-8 w-8 rounded-m',
   'text-text-secondary',
   'hover:bg-bg-neutral-1 hover:text-text-primary',
-  'disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none',
+  'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
   'transition-[background-color,color,transform] duration-normal',
-  '[transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
-  'active:scale-[0.94]',
-  'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
+  EASE_OUT_STRONG,
+  // Match day-cell active-scale; consistent press feedback across calendar.
+  'active:scale-[0.97]',
+  ...focusRing,
 );

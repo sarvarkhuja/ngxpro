@@ -8,6 +8,10 @@ import {
   type NxpBadgeVariant,
 } from './badge.options';
 
+/**
+ * Vercel pill badge sizing — height-fixed, content-padded, full-pill radius.
+ * Padding values match the Geist 0px 10px reference at md.
+ */
 const SIZE_CLASSES: Record<NxpBadgeSize, string> = {
   sm: 'h-5 px-2 text-[11px] gap-1',
   md: 'h-6 px-2.5 text-[12px] gap-1.5',
@@ -61,9 +65,9 @@ export class NxpBadgeDirective {
     const isDot = this.variant() === 'dot';
 
     return cx(
-      'inline-flex items-center font-medium rounded-s select-none whitespace-nowrap',
+      'inline-flex items-center font-medium rounded-full select-none whitespace-nowrap',
       SIZE_CLASSES[this.size()],
-      isDot && 'border border-border-normal text-text-secondary',
+      isDot && 'shadow-border-light text-text-secondary',
       this.class(),
     );
   });
@@ -75,8 +79,8 @@ export class NxpBadgeDirective {
 
     if (isSolid) {
       return colorKey === 'gray'
-        ? 'background-color: var(--color-gray-100); color: var(--color-gray-700)'
-        : `color: var(--color-gray-700); background-color: color-mix(in srgb, ${colorValue} 15%, var(--color-gray-50, #f9fafb))`;
+        ? 'background-color: var(--nxp-bg-neutral-1); color: var(--nxp-text-secondary)'
+        : `color: ${colorValue}; background-color: color-mix(in srgb, ${colorValue} 12%, var(--nxp-bg-base))`;
     }
 
     return '';

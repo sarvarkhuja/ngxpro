@@ -54,7 +54,7 @@ import { NxpNavItemDirective } from './nav-item.directive';
     }
     @if (focusRect(); as f) {
       <div
-        class="absolute pointer-events-none z-20 rounded-s border border-border-focus"
+        class="absolute pointer-events-none z-20 rounded-s shadow-[0_0_0_1px_var(--nxp-border-focus)]"
         [style.left.px]="f.left - 2"
         [style.top.px]="f.top - 2"
         [style.width.px]="f.width + 4"

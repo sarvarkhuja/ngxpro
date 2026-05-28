@@ -160,8 +160,9 @@ export class InputMonthComponent implements ControlValueAccessor {
   protected readonly inputClass = computed(() =>
     cx(
       inputVariants(),
-      'cursor-pointer',
-      this.hasError() ? hasErrorInput : '',
+      // Reserve room for the trailing calendar icon (rendered absolutely).
+      'pr-10 cursor-pointer',
+      this.hasError() && hasErrorInput,
       this.class(),
     ),
   );

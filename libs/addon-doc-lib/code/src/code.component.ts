@@ -5,7 +5,6 @@ import {
   inject,
   input,
   type OnChanges,
-  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -21,6 +20,7 @@ import {
 } from '@ngxpro/addon-doc-lib/tokens';
 import type { NxpRawLoaderContent } from '@ngxpro/addon-doc-lib/types';
 import { nxpRawLoad } from '@ngxpro/addon-doc-lib/utils';
+import { Highlight } from 'ngx-highlightjs';
 import {
   BehaviorSubject,
   map,
@@ -31,18 +31,51 @@ import {
 } from 'rxjs';
 
 /**
+ * Maps human-readable tab/file labels to highlight.js language identifiers.
+ * Falls back to the lowercased input so consumers can pass an hljs name
+ * directly (e.g. `'typescript'`, `'scss'`).
+ */
+const LANGUAGE_ALIASES: Record<string, string> = {
+  html: 'xml',
+  htm: 'xml',
+  xml: 'xml',
+  svg: 'xml',
+  ts: 'typescript',
+  typescript: 'typescript',
+  js: 'javascript',
+  javascript: 'javascript',
+  jsx: 'javascript',
+  tsx: 'typescript',
+  scss: 'scss',
+  sass: 'scss',
+  less: 'less',
+  css: 'css',
+  json: 'json',
+  yaml: 'yaml',
+  yml: 'yaml',
+  bash: 'bash',
+  sh: 'bash',
+  shell: 'bash',
+  md: 'markdown',
+  markdown: 'markdown',
+};
+
+function resolveHljsLanguage(value: string): string {
+  if (!value) return 'plaintext';
+  const key = value.trim().toLowerCase();
+  return LANGUAGE_ALIASES[key] ?? key;
+}
+
+/**
  * Renders one or more code blocks with a copy-to-clipboard control.
  *
- * The component itself is renderer-agnostic: it lays out a `<pre><code>` per
- * processed block and delegates highlighting to the consumer. Hosts that want
- * syntax highlighting register `ngx-highlightjs` directives in their app and
- * project them via Angular's `imports` (the highlight directives attach to
- * `<code>` automatically when present in the active component's imports).
+ * Highlighting is provided by `ngx-highlightjs` — consumers register the
+ * loader via `provideHighlightOptions(...)` at the application level.
  *
  * Markdown fenced blocks are split via `NXP_DOC_EXAMPLE_MARKDOWN_CODE_PROCESSOR`.
  *
  * @example
- * <nxp-doc-code [code]="ts" filename="example.ts" />
+ * <nxp-doc-code [code]="ts" filename="example.ts" language="typescript" />
  *
  * @example
  * <nxp-doc-code [code]="markdown">
@@ -51,6 +84,7 @@ import {
  */
 @Component({
   selector: 'nxp-doc-code',
+  imports: [Highlight],
   template: `
     @if (filename()) {
       <p class="text-sm font-bold mb-1 text-text-primary">{{ filename() }}</p>
@@ -58,7 +92,7 @@ import {
     @for (content of processor(); track content) {
       <pre
         class="relative m-0 rounded-s overflow-hidden border border-border-normal bg-bg-base text-sm font-mono whitespace-pre-wrap break-words p-4 mt-4 first:mt-0"
-      ><code class="block hljs">{{ content }}</code><div
+      ><code class="block hljs" [highlight]="content" [language]="hljsLanguage()"></code><div
           class="absolute top-3 right-3 inline-flex items-center justify-center flex-row-reverse rounded-xs bg-bg-neutral-1 dark:bg-bg-neutral-2 gap-1 p-0.5"
         ><button
             type="button"
@@ -83,7 +117,6 @@ export class NxpDocCodeComponent implements OnChanges {
   private readonly rawLoader$$ = new BehaviorSubject<NxpRawLoaderContent>('');
   private readonly texts = inject(NXP_DOC_COPY_TEXTS);
   private readonly doc = inject(NXP_DOCUMENT);
-  // host element (kept for parity / future scroll-into-view uses)
   protected readonly host = nxpInjectElement<HTMLElement>();
 
   protected readonly markdownCodeProcessor = inject(
@@ -123,8 +156,18 @@ export class NxpDocCodeComponent implements OnChanges {
   public readonly code = input<NxpRawLoaderContent>('');
   /** Reserved for future "show line numbers" toggle (visual hook only). */
   public readonly lineNumbers = input(true);
+  /**
+   * Highlight.js language hint. Accepts hljs names (`typescript`, `xml`) or
+   * common aliases (`HTML`, `TypeScript`, `ts`, `scss`). When empty, defaults
+   * to `plaintext`.
+   */
+  public readonly language = input('');
 
   public readonly hasFilename = computed(() => !!this.filename());
+
+  protected readonly hljsLanguage = computed(() =>
+    resolveHljsLanguage(this.language() || this.filename()),
+  );
 
   public ngOnChanges(): void {
     this.rawLoader$$.next(this.code());

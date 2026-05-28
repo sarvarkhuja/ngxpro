@@ -1,14 +1,5 @@
-export {
-  NxpDocNavigationComponent,
-  NxpDocPagesAsArrayPipe,
-} from './navigation.component';
+export { NxpDocNavigationComponent } from './navigation.component';
 
-import {
-  NxpDocNavigationComponent,
-  NxpDocPagesAsArrayPipe,
-} from './navigation.component';
+import { NxpDocNavigationComponent } from './navigation.component';
 
-export const NxpDocNavigation = [
-  NxpDocNavigationComponent,
-  NxpDocPagesAsArrayPipe,
-] as const;
+export const NxpDocNavigation = [NxpDocNavigationComponent] as const;

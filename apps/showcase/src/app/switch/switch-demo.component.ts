@@ -2,11 +2,14 @@ import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
+import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
 import {
   NxpSwitch,
   type NxpSwitchColor,
   type NxpSwitchSize,
 } from '@ngxpro/components/switch';
+import { SwitchApiComponent } from './switch-api.component';
 
 @Component({
   selector: 'app-switch-demo',
@@ -17,45 +20,55 @@ import {
     ReactiveFormsModule,
     RouterModule,
     ...NxpSwitch,
+    NxpDocComponentPage,
+    NxpDocExampleComponent,
+    SwitchApiComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8"
+    <nxp-doc-component-page
+      header="Switch"
+      package="components"
+      type="component"
+      path="components/switch"
     >
-      <div class="max-w-4xl mx-auto space-y-10">
-        <!-- Header -->
-        <div>
-          <a
-            routerLink="/"
-            class="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
-          >
-            &larr; Back to home
-          </a>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-            Switch
-          </h1>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">
-            Toggle switch with spring animations, thumb morphing, and drag
-            support. Use
-            <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-              >&lt;nxp-switch&gt;</code
-            >.
-          </p>
-        </div>
-
-        <!-- Sizes -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+      <p class="text-base text-text-secondary mb-6">
+        Toggle switch with spring animations, thumb morphing, and drag support.
+        Hover for a pill shape, press for a squish, drag the thumb across the
+        track for tactile control. Built on
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >nxp-switch</code
         >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Sizes
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Use the
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">size</code>
-            input: <code>s</code>, <code>m</code> (default), <code>l</code>.
-          </p>
+        and integrates with Reactive Forms via
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >ControlValueAccessor</code
+        >.
+      </p>
+
+      <ng-template nxpExamplesTab>
+        <nxp-doc-example
+          heading="Playground"
+          description="Live preview driven by the API table — change values there to see the switch react. Drag the thumb across the track for a tactile toggle."
+          [content]="{ HTML: playgroundHtml, TypeScript: playgroundTs }"
+        >
+          <nxp-switch
+            [size]="size()"
+            [color]="color()"
+            [disabled]="disabled()"
+            [class]="class()"
+            [(checked)]="checked"
+          >
+            <span class="text-sm text-text-secondary">
+              {{ checked() ? 'On' : 'Off' }}
+            </span>
+          </nxp-switch>
+        </nxp-doc-example>
+
+        <nxp-doc-example
+          heading="Sizes"
+          description="Use the size input: s, m (default), l."
+          [content]="{ HTML: sizesHtml, TypeScript: sizesTs }"
+        >
           <div class="flex flex-wrap items-center gap-8">
             @for (s of sizes; track s) {
               <nxp-switch [size]="s" [checked]="true">
@@ -66,7 +79,7 @@ import {
               </nxp-switch>
             }
           </div>
-          <div class="flex flex-wrap items-center gap-8">
+          <div class="flex flex-wrap items-center gap-8 mt-4">
             @for (s of sizes; track s) {
               <nxp-switch [size]="s">
                 <span
@@ -76,35 +89,27 @@ import {
               </nxp-switch>
             }
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- Color variants -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        <nxp-doc-example
+          heading="Color variants"
+          description="Use the color input: primary, secondary, danger."
+          [content]="{ HTML: colorsHtml, TypeScript: colorsTs }"
         >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Color variants
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Use the
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">color</code>
-            input: <code>primary</code>, <code>secondary</code>,
-            <code>danger</code>.
-          </p>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            @for (color of colors; track color) {
+            @for (c of colors; track c) {
               <div class="space-y-3">
                 <p
                   class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
                 >
-                  {{ color }}
+                  {{ c }}
                 </p>
-                <nxp-switch [color]="color" [checked]="true">
+                <nxp-switch [color]="c" [checked]="true">
                   <span class="text-sm text-gray-700 dark:text-gray-300"
                     >On</span
                   >
                 </nxp-switch>
-                <nxp-switch [color]="color">
+                <nxp-switch [color]="c">
                   <span class="text-sm text-gray-700 dark:text-gray-300"
                     >Off</span
                   >
@@ -112,22 +117,13 @@ import {
               </div>
             }
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- Disabled -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        <nxp-doc-example
+          heading="Disabled"
+          description="Use the disabled input to render at 50% opacity and block pointer interactions."
+          [content]="{ HTML: disabledHtml, TypeScript: disabledTs }"
         >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Disabled
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Use the
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded"
-              >disabled</code
-            >
-            input.
-          </p>
           <div class="flex flex-wrap items-center gap-8">
             <nxp-switch [disabled]="true" [checked]="true">
               <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -140,25 +136,13 @@ import {
               >
             </nxp-switch>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- Reactive forms -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        <nxp-doc-example
+          heading="Reactive forms"
+          description="Bind with [formControl] — the switch implements ControlValueAccessor, so it integrates seamlessly with reactive form controls."
+          [content]="{ HTML: reactiveHtml, TypeScript: reactiveTs }"
         >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Reactive forms
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Bind with
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded"
-              >[formControl]</code
-            >
-            or
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded"
-              >[(checked)]</code
-            >.
-          </p>
           <div class="flex flex-wrap items-center gap-6">
             <nxp-switch [formControl]="notificationsCtrl">
               <span class="text-sm text-gray-700 dark:text-gray-300"
@@ -171,26 +155,17 @@ import {
               >
             </nxp-switch>
           </div>
-          <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
             Value: notifications={{ notificationsCtrl.value | json }},
             darkMode={{ darkModeCtrl.value | json }}
           </p>
-        </section>
+        </nxp-doc-example>
 
-        <!-- Two-way binding -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        <nxp-doc-example
+          heading="Two-way binding"
+          description="Use [(checked)] for simple two-way binding with signals — no FormControl required."
+          [content]="{ HTML: twoWayHtml, TypeScript: twoWayTs }"
         >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Two-way binding
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Use
-            <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded"
-              >[(checked)]</code
-            >
-            for simple two-way binding with signals.
-          </p>
           <div class="flex flex-wrap items-center gap-6">
             <nxp-switch [(checked)]="twoWayValue" size="l">
               <span class="text-sm text-gray-700 dark:text-gray-300"
@@ -198,22 +173,16 @@ import {
               >
             </nxp-switch>
           </div>
-          <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
             Signal value: {{ twoWayValue() }}
           </p>
-        </section>
+        </nxp-doc-example>
 
-        <!-- Drag interaction -->
-        <section
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4"
+        <nxp-doc-example
+          heading="Drag interaction"
+          description="Click to toggle, or drag the thumb across the track. Hover for pill shape, press for squish."
+          [content]="{ HTML: dragHtml, TypeScript: dragTs }"
         >
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Drag interaction
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Click to toggle, or drag the thumb across the track. Hover for pill
-            shape, press for squish.
-          </p>
           <div class="flex flex-wrap items-center gap-8">
             @for (s of sizes; track s) {
               <nxp-switch [size]="s" color="primary">
@@ -224,12 +193,30 @@ import {
               </nxp-switch>
             }
           </div>
-        </section>
-      </div>
-    </div>
+        </nxp-doc-example>
+      </ng-template>
+
+      <ng-template nxpApiTab>
+        <app-switch-api
+          [(checked)]="checked"
+          [(size)]="size"
+          [(color)]="color"
+          [(disabled)]="disabled"
+          [(class)]="class"
+        />
+      </ng-template>
+    </nxp-doc-component-page>
   `,
 })
 export class SwitchDemoComponent {
+  // ── Playground state shared with the API tab ───────────────────────────────
+  readonly checked = signal(false);
+  readonly size = signal<NxpSwitchSize>('m');
+  readonly color = signal<NxpSwitchColor>('primary');
+  readonly disabled = signal(false);
+  readonly class = signal('');
+
+  // ── Preserved demo state ───────────────────────────────────────────────────
   readonly sizes: readonly NxpSwitchSize[] = ['s', 'm', 'l'];
   readonly colors: readonly NxpSwitchColor[] = [
     'primary',
@@ -240,4 +227,183 @@ export class SwitchDemoComponent {
   readonly notificationsCtrl = new FormControl<boolean>(true);
   readonly darkModeCtrl = new FormControl<boolean>(false);
   readonly twoWayValue = signal(false);
+
+  // ── Example source snippets shown inside <nxp-doc-example> tabs ────────────
+  readonly playgroundHtml = `<nxp-switch
+  [size]="size()"
+  [color]="color()"
+  [disabled]="disabled()"
+  [class]="class()"
+  [(checked)]="checked"
+>
+  <span class="text-sm text-text-secondary">
+    {{ checked() ? 'On' : 'Off' }}
+  </span>
+</nxp-switch>`;
+
+  readonly playgroundTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  NxpSwitch,
+  type NxpSwitchColor,
+  type NxpSwitchSize,
+} from '@ngxpro/components/switch';
+
+@Component({
+  selector: 'app-playground',
+  imports: [...NxpSwitch],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './playground.html',
+})
+export class PlaygroundSwitchExample {
+  readonly checked = signal(false);
+  readonly size = signal<NxpSwitchSize>('m');
+  readonly color = signal<NxpSwitchColor>('primary');
+  readonly disabled = signal(false);
+  readonly class = signal('');
+}`;
+
+  readonly sizesHtml = `<div class="flex flex-wrap items-center gap-8">
+  @for (s of sizes; track s) {
+    <nxp-switch [size]="s" [checked]="true">
+      <span class="text-sm capitalize">{{ s }}</span>
+    </nxp-switch>
+  }
+</div>
+<div class="flex flex-wrap items-center gap-8 mt-4">
+  @for (s of sizes; track s) {
+    <nxp-switch [size]="s">
+      <span class="text-sm capitalize">{{ s }} (unchecked)</span>
+    </nxp-switch>
+  }
+</div>`;
+
+  readonly sizesTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NxpSwitch, type NxpSwitchSize } from '@ngxpro/components/switch';
+
+@Component({
+  selector: 'app-sizes',
+  imports: [...NxpSwitch],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './sizes.html',
+})
+export class SizesSwitchExample {
+  readonly sizes: readonly NxpSwitchSize[] = ['s', 'm', 'l'];
+}`;
+
+  readonly colorsHtml = `<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+  @for (c of colors; track c) {
+    <div class="space-y-3">
+      <p class="text-xs font-medium uppercase tracking-wide">{{ c }}</p>
+      <nxp-switch [color]="c" [checked]="true">
+        <span class="text-sm">On</span>
+      </nxp-switch>
+      <nxp-switch [color]="c">
+        <span class="text-sm">Off</span>
+      </nxp-switch>
+    </div>
+  }
+</div>`;
+
+  readonly colorsTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NxpSwitch, type NxpSwitchColor } from '@ngxpro/components/switch';
+
+@Component({
+  selector: 'app-colors',
+  imports: [...NxpSwitch],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './colors.html',
+})
+export class ColorsSwitchExample {
+  readonly colors: readonly NxpSwitchColor[] = ['primary', 'secondary', 'danger'];
+}`;
+
+  readonly disabledHtml = `<div class="flex flex-wrap items-center gap-8">
+  <nxp-switch [disabled]="true" [checked]="true">
+    <span class="text-sm">On (disabled)</span>
+  </nxp-switch>
+  <nxp-switch [disabled]="true">
+    <span class="text-sm">Off (disabled)</span>
+  </nxp-switch>
+</div>`;
+
+  readonly disabledTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NxpSwitch } from '@ngxpro/components/switch';
+
+@Component({
+  selector: 'app-disabled',
+  imports: [...NxpSwitch],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './disabled.html',
+})
+export class DisabledSwitchExample {}`;
+
+  readonly reactiveHtml = `<div class="flex flex-wrap items-center gap-6">
+  <nxp-switch [formControl]="notificationsCtrl">
+    <span class="text-sm">Notifications</span>
+  </nxp-switch>
+  <nxp-switch [formControl]="darkModeCtrl">
+    <span class="text-sm">Dark mode</span>
+  </nxp-switch>
+</div>
+<p class="mt-3 text-xs">
+  Value: notifications={{ notificationsCtrl.value | json }},
+  darkMode={{ darkModeCtrl.value | json }}
+</p>`;
+
+  readonly reactiveTs = `import { JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NxpSwitch } from '@ngxpro/components/switch';
+
+@Component({
+  selector: 'app-reactive',
+  imports: [JsonPipe, ReactiveFormsModule, ...NxpSwitch],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './reactive.html',
+})
+export class ReactiveSwitchExample {
+  readonly notificationsCtrl = new FormControl<boolean>(true);
+  readonly darkModeCtrl = new FormControl<boolean>(false);
+}`;
+
+  readonly twoWayHtml = `<div class="flex flex-wrap items-center gap-6">
+  <nxp-switch [(checked)]="twoWayValue" size="l">
+    <span class="text-sm">Large toggle</span>
+  </nxp-switch>
+</div>
+<p class="mt-3 text-xs">Signal value: {{ twoWayValue() }}</p>`;
+
+  readonly twoWayTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { NxpSwitch } from '@ngxpro/components/switch';
+
+@Component({
+  selector: 'app-two-way',
+  imports: [...NxpSwitch],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './two-way.html',
+})
+export class TwoWaySwitchExample {
+  readonly twoWayValue = signal(false);
+}`;
+
+  readonly dragHtml = `<div class="flex flex-wrap items-center gap-8">
+  @for (s of sizes; track s) {
+    <nxp-switch [size]="s" color="primary">
+      <span class="text-sm capitalize">Drag me ({{ s }})</span>
+    </nxp-switch>
+  }
+</div>`;
+
+  readonly dragTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NxpSwitch, type NxpSwitchSize } from '@ngxpro/components/switch';
+
+@Component({
+  selector: 'app-drag',
+  imports: [...NxpSwitch],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './drag.html',
+})
+export class DragSwitchExample {
+  readonly sizes: readonly NxpSwitchSize[] = ['s', 'm', 'l'];
+}`;
 }

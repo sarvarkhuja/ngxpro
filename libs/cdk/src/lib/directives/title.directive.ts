@@ -73,10 +73,13 @@ export class TitleDirective {
     const baseClasses = 'flex flex-col min-w-0 text-left gap-1';
 
     // Size-based classes
+    // Geist tracking scales with size (design-system.md §3): -0.96px @ 24px,
+    // normal at 14–18px. text-sm and text-lg keep default tracking; text-2xl
+    // (24px = "Card Title") gets `tracking-card` (-0.04em / -0.96px).
     const sizeClasses: Record<string, string> = {
       s: 'text-sm gap-0.5',
       m: 'text-lg gap-0.5',
-      l: 'text-2xl gap-2',
+      l: 'text-2xl tracking-card gap-2',
     };
 
     return cx(baseClasses, size ? sizeClasses[size] : '');

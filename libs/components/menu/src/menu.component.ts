@@ -58,7 +58,7 @@ import { NxpMenuItemDirective } from './menu-item.directive';
     }
     @if (focusRect(); as f) {
       <div
-        class="absolute pointer-events-none z-20 rounded-s border border-border-focus"
+        class="absolute pointer-events-none z-20 rounded-s shadow-[0_0_0_1px_var(--nxp-border-focus)]"
         [style.left.px]="f.left - 2"
         [style.top.px]="f.top - 2"
         [style.width.px]="f.width + 4"
@@ -70,7 +70,7 @@ import { NxpMenuItemDirective } from './menu-item.directive';
   host: {
     role: 'menu',
     class:
-      'relative flex flex-col gap-0.5 p-1 rounded-m bg-bg-base border border-border-normal shadow-[0_4px_12px_rgba(0,0,0,0.02)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] select-none',
+      'relative flex flex-col gap-0.5 p-1 rounded-lg bg-bg-base shadow-card-lg select-none',
     '(mousemove)': 'onMouseMove($event)',
     '(mouseleave)': 'onMouseLeave()',
     '(focusin)': 'onFocusIn($event)',

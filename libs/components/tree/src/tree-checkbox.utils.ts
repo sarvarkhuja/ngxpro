@@ -1,3 +1,4 @@
+import type { NxpCheckboxValue } from '@ngxpro/cdk/components/checkbox';
 import type { NxpTreeHandler } from './tree.interfaces';
 
 /**
@@ -5,7 +6,8 @@ import type { NxpTreeHandler } from './tree.interfaces';
  * `childrenHandler`. Internal nodes are derived from their children, so
  * callers do not need to write parent entries into the map themselves.
  *
- * Returns:
+ * Returns an `NxpCheckboxValue` directly consumable by `nxpCheckbox` via
+ * `[(ngModel)]`:
  * - `true` if every reachable leaf is checked,
  * - `false` if every reachable leaf is unchecked,
  * - `null` (indeterminate) if the descendants disagree.
@@ -13,14 +15,17 @@ import type { NxpTreeHandler } from './tree.interfaces';
  * @example
  * // Bound through the nxpMapper pipe:
  * // [ngModel]="item | nxpMapper: getValue : map"
- * protected readonly getValue = (item: T, map: ReadonlyMap<T, boolean | null>) =>
+ * protected readonly getValue = (
+ *   item: T,
+ *   map: ReadonlyMap<T, NxpCheckboxValue>,
+ * ): NxpCheckboxValue =>
  *   nxpComputeTreeChecked(item, map, this.handler);
  */
 export function nxpComputeTreeChecked<T>(
   item: T,
-  map: ReadonlyMap<T, boolean | null>,
+  map: ReadonlyMap<T, NxpCheckboxValue>,
   childrenHandler: NxpTreeHandler<T>,
-): boolean | null {
+): NxpCheckboxValue {
   const children = childrenHandler(item);
   if (children.length === 0) {
     return map.get(item) ?? false;
@@ -56,10 +61,10 @@ export function nxpComputeTreeChecked<T>(
 export function nxpToggleTreeChecked<T>(
   item: T,
   value: boolean,
-  map: ReadonlyMap<T, boolean | null>,
+  map: ReadonlyMap<T, NxpCheckboxValue>,
   childrenHandler: NxpTreeHandler<T>,
-): Map<T, boolean | null> {
-  const next = new Map<T, boolean | null>(map);
+): Map<T, NxpCheckboxValue> {
+  const next = new Map<T, NxpCheckboxValue>(map);
   const cascade = (node: T): void => {
     next.set(node, value);
     for (const child of childrenHandler(node)) cascade(child);

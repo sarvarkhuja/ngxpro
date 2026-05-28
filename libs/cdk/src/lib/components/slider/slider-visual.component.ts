@@ -295,8 +295,8 @@ export type NxpSliderValuePosition =
       white-space: nowrap;
       padding: 4px 8px;
       font-variant-numeric: tabular-nums;
-      background: var(--nxp-fg, rgb(17 24 39));
-      color: var(--nxp-bg, white);
+      background: var(--nxp-text-primary);
+      color: var(--nxp-bg-base);
       border-radius: 4px;
     }
 
@@ -319,11 +319,6 @@ export type NxpSliderValuePosition =
       }
     }
 
-    :host-context(.dark) .nxp-sv-tooltip-label {
-      background: var(--nxp-fg, rgb(243 244 246));
-      color: var(--nxp-bg, rgb(17 24 39));
-    }
-
     /* --- Track --- */
     .nxp-sv-track {
       position: relative;
@@ -334,13 +329,10 @@ export type NxpSliderValuePosition =
 
     .nxp-sv-track-bg {
       position: absolute;
-      border: 1px solid var(--nxp-border, rgb(229 231 235));
+      box-shadow: 0 0 0 1px var(--nxp-border-normal);
       overflow: hidden;
       border-radius: 9999px;
       background: transparent;
-    }
-    :host-context(.dark) .nxp-sv-track-bg {
-      border-color: var(--nxp-border, rgb(55 65 81));
     }
 
     /* --- Fill --- */
@@ -348,19 +340,8 @@ export type NxpSliderValuePosition =
       position: absolute;
       left: 0;
       height: 100%;
-      background: color-mix(
-        in srgb,
-        var(--nxp-fg, rgb(17 24 39)) 12%,
-        transparent
-      );
+      background: color-mix(in srgb, var(--nxp-text-primary) 12%, transparent);
       transition: width 160ms cubic-bezier(0.22, 1.2, 0.36, 1);
-    }
-    :host-context(.dark) .nxp-sv-fill {
-      background: color-mix(
-        in srgb,
-        var(--nxp-fg, rgb(243 244 246)) 12%,
-        transparent
-      );
     }
     .nxp-sv-dragging .nxp-sv-fill {
       transition: none;
@@ -372,20 +353,9 @@ export type NxpSliderValuePosition =
       height: 100%;
       pointer-events: none;
       z-index: 2;
-      background: color-mix(
-        in srgb,
-        var(--nxp-fg, rgb(17 24 39)) 4%,
-        transparent
-      );
+      background: color-mix(in srgb, var(--nxp-text-primary) 4%, transparent);
       opacity: 1;
       transition: opacity 150ms linear;
-    }
-    :host-context(.dark) .nxp-sv-hover-preview {
-      background: color-mix(
-        in srgb,
-        var(--nxp-fg, rgb(243 244 246)) 4%,
-        transparent
-      );
     }
 
     /* --- Step dots --- */
@@ -409,7 +379,7 @@ export type NxpSliderValuePosition =
       height: ${DOT_SIZE}px;
       border-radius: 9999px;
       flex-shrink: 0;
-      background: var(--nxp-muted-fg, rgb(156 163 175));
+      background: var(--nxp-text-tertiary);
       opacity: 0.3;
       transition:
         width 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
@@ -444,15 +414,15 @@ export type NxpSliderValuePosition =
       width: ${THUMB_SIZE_REST}px;
       height: ${THUMB_SIZE_REST}px;
       border-radius: 9999px;
-      background: white;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      background: var(--nxp-bg-base);
+      box-shadow: var(--nxp-shadow-lift);
     }
     .nxp-sv-focus-ring {
       position: absolute;
-      width: ${THUMB_SIZE + 4}px;
-      height: ${THUMB_SIZE + 4}px;
+      width: ${THUMB_SIZE + 6}px;
+      height: ${THUMB_SIZE + 6}px;
       border-radius: 9999px;
-      border: 1px solid #6b97ff;
+      box-shadow: 0 0 0 2px var(--nxp-border-focus);
       pointer-events: none;
     }
 
@@ -467,63 +437,33 @@ export type NxpSliderValuePosition =
 
     /* --- Theme color mode --- */
     :host.nxp-slider-themed .nxp-sv-fill {
-      background: color-mix(
-        in srgb,
-        var(--nxp-primary, #3b82f6) 25%,
-        transparent
-      );
-    }
-    :host-context(.dark):host.nxp-slider-themed .nxp-sv-fill,
-    :host.nxp-slider-themed:host-context(.dark) .nxp-sv-fill {
-      background: color-mix(
-        in srgb,
-        var(--nxp-primary, #3b82f6) 30%,
-        transparent
-      );
+      background: color-mix(in srgb, var(--nxp-primary) 25%, transparent);
     }
     :host.nxp-slider-themed .nxp-sv-thumb {
-      background: var(--nxp-primary, #3b82f6);
-      box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+      background: var(--nxp-primary);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        0 1px 3px color-mix(in srgb, var(--nxp-primary) 30%, transparent);
     }
     :host.nxp-slider-themed .nxp-sv-focus-ring {
-      border-color: var(--nxp-primary, #3b82f6);
+      box-shadow: 0 0 0 2px var(--nxp-primary);
     }
     :host.nxp-slider-themed .nxp-sv-track-bg {
-      border-color: color-mix(
-        in srgb,
-        var(--nxp-primary, #3b82f6) 30%,
-        var(--nxp-border, rgb(229 231 235))
-      );
+      box-shadow: 0 0 0 1px
+        color-mix(in srgb, var(--nxp-primary) 30%, var(--nxp-border-normal));
     }
     :host.nxp-slider-themed .nxp-sv-hover-preview {
-      background: color-mix(
-        in srgb,
-        var(--nxp-primary, #3b82f6) 8%,
-        transparent
-      );
-    }
-    :host-context(.dark):host.nxp-slider-themed .nxp-sv-hover-preview,
-    :host.nxp-slider-themed:host-context(.dark) .nxp-sv-hover-preview {
-      background: color-mix(
-        in srgb,
-        var(--nxp-primary, #3b82f6) 10%,
-        transparent
-      );
+      background: color-mix(in srgb, var(--nxp-primary) 8%, transparent);
     }
     :host.nxp-slider-themed .nxp-sv-tooltip-label {
-      background: var(--nxp-primary, #3b82f6);
-      color: var(--nxp-text-on-accent, white);
-    }
-    :host-context(.dark):host.nxp-slider-themed .nxp-sv-tooltip-label,
-    :host.nxp-slider-themed:host-context(.dark) .nxp-sv-tooltip-label {
-      background: var(--nxp-primary, #3b82f6);
-      color: var(--nxp-text-on-accent, white);
+      background: var(--nxp-primary);
+      color: var(--nxp-text-on-accent);
     }
     :host.nxp-slider-themed .nxp-sv-dot {
       background: color-mix(
         in srgb,
-        var(--nxp-primary, #3b82f6) 40%,
-        var(--nxp-muted-fg, rgb(156 163 175))
+        var(--nxp-primary) 40%,
+        var(--nxp-text-tertiary)
       );
     }
 
@@ -533,11 +473,8 @@ export type NxpSliderValuePosition =
       flex-shrink: 0;
       font-size: 13px;
       line-height: 1;
-      color: var(--nxp-muted-fg, rgb(107 114 128));
+      color: var(--nxp-text-tertiary);
       font-variant-numeric: tabular-nums;
-    }
-    :host-context(.dark) .nxp-sv-value-display {
-      color: var(--nxp-muted-fg, rgb(156 163 175));
     }
     .nxp-sv-value-ghost {
       grid-column: 1;
@@ -551,10 +488,7 @@ export type NxpSliderValuePosition =
       white-space: nowrap;
     }
     .nxp-sv-value-label {
-      color: var(--nxp-muted-fg, rgb(107 114 128));
-    }
-    :host-context(.dark) .nxp-sv-value-label {
-      color: var(--nxp-muted-fg, rgb(156 163 175));
+      color: var(--nxp-text-tertiary);
     }
   `,
 })

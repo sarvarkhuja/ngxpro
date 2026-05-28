@@ -9,8 +9,8 @@ import {
 } from '@angular/core';
 import {
   cx,
-  focusInput,
   hasErrorInput,
+  inputVariants,
   NXP_TEXTFIELD,
   nxpAsTextfieldAccessor,
   type NxpTextfieldAccessor,
@@ -98,14 +98,15 @@ export class NxpTextareaComponent implements NxpTextfieldAccessor, OnInit {
 
   readonly hostClasses = computed(() => {
     if (this.textfield && !this.textfield.hasLabel()) {
+      // Inside a textfield (no floating label) — wrapper owns chrome; the
+      // textarea is transparent. Padding matches the input directive
+      // (`px-2.5`) so the contents line up identically inside the box.
       return cx(
         'block w-full bg-transparent border-0 outline-none ring-0',
-        'text-text-primary sm:text-sm',
-        'placeholder:text-text-tertiary',
+        'text-[14px] leading-[1.43] text-text-primary placeholder:text-text-quaternary',
         'disabled:cursor-not-allowed',
-        'px-3 py-1.5',
-        'resize-none overflow-auto',
-        'whitespace-pre-wrap break-words',
+        'px-2.5 py-2',
+        'resize-none overflow-auto whitespace-pre-wrap break-words',
         this.class(),
       );
     }
@@ -114,17 +115,13 @@ export class NxpTextareaComponent implements NxpTextfieldAccessor, OnInit {
       !!this.textfield?.hasLabel() && this.textfield.hasError();
     const showError = this.hasError() || textfieldError;
 
+    // Standalone (or textfield-with-label) — share chrome with the input
+    // family. Only the textarea-specific bits (min-height, resize) are added.
     return cx(
-      'flex min-h-[4rem] w-full rounded-m border px-3 py-1.5 shadow-sm outline-hidden transition-colors sm:text-sm',
-      'text-text-primary',
-      'border-border-normal',
-      'bg-bg-base',
-      'placeholder:text-text-tertiary',
-      'disabled:cursor-not-allowed disabled:border-border-normal disabled:bg-bg-neutral-1 disabled:text-text-tertiary',
-      'resize-none overflow-auto',
-      'whitespace-pre-wrap break-words',
-      ...focusInput,
-      ...(showError ? hasErrorInput : []),
+      inputVariants(),
+      'flex min-h-[4rem]',
+      'resize-none overflow-auto whitespace-pre-wrap break-words',
+      showError && hasErrorInput,
       this.class(),
     );
   });

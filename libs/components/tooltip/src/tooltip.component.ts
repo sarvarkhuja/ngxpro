@@ -32,9 +32,12 @@ const SIZE_CLASSES: Record<NxpTooltipSize, string> = {
   lg: 'text-base py-2 px-4',
 };
 
+// Token semantics: `bg-primary` is the inverse-surface color, `text-text-on-accent`
+// is the matching foreground — both auto-flip in dark mode. Functionally same as
+// the previous `bg-text-primary` / `text-bg-base` pairing but semantically aligned.
 const APPEARANCE_CLASSES: Record<string, string> = {
-  dark: 'bg-text-primary text-bg-base',
-  light: 'bg-bg-base text-text-primary border border-border-normal',
+  dark: 'bg-primary text-text-on-accent font-medium',
+  light: 'bg-bg-base text-text-primary shadow-border-light font-medium',
 };
 
 /**
@@ -109,9 +112,10 @@ export const NXP_TOOLTIP_HOST = new InjectionToken<NxpTooltipHost>(
         z-index: 1100;
         pointer-events: none;
         border-radius: 0.375rem;
+        /* Vercel-style soft drop — composes with appearance shadow-border */
         box-shadow:
-          0 4px 6px -1px rgb(0 0 0 / 0.1),
-          0 2px 4px -2px rgb(0 0 0 / 0.1);
+          0 1px 2px rgba(0, 0, 0, 0.04),
+          0 4px 12px -4px rgba(0, 0, 0, 0.08);
         overflow: visible;
         /* Start hidden — enter animation sets final values */
         opacity: 0;
@@ -154,7 +158,7 @@ export class NxpTooltipComponent implements AfterViewInit {
     const colorClass =
       appearance === 'light'
         ? `bg-bg-base ${borderByDirection[direction]}`
-        : 'bg-text-primary';
+        : 'bg-primary';
 
     const posClass = {
       top: 'bottom-[-4px] left-1/2 -translate-x-1/2',

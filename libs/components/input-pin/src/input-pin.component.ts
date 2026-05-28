@@ -16,19 +16,25 @@ import { cx } from '@ngxpro/cdk';
 
 // ---- Style constants ----
 
+/**
+ * Vercel/Geist-aligned PIN cell.
+ * - Shadow-as-border instead of CSS border
+ * - Geist Mono digits with `tnum` baked in via font fallback
+ * - Focus halo: 1px ring + 4px 20%-alpha glow (Vercel signature)
+ */
 const CELL_BASE = [
   'relative w-10 h-12 flex items-center justify-center',
-  'rounded-m border text-lg font-mono',
-  'cursor-pointer select-none transition-colors duration-normal',
+  'rounded-m text-lg font-mono',
+  'cursor-pointer select-none transition-shadow duration-normal',
 ].join(' ');
 
-const CELL_DEFAULT = 'border-border-normal bg-bg-base text-text-primary';
+const CELL_DEFAULT = 'shadow-border bg-bg-base text-text-primary';
 
-const CELL_FOCUSED = 'border-primary ring-2 ring-primary/20';
+const CELL_FOCUSED = 'shadow-input-focus bg-bg-base text-text-primary';
 
-const CELL_FILLED = 'border-border-strong';
+const CELL_FILLED = 'shadow-input-hover bg-bg-base text-text-primary';
 
-const CELL_ERROR = 'border-status-negative ring-2 ring-status-negative/20';
+const CELL_ERROR = 'shadow-input-error bg-bg-base text-text-primary';
 
 const CELL_DISABLED = 'bg-bg-neutral-1 cursor-not-allowed opacity-50';
 

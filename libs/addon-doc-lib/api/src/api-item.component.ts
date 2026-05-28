@@ -123,7 +123,8 @@ const SERIALIZED_SUFFIX = '$';
   `,
   host: {
     class:
-      'shadow-[inset_0_-1px_0_0_var(--nxp-border-normal,theme(colors.gray.200))]',
+      'shadow-[inset_0_-1px_0_0_var(--nxp-border-normal,theme(colors.gray.200))] ' +
+      'dark:shadow-[inset_0_-1px_0_0_var(--nxp-border-normal,theme(colors.gray.800))]',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,

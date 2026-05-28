@@ -44,7 +44,7 @@ import { NXP_INPUT_CHIP_OPTIONS } from './input-chip.options';
       }
       <input
         #nativeInput
-        class="min-w-[4rem] flex-1 bg-transparent outline-none text-sm text-text-primary placeholder:text-text-tertiary disabled:cursor-not-allowed"
+        class="min-w-[4rem] flex-1 bg-transparent outline-none text-sm text-text-primary placeholder:text-text-quaternary disabled:cursor-not-allowed disabled:text-text-quaternary"
         [disabled]="disabled()"
         [placeholder]="value().length ? '' : placeholder()"
         [ngModel]="inputValue()"
@@ -105,16 +105,20 @@ export class NxpInputChipComponent<T = string> implements ControlValueAccessor {
     /*noop*/
   };
 
-  readonly hostClasses = computed(() =>
-    cx(
-      'relative flex flex-wrap rounded-m border transition-colors duration-normal cursor-text',
+  readonly hostClasses = computed(() => {
+    const disabled = this.disabled();
+    const focused = this.focused();
+    return cx(
+      'relative flex flex-wrap rounded-m transition-shadow duration-normal cursor-text',
       'bg-bg-base',
-      'border-border-normal',
-      this.focused() && 'ring-2 ring-primary/30 border-primary',
-      this.disabled() && 'opacity-50 cursor-not-allowed bg-bg-neutral-1',
+      // Idle/hover/focus chrome — mirrors inputVariants so the family stays in sync.
+      !disabled && focused && 'shadow-input-focus',
+      !disabled && !focused && 'shadow-border hover:shadow-input-hover',
+      // Disabled — Vercel-flat: no opacity dimming, just neutral surface.
+      disabled && 'cursor-not-allowed bg-bg-neutral-1 shadow-border',
       this.class(),
-    ),
-  );
+    );
+  });
 
   // ---- CVA ----
 

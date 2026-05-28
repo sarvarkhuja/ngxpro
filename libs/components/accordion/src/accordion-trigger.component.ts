@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  contentChild,
+  inject,
+  input,
+} from '@angular/core';
 import { NXP_SPRING_FAST } from '@ngxpro/cdk';
+import { AccordionIndicatorDirective } from './accordion-indicator.directive';
 import { AccordionDirective } from './accordion.directive';
 
 /**
@@ -26,16 +35,26 @@ import { AccordionDirective } from './accordion.directive';
 @Component({
   selector: 'nxp-accordion-trigger[nxpAccordion]',
   hostDirectives: [AccordionDirective],
+  imports: [NgTemplateOutlet],
   template: `
     <span class="flex-1 min-w-0 text-left">
       <ng-content />
     </span>
-    <i
-      class="ri-arrow-right-s-line shrink-0 text-base leading-none"
-      [style.transition]="chevronTransition"
-      [style.transform]="directive.open() ? 'rotate(90deg)' : 'rotate(0deg)'"
-      aria-hidden="true"
-    ></i>
+    @if (customIndicator(); as t) {
+      <ng-container
+        [ngTemplateOutlet]="t.template"
+        [ngTemplateOutletContext]="{ $implicit: directive.open() }"
+      />
+    } @else {
+      <i
+        [class]="indicatorClasses()"
+        [style.transition]="chevronTransition"
+        [style.transform]="
+          directive.open() ? 'rotate(' + rotation() + 'deg)' : 'rotate(0deg)'
+        "
+        aria-hidden="true"
+      ></i>
+    }
   `,
   host: {
     role: 'button',
@@ -51,6 +70,19 @@ import { AccordionDirective } from './accordion.directive';
 })
 export class AccordionTriggerComponent {
   protected readonly directive = inject(AccordionDirective);
+  protected readonly customIndicator = contentChild(
+    AccordionIndicatorDirective,
+  );
+
+  /** Remix-icon class for the default rotating indicator. */
+  public readonly indicator = input<string>('ri-arrow-right-s-line');
+
+  /** Rotation (deg) applied to the default indicator when the section is open. */
+  public readonly rotation = input<number>(90);
+
+  protected readonly indicatorClasses = computed(
+    () => `${this.indicator()} shrink-0 text-base leading-none`,
+  );
 
   /** Fast spring transition for the chevron rotation. */
   protected readonly chevronTransition = `transform ${NXP_SPRING_FAST.duration}ms ${NXP_SPRING_FAST.easing}`;

@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+import { nxpProvideRoutePageTab } from '@ngxpro/addon-doc-lib/utils';
 
 export const appRoutes: Route[] = [
   {
@@ -13,13 +14,14 @@ export const appRoutes: Route[] = [
         (m) => m.TextMorphDemoComponent,
       ),
   },
-  {
+  nxpProvideRoutePageTab({
     path: 'accordion',
+    title: 'Accordion',
     loadComponent: () =>
       import('./accordion/accordion-demo.component').then(
         (m) => m.AccordionDemoComponent,
       ),
-  },
+  }),
 
   {
     path: 'button',
@@ -94,13 +96,6 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./dialog/dialog-demo.component').then(
         (m) => m.DialogDemoComponent,
-      ),
-  },
-  {
-    path: 'drawer',
-    loadComponent: () =>
-      import('./drawer/drawer-demo.component').then(
-        (m) => m.DrawerDemoComponent,
       ),
   },
   {
@@ -182,23 +177,20 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./badge/badge-demo.component').then((m) => m.BadgeDemoComponent),
   },
-  {
+  nxpProvideRoutePageTab({
     path: 'block',
+    title: 'Block',
     loadComponent: () =>
       import('./block/block-demo.component').then((m) => m.BlockDemoComponent),
-  },
-  {
-    path: 'tabs',
-    loadComponent: () =>
-      import('./tabs/tabs-demo.component').then((m) => m.TabsDemoComponent),
-  },
-  {
+  }),
+  nxpProvideRoutePageTab({
     path: 'segmented',
+    title: 'Segmented',
     loadComponent: () =>
       import('./segmented/segmented-demo.component').then(
         (m) => m.SegmentedDemoComponent,
       ),
-  },
+  }),
   {
     path: 'combo-box',
     loadComponent: () =>
@@ -211,13 +203,6 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./select/select-demo.component').then(
         (m) => m.SelectDemoComponent,
-      ),
-  },
-  {
-    path: 'stepper',
-    loadComponent: () =>
-      import('./stepper/stepper-demo.component').then(
-        (m) => m.StepperDemoComponent,
       ),
   },
   {

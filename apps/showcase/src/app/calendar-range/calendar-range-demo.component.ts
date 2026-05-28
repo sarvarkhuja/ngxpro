@@ -1,16 +1,18 @@
-import { Component, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
+import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
+import type { DisabledHandler } from '@ngxpro/components/calendar';
 import {
   CalendarRangeComponent,
   createDefaultDateRangePeriods,
   DateRangePeriod,
 } from '@ngxpro/components/calendar-range';
-import type { DisabledHandler } from 'libs/cdk/src/lib/components/calendar/src';
 import {
   DataListComponent,
-  OptionDirective,
   OptGroupDirective,
+  OptionDirective,
 } from '@ngxpro/components/data-list';
+import { CalendarRangeApiComponent } from './calendar-range-api.component';
 
 // ------------------------------------------------------------------ helpers
 
@@ -97,80 +99,85 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
 @Component({
   selector: 'app-calendar-range-demo',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CalendarRangeApiComponent,
     CalendarRangeComponent,
     DataListComponent,
-    OptionDirective,
+    NxpDocComponentPage,
+    NxpDocExampleComponent,
     OptGroupDirective,
-    RouterModule,
+    OptionDirective,
   ],
   template: `
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-
-      <!-- ── Page header ─────────────────────────────────────────────────── -->
-      <div class="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm px-6 py-4 flex items-center gap-4">
-        <a
-          routerLink="/"
-          class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+    <nxp-doc-component-page
+      header="Calendar Range"
+      package="components"
+      type="component"
+      path="components/calendar-range"
+    >
+      <p class="text-base text-text-secondary mb-6">
+        Dual-calendar date-range picker with hover preview, keyboard navigation,
+        preset periods, and min / max constraints. Click a start day, hover to
+        preview, click an end day. Press
+        <kbd
+          class="px-1 py-0.5 text-xs font-mono bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded"
+          >Esc</kbd
         >
-          ← Home
-        </a>
-        <span class="text-gray-300 dark:text-gray-700">|</span>
-        <h1 class="text-sm font-semibold text-gray-900 dark:text-white">
-          Calendar Range
-        </h1>
-      </div>
+        to cancel a pick in progress.
+      </p>
 
-      <div class="max-w-7xl mx-auto px-6 py-12 space-y-20">
-
-        <!-- ── Hero ───────────────────────────────────────────────────────── -->
-        <div class="space-y-3">
-          <span class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-primary/10 text-action border border-primary/30">
-            @ngxpro/components/calendar-range
-          </span>
-          <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
-            Calendar Range
-          </h1>
-          <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl">
-            Dual-calendar date-range picker with hover preview, keyboard navigation,
-            preset periods, and min / max constraints.
-          </p>
-        </div>
-
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 1 — Basic range picker                                -->
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <section class="space-y-6">
-          <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Basic range picker</h2>
-            <p class="mt-1 text-gray-500 dark:text-gray-400">
-              Two calendars side-by-side. Click a start day, hover to preview, click an end day.
-              Press <kbd class="px-1 py-0.5 text-xs font-mono bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded">Esc</kbd>
-              to cancel a pick in progress.
-            </p>
-          </div>
-
+      <ng-template nxpExamplesTab>
+        <nxp-doc-example
+          heading="Basic range picker"
+          description="Two calendars side-by-side. Click a start day, hover to preview, click an end day. Press Esc to cancel a pick in progress."
+          [content]="{ HTML: basicHtml, TypeScript: basicTs }"
+        >
           <div class="flex flex-col lg:flex-row gap-6 items-start">
             <nxp-calendar-range
               [value]="basicRange()"
+              [min]="basicMin()"
+              [max]="basicMax()"
+              [minLength]="basicMinLength()"
+              [maxLength]="basicMaxLength()"
+              [showAdjacent]="basicShowAdjacent()"
+              [class]="basicClass()"
               (valueChange)="basicRange.set($event)"
             />
             <div class="space-y-3 min-w-48">
-              <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 space-y-1">
-                <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">From</p>
+              <div
+                class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 space-y-1"
+              >
+                <p
+                  class="text-xs font-medium text-gray-400 uppercase tracking-wide"
+                >
+                  From
+                </p>
                 <p class="text-sm font-semibold text-gray-900 dark:text-white">
                   {{ basicRange() ? fmt(basicRange()![0]) : '—' }}
                 </p>
               </div>
-              <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 space-y-1">
-                <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">To</p>
+              <div
+                class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 space-y-1"
+              >
+                <p
+                  class="text-xs font-medium text-gray-400 uppercase tracking-wide"
+                >
+                  To
+                </p>
                 <p class="text-sm font-semibold text-gray-900 dark:text-white">
                   {{ basicRange() ? fmt(basicRange()![1]) : '—' }}
                 </p>
               </div>
               @if (basicRange()) {
-                <div class="rounded-lg border border-primary/30 bg-primary/10 p-4 space-y-1">
-                  <p class="text-xs font-medium text-action uppercase tracking-wide">Duration</p>
+                <div
+                  class="rounded-lg border border-primary/30 bg-primary/10 p-4 space-y-1"
+                >
+                  <p
+                    class="text-xs font-medium text-action uppercase tracking-wide"
+                  >
+                    Duration
+                  </p>
                   <p class="text-lg font-bold text-action">
                     {{ daysBetween(basicRange()!) }} days
                   </p>
@@ -184,27 +191,13 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               }
             </div>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 3 — Preset periods sidebar (DataList)                 -->
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <section class="space-y-6">
-          <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-              Preset periods
-              <span class="ml-2 text-sm font-normal text-action align-middle">
-                uses NxpDataList
-              </span>
-            </h2>
-            <p class="mt-1 text-gray-500 dark:text-gray-400">
-              Pass <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">[items]</code> to
-              replace the second calendar with a <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">nxp-data-list</code> sidebar.
-              Each preset is a <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">button[nxpOption]</code> with
-              full keyboard navigation. Click the active item again to deselect.
-            </p>
-          </div>
-
+        <nxp-doc-example
+          heading="Preset periods"
+          description="Pass [items] to replace the second calendar with a nxp-data-list sidebar. Each preset is a button[nxpOption] with full keyboard navigation. Click the active item again to deselect."
+          [content]="{ HTML: presetsHtml, TypeScript: presetsTs }"
+        >
           <div class="flex flex-col xl:flex-row gap-6 items-start">
             <nxp-calendar-range
               [items]="presets"
@@ -212,7 +205,11 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               (valueChange)="presetsRange.set($event)"
             />
             <div class="space-y-2 min-w-56">
-              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Selected range</p>
+              <p
+                class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
+              >
+                Selected range
+              </p>
               <p class="text-sm font-medium text-gray-900 dark:text-white">
                 {{ formatRange(presetsRange()) }}
               </p>
@@ -221,33 +218,27 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               </p>
             </div>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 4 — Grouped presets (OptGroup inside DataList)        -->
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <section class="space-y-6">
-          <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Grouped presets</h2>
-            <p class="mt-1 text-gray-500 dark:text-gray-400">
-              This demo builds the preset list manually with
-              <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">[nxpOptGroup]</code>
-              sections for Quick, This period, and Previous period groupings.
-              Groups include <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">role="group"</code> and
-              <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">aria-label</code> for full accessibility.
-            </p>
-          </div>
-
-          <div class="inline-flex rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm overflow-hidden">
-            <!-- Left calendar -->
+        <nxp-doc-example
+          heading="Grouped presets"
+          description="Build the preset list manually with [nxpOptGroup] sections for Quick, This period, and Previous period groupings. Groups include role='group' and aria-label for full accessibility."
+          [content]="{ HTML: groupedHtml, TypeScript: groupedTs }"
+        >
+          <div
+            class="inline-flex rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm overflow-hidden"
+          >
             <nxp-calendar-range
               [value]="groupedRange()"
               (valueChange)="groupedRange.set($event)"
             />
-            <!-- Grouped preset sidebar (manual DataList) -->
             <div class="w-px bg-gray-200 dark:bg-gray-800 self-stretch"></div>
             <div class="p-3 flex flex-col justify-center">
-              <nxp-data-list size="sm" label="Preset date ranges" class="min-w-[9rem]">
+              <nxp-data-list
+                size="sm"
+                label="Preset date ranges"
+                class="min-w-[9rem]"
+              >
                 @for (section of groupedPresets; track section.group) {
                   <div nxpOptGroup [label]="section.group">
                     @for (item of section.items; track item.label) {
@@ -258,8 +249,17 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
                       >
                         <span class="flex-1 truncate">{{ item.label }}</span>
                         @if (isGroupedActive(item)) {
-                          <svg class="h-3.5 w-3.5 shrink-0 ml-auto" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"/>
+                          <svg
+                            class="h-3.5 w-3.5 shrink-0 ml-auto"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                              clip-rule="evenodd"
+                            />
                           </svg>
                         }
                       </button>
@@ -270,22 +270,19 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
             </div>
           </div>
 
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Selected: <strong class="text-gray-900 dark:text-white">{{ formatRange(groupedRange()) }}</strong>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
+            Selected:
+            <strong class="text-gray-900 dark:text-white">{{
+              formatRange(groupedRange())
+            }}</strong>
           </p>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 5 — Min / Max bounds                                  -->
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <section class="space-y-6">
-          <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Min / Max bounds</h2>
-            <p class="mt-1 text-gray-500 dark:text-gray-400">
-              Restrict selectable dates to a window (here: ±30 days from today).
-              Out-of-range days are rendered as disabled.
-            </p>
-          </div>
+        <nxp-doc-example
+          heading="Min / Max bounds"
+          description="Restrict selectable dates to a window (here: ±30 days from today). Out-of-range days are rendered as disabled."
+          [content]="{ HTML: boundsHtml, TypeScript: boundsTs }"
+        >
           <div class="flex flex-col lg:flex-row gap-6 items-start">
             <nxp-calendar-range
               [min]="boundsMin"
@@ -295,11 +292,15 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
             />
             <div class="space-y-2 text-sm">
               <p class="text-gray-500 dark:text-gray-400">
-                <span class="font-medium text-gray-700 dark:text-gray-300">Min:</span>
+                <span class="font-medium text-gray-700 dark:text-gray-300"
+                  >Min:</span
+                >
                 {{ fmt(boundsMin) }}
               </p>
               <p class="text-gray-500 dark:text-gray-400">
-                <span class="font-medium text-gray-700 dark:text-gray-300">Max:</span>
+                <span class="font-medium text-gray-700 dark:text-gray-300"
+                  >Max:</span
+                >
                 {{ fmt(boundsMax) }}
               </p>
               <p class="pt-2 font-medium text-gray-900 dark:text-white">
@@ -307,20 +308,13 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               </p>
             </div>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 6 — Min / Max range length                            -->
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <section class="space-y-6">
-          <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Min / Max range length</h2>
-            <p class="mt-1 text-gray-500 dark:text-gray-400">
-              After picking the start date, only end dates that produce a range
-              between <strong>3</strong> and <strong>14</strong> days are enabled.
-              Days too close or too far are automatically disabled.
-            </p>
-          </div>
+        <nxp-doc-example
+          heading="Min / Max range length"
+          description="After picking the start date, only end dates that produce a range between 3 and 14 days are enabled. Days too close or too far are automatically disabled."
+          [content]="{ HTML: lengthHtml, TypeScript: lengthTs }"
+        >
           <div class="flex flex-col lg:flex-row gap-6 items-start">
             <nxp-calendar-range
               [minLength]="3"
@@ -330,15 +324,25 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
             />
             <div class="space-y-3 min-w-40">
               @if (lengthRange()) {
-                <div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 p-4">
-                  <p class="text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wide">Duration</p>
-                  <p class="text-2xl font-bold text-green-700 dark:text-green-300">
+                <div
+                  class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 p-4"
+                >
+                  <p
+                    class="text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wide"
+                  >
+                    Duration
+                  </p>
+                  <p
+                    class="text-2xl font-bold text-green-700 dark:text-green-300"
+                  >
                     {{ daysBetween(lengthRange()!) }}
                     <span class="text-sm font-normal">days</span>
                   </p>
                 </div>
               } @else {
-                <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 text-sm text-gray-400">
+                <div
+                  class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 text-sm text-gray-400"
+                >
                   Pick a start date, then an end date 3–14 days away.
                 </div>
               }
@@ -347,19 +351,13 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               </p>
             </div>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 7 — Disabled weekends                                 -->
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <section class="space-y-6">
-          <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Disabled weekends</h2>
-            <p class="mt-1 text-gray-500 dark:text-gray-400">
-              Pass a <code class="text-sm font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">disabledHandler</code>
-              to disable arbitrary dates. Here weekends (Sat/Sun) are non-selectable.
-            </p>
-          </div>
+        <nxp-doc-example
+          heading="Disabled weekends"
+          description="Pass a disabledHandler to disable arbitrary dates. Here weekends (Sat/Sun) are non-selectable."
+          [content]="{ HTML: weekendsHtml, TypeScript: weekendsTs }"
+        >
           <div class="flex flex-col lg:flex-row gap-6 items-start">
             <nxp-calendar-range
               [disabledHandler]="isWeekend"
@@ -367,26 +365,21 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               (valueChange)="weekdayRange.set($event)"
             />
             <div class="text-sm space-y-2">
-              <p class="text-gray-500 dark:text-gray-400">Only Mon–Fri are selectable.</p>
+              <p class="text-gray-500 dark:text-gray-400">
+                Only Mon–Fri are selectable.
+              </p>
               <p class="font-medium text-gray-900 dark:text-white">
                 {{ formatRange(weekdayRange()) }}
               </p>
             </div>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <!--  SECTION 8 — Preset periods + bounds combined                  -->
-        <!-- ════════════════════════════════════════════════════════════════ -->
-        <section class="space-y-6">
-          <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Presets + bounds combined</h2>
-            <p class="mt-1 text-gray-500 dark:text-gray-400">
-              Preset sidebar with min/max bounds applied. Dates outside ±60 days are disabled;
-              preset items whose ranges fall outside bounds are still shown but will select out-of-range dates
-              (useful for analytics dashboards where you want the label even if data is partial).
-            </p>
-          </div>
+        <nxp-doc-example
+          heading="Presets + bounds combined"
+          description="Preset sidebar with min/max bounds applied. Dates outside ±30 days are disabled; preset items whose ranges fall outside bounds are still shown but will select out-of-range dates (useful for analytics dashboards where you want the label even if data is partial)."
+          [content]="{ HTML: combinedHtml, TypeScript: combinedTs }"
+        >
           <div class="flex flex-col xl:flex-row gap-6 items-start">
             <nxp-calendar-range
               [items]="presets"
@@ -399,10 +392,21 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               {{ formatRange(combinedRange()) }}
             </p>
           </div>
-        </section>
+        </nxp-doc-example>
+      </ng-template>
 
-      </div>
-    </div>
+      <ng-template nxpApiTab>
+        <app-calendar-range-api
+          [(value)]="basicRange"
+          [(min)]="basicMin"
+          [(max)]="basicMax"
+          [(minLength)]="basicMinLength"
+          [(maxLength)]="basicMaxLength"
+          [(showAdjacent)]="basicShowAdjacent"
+          [(class)]="basicClass"
+        />
+      </ng-template>
+    </nxp-doc-component-page>
   `,
 })
 export class CalendarRangeDemoComponent {
@@ -414,6 +418,14 @@ export class CalendarRangeDemoComponent {
   readonly weekdayRange = signal<[Date, Date] | null>(null);
   readonly groupedRange = signal<[Date, Date] | null>(null);
   readonly combinedRange = signal<[Date, Date] | null>(null);
+
+  // ------------------------------------------------------------------ Playground state for the API tab
+  readonly basicMin = signal<Date | null>(null);
+  readonly basicMax = signal<Date | null>(null);
+  readonly basicMinLength = signal<number | null>(null);
+  readonly basicMaxLength = signal<number | null>(null);
+  readonly basicShowAdjacent = signal<boolean>(false);
+  readonly basicClass = signal<string>('');
 
   // ------------------------------------------------------------------ Preset data
   readonly presets: DateRangePeriod[] = createDefaultDateRangePeriods();
@@ -463,4 +475,223 @@ export class CalendarRangeDemoComponent {
     this.activeGroupedItem.set(item);
     this.groupedRange.set([item.range[0], item.range[1]]);
   }
+
+  // ── Example source snippets shown inside <nxp-doc-example> tabs ────────────
+  readonly basicHtml = `<nxp-calendar-range
+  [value]="range()"
+  (valueChange)="range.set($event)"
+/>`;
+
+  readonly basicTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { CalendarRangeComponent } from '@ngxpro/components/calendar-range';
+
+@Component({
+  selector: 'app-basic-range',
+  imports: [CalendarRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './basic-range.html',
+})
+export class BasicRangeExample {
+  readonly range = signal<[Date, Date] | null>(null);
+}`;
+
+  readonly presetsHtml = `<nxp-calendar-range
+  [items]="presets"
+  [value]="range()"
+  (valueChange)="range.set($event)"
+/>`;
+
+  readonly presetsTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  CalendarRangeComponent,
+  createDefaultDateRangePeriods,
+  DateRangePeriod,
+} from '@ngxpro/components/calendar-range';
+
+@Component({
+  selector: 'app-presets',
+  imports: [CalendarRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './presets.html',
+})
+export class PresetsRangeExample {
+  readonly presets: DateRangePeriod[] = createDefaultDateRangePeriods();
+  readonly range = signal<[Date, Date] | null>(null);
+}`;
+
+  readonly groupedHtml = `<nxp-calendar-range
+  [value]="range()"
+  (valueChange)="range.set($event)"
+/>
+<nxp-data-list size="sm" label="Preset date ranges">
+  @for (section of groupedPresets; track section.group) {
+    <div nxpOptGroup [label]="section.group">
+      @for (item of section.items; track item.label) {
+        <button
+          nxpOption
+          [selected]="isActive(item)"
+          (click)="onSelect(item)"
+        >
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  }
+</nxp-data-list>`;
+
+  readonly groupedTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  CalendarRangeComponent,
+  DateRangePeriod,
+} from '@ngxpro/components/calendar-range';
+import {
+  DataListComponent,
+  OptGroupDirective,
+  OptionDirective,
+} from '@ngxpro/components/data-list';
+
+@Component({
+  selector: 'app-grouped-presets',
+  imports: [
+    CalendarRangeComponent,
+    DataListComponent,
+    OptGroupDirective,
+    OptionDirective,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './grouped-presets.html',
+})
+export class GroupedPresetsExample {
+  readonly range = signal<[Date, Date] | null>(null);
+  readonly groupedPresets = [
+    {
+      group: 'Quick',
+      items: [
+        new DateRangePeriod([new Date(), new Date()], 'Today'),
+      ],
+    },
+  ];
+  private active = signal<DateRangePeriod | null>(null);
+
+  isActive(item: DateRangePeriod): boolean {
+    return this.active() === item;
+  }
+
+  onSelect(item: DateRangePeriod): void {
+    if (this.active() === item) {
+      this.active.set(null);
+      this.range.set(null);
+      return;
+    }
+    this.active.set(item);
+    this.range.set([item.range[0], item.range[1]]);
+  }
+}`;
+
+  readonly boundsHtml = `<nxp-calendar-range
+  [min]="min"
+  [max]="max"
+  [value]="range()"
+  (valueChange)="range.set($event)"
+/>`;
+
+  readonly boundsTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { CalendarRangeComponent } from '@ngxpro/components/calendar-range';
+
+function offsetDate(days: number): Date {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+@Component({
+  selector: 'app-bounds',
+  imports: [CalendarRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './bounds.html',
+})
+export class BoundsRangeExample {
+  readonly min = offsetDate(-30);
+  readonly max = offsetDate(30);
+  readonly range = signal<[Date, Date] | null>(null);
+}`;
+
+  readonly lengthHtml = `<nxp-calendar-range
+  [minLength]="3"
+  [maxLength]="14"
+  [value]="range()"
+  (valueChange)="range.set($event)"
+/>`;
+
+  readonly lengthTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { CalendarRangeComponent } from '@ngxpro/components/calendar-range';
+
+@Component({
+  selector: 'app-length-range',
+  imports: [CalendarRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './length-range.html',
+})
+export class LengthRangeExample {
+  readonly range = signal<[Date, Date] | null>(null);
+}`;
+
+  readonly weekendsHtml = `<nxp-calendar-range
+  [disabledHandler]="isWeekend"
+  [value]="range()"
+  (valueChange)="range.set($event)"
+/>`;
+
+  readonly weekendsTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { CalendarRangeComponent } from '@ngxpro/components/calendar-range';
+import type { DisabledHandler } from '@ngxpro/components/calendar';
+
+@Component({
+  selector: 'app-weekends',
+  imports: [CalendarRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './weekends.html',
+})
+export class WeekendsRangeExample {
+  readonly range = signal<[Date, Date] | null>(null);
+
+  readonly isWeekend: DisabledHandler = (d: Date) => {
+    const day = d.getDay();
+    return day === 0 || day === 6;
+  };
+}`;
+
+  readonly combinedHtml = `<nxp-calendar-range
+  [items]="presets"
+  [min]="min"
+  [max]="max"
+  [value]="range()"
+  (valueChange)="range.set($event)"
+/>`;
+
+  readonly combinedTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  CalendarRangeComponent,
+  createDefaultDateRangePeriods,
+  DateRangePeriod,
+} from '@ngxpro/components/calendar-range';
+
+function offsetDate(days: number): Date {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+@Component({
+  selector: 'app-combined',
+  imports: [CalendarRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './combined.html',
+})
+export class CombinedRangeExample {
+  readonly presets: DateRangePeriod[] = createDefaultDateRangePeriods();
+  readonly min = offsetDate(-30);
+  readonly max = offsetDate(30);
+  readonly range = signal<[Date, Date] | null>(null);
+}`;
 }

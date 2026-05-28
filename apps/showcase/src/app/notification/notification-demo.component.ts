@@ -10,13 +10,15 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { interval, take } from 'rxjs';
 import { TitleCasePipe } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 import {
   NxpNotificationOptions,
   NxpNotificationHostComponent,
   NxpNotificationService,
 } from '@ngxpro/cdk/components/notification';
+import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
+import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
+import { NotificationApiComponent } from './notification-api.component';
 
 type Appearance = NxpNotificationOptions['appearance'];
 
@@ -297,66 +299,71 @@ interface RichDemo {
 @Component({
   selector: 'app-notification-demo',
   standalone: true,
-  imports: [RouterModule, TitleCasePipe, NxpNotificationHostComponent],
+  imports: [
+    TitleCasePipe,
+    NxpNotificationHostComponent,
+    NxpDocComponentPage,
+    NxpDocExampleComponent,
+    NotificationApiComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nxp-notification-host />
 
-    <div
-      class="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
+    <nxp-doc-component-page
+      header="Notification"
+      package="cdk"
+      type="component"
+      path="cdk/notification"
     >
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
-        <!-- Header -->
-        <header class="space-y-4">
-          <a
-            routerLink="/"
-            class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-          >
-            <span aria-hidden="true">←</span> Back to home
-          </a>
-          <div class="space-y-2 max-w-2xl">
-            <div class="flex flex-wrap items-center gap-2">
-              <h1
-                class="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white"
-              >
-                Notifications
-              </h1>
-              <span
-                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900"
-              >
-                <i class="ri-component-line" aria-hidden="true"></i>
-                NxpDynamicComponent
-              </span>
-            </div>
-            <p class="text-base text-gray-600 dark:text-gray-400">
-              Pass any Angular component as toast content. Each rich body below
-              is a standalone
-              <code
-                class="font-mono text-[13px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800"
-                >NxpDynamicComponent</code
-              >
-              with its own state, layout, and actions — provided per-toast via a
-              custom
-              <code
-                class="font-mono text-[13px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800"
-                >Injector</code
-              >.
+      <p class="text-base text-text-secondary mb-6">
+        Stacked, Sonner-style toast notifications fired from
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >NxpNotificationService</code
+        >. Pass a string for plain content or a
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >NxpDynamicComponent</code
+        >
+        for fully custom bodies with their own state, layout, and actions —
+        provided per-toast via a custom
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >Injector</code
+        >.
+      </p>
+
+      <ng-template nxpExamplesTab>
+        <nxp-doc-example
+          heading="Playground"
+          description="Live preview bound to the API tab — fire a toast with the current option values from the API table."
+          [content]="{ HTML: playgroundHtml, TypeScript: playgroundTs }"
+        >
+          <div class="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              (click)="firePlayground()"
+              class="px-3.5 py-2 rounded-md text-sm font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+            >
+              Fire playground toast
+            </button>
+            <button
+              type="button"
+              (click)="dismissAll()"
+              class="px-3.5 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              Clear
+            </button>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Edit any value in the <strong>API</strong> tab — appearance,
+              label, content, icon, size, closable, autoClose, position.
             </p>
           </div>
-        </header>
+        </nxp-doc-example>
 
-        <!-- ── Rich component-based toasts ─────────────────────────── -->
-        <section class="space-y-4">
-          <div class="flex items-baseline justify-between">
-            <h2
-              class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
-            >
-              Component bodies
-            </h2>
-            <span class="text-xs text-gray-400 dark:text-gray-500"
-              >Click a card to fire</span
-            >
-          </div>
+        <nxp-doc-example
+          heading="Component bodies"
+          description="Pass any Angular component as toast content. Each rich body is a standalone NxpDynamicComponent with its own state, layout, and actions — provided per-toast via a custom Injector. Click a card to fire."
+          [content]="{ HTML: richHtml, TypeScript: richTs }"
+        >
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             @for (d of richDemos; track d.key) {
               <button
@@ -389,58 +396,62 @@ interface RichDemo {
               </button>
             }
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ── String vs Component compare ───────────────────────── -->
-        <section
-          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
+        <nxp-doc-example
+          heading="String vs component"
+          description="Compare a plain-string toast with one whose body is a NxpDynamicComponent backed by a per-toast Injector."
+          [content]="{ HTML: compareHtml, TypeScript: compareTs }"
         >
           <div
-            class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-800"
+            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden w-full"
           >
-            <div class="p-6 sm:p-8 space-y-4">
-              <div class="space-y-1">
-                <p
-                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
-                >
-                  String content
-                </p>
-                <h3
-                  class="text-base font-semibold text-gray-900 dark:text-white"
-                >
-                  Plain text body
-                </h3>
-              </div>
-              <pre
-                class="text-[12px] font-mono leading-relaxed bg-gray-950 text-gray-100 rounded-lg p-4 overflow-x-auto"
-              ><code>service.<span class="text-cyan-300">open</span>(<span class="text-emerald-300">'Saved.'</span>, &#123;
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-800"
+            >
+              <div class="p-6 sm:p-8 space-y-4">
+                <div class="space-y-1">
+                  <p
+                    class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                  >
+                    String content
+                  </p>
+                  <h3
+                    class="text-base font-semibold text-gray-900 dark:text-white"
+                  >
+                    Plain text body
+                  </h3>
+                </div>
+                <pre
+                  class="text-[12px] font-mono leading-relaxed bg-gray-950 text-gray-100 rounded-lg p-4 overflow-x-auto"
+                ><code>service.<span class="text-cyan-300">open</span>(<span class="text-emerald-300">'Saved.'</span>, &#123;
   appearance: <span class="text-emerald-300">'success'</span>,
   label: <span class="text-emerald-300">'All done'</span>,
 &#125;);</code></pre>
-              <button
-                type="button"
-                (click)="fireString()"
-                class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >
-                Fire string toast
-              </button>
-            </div>
-            <div class="p-6 sm:p-8 space-y-4 bg-gray-50 dark:bg-gray-950/40">
-              <div class="space-y-1">
-                <p
-                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                <button
+                  type="button"
+                  (click)="fireString()"
+                  class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
-                  Component content
-                </p>
-                <h3
-                  class="text-base font-semibold text-gray-900 dark:text-white"
-                >
-                  NxpDynamicComponent
-                </h3>
+                  Fire string toast
+                </button>
               </div>
-              <pre
-                class="text-[12px] font-mono leading-relaxed bg-gray-950 text-gray-100 rounded-lg p-4 overflow-x-auto"
-              ><code><span class="text-gray-500">// Per-toast data via custom Injector</span>
+              <div class="p-6 sm:p-8 space-y-4 bg-gray-50 dark:bg-gray-950/40">
+                <div class="space-y-1">
+                  <p
+                    class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                  >
+                    Component content
+                  </p>
+                  <h3
+                    class="text-base font-semibold text-gray-900 dark:text-white"
+                  >
+                    NxpDynamicComponent
+                  </h3>
+                </div>
+                <pre
+                  class="text-[12px] font-mono leading-relaxed bg-gray-950 text-gray-100 rounded-lg p-4 overflow-x-auto"
+                ><code><span class="text-gray-500">// Per-toast data via custom Injector</span>
 <span class="text-purple-300">const</span> injector = Injector.<span class="text-cyan-300">create</span>(&#123;
   parent: <span class="text-purple-300">this</span>.injector,
   providers: [&#123; provide: UNDO_DATA, useValue: data &#125;],
@@ -450,30 +461,23 @@ service.<span class="text-cyan-300">open</span>(
   <span class="text-purple-300">new</span> <span class="text-cyan-300">NxpDynamicComponent</span>(UndoToast, injector),
   &#123; appearance: <span class="text-emerald-300">'neutral'</span> &#125;,
 );</code></pre>
-              <button
-                type="button"
-                (click)="fireRich('undo')"
-                class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md text-sm font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-              >
-                Fire component toast
-              </button>
+                <button
+                  type="button"
+                  (click)="fireRich('undo')"
+                  class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md text-sm font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+                >
+                  Fire component toast
+                </button>
+              </div>
             </div>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ── Appearance variants (string content) ─────────────── -->
-        <section
-          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-4"
+        <nxp-doc-example
+          heading="Appearance & label"
+          description="Five built-in appearances, each with its own colour palette and default icon."
+          [content]="{ HTML: appearanceHtml, TypeScript: appearanceTs }"
         >
-          <div class="space-y-1.5">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Appearance & label
-            </h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Five built-in appearances, each with its own colour palette and
-              default icon.
-            </p>
-          </div>
           <div class="flex flex-wrap gap-2">
             @for (a of appearances; track a) {
               <button
@@ -485,95 +489,73 @@ service.<span class="text-cyan-300">open</span>(
               </button>
             }
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ── Sizes & timing & stack ─────────────────────────── -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div
-            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3"
-          >
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-              Sizes
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Compact, default, and roomy.
-            </p>
-            <div class="flex gap-1.5 pt-1">
-              @for (s of sizes; track s) {
-                <button
-                  type="button"
-                  (click)="fireSize(s)"
-                  class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                >
-                  {{ s }}
-                </button>
-              }
-            </div>
-          </div>
-
-          <div
-            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3"
-          >
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-              Auto-close
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Pauses on hover, resumes on leave.
-            </p>
-            <div class="flex flex-wrap gap-1.5 pt-1">
-              @for (d of durations; track d.value) {
-                <button
-                  type="button"
-                  (click)="fireAutoClose(d.value)"
-                  class="px-3 py-1.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                >
-                  {{ d.label }}
-                </button>
-              }
-            </div>
-          </div>
-
-          <div
-            class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-3"
-          >
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-              Stack
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Open many. Hover to expand.
-            </p>
-            <div class="flex gap-1.5 pt-1">
-              <button
-                type="button"
-                (click)="fireStack()"
-                class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-              >
-                Stack 5
-              </button>
-              <button
-                type="button"
-                (click)="dismissAll()"
-                class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                Clear
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- ── Positions ─────────────────────────────────────────── -->
-        <section
-          class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 space-y-4"
+        <nxp-doc-example
+          heading="Sizes"
+          description="Compact, default, and roomy variants — adjust padding, gap, and text scale."
+          [content]="{ HTML: sizesHtml, TypeScript: sizesTs }"
         >
-          <div class="space-y-1.5">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Positions
-            </h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Six anchor points around the viewport.
-            </p>
+          <div class="flex gap-1.5">
+            @for (s of sizes; track s) {
+              <button
+                type="button"
+                (click)="fireSize(s)"
+                class="px-3 py-1.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              >
+                {{ s }}
+              </button>
+            }
           </div>
-          <div class="grid grid-cols-3 gap-2">
+        </nxp-doc-example>
+
+        <nxp-doc-example
+          heading="Auto-close"
+          description="Pauses on hover or keyboard focus, resumes on leave. Pass false to make the toast sticky."
+          [content]="{ HTML: autoCloseHtml, TypeScript: autoCloseTs }"
+        >
+          <div class="flex flex-wrap gap-1.5">
+            @for (d of durations; track d.value) {
+              <button
+                type="button"
+                (click)="fireAutoClose(d.value)"
+                class="px-3 py-1.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              >
+                {{ d.label }}
+              </button>
+            }
+          </div>
+        </nxp-doc-example>
+
+        <nxp-doc-example
+          heading="Stack"
+          description="Open multiple toasts at once — they stack at the same anchor. Hover the stack to expand it."
+          [content]="{ HTML: stackHtml, TypeScript: stackTs }"
+        >
+          <div class="flex gap-1.5">
+            <button
+              type="button"
+              (click)="fireStack()"
+              class="px-3 py-1.5 rounded-md text-xs font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+            >
+              Stack 5
+            </button>
+            <button
+              type="button"
+              (click)="dismissAll()"
+              class="px-3 py-1.5 rounded-md text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              Clear
+            </button>
+          </div>
+        </nxp-doc-example>
+
+        <nxp-doc-example
+          heading="Positions"
+          description="Six anchor points around the viewport. Each anchor manages its own toast column independently."
+          [content]="{ HTML: positionsHtml, TypeScript: positionsTs }"
+        >
+          <div class="grid grid-cols-3 gap-2 w-full max-w-sm">
             @for (p of positions; track p) {
               <button
                 type="button"
@@ -584,14 +566,38 @@ service.<span class="text-cyan-300">open</span>(
               </button>
             }
           </div>
-        </section>
-      </div>
-    </div>
+        </nxp-doc-example>
+      </ng-template>
+
+      <ng-template nxpApiTab>
+        <app-notification-api
+          [(appearance)]="apiAppearance"
+          [(label)]="apiLabel"
+          [(content)]="apiContent"
+          [(icon)]="apiIcon"
+          [(size)]="apiSize"
+          [(closable)]="apiClosable"
+          [(autoClose)]="apiAutoClose"
+          [(position)]="apiPosition"
+        />
+      </ng-template>
+    </nxp-doc-component-page>
   `,
 })
 export class NotificationDemoComponent {
   protected readonly service = inject(NxpNotificationService);
   private readonly injector = inject(Injector);
+
+  // ── Playground state (mirrors API tab two-way bindings) ─────────────────
+  readonly apiAppearance = signal<Appearance>('info');
+  readonly apiLabel = signal<string>('Heads up');
+  readonly apiContent = signal<string>('This is a playground toast.');
+  readonly apiIcon = signal<string>('');
+  readonly apiSize = signal<NxpNotificationOptions['size']>('m');
+  readonly apiClosable = signal<boolean>(true);
+  readonly apiAutoClose = signal<number | false>(5000);
+  readonly apiPosition =
+    signal<NxpNotificationOptions['position']>('top-right');
 
   // ── Static option lists ──────────────────────────────────────────────────
   protected readonly appearances: Appearance[] = [
@@ -657,6 +663,19 @@ export class NotificationDemoComponent {
       tone: 'emerald',
     },
   ];
+
+  // ── Playground ───────────────────────────────────────────────────────────
+  protected firePlayground(): void {
+    this.service.open(this.apiContent() || ' ', {
+      appearance: this.apiAppearance(),
+      label: this.apiLabel(),
+      icon: this.apiIcon(),
+      size: this.apiSize(),
+      closable: this.apiClosable(),
+      autoClose: this.apiAutoClose(),
+      position: this.apiPosition(),
+    });
+  }
 
   // ── Rich (component) toasts ──────────────────────────────────────────────
   protected fireRich(key: RichDemo['key']): void {
@@ -932,4 +951,347 @@ export class NotificationDemoComponent {
     };
     return `${base} ${map[appearance]}`;
   }
+
+  // ── Example source snippets shown inside <nxp-doc-example> tabs ──────────
+  readonly playgroundHtml = `<nxp-notification-host />
+
+<button type="button" (click)="firePlayground()">
+  Fire playground toast
+</button>
+<button type="button" (click)="dismissAll()">Clear</button>`;
+
+  readonly playgroundTs = `import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationOptions,
+  NxpNotificationService,
+} from '@ngxpro/cdk/components/notification';
+
+@Component({
+  selector: 'app-playground',
+  imports: [NxpNotificationHostComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './playground.html',
+})
+export class PlaygroundNotificationExample {
+  private readonly service = inject(NxpNotificationService);
+
+  readonly appearance = signal<NxpNotificationOptions['appearance']>('info');
+  readonly label = signal('Heads up');
+  readonly content = signal('This is a playground toast.');
+  readonly size = signal<NxpNotificationOptions['size']>('m');
+  readonly autoClose = signal<number | false>(5000);
+  readonly position = signal<NxpNotificationOptions['position']>('top-right');
+
+  protected firePlayground(): void {
+    this.service.open(this.content(), {
+      appearance: this.appearance(),
+      label: this.label(),
+      size: this.size(),
+      autoClose: this.autoClose(),
+      position: this.position(),
+    });
+  }
+
+  protected dismissAll(): void {
+    this.service.dismissAll();
+  }
+}`;
+
+  readonly richHtml = `<nxp-notification-host />
+
+@for (d of richDemos; track d.key) {
+  <button type="button" (click)="fireRich(d.key)">
+    {{ d.title }}
+  </button>
+}`;
+
+  readonly richTs = `import { ChangeDetectionStrategy, Component, inject, Injector, InjectionToken } from '@angular/core';
+import { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationService,
+} from '@ngxpro/cdk/components/notification';
+
+interface UndoData { filename: string; onUndo: () => void; }
+const UNDO_DATA = new InjectionToken<UndoData>('UNDO_DATA');
+
+@Component({
+  selector: 'app-undo-toast',
+  template: \`
+    <div>
+      <p>{{ data.filename }}</p>
+      <button (click)="data.onUndo()">Undo</button>
+    </div>
+  \`,
+})
+class UndoToastComponent {
+  protected readonly data = inject(UNDO_DATA);
+}
+
+@Component({
+  selector: 'app-rich-bodies',
+  imports: [NxpNotificationHostComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './rich-bodies.html',
+})
+export class RichBodiesNotificationExample {
+  private readonly service = inject(NxpNotificationService);
+  private readonly injector = inject(Injector);
+
+  protected fireUndo(): void {
+    const data: UndoData = {
+      filename: 'design-v3.fig',
+      onUndo: () => console.log('undone'),
+    };
+    const injector = Injector.create({
+      parent: this.injector,
+      providers: [{ provide: UNDO_DATA, useValue: data }],
+    });
+    this.service.open(new NxpDynamicComponent(UndoToastComponent, injector), {
+      appearance: 'neutral',
+      autoClose: 5000,
+    });
+  }
+}`;
+
+  readonly compareHtml = `<nxp-notification-host />
+
+<!-- String body -->
+<button (click)="fireString()">Fire string toast</button>
+
+<!-- NxpDynamicComponent body -->
+<button (click)="fireRich('undo')">Fire component toast</button>`;
+
+  readonly compareTs = `import { ChangeDetectionStrategy, Component, inject, Injector } from '@angular/core';
+import { NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationService,
+} from '@ngxpro/cdk/components/notification';
+
+@Component({
+  selector: 'app-compare',
+  imports: [NxpNotificationHostComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './compare.html',
+})
+export class CompareNotificationExample {
+  private readonly service = inject(NxpNotificationService);
+  private readonly injector = inject(Injector);
+
+  protected fireString(): void {
+    this.service.open('Your changes have been saved.', {
+      appearance: 'success',
+      label: 'All done',
+    });
+  }
+
+  protected fireRich(_key: string): void {
+    // Build a per-toast Injector with custom data tokens, then:
+    //   this.service.open(new NxpDynamicComponent(MyToast, injector), { ... });
+  }
+}`;
+
+  readonly appearanceHtml = `<nxp-notification-host />
+
+@for (a of appearances; track a) {
+  <button type="button" (click)="fireAppearance(a)">{{ a }}</button>
+}`;
+
+  readonly appearanceTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationOptions,
+  NxpNotificationService,
+} from '@ngxpro/cdk/components/notification';
+
+type Appearance = NxpNotificationOptions['appearance'];
+
+@Component({
+  selector: 'app-appearance',
+  imports: [NxpNotificationHostComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './appearance.html',
+})
+export class AppearanceNotificationExample {
+  private readonly service = inject(NxpNotificationService);
+
+  protected readonly appearances: Appearance[] = [
+    'info',
+    'success',
+    'warning',
+    'error',
+    'neutral',
+  ];
+
+  protected fireAppearance(appearance: Appearance): void {
+    this.service.open(\`This is a \${appearance} notification.\`, {
+      appearance,
+      label: appearance,
+    });
+  }
+}`;
+
+  readonly sizesHtml = `<nxp-notification-host />
+
+@for (s of sizes; track s) {
+  <button type="button" (click)="fireSize(s)">{{ s }}</button>
+}`;
+
+  readonly sizesTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationOptions,
+  NxpNotificationService,
+} from '@ngxpro/cdk/components/notification';
+
+@Component({
+  selector: 'app-sizes',
+  imports: [NxpNotificationHostComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './sizes.html',
+})
+export class SizesNotificationExample {
+  private readonly service = inject(NxpNotificationService);
+
+  protected readonly sizes: NxpNotificationOptions['size'][] = ['s', 'm', 'l'];
+
+  protected fireSize(size: NxpNotificationOptions['size']): void {
+    this.service.open(\`Size "\${size}" — notice the padding and text scale.\`, {
+      appearance: 'info',
+      size,
+      label: \`Size \${size}\`,
+    });
+  }
+}`;
+
+  readonly autoCloseHtml = `<nxp-notification-host />
+
+@for (d of durations; track d.value) {
+  <button type="button" (click)="fireAutoClose(d.value)">{{ d.label }}</button>
+}`;
+
+  readonly autoCloseTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationService,
+} from '@ngxpro/cdk/components/notification';
+
+@Component({
+  selector: 'app-auto-close',
+  imports: [NxpNotificationHostComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './auto-close.html',
+})
+export class AutoCloseNotificationExample {
+  private readonly service = inject(NxpNotificationService);
+
+  protected readonly durations = [
+    { value: 2000, label: '2s' },
+    { value: 5000, label: '5s' },
+    { value: 10000, label: '10s' },
+    { value: false as const, label: 'Sticky' },
+  ];
+
+  protected fireAutoClose(value: number | false): void {
+    const msg =
+      value === false
+        ? 'Sticky toast — dismiss it manually.'
+        : \`Closes in \${value / 1000}s — hover to pause.\`;
+    this.service.open(msg, {
+      appearance: value === false ? 'warning' : 'info',
+      autoClose: value,
+    });
+  }
+}`;
+
+  readonly stackHtml = `<nxp-notification-host />
+
+<button type="button" (click)="fireStack()">Stack 5</button>
+<button type="button" (click)="dismissAll()">Clear</button>`;
+
+  readonly stackTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationOptions,
+  NxpNotificationService,
+} from '@ngxpro/cdk/components/notification';
+
+type Appearance = NxpNotificationOptions['appearance'];
+
+@Component({
+  selector: 'app-stack',
+  imports: [NxpNotificationHostComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './stack.html',
+})
+export class StackNotificationExample {
+  private readonly service = inject(NxpNotificationService);
+
+  protected fireStack(): void {
+    const palette: Appearance[] = ['info', 'success', 'warning', 'error', 'neutral'];
+    const lines = [
+      'Build started',
+      'Compiled 142 modules',
+      'Type-check complete',
+      'Bundling assets',
+      'Deploy ready',
+    ];
+    palette.forEach((appearance, i) => {
+      setTimeout(() => {
+        this.service.open(lines[i], {
+          appearance,
+          label: \`Step \${i + 1} of 5\`,
+          autoClose: 9000,
+        });
+      }, i * 140);
+    });
+  }
+
+  protected dismissAll(): void {
+    this.service.dismissAll();
+  }
+}`;
+
+  readonly positionsHtml = `<nxp-notification-host />
+
+@for (p of positions; track p) {
+  <button type="button" (click)="firePosition(p)">{{ p }}</button>
+}`;
+
+  readonly positionsTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  NxpNotificationHostComponent,
+  NxpNotificationOptions,
+  NxpNotificationService,
+} from '@ngxpro/cdk/components/notification';
+
+@Component({
+  selector: 'app-positions',
+  imports: [NxpNotificationHostComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './positions.html',
+})
+export class PositionsNotificationExample {
+  private readonly service = inject(NxpNotificationService);
+
+  protected readonly positions: NxpNotificationOptions['position'][] = [
+    'top-left',
+    'top-center',
+    'top-right',
+    'bottom-left',
+    'bottom-center',
+    'bottom-right',
+  ];
+
+  protected firePosition(position: NxpNotificationOptions['position']): void {
+    this.service.open(\`Pinned to \${position}.\`, {
+      appearance: 'neutral',
+      label: position,
+      position,
+      autoClose: 2500,
+    });
+  }
+}`;
 }

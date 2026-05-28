@@ -15,7 +15,7 @@ import { cx } from '@ngxpro/cdk';
 export const linkVariants = tv({
   base: [
     'inline-flex items-center gap-1 font-medium transition-colors duration-normal',
-    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
+    'outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
     'disabled:pointer-events-none disabled:opacity-50',
   ],
   variants: {

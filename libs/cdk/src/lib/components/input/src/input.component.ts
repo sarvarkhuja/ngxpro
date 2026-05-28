@@ -4,12 +4,13 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { focusInput, hasErrorInput } from '@ngxpro/cdk';
-import { cx } from '@ngxpro/cdk';
+import { cx, hasErrorInput, inputVariants } from '@ngxpro/cdk';
 
 /**
- * @deprecated Prefer the `nxpInput` directive from `@nxp/cdk/components/input`.
+ * @deprecated Prefer the `nxpInput` directive from `@ngxpro/cdk/components/input`.
  * Kept for backward compatibility with existing `[nxp-input]` selector usage.
+ * Shares chrome with the rest of the input family via `inputVariants` so the
+ * Vercel/Geist look stays in sync.
  */
 @Component({
   selector: '[nxp-input]',
@@ -26,16 +27,6 @@ export class InputComponent {
   readonly class = input<string>('');
 
   readonly hostClasses = computed(() =>
-    cx(
-      'relative block w-full appearance-none rounded-m border px-3 py-2 shadow-sm outline-none transition sm:text-sm',
-      'border-border-normal',
-      'bg-bg-base',
-      'text-text-primary',
-      'placeholder:text-text-tertiary',
-      'disabled:cursor-not-allowed disabled:bg-bg-neutral-1 disabled:text-text-tertiary',
-      ...focusInput,
-      this.hasError() && hasErrorInput,
-      this.class(),
-    ),
+    cx(inputVariants(), this.hasError() && hasErrorInput, this.class()),
   );
 }

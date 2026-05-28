@@ -5,8 +5,8 @@
 - Secondary entry points: `libs/components/[name]/ng-package.json` + `libs/components/[name]/src/index.ts`
 - Path mapping goes in `ngxpro/tsconfig.base.json` under `"paths"`
 - `libs/components/src/index.ts` is a comment-only barrel — add a comment when adding a new entry point
-- Package import: `@ngxpro/components/[name]` (prefix is `@ngxpro`, NOT `@nxp` — both exist in codebase, check tsconfig)
-- Build command: `npx nx build components` from `/Users/aki/Documents/GitHub/ngxpro/ngxpro/`
+- Package import: `@ngxpro/components/[name]` — `@ngxpro/*` is the only alias in `tsconfig.base.json`; any `@nxp/*` import will fail
+- Build command: `npx nx build components` from `/Users/aki/Documents/GitHub/ngxpro/`
 
 ## Provider / Token Pattern
 

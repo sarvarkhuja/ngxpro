@@ -66,7 +66,7 @@ const APPEARANCE_GROUP_CLASSES: Record<NxpBlockAppearance, string> = {
  * providers: [nxpBlockOptionsProvider({ appearance: 'filled', size: 'm' })]
  */
 @Directive({
-  selector: 'label[nxpBlock],input[nxpBlock]',
+  selector: '[nxpBlock]',
   host: {
     '[class]': 'hostClasses()',
   },
@@ -96,9 +96,11 @@ export class NxpBlockDirective {
       'transition-[background-color,border-color,box-shadow] duration-normal ease-out',
       // When inside a group, the overlay handles hover/focus/checked — just lift content above overlays
       inGroup && 'z-10',
-      // Standalone: block handles its own hover/focus/checked styles
+      // Standalone: block handles its own hover/focus/checked styles —
+      // focus ring uses the design-system Geist focus blue (§6), not a
+      // primary tint.
       !inGroup &&
-        'focus-within:ring-2 focus-within:ring-primary/30 focus-within:ring-offset-1',
+        'focus-within:ring-2 focus-within:ring-border-focus focus-within:ring-offset-1',
       !inGroup &&
         '[&:has(input:checked)]:border-primary [&:has(input:checked)]:bg-primary/10',
       SIZE_CLASSES[this.size()],

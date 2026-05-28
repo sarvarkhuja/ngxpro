@@ -6,8 +6,6 @@ export const SHOWCASE_PAGES: NxpDocRoutePages = [
   { section: 'Layout', title: 'Accordion', route: '/accordion' },
   { section: 'Layout', title: 'Block', route: '/block' },
   { section: 'Layout', title: 'Segmented', route: '/segmented' },
-  { section: 'Layout', title: 'Stepper', route: '/stepper' },
-  { section: 'Layout', title: 'Tabs', route: '/tabs' },
   { section: 'Layout', title: 'Tree', route: '/tree' },
 
   { section: 'Inputs', title: 'Combo Box', route: '/combo-box' },
@@ -61,5 +59,5 @@ export const SHOWCASE_PAGES: NxpDocRoutePages = [
   { section: 'Display', title: 'Text Morph', route: '/text-morph' },
 
   { section: 'Documentation', title: 'Overview', route: '/doc' },
-  { section: 'Documentation', title: 'Button', route: '/doc/button' },
+  { section: 'Documentation', title: 'Doc Page Sample', route: '/doc/button' },
 ];

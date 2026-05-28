@@ -184,33 +184,20 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
 
     .nxp-range-track-bg {
       position: absolute;
-      border: 1px solid var(--nxp-border, rgb(229 231 235));
+      /* Shadow-as-border so the track lives in the shadow layer */
+      box-shadow: 0 0 0 1px var(--nxp-border-normal);
       overflow: hidden;
       border-radius: 9999px;
       background: transparent;
-    }
-    :host-context(.dark) .nxp-range-track-bg {
-      border-color: var(--nxp-border, rgb(55 65 81));
     }
 
     .nxp-range-fill {
       position: absolute;
       height: 100%;
-      background: color-mix(
-        in srgb,
-        var(--nxp-fg, rgb(17 24 39)) 12%,
-        transparent
-      );
+      background: color-mix(in srgb, var(--nxp-text-primary) 12%, transparent);
       transition:
         left 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
         width 160ms cubic-bezier(0.22, 1.2, 0.36, 1);
-    }
-    :host-context(.dark) .nxp-range-fill {
-      background: color-mix(
-        in srgb,
-        var(--nxp-fg, rgb(243 244 246)) 12%,
-        transparent
-      );
     }
     .nxp-range-dragging .nxp-range-fill {
       transition: none;
@@ -236,8 +223,8 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
       height: ${DOT_SIZE}px;
       border-radius: 9999px;
       flex-shrink: 0;
-      background: var(--nxp-muted-fg, rgb(156 163 175));
-      opacity: 0.3;
+      background: var(--nxp-text-tertiary);
+      opacity: 0.4;
       transition:
         width 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
         height 160ms cubic-bezier(0.22, 1.2, 0.36, 1),
@@ -270,15 +257,16 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
       width: ${THUMB_SIZE_REST}px;
       height: ${THUMB_SIZE_REST}px;
       border-radius: 9999px;
-      background: white;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      background: var(--nxp-bg-base);
+      /* Vercel multi-layer lift — token auto-flips for dark mode */
+      box-shadow: var(--nxp-shadow-lift);
     }
     .nxp-range-focus-ring {
       position: absolute;
-      width: ${THUMB_SIZE + 4}px;
-      height: ${THUMB_SIZE + 4}px;
+      width: ${THUMB_SIZE + 6}px;
+      height: ${THUMB_SIZE + 6}px;
       border-radius: 9999px;
-      border: 1px solid #6b97ff;
+      box-shadow: 0 0 0 2px var(--nxp-border-focus);
       pointer-events: none;
     }
 
@@ -292,39 +280,26 @@ const TRACK_INSET = (THUMB_SIZE - TRACK_BG_HEIGHT) / 2;
 
     /* --- Theme color mode --- */
     :host.nxp-range-themed .nxp-range-fill {
-      background: color-mix(
-        in srgb,
-        var(--nxp-primary, #3b82f6) 25%,
-        transparent
-      );
-    }
-    :host-context(.dark):host.nxp-range-themed .nxp-range-fill,
-    :host.nxp-range-themed:host-context(.dark) .nxp-range-fill {
-      background: color-mix(
-        in srgb,
-        var(--nxp-primary, #3b82f6) 30%,
-        transparent
-      );
+      background: color-mix(in srgb, var(--nxp-primary) 25%, transparent);
     }
     :host.nxp-range-themed .nxp-range-thumb {
-      background: var(--nxp-primary, #3b82f6);
-      box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+      background: var(--nxp-primary);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        0 1px 3px color-mix(in srgb, var(--nxp-primary) 30%, transparent);
     }
     :host.nxp-range-themed .nxp-range-focus-ring {
-      border-color: var(--nxp-primary, #3b82f6);
+      box-shadow: 0 0 0 2px var(--nxp-primary);
     }
     :host.nxp-range-themed .nxp-range-track-bg {
-      border-color: color-mix(
-        in srgb,
-        var(--nxp-primary, #3b82f6) 30%,
-        var(--nxp-border, rgb(229 231 235))
-      );
+      box-shadow: 0 0 0 1px
+        color-mix(in srgb, var(--nxp-primary) 30%, var(--nxp-border-normal));
     }
     :host.nxp-range-themed .nxp-range-dot {
       background: color-mix(
         in srgb,
-        var(--nxp-primary, #3b82f6) 40%,
-        var(--nxp-muted-fg, rgb(156 163 175))
+        var(--nxp-primary) 40%,
+        var(--nxp-text-tertiary)
       );
     }
   `,

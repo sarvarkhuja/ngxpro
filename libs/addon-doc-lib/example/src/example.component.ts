@@ -177,6 +177,7 @@ type ExampleComponentLoader = Promise<
             @let code = processor()[tab] || '';
             <nxp-doc-code
               [code]="code"
+              [language]="tab"
               [style.display]="
                 activeItemIndex() === $index && ($index || !preview())
                   ? 'block'

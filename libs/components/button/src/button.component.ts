@@ -7,13 +7,23 @@ import {
 import { tv, type VariantProps } from 'tailwind-variants';
 import { cx } from '@ngxpro/cdk';
 
+/**
+ * Button — Vercel/Geist aligned.
+ * - Weight 500 (UI/interactive) per the three-weight system
+ * - Radius 6px (rounded-m), never pill (pill is for badges/tags)
+ * - Tertiary uses shadow-as-border instead of CSS border
+ * - Focus ring: 2px Vercel blue, offset 2 (focusRing pattern)
+ * - Tracking: normal at 14px and below, per the design system principle
+ *   "tracking progressively relaxes as size decreases ... normal at 14px"
+ */
 const buttonVariants = tv({
   slots: {
     base: [
       'group relative inline-flex items-center justify-center whitespace-nowrap font-medium cursor-pointer',
-      'transition-[background-color,color,border-color,transform,box-shadow] duration-fast ease-out',
-      'active:scale-[0.97]',
-      'outline-none focus-visible:ring-1 focus-visible:ring-border-focus',
+      'transition-[background-color,color,box-shadow,transform,opacity] duration-fast ease-out',
+      'active:scale-[0.98]',
+      'outline-none outline-offset-2',
+      'focus-visible:outline-2 focus-visible:outline-border-focus',
       'disabled:pointer-events-none disabled:opacity-50',
     ],
     icon: [
@@ -35,14 +45,16 @@ const buttonVariants = tv({
       secondary: {
         base: [
           'bg-secondary text-text-primary',
+          'shadow-border',
           'hover:bg-secondary-hover',
           'active:bg-secondary-pressed',
         ],
       },
       tertiary: {
         base: [
-          'border border-border-normal bg-transparent text-text-primary',
-          'hover:bg-bg-neutral-1 hover:border-border-hover',
+          'bg-bg-base text-text-primary',
+          'shadow-border-light',
+          'hover:bg-bg-neutral-1',
           'active:bg-bg-neutral-2',
         ],
       },
@@ -50,7 +62,7 @@ const buttonVariants = tv({
         base: [
           'bg-transparent text-text-secondary',
           'hover:bg-bg-neutral-1 hover:text-text-primary',
-          'active:bg-muted/60',
+          'active:bg-bg-neutral-2',
         ],
       },
       destructive: {
@@ -68,22 +80,22 @@ const buttonVariants = tv({
         spinner: 'size-3.5',
       },
       md: {
-        base: 'h-8 px-4 text-[13px] gap-1.5 rounded-m',
+        base: 'h-8 px-3.5 text-[13px] gap-1.5 rounded-m',
         icon: 'size-4',
         spinner: 'size-4',
       },
       lg: {
-        base: 'h-9 px-5 text-[14px] gap-1.5 rounded-m',
+        base: 'h-10 px-4 text-[14px] gap-2 rounded-m',
         icon: 'size-4',
         spinner: 'size-4',
       },
       'icon-sm': {
-        base: 'size-8 p-0 rounded-m',
+        base: 'size-7 p-0 rounded-m',
         icon: 'size-3.5',
         spinner: 'size-3.5',
       },
       icon: {
-        base: 'size-9 p-0 rounded-m',
+        base: 'size-8 p-0 rounded-m',
         icon: 'size-4',
         spinner: 'size-4',
       },
@@ -103,12 +115,12 @@ const buttonVariants = tv({
   compoundVariants: [
     // Reduced padding when leading icon is present
     { size: 'sm', iconLeft: true, class: { base: 'pl-[6px]' } },
-    { size: 'md', iconLeft: true, class: { base: 'pl-[10px]' } },
-    { size: 'lg', iconLeft: true, class: { base: 'pl-[14px]' } },
+    { size: 'md', iconLeft: true, class: { base: 'pl-[8px]' } },
+    { size: 'lg', iconLeft: true, class: { base: 'pl-[10px]' } },
     // Reduced padding when trailing icon is present
     { size: 'sm', iconRight: true, class: { base: 'pr-[6px]' } },
-    { size: 'md', iconRight: true, class: { base: 'pr-[10px]' } },
-    { size: 'lg', iconRight: true, class: { base: 'pr-[14px]' } },
+    { size: 'md', iconRight: true, class: { base: 'pr-[8px]' } },
+    { size: 'lg', iconRight: true, class: { base: 'pr-[10px]' } },
   ],
   defaultVariants: {
     variant: 'primary',

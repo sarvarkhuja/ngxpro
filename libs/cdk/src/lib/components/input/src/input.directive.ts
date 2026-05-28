@@ -7,8 +7,7 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { focusInput, hasErrorInput } from '@ngxpro/cdk';
-import { cx } from '@ngxpro/cdk';
+import { cx, hasErrorInput, inputVariants } from '@ngxpro/cdk';
 import {
   NXP_TEXTFIELD,
   NxpTextfieldAccessor,
@@ -70,10 +69,12 @@ export class NxpInputDirective
 
   readonly classes = computed(() => {
     if (this.textfield && !this.textfield.hasLabel()) {
+      // Inside a textfield (no floating label): the wrapper owns chrome.
+      // The input itself is transparent so background/shadow/focus live
+      // on the wrapper — Vercel-style composition.
       return cx(
         'block w-full h-full bg-transparent border-0 outline-none ring-0 px-2.5',
-        'text-text-primary sm:text-sm',
-        'placeholder:text-text-tertiary',
+        'text-[14px] leading-[1.43] text-text-primary placeholder:text-text-quaternary',
         'disabled:cursor-not-allowed',
         '[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden',
         this.adornmentPadding(),
@@ -81,16 +82,12 @@ export class NxpInputDirective
       );
     }
 
+    // Standalone (or textfield-with-label) mode — wear the full input
+    // chrome from `inputVariants` so all input-style controls match.
     return cx(
-      'relative block w-full appearance-none rounded-m border px-2.5 py-2 shadow-sm outline-hidden transition sm:text-sm',
-      'border-border-normal',
-      'text-text-primary',
-      'placeholder:text-text-tertiary',
-      'bg-bg-base',
-      'disabled:border-border-normal disabled:bg-bg-neutral-1 disabled:text-text-tertiary',
+      inputVariants(),
       '[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden',
-      ...focusInput,
-      ...(this.hasError() ? hasErrorInput : []),
+      this.hasError() && hasErrorInput,
       this.adornmentPadding(),
       this.class(),
     );

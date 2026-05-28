@@ -23,7 +23,7 @@ export class NxpLabelDirective {
 
   readonly classes = computed(() =>
     cx(
-      'text-sm leading-none',
+      'text-sm font-medium leading-none',
       'text-text-primary',
       this.disabled() && 'text-text-tertiary',
       this.class(),

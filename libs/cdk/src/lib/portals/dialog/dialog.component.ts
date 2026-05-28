@@ -37,9 +37,9 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
         type="button"
         class="absolute top-4 right-4 z-10 inline-flex items-center justify-center rounded-s p-1.5
                text-text-tertiary hover:text-text-primary hover:bg-bg-neutral-1
-               focus:outline-none focus-visible:ring-1 focus-visible:ring-border-focus
+               outline-none outline-offset-2 focus-visible:outline-2 focus-visible:outline-border-focus
                transition-[background-color,color,transform] duration-fast ease-out
-               active:scale-[0.97]"
+               active:scale-[0.98]"
         (click)="close$.next()"
         aria-label="Close"
       >
@@ -64,7 +64,7 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
       <header class="mb-4">
         <h2
           [id]="context.id"
-          class="text-lg font-semibold text-text-primary"
+          class="text-lg font-semibold tracking-body text-text-primary"
           [innerHTML]="context.label"
         ></h2>
       </header>
@@ -74,7 +74,7 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
       <header class="mb-4">
         <h2
           [id]="context.id"
-          class="text-lg font-semibold text-text-primary"
+          class="text-lg font-semibold tracking-body text-text-primary"
           [innerHTML]="context.label"
         ></h2>
         @if (text) {
@@ -83,17 +83,17 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
       </header>
       @if (context.closable || context.dismissible) {
         <footer
-          class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
+          class="mt-8 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
         >
           <button
             type="button"
             class="inline-flex items-center justify-center rounded-m px-4 py-2 text-sm font-medium
-                   bg-primary text-text-on-accent shadow-sm
+                   bg-primary text-text-on-accent
                    hover:bg-primary-hover
                    active:bg-primary-pressed
-                   focus:outline-none focus-visible:ring-1 focus-visible:ring-border-focus
+                   outline-none outline-offset-2 focus-visible:outline-2 focus-visible:outline-border-focus
                    transition-[background-color,color,transform] duration-fast ease-out
-                   active:scale-[0.97]"
+                   active:scale-[0.98]"
             (click)="context.$implicit.complete()"
           >
             {{ context.data ?? 'OK' }}
@@ -112,7 +112,8 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
         max-width: calc(100vw - 2rem);
         max-height: calc(100svh - 4rem);
         overflow-y: auto;
-        padding: 1.5rem;
+        /* In-scale per design §5 (primary scale skips 20/24px). */
+        padding: 2rem;
       }
       nxp-dialog[data-size='s'] {
         width: 25rem;
@@ -129,7 +130,7 @@ function toObservable<T>(valueOrStream: Observable<T> | T): Observable<T> {
   ],
   host: {
     class:
-      'relative flex flex-col rounded-l bg-bg-base border border-border-normal shadow-xl outline-none',
+      'relative flex rounded-md flex-col bg-bg-base shadow-card-lg outline-none',
     '[attr.data-appearance]': 'context.appearance',
     '[attr.data-size]': 'context.size',
     '[class.nxp-dialog--closable]': 'context.closable',

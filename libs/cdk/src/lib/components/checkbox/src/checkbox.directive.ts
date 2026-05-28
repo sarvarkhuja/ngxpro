@@ -16,6 +16,14 @@ export type NxpCheckboxDirectiveSize = 's' | 'm' | 'l';
 export type NxpCheckboxDirectiveColor = 'primary' | 'secondary' | 'danger';
 
 /**
+ * Tri-state value accepted by `nxpCheckbox` via `[(ngModel)]` or `[formControl]`:
+ * `true` checked, `false` unchecked, `null` indeterminate. Use this type for
+ * external state stores (e.g. tree checkbox maps) so the contract with the
+ * directive stays explicit.
+ */
+export type NxpCheckboxValue = boolean | null;
+
+/**
  * Checkbox input directive — applies to native `<input type="checkbox">` elements.
  *
  * Styled purely via `:checked` / `:indeterminate` / `:disabled` pseudo-classes,
@@ -95,7 +103,7 @@ export class NxpCheckboxDirective implements ControlValueAccessor {
   };
 
   /** Mirror form state onto the native element. `null` flips indeterminate. */
-  writeValue(value: boolean | null): void {
+  writeValue(value: NxpCheckboxValue): void {
     const el = this.elRef.nativeElement;
     el.checked = value === true;
     el.indeterminate = value === null;

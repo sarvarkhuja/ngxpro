@@ -40,7 +40,7 @@ import { NxpDocKebabPipe, nxpToKebab } from '@ngxpro/addon-doc-lib/utils';
     @if (toc().length > 1) {
       <h2 class="text-sm font-bold text-text-primary my-2">{{ tocText() }}</h2>
       <nav
-        class="flex flex-col my-4 mx-0 [clip-path:inset(0.5rem_-1rem)] shadow-[inset_1px_0_0_var(--nxp-border-normal,theme(colors.gray.200))]"
+        class="flex flex-col my-4 mx-0 [clip-path:inset(0.5rem_-1rem)] shadow-[inset_1px_0_0_var(--nxp-border-normal,theme(colors.gray.200))] dark:shadow-[inset_1px_0_0_var(--nxp-border-normal,theme(colors.gray.800))]"
       >
         @for (item of toc(); track $index) {
           <a

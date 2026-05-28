@@ -16,19 +16,17 @@ import { NXP_TEXTFIELD_ACCESSOR } from '@ngxpro/cdk/components/textfield';
  * is always reachable from the portal injector chain because `nxp-textfield`
  * is an ancestor of the dropdown's embedded view.
  *
- * `NXP_TEXTFIELD_ACCESSOR` (also on `nxp-textfield`) is used only for the
- * `isSelected` computed — to read the current display string without requiring
- * `NxpControl` injection.
- *
- * `(pointerdown)` calls `preventDefault()` to prevent focus from leaving the
- * trigger input on mouse press, which would otherwise collapse the dropdown
- * before the `click` event fires. Keyboard focus (Tab / Arrow) still works.
+ * `(pointerdown).preventDefault()` keeps focus on the trigger input while the
+ * user mouses an option — otherwise focus would leave the input on mousedown
+ * and the dropdown would collapse before `click` fires. Keyboard focus still
+ * works (Tab / Arrow).
  */
 @Component({
   selector: 'nxp-select-option',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     role: 'option',
+    tabindex: '0',
     '[attr.aria-selected]': 'isSelected() ? true : null',
     '[attr.aria-disabled]': 'isDisabled() ? true : null',
     '[class]': 'classes()',
@@ -36,7 +34,6 @@ import { NXP_TEXTFIELD_ACCESSOR } from '@ngxpro/cdk/components/textfield';
     '(click)': 'select()',
     '(keydown.enter)': 'select()',
     '(keydown.space)': 'select()',
-    tabindex: '0',
   },
   template: `
     <span class="flex-1 truncate">{{ label() }}</span>
@@ -73,8 +70,8 @@ export class NxpSelectOptionComponent<T = unknown> {
   );
 
   protected readonly isSelected = computed(() => {
-    const current = this.accessor?.value() ?? '';
-    return !!current && current === this.handlers.stringify()(this.value());
+    const current = this.accessor?.value();
+    return !!current && current === this.label();
   });
 
   protected readonly isDisabled = computed(() =>
@@ -83,13 +80,16 @@ export class NxpSelectOptionComponent<T = unknown> {
 
   protected readonly classes = computed(() =>
     cx(
-      'flex w-full cursor-pointer items-center gap-2 rounded-s px-3 py-1.5',
+      // `relative z-10` keeps the row above the data-list's absolutely
+      // positioned hover/selected pills — without it the pill paints over
+      // the label after mouseout.
+      'relative z-10 flex w-full cursor-pointer items-center gap-2 rounded-s px-3 py-1.5',
       'text-sm font-medium text-left',
       'transition-colors duration-fast select-none',
       'outline-none focus-visible:outline focus-visible:outline-2',
       'focus-visible:outline-offset-1 focus-visible:outline-border-focus',
       this.isSelected()
-        ? 'bg-primary/10 text-text-action'
+        ? 'bg-primary/10 text-text-primary'
         : ['text-text-secondary', 'hover:bg-bg-neutral-1'],
       this.isDisabled() && 'opacity-50 cursor-not-allowed pointer-events-none',
     ),

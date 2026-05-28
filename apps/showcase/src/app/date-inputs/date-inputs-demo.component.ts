@@ -1,12 +1,14 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { InputDateComponent } from '@ngxpro/components/input-date';
 import { InputDateRangeComponent } from '@ngxpro/components/input-date-range';
 import { InputMonthComponent } from '@ngxpro/components/input-month';
 import { createDefaultDateRangePeriods } from '@ngxpro/components/calendar-range';
 import type { MonthCoord } from '@ngxpro/components/calendar-month';
+import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
+import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
+import { DateInputsApiComponent } from './date-inputs-api.component';
 
 /**
  * Showcase demo for the three date input components:
@@ -17,358 +19,368 @@ import type { MonthCoord } from '@ngxpro/components/calendar-month';
 @Component({
   selector: 'app-date-inputs-demo',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DecimalPipe,
-    RouterModule,
     FormsModule,
     ReactiveFormsModule,
     InputDateComponent,
     InputDateRangeComponent,
     InputMonthComponent,
+    NxpDocComponentPage,
+    NxpDocExampleComponent,
+    DateInputsApiComponent,
   ],
   template: `
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
-      <div class="max-w-4xl mx-auto space-y-16">
-        <!-- Page header -->
-        <div>
-          <a routerLink="/" class="text-sm text-blue-500 hover:underline"
-            >← Back to home</a
-          >
-          <h1 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white">
-            Date Inputs
-          </h1>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">
-            Text inputs with calendar dropdowns. All support keyboard date entry
-            and Angular reactive/template-driven forms.
-          </p>
-        </div>
+    <nxp-doc-component-page
+      header="Date Inputs"
+      package="components"
+      type="component"
+      path="components/date-inputs"
+    >
+      <p class="text-base text-text-secondary mb-6">
+        Text inputs with calendar dropdowns —
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >nxp-input-date</code
+        >,
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >nxp-input-date-range</code
+        >, and
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >nxp-input-month</code
+        >. All support keyboard date entry and Angular reactive /
+        template-driven forms via
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >ControlValueAccessor</code
+        >.
+      </p>
 
-        <!-- ================================================================
-             Section 1: InputDate
-        ================================================================ -->
-        <section class="space-y-8">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            nxp-input-date
-          </h2>
+      <ng-template nxpExamplesTab>
+        <!-- ============================================================
+             nxp-input-date — Signal binding
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date — signal binding"
+          description="Click to open the calendar, or type directly (MM/DD/YYYY). Bound to a writable signal via [value]/(valueChange)."
+          [content]="{ HTML: signalDateHtml, TypeScript: signalDateTs }"
+        >
+          <div class="space-y-3 max-w-sm">
+            <nxp-input-date
+              [value]="singleDate()"
+              (valueChange)="singleDate.set($event)"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Value:
+              <code class="font-mono">{{
+                singleDate() ? singleDate()!.toLocaleDateString() : 'null'
+              }}</code>
+            </p>
+          </div>
+        </nxp-doc-example>
 
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <!-- 1a. Standalone signal -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Signal binding
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Click to open calendar or type directly (MM/DD/YYYY).
-              </p>
-              <nxp-input-date
-                [value]="singleDate()"
-                (valueChange)="singleDate.set($event)"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Value:
-                <code class="font-mono">{{
-                  singleDate() ? singleDate()!.toLocaleDateString() : 'null'
-                }}</code>
-              </p>
-            </div>
+        <!-- ============================================================
+             nxp-input-date — ngModel
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date — [(ngModel)]"
+          description="Two-way binding via template-driven forms."
+          [content]="{ HTML: ngModelDateHtml, TypeScript: ngModelDateTs }"
+        >
+          <div class="space-y-3 max-w-sm">
+            <nxp-input-date [(ngModel)]="ngModelDate" />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              ngModel:
+              <code class="font-mono">{{
+                ngModelDate ? ngModelDate.toLocaleDateString() : 'null'
+              }}</code>
+            </p>
+          </div>
+        </nxp-doc-example>
 
-            <!-- 1b. ngModel -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                With [(ngModel)]
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Two-way binding via template-driven forms.
-              </p>
-              <nxp-input-date [(ngModel)]="ngModelDate" />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                ngModel:
-                <code class="font-mono">{{
-                  ngModelDate ? ngModelDate.toLocaleDateString() : 'null'
-                }}</code>
-              </p>
-            </div>
+        <!-- ============================================================
+             nxp-input-date — Reactive form
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date — reactive form"
+          description="Works with FormControl. Implements ControlValueAccessor so setValue() propagates back through writeValue()."
+          [content]="{
+            HTML: reactiveDateHtml,
+            TypeScript: reactiveDateTs,
+          }"
+        >
+          <div class="space-y-3 max-w-sm">
+            <nxp-input-date [formControl]="dateControl" />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Control:
+              <code class="font-mono">{{
+                dateControl.value
+                  ? dateControl.value.toLocaleDateString()
+                  : 'null'
+              }}</code>
+            </p>
+          </div>
+        </nxp-doc-example>
 
-            <!-- 1c. Reactive form -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Reactive form
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Works with <code class="font-mono text-xs">FormControl</code>.
-              </p>
-              <nxp-input-date [formControl]="dateControl" />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
+        <!-- ============================================================
+             nxp-input-date — Min / Max bounds
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date — min / max bounds"
+          description="Only dates within ±7 days of today are selectable. Days outside the bounds are rendered as disabled in the calendar."
+          [content]="{ HTML: boundedDateHtml, TypeScript: boundedDateTs }"
+        >
+          <div class="space-y-3 max-w-sm">
+            <nxp-input-date
+              [value]="boundedDate()"
+              [min]="minDate"
+              [max]="maxDate"
+              (valueChange)="boundedDate.set($event)"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Value:
+              <code class="font-mono">{{
+                boundedDate() ? boundedDate()!.toLocaleDateString() : 'null'
+              }}</code>
+            </p>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ============================================================
+             nxp-input-date — Disabled
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date — disabled state"
+          description="The input is non-interactive when disabled, and the calendar dropdown cannot be opened."
+          [content]="{ HTML: disabledDateHtml, TypeScript: disabledDateTs }"
+        >
+          <div class="max-w-sm">
+            <nxp-input-date
+              [value]="singleDate()"
+              [disabled]="true"
+              placeholder="Disabled input"
+            />
+          </div>
+        </nxp-doc-example>
+
+        <!-- ============================================================
+             nxp-input-date-range — Basic
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date range — basic"
+          description='Click once for start, again for end. Or type "MM/DD/YYYY – MM/DD/YYYY".'
+          [content]="{ HTML: rangeBasicHtml, TypeScript: rangeBasicTs }"
+        >
+          <div class="space-y-3 max-w-md">
+            <nxp-input-date-range
+              [value]="range()"
+              (valueChange)="range.set($event)"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              @if (range()) {
+                Range:
+                <code class="font-mono"
+                  >{{ range()![0].toLocaleDateString() }} –
+                  {{ range()![1].toLocaleDateString() }}</code
+                >
+              } @else {
+                Range: <code class="font-mono">null</code>
+              }
+            </p>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ============================================================
+             nxp-input-date-range — Preset periods
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date range — preset periods"
+          description="Predefined ranges shown in a sidebar for quick selection. Pass createDefaultDateRangePeriods() for a sensible default set."
+          [content]="{ HTML: rangePresetsHtml, TypeScript: rangePresetsTs }"
+        >
+          <div class="space-y-3 max-w-md">
+            <nxp-input-date-range
+              [value]="rangeWithPresets()"
+              [items]="defaultPeriods"
+              (valueChange)="rangeWithPresets.set($event)"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              @if (rangeWithPresets()) {
+                Range:
+                <code class="font-mono"
+                  >{{ rangeWithPresets()![0].toLocaleDateString() }} –
+                  {{ rangeWithPresets()![1].toLocaleDateString() }}</code
+                >
+              } @else {
+                Range: <code class="font-mono">null</code>
+              }
+            </p>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ============================================================
+             nxp-input-date-range — Length constraints
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date range — length constraints"
+          description="Minimum 3 days, maximum 14 days allowed via [minLength] / [maxLength]."
+          [content]="{
+            HTML: rangeConstrainedHtml,
+            TypeScript: rangeConstrainedTs,
+          }"
+        >
+          <div class="space-y-3 max-w-md">
+            <nxp-input-date-range
+              [value]="constrainedRange()"
+              [minLength]="3"
+              [maxLength]="14"
+              (valueChange)="constrainedRange.set($event)"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              @if (constrainedRange()) {
+                Range:
+                <code class="font-mono"
+                  >{{ constrainedRange()![0].toLocaleDateString() }} –
+                  {{ constrainedRange()![1].toLocaleDateString() }}</code
+                >
+              } @else {
+                Range: <code class="font-mono">null</code>
+              }
+            </p>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ============================================================
+             nxp-input-date-range — Reactive form
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input date range — reactive form"
+          description="Works with FormControl typed as [Date, Date] | null."
+          [content]="{
+            HTML: rangeReactiveHtml,
+            TypeScript: rangeReactiveTs,
+          }"
+        >
+          <div class="space-y-3 max-w-md">
+            <nxp-input-date-range [formControl]="rangeControl" />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              @if (rangeControl.value) {
                 Control:
-                <code class="font-mono">{{
-                  dateControl.value
-                    ? dateControl.value.toLocaleDateString()
-                    : 'null'
-                }}</code>
-              </p>
-            </div>
+                <code class="font-mono"
+                  >{{ rangeControl.value[0].toLocaleDateString() }} –
+                  {{ rangeControl.value[1].toLocaleDateString() }}</code
+                >
+              } @else {
+                Control: <code class="font-mono">null</code>
+              }
+            </p>
+          </div>
+        </nxp-doc-example>
 
-            <!-- 1d. Min / Max bounds -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Min / Max bounds
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Only dates within ±7 days of today are selectable.
-              </p>
-              <nxp-input-date
-                [value]="boundedDate()"
-                [min]="minDate"
-                [max]="maxDate"
-                (valueChange)="boundedDate.set($event)"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
+        <!-- ============================================================
+             nxp-input-month — Basic
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input month — single month picker"
+          description="Click to open the month grid and pick a month. Value is a MonthCoord with zero-indexed month."
+          [content]="{ HTML: monthBasicHtml, TypeScript: monthBasicTs }"
+        >
+          <div class="space-y-3 max-w-sm">
+            <nxp-input-month
+              [value]="selectedMonth()"
+              (valueChange)="selectedMonth.set($event)"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              @if (selectedMonth()) {
                 Value:
-                <code class="font-mono">{{
-                  boundedDate() ? boundedDate()!.toLocaleDateString() : 'null'
-                }}</code>
-              </p>
-            </div>
-
-            <!-- 1e. Disabled -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Disabled state
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                The input is non-interactive when disabled.
-              </p>
-              <nxp-input-date
-                [value]="singleDate()"
-                [disabled]="true"
-                placeholder="Disabled input"
-              />
-            </div>
+                <code class="font-mono"
+                  >{{ selectedMonth()!.year }}-{{
+                    selectedMonth()!.month + 1 | number: '2.0-0'
+                  }}</code
+                >
+              } @else {
+                Value: <code class="font-mono">null</code>
+              }
+            </p>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ================================================================
-             Section 2: InputDateRange
-        ================================================================ -->
-        <section class="space-y-8">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            nxp-input-date-range
-          </h2>
-
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <!-- 2a. Basic -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Basic range picker
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Click once for start, again for end. Or type "MM/DD/YYYY –
-                MM/DD/YYYY".
-              </p>
-              <nxp-input-date-range
-                [value]="range()"
-                (valueChange)="range.set($event)"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                @if (range()) {
-                  Range:
-                  <code class="font-mono"
-                    >{{ range()![0].toLocaleDateString() }} –
-                    {{ range()![1].toLocaleDateString() }}</code
-                  >
-                } @else {
-                  Range: <code class="font-mono">null</code>
-                }
-              </p>
-            </div>
-
-            <!-- 2b. With preset periods -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                With preset periods sidebar
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Predefined ranges shown in a sidebar for quick selection.
-              </p>
-              <nxp-input-date-range
-                [value]="rangeWithPresets()"
-                [items]="defaultPeriods"
-                (valueChange)="rangeWithPresets.set($event)"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                @if (rangeWithPresets()) {
-                  Range:
-                  <code class="font-mono"
-                    >{{ rangeWithPresets()![0].toLocaleDateString() }} –
-                    {{ rangeWithPresets()![1].toLocaleDateString() }}</code
-                  >
-                } @else {
-                  Range: <code class="font-mono">null</code>
-                }
-              </p>
-            </div>
-
-            <!-- 2c. Min / Max length constraint -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Length constraints
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Minimum 3 days, maximum 14 days allowed.
-              </p>
-              <nxp-input-date-range
-                [value]="constrainedRange()"
-                [minLength]="3"
-                [maxLength]="14"
-                (valueChange)="constrainedRange.set($event)"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                @if (constrainedRange()) {
-                  Range:
-                  <code class="font-mono"
-                    >{{ constrainedRange()![0].toLocaleDateString() }} –
-                    {{ constrainedRange()![1].toLocaleDateString() }}</code
-                  >
-                } @else {
-                  Range: <code class="font-mono">null</code>
-                }
-              </p>
-            </div>
-
-            <!-- 2d. Reactive form -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Reactive form
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Works with <code class="font-mono text-xs">FormControl</code>.
-              </p>
-              <nxp-input-date-range [formControl]="rangeControl" />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                @if (rangeControl.value) {
-                  Control:
-                  <code class="font-mono"
-                    >{{ rangeControl.value[0].toLocaleDateString() }} –
-                    {{ rangeControl.value[1].toLocaleDateString() }}</code
-                  >
-                } @else {
-                  Control: <code class="font-mono">null</code>
-                }
-              </p>
-            </div>
+        <!-- ============================================================
+             nxp-input-month — ngModel
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input month — [(ngModel)]"
+          description="Two-way binding via template-driven forms."
+          [content]="{ HTML: monthNgModelHtml, TypeScript: monthNgModelTs }"
+        >
+          <div class="space-y-3 max-w-sm">
+            <nxp-input-month [(ngModel)]="ngModelMonth" />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              @if (ngModelMonth) {
+                ngModel:
+                <code class="font-mono"
+                  >{{ ngModelMonth.year }}-{{
+                    ngModelMonth.month + 1 | number: '2.0-0'
+                  }}</code
+                >
+              } @else {
+                ngModel: <code class="font-mono">null</code>
+              }
+            </p>
           </div>
-        </section>
+        </nxp-doc-example>
 
-        <!-- ================================================================
-             Section 3: InputMonth
-        ================================================================ -->
-        <section class="space-y-8">
-          <h2
-            class="text-2xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3"
-          >
-            nxp-input-month
-          </h2>
-
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <!-- 3a. Basic -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Single month picker
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Click to open the month grid and select a month.
-              </p>
-              <nxp-input-month
-                [value]="selectedMonth()"
-                (valueChange)="selectedMonth.set($event)"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                @if (selectedMonth()) {
-                  Value:
-                  <code class="font-mono"
-                    >{{ selectedMonth()!.year }}-{{
-                      selectedMonth()!.month + 1 | number: '2.0-0'
-                    }}</code
-                  >
-                } @else {
-                  Value: <code class="font-mono">null</code>
-                }
-              </p>
-            </div>
-
-            <!-- 3b. ngModel -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                With [(ngModel)]
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Two-way binding via template-driven forms.
-              </p>
-              <nxp-input-month [(ngModel)]="ngModelMonth" />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                @if (ngModelMonth) {
-                  ngModel:
-                  <code class="font-mono"
-                    >{{ ngModelMonth.year }}-{{
-                      ngModelMonth.month + 1 | number: '2.0-0'
-                    }}</code
-                  >
-                } @else {
-                  ngModel: <code class="font-mono">null</code>
-                }
-              </p>
-            </div>
-
-            <!-- 3c. Min / Max bounds -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Min / Max bounds
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Limited to months within 2024–2025.
-              </p>
-              <nxp-input-month
-                [value]="boundedMonth()"
-                [min]="minMonth"
-                [max]="maxMonth"
-                (valueChange)="boundedMonth.set($event)"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                @if (boundedMonth()) {
-                  Value:
-                  <code class="font-mono"
-                    >{{ boundedMonth()!.year }}-{{
-                      boundedMonth()!.month + 1 | number: '2.0-0'
-                    }}</code
-                  >
-                } @else {
-                  Value: <code class="font-mono">null</code>
-                }
-              </p>
-            </div>
-
-            <!-- 3d. Disabled -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Disabled state
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                The input is non-interactive when disabled.
-              </p>
-              <nxp-input-month
-                [value]="selectedMonth()"
-                [disabled]="true"
-                placeholder="Disabled"
-              />
-            </div>
+        <!-- ============================================================
+             nxp-input-month — Min / Max bounds
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input month — min / max bounds"
+          description="Limited to months within 2024–2025. Months outside the bounds are rendered as disabled in the grid."
+          [content]="{ HTML: monthBoundedHtml, TypeScript: monthBoundedTs }"
+        >
+          <div class="space-y-3 max-w-sm">
+            <nxp-input-month
+              [value]="boundedMonth()"
+              [min]="minMonth"
+              [max]="maxMonth"
+              (valueChange)="boundedMonth.set($event)"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              @if (boundedMonth()) {
+                Value:
+                <code class="font-mono"
+                  >{{ boundedMonth()!.year }}-{{
+                    boundedMonth()!.month + 1 | number: '2.0-0'
+                  }}</code
+                >
+              } @else {
+                Value: <code class="font-mono">null</code>
+              }
+            </p>
           </div>
-        </section>
-      </div>
-    </div>
+        </nxp-doc-example>
+
+        <!-- ============================================================
+             nxp-input-month — Disabled
+        ============================================================ -->
+        <nxp-doc-example
+          heading="Input month — disabled state"
+          description="The input is non-interactive when disabled, and the month grid cannot be opened."
+          [content]="{ HTML: monthDisabledHtml, TypeScript: monthDisabledTs }"
+        >
+          <div class="max-w-sm">
+            <nxp-input-month
+              [value]="selectedMonth()"
+              [disabled]="true"
+              placeholder="Disabled"
+            />
+          </div>
+        </nxp-doc-example>
+      </ng-template>
+
+      <ng-template nxpApiTab>
+        <app-date-inputs-api />
+      </ng-template>
+    </nxp-doc-component-page>
   `,
 })
 export class DateInputsDemoComponent {
@@ -405,4 +417,265 @@ export class DateInputsDemoComponent {
 
   readonly minMonth: MonthCoord = { year: 2024, month: 0 }; // Jan 2024
   readonly maxMonth: MonthCoord = { year: 2025, month: 11 }; // Dec 2025
+
+  // ── Example source snippets shown inside <nxp-doc-example> tabs ──────────
+
+  // ── nxp-input-date snippets ─────────────────────────────────────────────
+  readonly signalDateHtml = `<nxp-input-date
+  [value]="singleDate()"
+  (valueChange)="singleDate.set($event)"
+/>`;
+
+  readonly signalDateTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { InputDateComponent } from '@ngxpro/components/input-date';
+
+@Component({
+  selector: 'app-signal-date',
+  imports: [InputDateComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './signal-date.html',
+})
+export class SignalDateExample {
+  readonly singleDate = signal<Date | null>(null);
+}`;
+
+  readonly ngModelDateHtml = `<nxp-input-date [(ngModel)]="date" />`;
+
+  readonly ngModelDateTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { InputDateComponent } from '@ngxpro/components/input-date';
+
+@Component({
+  selector: 'app-ngmodel-date',
+  imports: [FormsModule, InputDateComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './ngmodel-date.html',
+})
+export class NgModelDateExample {
+  date: Date | null = null;
+}`;
+
+  readonly reactiveDateHtml = `<nxp-input-date [formControl]="dateControl" />`;
+
+  readonly reactiveDateTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { InputDateComponent } from '@ngxpro/components/input-date';
+
+@Component({
+  selector: 'app-reactive-date',
+  imports: [ReactiveFormsModule, InputDateComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './reactive-date.html',
+})
+export class ReactiveDateExample {
+  readonly dateControl = new FormControl<Date | null>(null);
+}`;
+
+  readonly boundedDateHtml = `<nxp-input-date
+  [value]="boundedDate()"
+  [min]="minDate"
+  [max]="maxDate"
+  (valueChange)="boundedDate.set($event)"
+/>`;
+
+  readonly boundedDateTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { InputDateComponent } from '@ngxpro/components/input-date';
+
+@Component({
+  selector: 'app-bounded-date',
+  imports: [InputDateComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './bounded-date.html',
+})
+export class BoundedDateExample {
+  readonly boundedDate = signal<Date | null>(null);
+
+  readonly minDate: Date = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    return d;
+  })();
+
+  readonly maxDate: Date = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    return d;
+  })();
+}`;
+
+  readonly disabledDateHtml = `<nxp-input-date
+  [value]="singleDate()"
+  [disabled]="true"
+  placeholder="Disabled input"
+/>`;
+
+  readonly disabledDateTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { InputDateComponent } from '@ngxpro/components/input-date';
+
+@Component({
+  selector: 'app-disabled-date',
+  imports: [InputDateComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './disabled-date.html',
+})
+export class DisabledDateExample {
+  readonly singleDate = signal<Date | null>(null);
+}`;
+
+  // ── nxp-input-date-range snippets ───────────────────────────────────────
+  readonly rangeBasicHtml = `<nxp-input-date-range
+  [value]="range()"
+  (valueChange)="range.set($event)"
+/>`;
+
+  readonly rangeBasicTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { InputDateRangeComponent } from '@ngxpro/components/input-date-range';
+
+@Component({
+  selector: 'app-range-basic',
+  imports: [InputDateRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './range-basic.html',
+})
+export class RangeBasicExample {
+  readonly range = signal<[Date, Date] | null>(null);
+}`;
+
+  readonly rangePresetsHtml = `<nxp-input-date-range
+  [value]="rangeWithPresets()"
+  [items]="defaultPeriods"
+  (valueChange)="rangeWithPresets.set($event)"
+/>`;
+
+  readonly rangePresetsTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { createDefaultDateRangePeriods } from '@ngxpro/components/calendar-range';
+import { InputDateRangeComponent } from '@ngxpro/components/input-date-range';
+
+@Component({
+  selector: 'app-range-presets',
+  imports: [InputDateRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './range-presets.html',
+})
+export class RangePresetsExample {
+  readonly rangeWithPresets = signal<[Date, Date] | null>(null);
+  readonly defaultPeriods = createDefaultDateRangePeriods();
+}`;
+
+  readonly rangeConstrainedHtml = `<nxp-input-date-range
+  [value]="constrainedRange()"
+  [minLength]="3"
+  [maxLength]="14"
+  (valueChange)="constrainedRange.set($event)"
+/>`;
+
+  readonly rangeConstrainedTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { InputDateRangeComponent } from '@ngxpro/components/input-date-range';
+
+@Component({
+  selector: 'app-range-constrained',
+  imports: [InputDateRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './range-constrained.html',
+})
+export class RangeConstrainedExample {
+  readonly constrainedRange = signal<[Date, Date] | null>(null);
+}`;
+
+  readonly rangeReactiveHtml = `<nxp-input-date-range [formControl]="rangeControl" />`;
+
+  readonly rangeReactiveTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { InputDateRangeComponent } from '@ngxpro/components/input-date-range';
+
+@Component({
+  selector: 'app-range-reactive',
+  imports: [ReactiveFormsModule, InputDateRangeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './range-reactive.html',
+})
+export class RangeReactiveExample {
+  readonly rangeControl = new FormControl<[Date, Date] | null>(null);
+}`;
+
+  // ── nxp-input-month snippets ────────────────────────────────────────────
+  readonly monthBasicHtml = `<nxp-input-month
+  [value]="selectedMonth()"
+  (valueChange)="selectedMonth.set($event)"
+/>`;
+
+  readonly monthBasicTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import type { MonthCoord } from '@ngxpro/components/calendar-month';
+import { InputMonthComponent } from '@ngxpro/components/input-month';
+
+@Component({
+  selector: 'app-month-basic',
+  imports: [InputMonthComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './month-basic.html',
+})
+export class MonthBasicExample {
+  readonly selectedMonth = signal<MonthCoord | null>(null);
+}`;
+
+  readonly monthNgModelHtml = `<nxp-input-month [(ngModel)]="month" />`;
+
+  readonly monthNgModelTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import type { MonthCoord } from '@ngxpro/components/calendar-month';
+import { InputMonthComponent } from '@ngxpro/components/input-month';
+
+@Component({
+  selector: 'app-month-ngmodel',
+  imports: [FormsModule, InputMonthComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './month-ngmodel.html',
+})
+export class MonthNgModelExample {
+  month: MonthCoord | null = null;
+}`;
+
+  readonly monthBoundedHtml = `<nxp-input-month
+  [value]="boundedMonth()"
+  [min]="minMonth"
+  [max]="maxMonth"
+  (valueChange)="boundedMonth.set($event)"
+/>`;
+
+  readonly monthBoundedTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import type { MonthCoord } from '@ngxpro/components/calendar-month';
+import { InputMonthComponent } from '@ngxpro/components/input-month';
+
+@Component({
+  selector: 'app-month-bounded',
+  imports: [InputMonthComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './month-bounded.html',
+})
+export class MonthBoundedExample {
+  readonly boundedMonth = signal<MonthCoord | null>(null);
+
+  readonly minMonth: MonthCoord = { year: 2024, month: 0 }; // Jan 2024
+  readonly maxMonth: MonthCoord = { year: 2025, month: 11 }; // Dec 2025
+}`;
+
+  readonly monthDisabledHtml = `<nxp-input-month
+  [value]="selectedMonth()"
+  [disabled]="true"
+  placeholder="Disabled"
+/>`;
+
+  readonly monthDisabledTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import type { MonthCoord } from '@ngxpro/components/calendar-month';
+import { InputMonthComponent } from '@ngxpro/components/input-month';
+
+@Component({
+  selector: 'app-month-disabled',
+  imports: [InputMonthComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './month-disabled.html',
+})
+export class MonthDisabledExample {
+  readonly selectedMonth = signal<MonthCoord | null>(null);
+}`;
 }

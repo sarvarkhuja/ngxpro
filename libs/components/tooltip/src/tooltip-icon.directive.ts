@@ -48,7 +48,7 @@ import { NXP_TOOLTIP_OPTIONS } from './tooltip.options';
     } @else {
       <i
         [class]="iconClass()"
-        class="inline-flex items-center justify-center text-text-tertiary hover:text-text-primary transition-colors"
+        class="inline-flex items-center justify-center text-text-tertiary hover:text-text-primary transition-colors duration-fast"
         aria-hidden="true"
       ></i>
     }

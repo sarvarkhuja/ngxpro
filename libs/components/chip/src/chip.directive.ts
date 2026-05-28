@@ -12,9 +12,12 @@ export const CHIP_SIZE_CLASSES: Record<NxpChipSize, string> = {
   lg: 'h-7 px-3 text-[13px] gap-1.5',
 };
 
+// Variants stay achromatic for `neutral`/`primary` (no decorative Link Blue)
+// and saturated for the semantic status roles (`success`/`warning`/`danger`/
+// `info`) — design-system §2/§7: workflow accents reserved for semantic context.
 const APPEARANCE_CLASSES: Record<NxpChipAppearance, string> = {
   neutral: 'bg-bg-neutral-1 text-text-secondary',
-  primary: 'bg-primary/10 text-text-action',
+  primary: 'bg-primary/10 text-text-primary',
   success: 'bg-status-positive-pale text-status-positive',
   warning: 'bg-status-warning-pale text-status-warning',
   danger: 'bg-status-negative-pale text-status-negative',

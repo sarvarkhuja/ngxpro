@@ -51,7 +51,9 @@ import { NxpDocNavigationComponent } from '@ngxpro/addon-doc-lib/navigation';
         <ng-content select="[nxpDocNavigation]" />
       </nxp-doc-navigation>
 
-      <main class="ml-[16.5rem] pt-[4.125rem] isolate max-md:ml-0 block">
+      <main
+        class="ml-[16.5rem] pt-[4.125rem] isolate max-md:ml-0 block bg-bg-base text-text-primary"
+      >
         <router-outlet />
       </main>
 
