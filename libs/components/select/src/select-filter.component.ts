@@ -17,6 +17,7 @@ import {
   cx,
   NXP_DEFAULT_MATCHER,
   NXP_ITEMS_HANDLERS,
+  NxpDropdownOpen,
   nxpInjectElement,
   type NxpStringHandler,
   type NxpStringMatcher,
@@ -105,7 +106,7 @@ import { DataListComponent } from '@ngxpro/components/data-list';
           role="option"
           tabindex="0"
           aria-selected="false"
-          [attr.aria-label]="createLabel() + ' ' + search()"
+          [attr.aria-label]="createLabel() + ' ' + trimmedSearch()"
           [class]="createClasses"
           (pointerdown)="$event.preventDefault()"
           (click)="emitCreate()"
@@ -127,7 +128,7 @@ import { DataListComponent } from '@ngxpro/components/data-list';
             />
           </svg>
           <span class="flex-1 truncate"
-            >{{ createLabel() }} "{{ search() }}"</span
+            >{{ createLabel() }} "{{ trimmedSearch() }}"</span
           >
         </button>
       }
@@ -139,6 +140,12 @@ export class NxpSelectFilterComponent<T = unknown> {
   private readonly parentHandlers = inject(NXP_ITEMS_HANDLERS, {
     optional: true,
   });
+  /**
+   * The ancestor textfield's open/close controller, reachable because this
+   * panel renders inside the `<ng-template nxpDropdown>` whose injector chains
+   * through `<nxp-textfield>`. Optional so the panel still works standalone.
+   */
+  private readonly dropdown = inject(NxpDropdownOpen, { optional: true });
 
   // ----------------------------------------------------------------- inputs
 
@@ -170,6 +177,10 @@ export class NxpSelectFilterComponent<T = unknown> {
   /** Current filter text — bound to the search input. */
   readonly search = signal('');
 
+  /** Search text with surrounding whitespace removed — the value the create
+   * affordance shows and emits. */
+  protected readonly trimmedSearch = computed(() => this.search().trim());
+
   protected readonly itemTpl = contentChild.required(TemplateRef<unknown>);
 
   private readonly filterInputRef =
@@ -198,7 +209,7 @@ export class NxpSelectFilterComponent<T = unknown> {
   );
 
   protected readonly showCreate = computed(
-    () => this.search().trim().length > 0 && !this.hasMatches(),
+    () => this.trimmedSearch().length > 0 && !this.hasMatches(),
   );
 
   protected readonly hostClass = computed(() =>
@@ -249,9 +260,12 @@ export class NxpSelectFilterComponent<T = unknown> {
   }
 
   protected emitCreate(): void {
-    const value = this.search().trim();
+    const value = this.trimmedSearch();
     if (!value) return;
     this.create.emit(value);
     this.search.set('');
+    // The create row is presented as just another `role="option"`, so picking
+    // it closes the dropdown like selecting any option does.
+    this.dropdown?.toggle(false);
   }
 }

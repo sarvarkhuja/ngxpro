@@ -1,20 +1,9 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NxpDropdownContent, NxpDropdownOptionsDirective } from '@ngxpro/cdk';
-import { NxpInputDirective } from '@ngxpro/cdk/components/input';
-import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
-import {
-  NxpTextfieldComponent,
-  NxpTextfieldOptionsDirective,
-} from '@ngxpro/cdk/components/textfield';
+import { NxpComboBoxComponent } from '@ngxpro/components/combo-box';
 import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
 import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
-import { DataListComponent } from '@ngxpro/components/data-list';
-import {
-  NxpComboBoxDirective,
-  NxpSelectOptionComponent,
-} from '@ngxpro/components/combo-box';
 import { ComboBoxApiComponent } from './combo-box-api.component';
 
 const COUNTRIES = [
@@ -58,6 +47,24 @@ const PRIORITIES: Priority[] = [
   { text: 'Urgent', value: 4 },
 ];
 
+const FRUITS = [
+  'Apple',
+  'Banana',
+  'Cherry',
+  'Date',
+  'Elderberry',
+  'Fig',
+  'Grape',
+  'Kiwi',
+  'Lemon',
+  'Mango',
+  'Orange',
+  'Peach',
+  'Pear',
+  'Plum',
+  'Strawberry',
+];
+
 @Component({
   selector: 'app-combo-box-demo',
   standalone: true,
@@ -65,15 +72,7 @@ const PRIORITIES: Priority[] = [
   imports: [
     JsonPipe,
     ReactiveFormsModule,
-    NxpTextfieldOptionsDirective,
-    NxpDropdownContent,
-    NxpDropdownOptionsDirective,
-    NxpTextfieldComponent,
-    NxpLabelDirective,
-    NxpInputDirective,
-    DataListComponent,
-    NxpComboBoxDirective,
-    NxpSelectOptionComponent,
+    NxpComboBoxComponent,
     NxpDocComponentPage,
     NxpDocExampleComponent,
     ComboBoxApiComponent,
@@ -82,55 +81,37 @@ const PRIORITIES: Priority[] = [
     <nxp-doc-component-page
       header="Combo Box"
       package="components"
-      type="directive"
+      type="component"
       path="components/combo-box"
     >
       <p class="text-base text-text-secondary mb-6">
         <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-          >input[nxpComboBox]</code
+          >&lt;nxp-combo-box&gt;</code
         >
-        inside
+        — a self-contained editable single-select with type-to-filter. One
+        element +
         <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-          >nxp-textfield</code
+          >[formControl]</code
         >
-        — searchable dropdown with
+        +
         <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-          >nxp-data-list</code
-        >
-        and
-        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-          >nxp-select-option</code
-        >. Filters options as you type; supports strict (must pick) or free-text
-        mode.
+          >[items]</code
+        >. Supports strict (must pick) or free-text mode, object items, and
+        primitive value emission.
       </p>
 
       <ng-template nxpExamplesTab>
         <nxp-doc-example
-          heading="Basic (strict — must select from list)"
-          description="Type to filter; select an option. On blur, invalid text reverts to the last selected value."
+          heading="Basic"
+          description="Type to filter; select an option. In strict mode (the default) invalid text reverts to the last selected value on blur."
           [content]="{ HTML: basicHtml, TypeScript: basicTs }"
         >
           <div class="w-64">
-            <nxp-textfield class="w-full" [nxpDropdownMaxHeight]="200">
-              <label nxpLabel for="country">Country</label>
-              <input
-                nxpInput
-                nxpComboBox
-                #cb="nxpComboBox"
-                id="country"
-                type="text"
-                placeholder="Select a country"
-                [formControl]="countryCtrl"
-                [items]="countries"
-              />
-              <ng-template nxpDropdown>
-                <nxp-data-list>
-                  @for (item of cb.filteredItems(); track item) {
-                    <nxp-select-option [value]="item" />
-                  }
-                </nxp-data-list>
-              </ng-template>
-            </nxp-textfield>
+            <nxp-combo-box
+              [formControl]="countryCtrl"
+              [items]="countries"
+              placeholder="Search a country"
+            />
             <p class="mt-1 text-xs text-text-secondary">
               Value: {{ countryCtrl.value | json }}
             </p>
@@ -143,27 +124,12 @@ const PRIORITIES: Priority[] = [
           [content]="{ HTML: nonStrictHtml, TypeScript: nonStrictTs }"
         >
           <div class="w-64">
-            <nxp-textfield class="w-full" [nxpDropdownMaxHeight]="200">
-              <label nxpLabel for="fruit">Fruit or custom</label>
-              <input
-                nxpInput
-                nxpComboBox
-                #cbFruit="nxpComboBox"
-                id="fruit"
-                type="text"
-                placeholder="Pick or type a fruit"
-                [formControl]="fruitCtrl"
-                [items]="fruits"
-                [strict]="false"
-              />
-              <ng-template nxpDropdown>
-                <nxp-data-list>
-                  @for (item of cbFruit.filteredItems(); track item) {
-                    <nxp-select-option [value]="item" />
-                  }
-                </nxp-data-list>
-              </ng-template>
-            </nxp-textfield>
+            <nxp-combo-box
+              [formControl]="fruitCtrl"
+              [items]="fruits"
+              [strict]="false"
+              placeholder="Pick or type a fruit"
+            />
             <p class="mt-1 text-xs text-text-secondary">
               Value: {{ fruitCtrl.value | json }}
             </p>
@@ -172,61 +138,31 @@ const PRIORITIES: Priority[] = [
 
         <nxp-doc-example
           heading="Disabled"
-          description="When the form control is disabled the combo-box is non-interactive and the dropdown cannot open."
+          description="Disable the bound form control to make the combo-box non-interactive — the dropdown cannot open."
           [content]="{ HTML: disabledHtml, TypeScript: disabledTs }"
         >
           <div class="w-64">
-            <nxp-textfield class="w-full" [nxpDropdownMaxHeight]="200">
-              <label nxpLabel for="country-disabled">Country</label>
-              <input
-                nxpInput
-                nxpComboBox
-                #cbDisabled="nxpComboBox"
-                id="country-disabled"
-                type="text"
-                placeholder="Select a country"
-                [formControl]="disabledCountryCtrl"
-                [items]="countries"
-              />
-              <ng-template nxpDropdown>
-                <nxp-data-list>
-                  @for (item of cbDisabled.filteredItems(); track item) {
-                    <nxp-select-option [value]="item" />
-                  }
-                </nxp-data-list>
-              </ng-template>
-            </nxp-textfield>
+            <nxp-combo-box
+              [formControl]="disabledCountryCtrl"
+              [items]="countries"
+              placeholder="Search a country"
+            />
           </div>
         </nxp-doc-example>
 
         <nxp-doc-example
           heading="Object dataset (full object value)"
-          description='Bind to an array of objects with [textField] for display and [valueField] for identity. The form value is the matched object — e.g. { "text": "Medium", "value": 2 }.'
+          description='Bind to objects with [textField] for display and [valueField] for identity. The form value is the matched object — e.g. { "text": "Medium", "value": 2 }.'
           [content]="{ HTML: objectHtml, TypeScript: objectTs }"
         >
           <div class="w-64">
-            <nxp-textfield class="w-full" [nxpDropdownMaxHeight]="200">
-              <label nxpLabel for="priority">Priority</label>
-              <input
-                nxpInput
-                nxpComboBox
-                #cbPrio="nxpComboBox"
-                id="priority"
-                type="text"
-                placeholder="Pick a priority"
-                [formControl]="priorityCtrl"
-                [items]="priorities"
-                textField="text"
-                valueField="value"
-              />
-              <ng-template nxpDropdown>
-                <nxp-data-list>
-                  @for (item of cbPrio.filteredItems(); track item.value) {
-                    <nxp-select-option [value]="item" />
-                  }
-                </nxp-data-list>
-              </ng-template>
-            </nxp-textfield>
+            <nxp-combo-box
+              [formControl]="priorityCtrl"
+              [items]="priorities"
+              textField="text"
+              valueField="value"
+              placeholder="Pick a priority"
+            />
             <p class="mt-1 text-xs text-text-secondary">
               Value: {{ priorityCtrl.value | json }}
             </p>
@@ -234,34 +170,19 @@ const PRIORITIES: Priority[] = [
         </nxp-doc-example>
 
         <nxp-doc-example
-          heading="Object dataset (primitive value)"
-          description='With [valuePrimitive]="true", the form control receives item[valueField] (a primitive) instead of the full object. Initial value 2 round-trips to display "Medium".'
+          heading="Primitive value"
+          description='With [valuePrimitive]="true" the form control receives item[valueField] (a number here) instead of the full object. Initial value 2 round-trips to display "Medium".'
           [content]="{ HTML: primitiveHtml, TypeScript: primitiveTs }"
         >
           <div class="w-64">
-            <nxp-textfield class="w-full" [nxpDropdownMaxHeight]="200">
-              <label nxpLabel for="priority-prim">Priority</label>
-              <input
-                nxpInput
-                nxpComboBox
-                #cbPrioP="nxpComboBox"
-                id="priority-prim"
-                type="text"
-                placeholder="Pick a priority"
-                [formControl]="priorityPrimitiveCtrl"
-                [items]="priorities"
-                textField="text"
-                valueField="value"
-                [valuePrimitive]="true"
-              />
-              <ng-template nxpDropdown>
-                <nxp-data-list>
-                  @for (item of cbPrioP.filteredItems(); track item.value) {
-                    <nxp-select-option [value]="item" />
-                  }
-                </nxp-data-list>
-              </ng-template>
-            </nxp-textfield>
+            <nxp-combo-box
+              [formControl]="priorityPrimitiveCtrl"
+              [items]="priorities"
+              textField="text"
+              valueField="value"
+              [valuePrimitive]="true"
+              placeholder="Pick a priority"
+            />
             <p class="mt-1 text-xs text-text-secondary">
               Value: {{ priorityPrimitiveCtrl.value | json }}
             </p>
@@ -277,24 +198,7 @@ const PRIORITIES: Priority[] = [
 })
 export class ComboBoxDemoComponent {
   readonly countries = COUNTRIES as unknown as string[];
-  readonly fruits = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Elderberry',
-    'Fig',
-    'Grape',
-    'Kiwi',
-    'Lemon',
-    'Mango',
-    'Orange',
-    'Peach',
-    'Pear',
-    'Plum',
-    'Strawberry',
-  ];
-
+  readonly fruits = FRUITS;
   readonly priorities = PRIORITIES;
 
   readonly countryCtrl = new FormControl<string | null>(null);
@@ -306,164 +210,71 @@ export class ComboBoxDemoComponent {
   readonly priorityCtrl = new FormControl<Priority | null>(null);
   readonly priorityPrimitiveCtrl = new FormControl<number | null>(2);
 
-  readonly basicHtml = `<nxp-textfield [nxpDropdownMaxHeight]="200">
-  <label nxpLabel for="country">Country</label>
-  <input
-    nxpInput
-    nxpComboBox
-    #cb="nxpComboBox"
-    id="country"
-    type="text"
-    placeholder="Select a country"
-    [formControl]="countryCtrl"
-    [items]="countries"
-  />
-  <ng-template nxpDropdown>
-    <nxp-data-list>
-      @for (item of cb.filteredItems(); track item) {
-        <nxp-select-option [value]="item" />
-      }
-    </nxp-data-list>
-  </ng-template>
-</nxp-textfield>`;
+  // ── Example source snippets shown inside <nxp-doc-example> tabs ────────────
+  readonly basicHtml = `<nxp-combo-box
+  [formControl]="countryCtrl"
+  [items]="countries"
+  placeholder="Search a country"
+/>
+<p>Value: {{ countryCtrl.value | json }}</p>`;
 
   readonly basicTs = `import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NxpDropdownContent } from '@ngxpro/cdk';
-import { NxpInputDirective } from '@ngxpro/cdk/components/input';
-import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
-import { NxpTextfieldComponent } from '@ngxpro/cdk/components/textfield';
-import { DataListComponent } from '@ngxpro/components/data-list';
-import {
-  NxpComboBoxDirective,
-  NxpSelectOptionComponent,
-} from '@ngxpro/components/combo-box';
+import { NxpComboBoxComponent } from '@ngxpro/components/combo-box';
 
 @Component({
-  selector: 'app-combo-box-basic',
-  imports: [
-    JsonPipe,
-    ReactiveFormsModule,
-    NxpDropdownContent,
-    NxpTextfieldComponent,
-    NxpLabelDirective,
-    NxpInputDirective,
-    DataListComponent,
-    NxpComboBoxDirective,
-    NxpSelectOptionComponent,
-  ],
+  selector: 'app-basic-combo-box',
+  imports: [JsonPipe, ReactiveFormsModule, NxpComboBoxComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './combo-box-basic.html',
+  templateUrl: './basic-combo-box.html',
 })
-export class ComboBoxBasicExample {
+export class BasicComboBoxExample {
   readonly countries = ['Afghanistan', 'Albania', /* ... */];
   readonly countryCtrl = new FormControl<string | null>(null);
 }`;
 
-  readonly nonStrictHtml = `<nxp-textfield [nxpDropdownMaxHeight]="200">
-  <label nxpLabel for="fruit">Fruit or custom</label>
-  <input
-    nxpInput
-    nxpComboBox
-    #cbFruit="nxpComboBox"
-    id="fruit"
-    type="text"
-    placeholder="Pick or type a fruit"
-    [formControl]="fruitCtrl"
-    [items]="fruits"
-    [strict]="false"
-  />
-  <ng-template nxpDropdown>
-    <nxp-data-list>
-      @for (item of cbFruit.filteredItems(); track item) {
-        <nxp-select-option [value]="item" />
-      }
-    </nxp-data-list>
-  </ng-template>
-</nxp-textfield>`;
+  readonly nonStrictHtml = `<nxp-combo-box
+  [formControl]="fruitCtrl"
+  [items]="fruits"
+  [strict]="false"
+  placeholder="Pick or type a fruit"
+/>
+<p>Value: {{ fruitCtrl.value | json }}</p>`;
 
-  readonly nonStrictTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+  readonly nonStrictTs = `import { JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NxpDropdownContent } from '@ngxpro/cdk';
-import { NxpInputDirective } from '@ngxpro/cdk/components/input';
-import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
-import { NxpTextfieldComponent } from '@ngxpro/cdk/components/textfield';
-import { DataListComponent } from '@ngxpro/components/data-list';
-import {
-  NxpComboBoxDirective,
-  NxpSelectOptionComponent,
-} from '@ngxpro/components/combo-box';
+import { NxpComboBoxComponent } from '@ngxpro/components/combo-box';
 
 @Component({
-  selector: 'app-combo-box-non-strict',
-  imports: [
-    ReactiveFormsModule,
-    NxpDropdownContent,
-    NxpTextfieldComponent,
-    NxpLabelDirective,
-    NxpInputDirective,
-    DataListComponent,
-    NxpComboBoxDirective,
-    NxpSelectOptionComponent,
-  ],
+  selector: 'app-non-strict-combo-box',
+  imports: [JsonPipe, ReactiveFormsModule, NxpComboBoxComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './combo-box-non-strict.html',
+  templateUrl: './non-strict-combo-box.html',
 })
-export class ComboBoxNonStrictExample {
+export class NonStrictComboBoxExample {
   readonly fruits = ['Apple', 'Banana', 'Cherry', /* ... */];
   readonly fruitCtrl = new FormControl<string | null>(null);
 }`;
 
-  readonly disabledHtml = `<nxp-textfield [nxpDropdownMaxHeight]="200">
-  <label nxpLabel for="country-disabled">Country</label>
-  <input
-    nxpInput
-    nxpComboBox
-    #cbDisabled="nxpComboBox"
-    id="country-disabled"
-    type="text"
-    placeholder="Select a country"
-    [formControl]="disabledCountryCtrl"
-    [items]="countries"
-  />
-  <ng-template nxpDropdown>
-    <nxp-data-list>
-      @for (item of cbDisabled.filteredItems(); track item) {
-        <nxp-select-option [value]="item" />
-      }
-    </nxp-data-list>
-  </ng-template>
-</nxp-textfield>`;
+  readonly disabledHtml = `<nxp-combo-box
+  [formControl]="disabledCountryCtrl"
+  [items]="countries"
+  placeholder="Search a country"
+/>`;
 
   readonly disabledTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NxpDropdownContent } from '@ngxpro/cdk';
-import { NxpInputDirective } from '@ngxpro/cdk/components/input';
-import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
-import { NxpTextfieldComponent } from '@ngxpro/cdk/components/textfield';
-import { DataListComponent } from '@ngxpro/components/data-list';
-import {
-  NxpComboBoxDirective,
-  NxpSelectOptionComponent,
-} from '@ngxpro/components/combo-box';
+import { NxpComboBoxComponent } from '@ngxpro/components/combo-box';
 
 @Component({
-  selector: 'app-combo-box-disabled',
-  imports: [
-    ReactiveFormsModule,
-    NxpDropdownContent,
-    NxpTextfieldComponent,
-    NxpLabelDirective,
-    NxpInputDirective,
-    DataListComponent,
-    NxpComboBoxDirective,
-    NxpSelectOptionComponent,
-  ],
+  selector: 'app-disabled-combo-box',
+  imports: [ReactiveFormsModule, NxpComboBoxComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './combo-box-disabled.html',
+  templateUrl: './disabled-combo-box.html',
 })
-export class ComboBoxDisabledExample {
+export class DisabledComboBoxExample {
   readonly countries = ['Afghanistan', 'Albania', /* ... */];
   readonly disabledCountryCtrl = new FormControl<string | null>({
     value: 'France',
@@ -471,61 +282,29 @@ export class ComboBoxDisabledExample {
   });
 }`;
 
-  readonly objectHtml = `<nxp-textfield [nxpDropdownMaxHeight]="200">
-  <label nxpLabel for="priority">Priority</label>
-  <input
-    nxpInput
-    nxpComboBox
-    #cbPrio="nxpComboBox"
-    id="priority"
-    type="text"
-    placeholder="Pick a priority"
-    [formControl]="priorityCtrl"
-    [items]="priorities"
-    textField="text"
-    valueField="value"
-  />
-  <ng-template nxpDropdown>
-    <nxp-data-list>
-      @for (item of cbPrio.filteredItems(); track item.value) {
-        <nxp-select-option [value]="item" />
-      }
-    </nxp-data-list>
-  </ng-template>
-</nxp-textfield>`;
+  readonly objectHtml = `<nxp-combo-box
+  [formControl]="priorityCtrl"
+  [items]="priorities"
+  textField="text"
+  valueField="value"
+  placeholder="Pick a priority"
+/>
+<p>Value: {{ priorityCtrl.value | json }}</p>`;
 
   readonly objectTs = `import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NxpDropdownContent } from '@ngxpro/cdk';
-import { NxpInputDirective } from '@ngxpro/cdk/components/input';
-import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
-import { NxpTextfieldComponent } from '@ngxpro/cdk/components/textfield';
-import { DataListComponent } from '@ngxpro/components/data-list';
-import {
-  NxpComboBoxDirective,
-  NxpSelectOptionComponent,
-} from '@ngxpro/components/combo-box';
+import { NxpComboBoxComponent } from '@ngxpro/components/combo-box';
 
 interface Priority { text: string; value: number; }
 
 @Component({
-  selector: 'app-combo-box-object',
-  imports: [
-    JsonPipe,
-    ReactiveFormsModule,
-    NxpDropdownContent,
-    NxpTextfieldComponent,
-    NxpLabelDirective,
-    NxpInputDirective,
-    DataListComponent,
-    NxpComboBoxDirective,
-    NxpSelectOptionComponent,
-  ],
+  selector: 'app-object-combo-box',
+  imports: [JsonPipe, ReactiveFormsModule, NxpComboBoxComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './combo-box-object.html',
+  templateUrl: './object-combo-box.html',
 })
-export class ComboBoxObjectExample {
+export class ObjectComboBoxExample {
   readonly priorities: Priority[] = [
     { text: 'Low', value: 1 },
     { text: 'Medium', value: 2 },
@@ -535,60 +314,30 @@ export class ComboBoxObjectExample {
   readonly priorityCtrl = new FormControl<Priority | null>(null);
 }`;
 
-  readonly primitiveHtml = `<nxp-textfield [nxpDropdownMaxHeight]="200">
-  <label nxpLabel for="priority-prim">Priority</label>
-  <input
-    nxpInput
-    nxpComboBox
-    #cbPrioP="nxpComboBox"
-    id="priority-prim"
-    type="text"
-    placeholder="Pick a priority"
-    [formControl]="priorityPrimitiveCtrl"
-    [items]="priorities"
-    textField="text"
-    valueField="value"
-    [valuePrimitive]="true"
-  />
-  <ng-template nxpDropdown>
-    <nxp-data-list>
-      @for (item of cbPrioP.filteredItems(); track item.value) {
-        <nxp-select-option [value]="item" />
-      }
-    </nxp-data-list>
-  </ng-template>
-</nxp-textfield>`;
+  readonly primitiveHtml = `<nxp-combo-box
+  [formControl]="priorityCtrl"
+  [items]="priorities"
+  textField="text"
+  valueField="value"
+  [valuePrimitive]="true"
+  placeholder="Pick a priority"
+/>
+<p>Value: {{ priorityCtrl.value | json }}</p>`;
 
-  readonly primitiveTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+  readonly primitiveTs = `import { JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NxpDropdownContent } from '@ngxpro/cdk';
-import { NxpInputDirective } from '@ngxpro/cdk/components/input';
-import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
-import { NxpTextfieldComponent } from '@ngxpro/cdk/components/textfield';
-import { DataListComponent } from '@ngxpro/components/data-list';
-import {
-  NxpComboBoxDirective,
-  NxpSelectOptionComponent,
-} from '@ngxpro/components/combo-box';
+import { NxpComboBoxComponent } from '@ngxpro/components/combo-box';
 
 interface Priority { text: string; value: number; }
 
 @Component({
-  selector: 'app-combo-box-primitive',
-  imports: [
-    ReactiveFormsModule,
-    NxpDropdownContent,
-    NxpTextfieldComponent,
-    NxpLabelDirective,
-    NxpInputDirective,
-    DataListComponent,
-    NxpComboBoxDirective,
-    NxpSelectOptionComponent,
-  ],
+  selector: 'app-primitive-combo-box',
+  imports: [JsonPipe, ReactiveFormsModule, NxpComboBoxComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './combo-box-primitive.html',
+  templateUrl: './primitive-combo-box.html',
 })
-export class ComboBoxPrimitiveExample {
+export class PrimitiveComboBoxExample {
   readonly priorities: Priority[] = [
     { text: 'Low', value: 1 },
     { text: 'Medium', value: 2 },
@@ -596,6 +345,6 @@ export class ComboBoxPrimitiveExample {
     { text: 'Urgent', value: 4 },
   ];
   // valuePrimitive=true → the form receives item[valueField] (a number)
-  readonly priorityPrimitiveCtrl = new FormControl<number | null>(2);
+  readonly priorityCtrl = new FormControl<number | null>(2);
 }`;
 }

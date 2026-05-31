@@ -219,22 +219,31 @@ const FRUITS = [
 
         <nxp-doc-example
           heading="Object items via textField / valueField"
-          description="Items are { code, name } objects. Pass textField='name' so the chip shows the country name, and valueField='code' so identity is compared by code. No global provider needed."
+          description="Directive form — input[nxpMultiSelect] inside nxp-textfield. Items are { code, name } objects: textField='name' makes the trigger show the country name, valueField='code' compares identity by code. No global provider needed."
           [content]="{ HTML: objectHtml, TypeScript: objectTs }"
         >
           <div class="w-full max-w-md">
-            <label nxpLabel for="countries" [class]="cls.label">
-              Countries
-            </label>
-            <nxp-multi-select
-              id="countries"
-              class="mt-1.5 w-full min-w-0"
-              [formControl]="countriesCtrl"
-              [items]="countries"
-              textField="name"
-              valueField="code"
-              placeholder="Select countries…"
-            />
+            <nxp-textfield class="w-full">
+              <label nxpLabel for="countries">Countries</label>
+              <input
+                nxpInput
+                nxpMultiSelect
+                id="countries"
+                type="text"
+                placeholder=" "
+                textField="name"
+                valueField="code"
+                [formControl]="countriesCtrl"
+                [items]="countries"
+              />
+              <ng-template nxpDropdown>
+                <nxp-data-list>
+                  @for (item of countries; track item.code) {
+                    <nxp-multi-select-option [value]="item" />
+                  }
+                </nxp-data-list>
+              </ng-template>
+            </nxp-textfield>
             <p [class]="cls.mono + ' mt-1'">
               value = {{ countriesCtrl.value | json }}
             </p>
@@ -656,21 +665,41 @@ export class ScenariosMultiSelectExample {
   }
 }`;
 
-  readonly objectHtml = `<label nxpLabel for="countries">Countries</label>
-<nxp-multi-select
-  id="countries"
-  class="w-full min-w-0"
-  [formControl]="countriesCtrl"
-  [items]="countries"
-  textField="name"
-  valueField="code"
-  placeholder="Select countries…"
-/>`;
+  readonly objectHtml = `<nxp-textfield class="w-full">
+  <label nxpLabel for="countries">Countries</label>
+  <input
+    nxpInput
+    nxpMultiSelect
+    id="countries"
+    type="text"
+    placeholder=" "
+    textField="name"
+    valueField="code"
+    [formControl]="countriesCtrl"
+    [items]="countries"
+  />
+  <ng-template nxpDropdown>
+    <nxp-data-list>
+      @for (item of countries; track item.code) {
+        <nxp-multi-select-option [value]="item" />
+      }
+    </nxp-data-list>
+  </ng-template>
+</nxp-textfield>
+<p>value = {{ countriesCtrl.value | json }}</p>`;
 
-  readonly objectTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+  readonly objectTs = `import { JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NxpDropdownContent } from '@ngxpro/cdk';
+import { NxpInputDirective } from '@ngxpro/cdk/components/input';
 import { NxpLabelDirective } from '@ngxpro/cdk/components/label';
-import { NxpMultiSelectComponent } from '@ngxpro/components/multi-select';
+import { NxpTextfieldComponent } from '@ngxpro/cdk/components/textfield';
+import { DataListComponent } from '@ngxpro/components/data-list';
+import {
+  NxpMultiSelectDirective,
+  NxpMultiSelectOptionComponent,
+} from '@ngxpro/components/multi-select';
 
 interface Country {
   code: string;
@@ -679,7 +708,17 @@ interface Country {
 
 @Component({
   selector: 'app-object-multi-select',
-  imports: [ReactiveFormsModule, NxpLabelDirective, NxpMultiSelectComponent],
+  imports: [
+    JsonPipe,
+    ReactiveFormsModule,
+    NxpDropdownContent,
+    NxpTextfieldComponent,
+    NxpLabelDirective,
+    NxpInputDirective,
+    DataListComponent,
+    NxpMultiSelectDirective,
+    NxpMultiSelectOptionComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './object-multi-select.html',
 })

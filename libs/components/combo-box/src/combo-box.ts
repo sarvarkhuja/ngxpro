@@ -6,13 +6,19 @@ import {
   DataListComponent,
   OptionDirective,
 } from '@ngxpro/components/data-list';
+import { NxpComboBoxComponent } from './combo-box.component';
 import { NxpComboBoxDirective } from './combo-box.directive';
 import { NxpSelectOptionComponent } from './select-option.component';
 
 /**
  * Convenience array — spread into a component's `imports` to bring in every
- * piece a combo-box needs (directive, textfield wrapper, label, input,
- * data-list, select-option, dropdown template).
+ * piece a combo-box needs.
+ *
+ * Two flavours share the same selection plumbing:
+ * - `<nxp-combo-box>` (`NxpComboBoxComponent`) — self-contained, items-driven
+ *   editable single-select with type-to-filter. One element + `[formControl]`.
+ * - `input[nxpComboBox]` (`NxpComboBoxDirective`) inside `<nxp-textfield>` — the
+ *   composable form for custom dropdown content.
  *
  * @example
  * ```typescript
@@ -20,6 +26,7 @@ import { NxpSelectOptionComponent } from './select-option.component';
  * ```
  */
 export const NxpComboBox = [
+  NxpComboBoxComponent,
   NxpComboBoxDirective,
   NxpSelectOptionComponent,
   NxpTextfieldComponent,

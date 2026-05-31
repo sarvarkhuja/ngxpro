@@ -1,8 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  ElementRef,
   computed,
   effect,
   forwardRef,
@@ -16,8 +14,9 @@ import {
   cx,
   hasErrorInput,
   inputVariants,
-  NXP_DOCUMENT,
-  NXP_IS_BROWSER,
+  NxpDropdownContent,
+  NxpDropdownDirective,
+  NxpDropdownOpen,
 } from '@ngxpro/cdk';
 import { CalendarMonthComponent } from '@ngxpro/components/calendar-month';
 import type { MonthCoord } from '@ngxpro/components/calendar-month';
@@ -30,6 +29,11 @@ import { formatMonth } from '@ngxpro/components/input-date';
  * closes the dropdown and updates the value. The displayed value is formatted
  * as "Month YYYY" (e.g. "January 2025").
  *
+ * The dropdown is rendered through the CDK dropdown portal
+ * (`NxpDropdownDirective` / `nxpDropdown`), so it escapes any ancestor
+ * `overflow` clipping and is positioned/closed by the shared portal machinery
+ * (click-outside, focus zones) rather than a hand-rolled listener.
+ *
  * Implements `ControlValueAccessor` for Angular forms integration. `value`
  * is a `model()` so reactive form `setValue()` propagates back through
  * `writeValue()` and updates the calendar.
@@ -37,7 +41,9 @@ import { formatMonth } from '@ngxpro/components/input-date';
 @Component({
   selector: 'nxp-input-month',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CalendarMonthComponent],
+  imports: [CalendarMonthComponent, NxpDropdownContent],
+  hostDirectives: [NxpDropdownDirective, NxpDropdownOpen],
+  host: { class: 'block w-full' },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -45,27 +51,6 @@ import { formatMonth } from '@ngxpro/components/input-date';
       multi: true,
     },
   ],
-  styles: `
-    .nxp-month-pop {
-      transform-origin: top left;
-      animation: nxp-month-pop-in 180ms cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    @keyframes nxp-month-pop-in {
-      from {
-        opacity: 0;
-        transform: scale(0.97) translateY(-4px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .nxp-month-pop {
-        animation: none;
-      }
-    }
-  `,
   template: `
     <div class="relative w-full">
       <input
@@ -75,7 +60,7 @@ import { formatMonth } from '@ngxpro/components/input-date';
         [value]="inputValue()"
         [placeholder]="placeholder()"
         [disabled]="disabled()"
-        (click)="toggle()"
+        (click)="toggle($event)"
         (keydown.escape)="close()"
         aria-haspopup="dialog"
         [attr.aria-expanded]="isOpen()"
@@ -109,32 +94,23 @@ import { formatMonth } from '@ngxpro/components/input-date';
           />
         </svg>
       </span>
-
-      @if (isOpen()) {
-        <div
-          class="nxp-month-pop absolute z-50 mt-2 top-full left-0"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Month picker"
-        >
-          <nxp-calendar-month
-            [value]="value()"
-            [min]="min()"
-            [max]="max()"
-            [rangeMode]="rangeMode()"
-            [disabledHandler]="effectiveDisabledHandler()"
-            (monthClick)="onMonthPicked($event)"
-          />
-        </div>
-      }
     </div>
+
+    <ng-template nxpDropdown>
+      <nxp-calendar-month
+        [value]="value()"
+        [min]="min()"
+        [max]="max()"
+        [rangeMode]="rangeMode()"
+        [disabledHandler]="effectiveDisabledHandler()"
+        (monthClick)="onMonthPicked($event)"
+      />
+    </ng-template>
   `,
 })
 export class InputMonthComponent implements ControlValueAccessor {
-  private readonly el = inject(ElementRef);
-  private readonly doc = inject(NXP_DOCUMENT);
-  private readonly isBrowser = inject(NXP_IS_BROWSER);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly dropdown = inject(NxpDropdownDirective);
+  private readonly dropdownOpen = inject(NxpDropdownOpen);
 
   readonly value = model<MonthCoord | null>(null);
   readonly min = input<MonthCoord | null>(null);
@@ -154,7 +130,8 @@ export class InputMonthComponent implements ControlValueAccessor {
   /** Marks the input as invalid (sets `aria-invalid`); style hook for callers wiring form validity. */
   readonly hasError = input<boolean>(false);
 
-  protected readonly isOpen = signal(false);
+  /** Whether the calendar portal is currently mounted. */
+  protected readonly isOpen = computed(() => !!this.dropdown.ref());
   protected readonly inputValue = signal('');
 
   protected readonly inputClass = computed(() =>
@@ -176,25 +153,6 @@ export class InputMonthComponent implements ControlValueAccessor {
       const v = this.value();
       this.inputValue.set(v ? formatMonth(v) : '');
     });
-
-    if (this.isBrowser) {
-      const onDocClick = (event: Event): void => {
-        if (
-          !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
-        ) {
-          this.isOpen.set(false);
-        }
-      };
-      const onDocEsc = (event: KeyboardEvent): void => {
-        if (event.key === 'Escape') this.isOpen.set(false);
-      };
-      this.doc.addEventListener('click', onDocClick, true);
-      this.doc.addEventListener('keydown', onDocEsc);
-      this.destroyRef.onDestroy(() => {
-        this.doc.removeEventListener('click', onDocClick, true);
-        this.doc.removeEventListener('keydown', onDocEsc);
-      });
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -218,19 +176,22 @@ export class InputMonthComponent implements ControlValueAccessor {
     this.disabled.set(isDisabled);
   }
 
-  protected toggle(): void {
-    if (!this.disabled()) {
-      this.isOpen.update((v) => !v);
-    }
+  protected toggle(event: Event): void {
+    if (this.disabled()) return;
+    // The trigger input is `readonly` (non-editable), so a bubbling click would
+    // ALSO hit NxpDropdownOpen's host `(click)` auto-toggle and immediately
+    // close what we just opened. Stop it here — mirrors NxpSelectComponent.
+    event.stopPropagation();
+    this.dropdownOpen.toggle(!this.isOpen());
   }
 
   protected close(): void {
-    this.isOpen.set(false);
+    this.dropdownOpen.toggle(false);
   }
 
   protected onMonthPicked(m: MonthCoord): void {
     this.value.set(m);
-    this.isOpen.set(false);
+    this.dropdownOpen.toggle(false);
     this._onChange(m);
     this._onTouched();
   }

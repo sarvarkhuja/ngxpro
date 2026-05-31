@@ -133,7 +133,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
           description="Two calendars side-by-side. Click a start day, hover to preview, click an end day. Press Esc to cancel a pick in progress."
           [content]="{ HTML: basicHtml, TypeScript: basicTs }"
         >
-          <div class="flex flex-col lg:flex-row gap-6 items-start">
+          <div class="flex lg:flex-col gap-6 items-start">
             <nxp-calendar-range
               [value]="basicRange()"
               [min]="basicMin()"
@@ -144,7 +144,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               [class]="basicClass()"
               (valueChange)="basicRange.set($event)"
             />
-            <div class="space-y-3 min-w-48">
+            <div class="flex gap-4 space-y-3 w-full">
               <div
                 class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 space-y-1"
               >
@@ -183,7 +183,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
                   </p>
                 </div>
                 <button
-                  class="w-full text-sm text-red-500 hover:text-red-700 dark:hover:text-red-400 py-2 transition-colors"
+                  class="text-sm text-red-500 hover:text-red-700 dark:hover:text-red-400 py-2 transition-colors"
                   (click)="basicRange.set(null)"
                 >
                   Clear selection
@@ -198,7 +198,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
           description="Pass [items] to replace the second calendar with a nxp-data-list sidebar. Each preset is a button[nxpOption] with full keyboard navigation. Click the active item again to deselect."
           [content]="{ HTML: presetsHtml, TypeScript: presetsTs }"
         >
-          <div class="flex flex-col xl:flex-row gap-6 items-start">
+          <div class="flex flex-col gap-6 items-start">
             <nxp-calendar-range
               [items]="presets"
               [value]="presetsRange()"
@@ -213,9 +213,6 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
               <p class="text-sm font-medium text-gray-900 dark:text-white">
                 {{ formatRange(presetsRange()) }}
               </p>
-              <p class="text-xs text-gray-400 pt-2">
-                Tip: use ↑ ↓ in the sidebar to navigate presets via keyboard.
-              </p>
             </div>
           </div>
         </nxp-doc-example>
@@ -225,9 +222,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
           description="Build the preset list manually with [nxpOptGroup] sections for Quick, This period, and Previous period groupings. Groups include role='group' and aria-label for full accessibility."
           [content]="{ HTML: groupedHtml, TypeScript: groupedTs }"
         >
-          <div
-            class="inline-flex rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm overflow-hidden"
-          >
+          <div class="inline-flex overflow-hidden">
             <nxp-calendar-range
               [value]="groupedRange()"
               (valueChange)="groupedRange.set($event)"
@@ -283,7 +278,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
           description="Restrict selectable dates to a window (here: ±30 days from today). Out-of-range days are rendered as disabled."
           [content]="{ HTML: boundsHtml, TypeScript: boundsTs }"
         >
-          <div class="flex flex-col lg:flex-row gap-6 items-start">
+          <div class="flex flex-col items-start">
             <nxp-calendar-range
               [min]="boundsMin"
               [max]="boundsMax"
@@ -315,7 +310,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
           description="After picking the start date, only end dates that produce a range between 3 and 14 days are enabled. Days too close or too far are automatically disabled."
           [content]="{ HTML: lengthHtml, TypeScript: lengthTs }"
         >
-          <div class="flex flex-col lg:flex-row gap-6 items-start">
+          <div class="flex flex-col gap-6 items-start">
             <nxp-calendar-range
               [minLength]="3"
               [maxLength]="14"
@@ -358,7 +353,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
           description="Pass a disabledHandler to disable arbitrary dates. Here weekends (Sat/Sun) are non-selectable."
           [content]="{ HTML: weekendsHtml, TypeScript: weekendsTs }"
         >
-          <div class="flex flex-col lg:flex-row gap-6 items-start">
+          <div class="flex flex-col gap-6 items-start">
             <nxp-calendar-range
               [disabledHandler]="isWeekend"
               [value]="weekdayRange()"
@@ -380,7 +375,7 @@ function createGroupedPresets(): { group: string; items: DateRangePeriod[] }[] {
           description="Preset sidebar with min/max bounds applied. Dates outside ±30 days are disabled; preset items whose ranges fall outside bounds are still shown but will select out-of-range dates (useful for analytics dashboards where you want the label even if data is partial)."
           [content]="{ HTML: combinedHtml, TypeScript: combinedTs }"
         >
-          <div class="flex flex-col xl:flex-row gap-6 items-start">
+          <div class="flex flex-col gap-6 items-start">
             <nxp-calendar-range
               [items]="presets"
               [min]="boundsMin"

@@ -4,6 +4,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
 import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
+
 import {
   NxpSwitch,
   type NxpSwitchColor,
@@ -20,6 +21,7 @@ import { SwitchApiComponent } from './switch-api.component';
     ReactiveFormsModule,
     RouterModule,
     ...NxpSwitch,
+
     NxpDocComponentPage,
     NxpDocExampleComponent,
     SwitchApiComponent,
@@ -66,28 +68,27 @@ import { SwitchApiComponent } from './switch-api.component';
 
         <nxp-doc-example
           heading="Sizes"
-          description="Use the size input: s, m (default), l."
+          description="Directive form — input[type=checkbox] nxpSwitch inside a label. Use the size input: s, m (default), l. The native-input toggle is CSS-only (no drag/spring); use <nxp-switch> for those."
           [content]="{ HTML: sizesHtml, TypeScript: sizesTs }"
         >
-          <div class="flex flex-wrap items-center gap-8">
+          <div class="flex flex-wrap items-center gap-8 test 1">
             @for (s of sizes; track s) {
-              <nxp-switch [size]="s" [checked]="true">
+              <label class="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  nxpSwitch
+                  [size]="s"
+                  [(ngModel)]="sizeOn[s]"
+                />
                 <span
                   class="text-sm text-gray-700 dark:text-gray-300 capitalize"
                   >{{ s }}</span
                 >
-              </nxp-switch>
+              </label>
             }
           </div>
           <div class="flex flex-wrap items-center gap-8 mt-4">
-            @for (s of sizes; track s) {
-              <nxp-switch [size]="s">
-                <span
-                  class="text-sm text-gray-500 dark:text-gray-400 capitalize"
-                  >{{ s }} (unchecked)</span
-                >
-              </nxp-switch>
-            }
+            @for (s of sizes; track s) {}
           </div>
         </nxp-doc-example>
 
@@ -224,6 +225,18 @@ export class SwitchDemoComponent {
     'danger',
   ];
 
+  // Per-size toggle state for the directive-based Sizes example.
+  readonly sizeOn: Record<NxpSwitchSize, boolean> = {
+    s: true,
+    m: true,
+    l: true,
+  };
+  readonly sizeOff: Record<NxpSwitchSize, boolean> = {
+    s: false,
+    m: false,
+    l: false,
+  };
+
   readonly notificationsCtrl = new FormControl<boolean>(true);
   readonly darkModeCtrl = new FormControl<boolean>(false);
   readonly twoWayValue = signal(false);
@@ -264,30 +277,46 @@ export class PlaygroundSwitchExample {
 
   readonly sizesHtml = `<div class="flex flex-wrap items-center gap-8">
   @for (s of sizes; track s) {
-    <nxp-switch [size]="s" [checked]="true">
+    <label class="inline-flex items-center gap-2">
+      <input type="checkbox" nxpSwitch [size]="s" [(ngModel)]="sizeOn[s]" />
       <span class="text-sm capitalize">{{ s }}</span>
-    </nxp-switch>
+    </label>
   }
 </div>
 <div class="flex flex-wrap items-center gap-8 mt-4">
   @for (s of sizes; track s) {
-    <nxp-switch [size]="s">
+    <label class="inline-flex items-center gap-2">
+      <input type="checkbox" nxpSwitch [size]="s" [(ngModel)]="sizeOff[s]" />
       <span class="text-sm capitalize">{{ s }} (unchecked)</span>
-    </nxp-switch>
+    </label>
   }
 </div>`;
 
   readonly sizesTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NxpSwitch, type NxpSwitchSize } from '@ngxpro/components/switch';
+import { FormsModule } from '@angular/forms';
+import {
+  NxpSwitchDirective,
+  type NxpSwitchDirectiveSize,
+} from '@ngxpro/cdk/components/switch';
 
 @Component({
   selector: 'app-sizes',
-  imports: [...NxpSwitch],
+  imports: [FormsModule, NxpSwitchDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sizes.html',
 })
 export class SizesSwitchExample {
-  readonly sizes: readonly NxpSwitchSize[] = ['s', 'm', 'l'];
+  readonly sizes: readonly NxpSwitchDirectiveSize[] = ['s', 'm', 'l'];
+  readonly sizeOn: Record<NxpSwitchDirectiveSize, boolean> = {
+    s: true,
+    m: true,
+    l: true,
+  };
+  readonly sizeOff: Record<NxpSwitchDirectiveSize, boolean> = {
+    s: false,
+    m: false,
+    l: false,
+  };
 }`;
 
   readonly colorsHtml = `<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">

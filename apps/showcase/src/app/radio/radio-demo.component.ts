@@ -38,10 +38,20 @@ interface Fruit {
       path="cdk/radio"
     >
       <p class="text-base text-text-secondary mb-6">
-        Native radio input styled with Tailwind. Integrates with Angular
-        Reactive Forms via the built-in
+        Native radio input wrapped in a styled
         <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-          >RadioControlValueAccessor</code
+          >nxp-radio</code
+        >
+        component. Implements
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >ControlValueAccessor</code
+        >, so it works with
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >[(ngModel)]</code
+        >
+        and
+        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >[formControl]</code
         >.
       </p>
 
@@ -51,20 +61,17 @@ interface Fruit {
           description="Drive the radio with the size and color controls from the API tab."
           [content]="{ HTML: playgroundHtml, TypeScript: playgroundTs }"
         >
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              nxpRadio
-              [size]="size()"
-              [color]="color()"
-              name="playground"
-              value="a"
-              checked
-            />
+          <nxp-radio
+            [size]="size()"
+            [color]="color()"
+            name="playground"
+            value="a"
+            [checked]="true"
+          >
             <span class="text-sm text-text-secondary"
               >size = {{ size() }}, color = {{ color() }}</span
             >
-          </label>
+          </nxp-radio>
         </nxp-doc-example>
 
         <nxp-doc-example
@@ -74,20 +81,17 @@ interface Fruit {
         >
           <div class="flex items-center gap-8">
             @for (s of sizes; track s) {
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  nxpRadio
-                  [size]="s"
-                  name="size-demo"
-                  [value]="s"
-                  [(ngModel)]="selectedSize"
-                />
+              <nxp-radio
+                [size]="s"
+                name="size-demo"
+                [value]="s"
+                [(ngModel)]="selectedSize"
+              >
                 <span
                   class="text-sm text-gray-700 dark:text-gray-300 capitalize"
                   >{{ s }}</span
                 >
-              </label>
+              </nxp-radio>
             }
           </div>
           <p class="text-xs text-gray-400 dark:text-gray-500 mt-3">
@@ -109,31 +113,25 @@ interface Fruit {
                   {{ color }}
                 </p>
                 <div class="space-y-2">
-                  <label class="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      nxpRadio
-                      [color]="color"
-                      [name]="'color-' + color"
-                      value="option1"
-                      checked
-                    />
+                  <nxp-radio
+                    [color]="color"
+                    [name]="'color-' + color"
+                    value="option1"
+                    [checked]="true"
+                  >
                     <span class="text-sm text-gray-700 dark:text-gray-300"
                       >Option 1 (checked)</span
                     >
-                  </label>
-                  <label class="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      nxpRadio
-                      [color]="color"
-                      [name]="'color-' + color"
-                      value="option2"
-                    />
+                  </nxp-radio>
+                  <nxp-radio
+                    [color]="color"
+                    [name]="'color-' + color"
+                    value="option2"
+                  >
                     <span class="text-sm text-gray-700 dark:text-gray-300"
                       >Option 2</span
                     >
-                  </label>
+                  </nxp-radio>
                 </div>
               </div>
             }
@@ -142,66 +140,50 @@ interface Fruit {
 
         <nxp-doc-example
           heading="Disabled State"
-          description="Disabled radios show reduced opacity and a not-allowed cursor. Set via native disabled attribute or by disabling the FormControl."
+          description="Disabled radios show reduced opacity and a not-allowed cursor. Set via the disabled input or by disabling the FormControl."
           [content]="{ HTML: disabledHtml, TypeScript: disabledTs }"
         >
           <div class="flex flex-wrap gap-6">
-            <label class="flex items-center gap-2 cursor-not-allowed">
-              <input
-                type="radio"
-                nxpRadio
-                name="disabled-demo"
-                value="a"
-                disabled
-              />
+            <nxp-radio name="disabled-demo" value="a" [disabled]="true">
               <span class="text-sm text-gray-400 dark:text-gray-500"
                 >Disabled unchecked</span
               >
-            </label>
-            <label class="flex items-center gap-2 cursor-not-allowed">
-              <input
-                type="radio"
-                nxpRadio
-                name="disabled-demo"
-                value="b"
-                checked
-                disabled
-              />
+            </nxp-radio>
+            <nxp-radio
+              name="disabled-demo"
+              value="b"
+              [checked]="true"
+              [disabled]="true"
+            >
               <span class="text-sm text-gray-400 dark:text-gray-500"
                 >Disabled checked</span
               >
-            </label>
-            <label class="flex items-center gap-2 cursor-not-allowed">
-              <input
-                type="radio"
-                nxpRadio
-                color="danger"
-                name="disabled-demo-2"
-                value="c"
-                disabled
-              />
+            </nxp-radio>
+            <nxp-radio
+              color="danger"
+              name="disabled-demo-2"
+              value="c"
+              [disabled]="true"
+            >
               <span class="text-sm text-gray-400 dark:text-gray-500"
                 >Danger disabled</span
               >
-            </label>
+            </nxp-radio>
           </div>
         </nxp-doc-example>
 
         <nxp-doc-example
           heading="Reactive Forms"
-          description="Works out-of-the-box with Angular's FormControl via the native RadioControlValueAccessor."
+          description="Works with Angular's FormControl via the component's ControlValueAccessor."
           [content]="{ HTML: reactiveFormsHtml, TypeScript: reactiveFormsTs }"
         >
           <div class="space-y-3">
             @for (plan of plans; track plan) {
-              <label class="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  nxpRadio
-                  [formControl]="planControl"
-                  [value]="plan.value"
-                  name="plan"
-                />
+              <nxp-radio
+                [formControl]="planControl"
+                [value]="plan.value"
+                name="plan"
+              >
                 <div>
                   <p class="text-sm font-medium text-gray-900 dark:text-white">
                     {{ plan.label }}
@@ -210,7 +192,7 @@ interface Fruit {
                     {{ plan.description }}
                   </p>
                 </div>
-              </label>
+              </nxp-radio>
             }
           </div>
           <div
@@ -244,25 +226,22 @@ interface Fruit {
         </nxp-doc-example>
 
         <nxp-doc-example
-          heading="Identity Matcher (Object Values)"
-          description="When binding object values, Angular's default reference equality fails. Add identityMatcher to compare by a stable property (e.g., id)."
-          [content]="{ HTML: identityHtml, TypeScript: identityTs }"
+          heading="Compare With (Object Values)"
+          description="When binding object values, Angular's default reference equality fails. Pass compareWith to compare by a stable property (e.g., id)."
+          [content]="{ HTML: compareHtml, TypeScript: compareTs }"
         >
           <div class="space-y-3">
             @for (fruit of fruits; track fruit.id) {
-              <label class="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  nxpRadio
-                  [identityMatcher]="fruitMatcher"
-                  [formControl]="fruitControl"
-                  [value]="fruit"
-                  name="fruit"
-                />
+              <nxp-radio
+                [compareWith]="fruitMatcher"
+                [formControl]="fruitControl"
+                [value]="fruit"
+                name="fruit"
+              >
                 <span class="text-sm text-gray-700 dark:text-gray-300">{{
                   fruit.label
                 }}</span>
-              </label>
+              </nxp-radio>
             }
           </div>
           <div
@@ -299,38 +278,29 @@ interface Fruit {
                     {{ color }}
                   </p>
                   <div class="space-y-2">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        nxpRadio
-                        [color]="color"
-                        [name]="'dark-' + color"
-                        value="a"
-                        checked
-                      />
+                    <nxp-radio
+                      [color]="color"
+                      [name]="'dark-' + color"
+                      value="a"
+                      [checked]="true"
+                    >
                       <span class="text-sm text-gray-300">Checked</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        nxpRadio
-                        [color]="color"
-                        [name]="'dark-' + color"
-                        value="b"
-                      />
+                    </nxp-radio>
+                    <nxp-radio
+                      [color]="color"
+                      [name]="'dark-' + color"
+                      value="b"
+                    >
                       <span class="text-sm text-gray-300">Unchecked</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-not-allowed">
-                      <input
-                        type="radio"
-                        nxpRadio
-                        [color]="color"
-                        [name]="'dark-disabled-' + color"
-                        value="c"
-                        disabled
-                      />
+                    </nxp-radio>
+                    <nxp-radio
+                      [color]="color"
+                      [name]="'dark-disabled-' + color"
+                      value="c"
+                      [disabled]="true"
+                    >
                       <span class="text-sm text-gray-500">Disabled</span>
-                    </label>
+                    </nxp-radio>
                   </div>
                 </div>
               }
@@ -384,33 +354,28 @@ export class RadioDemoComponent {
 
   readonly fruitControl = new FormControl<Fruit | null>(this.fruits[0]);
 
-  /** Custom identity matcher that compares fruits by id. */
+  /** Custom equality that compares fruits by id. */
   readonly fruitMatcher = (a: Fruit, b: Fruit): boolean => a?.id === b?.id;
 
   setFruitById(id: number): void {
     // Simulate a new object reference (e.g., fetched from API) with the same id
     const found = this.fruits.find((f) => f.id === id);
     if (found) {
-      // Pass a copy to demonstrate identity matcher working across different references
+      // Pass a copy to demonstrate compareWith working across different references
       this.fruitControl.setValue({ ...found });
     }
   }
 
   // ── Example source snippets shown inside <nxp-doc-example> tabs ────────────
-  readonly playgroundHtml = `<label class="flex items-center gap-2 cursor-pointer">
-  <input
-    type="radio"
-    nxpRadio
-    [size]="size()"
-    [color]="color()"
-    name="playground"
-    value="a"
-    checked
-  />
-  <span class="text-sm text-text-secondary">
-    size = {{ size() }}, color = {{ color() }}
-  </span>
-</label>`;
+  readonly playgroundHtml = `<nxp-radio
+  [size]="size()"
+  [color]="color()"
+  name="playground"
+  value="a"
+  [checked]="true"
+>
+  size = {{ size() }}, color = {{ color() }}
+</nxp-radio>`;
 
   readonly playgroundTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
@@ -432,20 +397,12 @@ export class PlaygroundRadioExample {
 
   readonly sizesHtml = `<div class="flex items-center gap-8">
   @for (s of sizes; track s) {
-    <label class="flex items-center gap-2 cursor-pointer">
-      <input
-        type="radio"
-        nxpRadio
-        [size]="s"
-        name="size-demo"
-        [value]="s"
-        [(ngModel)]="selectedSize"
-      />
-      <span class="text-sm capitalize">{{ s }}</span>
-    </label>
+    <nxp-radio [size]="s" name="size-demo" [value]="s" [(ngModel)]="selectedSize">
+      <span class="capitalize">{{ s }}</span>
+    </nxp-radio>
   }
 </div>
-<p class="text-xs mt-3">Selected: {{ selectedSize() }}</p>`;
+<p class="mt-3">Selected: {{ selectedSize() }}</p>`;
 
   readonly sizesTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -467,27 +424,12 @@ export class SizesRadioExample {
     <div class="space-y-2">
       <p class="text-xs font-medium uppercase tracking-wide">{{ color }}</p>
       <div class="space-y-2">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input
-            type="radio"
-            nxpRadio
-            [color]="color"
-            [name]="'color-' + color"
-            value="option1"
-            checked
-          />
+        <nxp-radio [color]="color" [name]="'color-' + color" value="option1" [checked]="true">
           <span class="text-sm">Option 1 (checked)</span>
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input
-            type="radio"
-            nxpRadio
-            [color]="color"
-            [name]="'color-' + color"
-            value="option2"
-          />
+        </nxp-radio>
+        <nxp-radio [color]="color" [name]="'color-' + color" value="option2">
           <span class="text-sm">Option 2</span>
-        </label>
+        </nxp-radio>
       </div>
     </div>
   }
@@ -507,32 +449,15 @@ export class ColorsRadioExample {
 }`;
 
   readonly disabledHtml = `<div class="flex flex-wrap gap-6">
-  <label class="flex items-center gap-2 cursor-not-allowed">
-    <input type="radio" nxpRadio name="disabled-demo" value="a" disabled />
+  <nxp-radio name="disabled-demo" value="a" [disabled]="true">
     <span class="text-sm">Disabled unchecked</span>
-  </label>
-  <label class="flex items-center gap-2 cursor-not-allowed">
-    <input
-      type="radio"
-      nxpRadio
-      name="disabled-demo"
-      value="b"
-      checked
-      disabled
-    />
+  </nxp-radio>
+  <nxp-radio name="disabled-demo" value="b" [checked]="true" [disabled]="true">
     <span class="text-sm">Disabled checked</span>
-  </label>
-  <label class="flex items-center gap-2 cursor-not-allowed">
-    <input
-      type="radio"
-      nxpRadio
-      color="danger"
-      name="disabled-demo-2"
-      value="c"
-      disabled
-    />
+  </nxp-radio>
+  <nxp-radio color="danger" name="disabled-demo-2" value="c" [disabled]="true">
     <span class="text-sm">Danger disabled</span>
-  </label>
+  </nxp-radio>
 </div>`;
 
   readonly disabledTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
@@ -548,19 +473,12 @@ export class DisabledRadioExample {}`;
 
   readonly reactiveFormsHtml = `<div class="space-y-3">
   @for (plan of plans; track plan) {
-    <label class="flex items-center gap-3 cursor-pointer">
-      <input
-        type="radio"
-        nxpRadio
-        [formControl]="planControl"
-        [value]="plan.value"
-        name="plan"
-      />
+    <nxp-radio [formControl]="planControl" [value]="plan.value" name="plan">
       <div>
         <p class="text-sm font-medium">{{ plan.label }}</p>
         <p class="text-xs">{{ plan.description }}</p>
       </div>
-    </label>
+    </nxp-radio>
   }
 </div>
 <div class="mt-4 p-3 rounded-lg text-xs font-mono">
@@ -593,19 +511,16 @@ export class ReactiveFormsRadioExample {
   readonly planControl = new FormControl<string>('pro');
 }`;
 
-  readonly identityHtml = `<div class="space-y-3">
+  readonly compareHtml = `<div class="space-y-3">
   @for (fruit of fruits; track fruit.id) {
-    <label class="flex items-center gap-3 cursor-pointer">
-      <input
-        type="radio"
-        nxpRadio
-        [identityMatcher]="fruitMatcher"
-        [formControl]="fruitControl"
-        [value]="fruit"
-        name="fruit"
-      />
+    <nxp-radio
+      [compareWith]="fruitMatcher"
+      [formControl]="fruitControl"
+      [value]="fruit"
+      name="fruit"
+    >
       <span class="text-sm">{{ fruit.label }}</span>
-    </label>
+    </nxp-radio>
   }
 </div>
 <div class="mt-4 p-3 rounded-lg text-xs font-mono">
@@ -615,7 +530,7 @@ export class ReactiveFormsRadioExample {
   Set to Banana (id=2) programmatically
 </button>`;
 
-  readonly identityTs = `import { JsonPipe } from '@angular/common';
+  readonly compareTs = `import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NxpRadio } from '@ngxpro/cdk/components/radio';
@@ -626,12 +541,12 @@ interface Fruit {
 }
 
 @Component({
-  selector: 'app-identity-matcher',
+  selector: 'app-compare-with',
   imports: [JsonPipe, ReactiveFormsModule, ...NxpRadio],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './identity-matcher.html',
+  templateUrl: './compare-with.html',
 })
-export class IdentityMatcherRadioExample {
+export class CompareWithRadioExample {
   readonly fruits: Fruit[] = [
     { id: 1, label: 'Apple' },
     { id: 2, label: 'Banana' },
@@ -640,7 +555,7 @@ export class IdentityMatcherRadioExample {
 
   readonly fruitControl = new FormControl<Fruit | null>(this.fruits[0]);
 
-  /** Custom identity matcher that compares fruits by id. */
+  /** Custom equality that compares fruits by id. */
   readonly fruitMatcher = (a: Fruit, b: Fruit): boolean => a?.id === b?.id;
 
   setFruitById(id: number): void {
@@ -657,38 +572,15 @@ export class IdentityMatcherRadioExample {
       <div class="space-y-2">
         <p class="text-xs font-medium uppercase tracking-wide">{{ color }}</p>
         <div class="space-y-2">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              nxpRadio
-              [color]="color"
-              [name]="'dark-' + color"
-              value="a"
-              checked
-            />
+          <nxp-radio [color]="color" [name]="'dark-' + color" value="a" [checked]="true">
             <span class="text-sm">Checked</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              nxpRadio
-              [color]="color"
-              [name]="'dark-' + color"
-              value="b"
-            />
+          </nxp-radio>
+          <nxp-radio [color]="color" [name]="'dark-' + color" value="b">
             <span class="text-sm">Unchecked</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-not-allowed">
-            <input
-              type="radio"
-              nxpRadio
-              [color]="color"
-              [name]="'dark-disabled-' + color"
-              value="c"
-              disabled
-            />
+          </nxp-radio>
+          <nxp-radio [color]="color" [name]="'dark-disabled-' + color" value="c" [disabled]="true">
             <span class="text-sm">Disabled</span>
-          </label>
+          </nxp-radio>
         </div>
       </div>
     }

@@ -34,8 +34,8 @@ import { InputDateRangeApiComponent } from './input-date-range-api.component';
     >
       <p class="text-base text-text-secondary mb-6">
         Text input with a dual-calendar range dropdown. Click once for the start
-        date, again for the end date. Also accepts keyboard entry in "MM/DD/YYYY
-        – MM/DD/YYYY" format. Supports preset periods, length constraints, and
+        date, again for the end date. Also accepts keyboard entry in "DD/MM/YYYY
+        – DD/MM/YYYY" format. Supports preset periods, length constraints, and
         Angular forms.
       </p>
 
@@ -146,7 +146,7 @@ import { InputDateRangeApiComponent } from './input-date-range-api.component';
 
         <nxp-doc-example
           heading="Min / Max bounds"
-          description="Only dates within ±30 days of today are selectable."
+          description="Only dates within ±30 days of today are selectable. Typing a date outside the range snaps each end to the nearest bound on blur."
           [content]="{ HTML: boundsHtml, TypeScript: boundsTs }"
         >
           <div class="space-y-3 w-full max-w-md">
@@ -237,7 +237,7 @@ export class InputDateRangeDemoComponent {
   private static readonly DAY_MS = 86_400_000;
 
   // Playground state shared with the API tab.
-  readonly placeholder = signal('MM/DD/YYYY – MM/DD/YYYY');
+  readonly placeholder = signal('DD/MM/YYYY – DD/MM/YYYY');
   readonly disabled = signal(false);
   readonly minLength = signal<number | null>(null);
   readonly maxLength = signal<number | null>(null);

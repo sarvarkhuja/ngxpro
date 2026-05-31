@@ -2,6 +2,13 @@ import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
 
+/**
+ * API table for the `<nxp-combo-box>` component. Generic over the item type `T`
+ * and emitted value type `V`.
+ *
+ * For fully custom dropdown content the `input[nxpComboBox]` directive remains
+ * available as the power-user escape hatch.
+ */
 @Component({
   selector: 'app-combo-box-api',
   standalone: true,
@@ -9,13 +16,17 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
   imports: [FormsModule, NxpDocApi],
   template: `
     <p class="text-base text-text-secondary mb-6">
-      Inputs accepted by the combo-box components. Edit a value to see the
-      playground above react — values are persisted to the URL query string.
+      Inputs for the self-contained
+      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+        >&lt;nxp-combo-box&gt;</code
+      >
+      component. Edit a value to see the playground above react — values are
+      persisted to the URL query string.
     </p>
 
     <h2 class="text-xl font-semibold text-text-primary mt-8 mb-2">
       <code class="text-base bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >input[nxpComboBox]</code
+        >&lt;nxp-combo-box&gt;</code
       >
     </h2>
     <table nxpDocApi>
@@ -23,10 +34,7 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
       <th class="w-[45%]">Type</th>
       <th class="w-[30%]">Value</th>
       <tr nxpDocApiItem name="[items]" type="readonly T[]" [(value)]="items">
-        Set
-        <code>items</code
-        >.
-        <!-- TODO describe -->
+        The options shown in (and filtered within) the dropdown list.
       </tr>
       <tr nxpDocApiItem name="[strict]" type="boolean" [(value)]="strict">
         Whether the combo-box requires the user to select an existing option.
@@ -45,7 +53,6 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
         Custom matcher used when filtering items. Defaults to
         <code>NXP_DEFAULT_MATCHER</code>
         (substring match, case-insensitive).
-        <!-- TODO refine type -->
       </tr>
       <tr
         nxpDocApiItem
@@ -93,27 +100,14 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
         <code>valueField</code>
         to be set.
       </tr>
-    </table>
-
-    <h2 class="text-xl font-semibold text-text-primary mt-10 mb-2">
-      <code class="text-base bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >nxp-select-option</code
-      >
-    </h2>
-    <table nxpDocApi>
-      <th class="w-[25%]">Name</th>
-      <th class="w-[45%]">Type</th>
-      <th class="w-[30%]">Value</th>
-      <tr
-        nxpDocApiItem
-        name="[value]"
-        type="T (required)"
-        [(value)]="optionValue"
-      >
-        Set
-        <code>value</code
-        >.
-        <!-- TODO describe -->
+      <tr nxpDocApiItem name="[placeholder]" type="string" default="Select...">
+        Text shown in the trigger when the input is empty.
+      </tr>
+      <tr nxpDocApiItem name="[emptyLabel]" type="string" default="No options">
+        Text shown in the dropdown when no items match.
+      </tr>
+      <tr nxpDocApiItem name="[class]" type="string">
+        Extra CSS classes merged onto the host element.
       </tr>
     </table>
   `,
@@ -125,5 +119,4 @@ export class ComboBoxApiComponent {
   readonly textField = model<string | undefined>();
   readonly valueField = model<string | undefined>();
   readonly valuePrimitive = model(false);
-  readonly optionValue = model<unknown>();
 }

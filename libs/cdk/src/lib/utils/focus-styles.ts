@@ -26,11 +26,20 @@ export const focusInput = [
 ] as const;
 
 /**
- * Error state for input-style elements — uses semantic status-negative token.
+ * Error state for input-style elements.
+ *
+ * Matches the shadow-as-border chrome from `inputVariants` (which sets
+ * `border-0 ring-0` and draws its border in the box-shadow layer): a plain
+ * `border-*` colour would be invisible against the zero-width border, so the
+ * error must be a red *shadow* border. Uses the design-system
+ * `shadow-input-error` token (1px solid + soft halo) and overrides the focus
+ * shadow so the error stays visible while the field is focused — mirroring how
+ * `NxpTextfieldComponent` / `nxp-input-pin` already surface their error state.
  */
 export const hasErrorInput = [
-  'border-status-negative',
-  'ring-2 ring-status-negative/20',
+  'shadow-input-error',
+  'hover:shadow-input-error',
+  'focus-visible:shadow-input-error',
 ] as const;
 
 /**

@@ -31,10 +31,10 @@ import { InputDateApiComponent } from './input-date-api.component';
       <p class="text-base text-text-secondary mb-6">
         Text input with an inline calendar dropdown. Supports keyboard date
         entry (<code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-          >MM/DD/YYYY</code
+          >DD/MM/YYYY</code
         >,
         <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-          >MM-DD-YYYY</code
+          >DD-MM-YYYY</code
         >,
         <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
           >YYYY-MM-DD</code
@@ -131,7 +131,7 @@ import { InputDateApiComponent } from './input-date-api.component';
 
         <nxp-doc-example
           heading="Min / Max bounds"
-          description="Pass [min] and [max] to constrain the selectable range. Only dates within ±7 days of today are selectable here."
+          description="Pass [min] and [max] to constrain the selectable range. Only dates within ±7 days of today are selectable here. Typing a date outside the range snaps it to the nearest bound on blur."
           [content]="{ HTML: boundsHtml, TypeScript: boundsTs }"
         >
           <div class="w-72 space-y-3">
@@ -264,7 +264,7 @@ export class InputDateDemoComponent {
   // ── Playground state — shared with the API tab via two-way model() ───────
   readonly basicDate = signal<Date | null>(null);
   readonly playgroundDisabled = signal(false);
-  readonly playgroundPlaceholder = signal('MM/DD/YYYY');
+  readonly playgroundPlaceholder = signal('DD/MM/YYYY');
   readonly playgroundWeekStart = signal<0 | 1 | 2 | 3 | 4 | 5 | 6>(1);
   readonly playgroundHasError = signal(false);
   readonly playgroundClass = signal('');
@@ -320,7 +320,7 @@ import { InputDateComponent } from '@ngxpro/components/input-date';
 export class PlaygroundInputDateExample {
   readonly date = signal<Date | null>(null);
   readonly disabled = signal(false);
-  readonly placeholder = signal('MM/DD/YYYY');
+  readonly placeholder = signal('DD/MM/YYYY');
   readonly weekStart = signal<0 | 1 | 2 | 3 | 4 | 5 | 6>(1);
   readonly hasError = signal(false);
   readonly extraClass = signal('');

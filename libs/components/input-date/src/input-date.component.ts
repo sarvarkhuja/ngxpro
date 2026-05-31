@@ -1,8 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  ElementRef,
   computed,
   effect,
   forwardRef,
@@ -11,35 +9,59 @@ import {
   model,
   signal,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import {
   cx,
   hasErrorInput,
   inputVariants,
-  NXP_DOCUMENT,
-  NXP_IS_BROWSER,
+  NxpDropdownContent,
+  NxpDropdownDirective,
+  NxpDropdownOpen,
 } from '@ngxpro/cdk';
 import { CalendarComponent } from '@ngxpro/components/calendar';
 import type {
   DisabledHandler,
   MarkerHandler,
 } from '@ngxpro/components/calendar';
-import { formatDate, parseDate } from './date-input.utils';
+import {
+  caretForDigitCount,
+  digitsBefore,
+  formatDate,
+  maskDate,
+  parseDate,
+} from './date-input.utils';
+
+const isDigitChar = (ch: string): boolean => !!ch && ch >= '0' && ch <= '9';
 
 /**
  * Single-date input with calendar dropdown.
  *
  * Clicking the input opens a `nxp-calendar` dropdown. Selecting a day closes
- * the dropdown and updates the value. The user may also type a date directly;
- * on blur, the raw text is parsed (MM/DD/YYYY, MM-DD-YYYY, YYYY-MM-DD).
+ * the dropdown and updates the value. The user may also type a date directly:
+ * input is masked to digits-only and auto-formatted as `DD/MM/YYYY` while
+ * typing; on blur it is validated and impossible dates (e.g. 31/02) mark the
+ * field invalid while keeping the typed text.
  *
- * Implements `ControlValueAccessor` so it works with both template-driven
- * and reactive Angular forms. `value` is a `model()` so reactive form
- * `setValue()` propagates back through `writeValue()` and updates the calendar.
+ * The dropdown is rendered through the CDK dropdown portal
+ * (`NxpDropdownDirective` / `nxpDropdown`), so it escapes any ancestor
+ * `overflow` clipping and is positioned/closed by the shared portal machinery
+ * (click-outside, focus zones) rather than a hand-rolled listener.
+ *
+ * Implements `ControlValueAccessor` and `Validator` so it works with both
+ * template-driven and reactive Angular forms (a failed parse surfaces an
+ * `invalidDate` error). `value` is a `model()` so reactive form `setValue()`
+ * propagates back through `writeValue()` and updates the calendar.
  *
  * @example
  * <!-- Template-driven -->
- * <nxp-input-date [(ngModel)]="date" placeholder="MM/DD/YYYY" />
+ * <nxp-input-date [(ngModel)]="date" placeholder="DD/MM/YYYY" />
  *
  * @example
  * <!-- Reactive form -->
@@ -48,39 +70,26 @@ import { formatDate, parseDate } from './date-input.utils';
 @Component({
   selector: 'nxp-input-date',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CalendarComponent],
+  imports: [CalendarComponent, NxpDropdownContent],
+  hostDirectives: [NxpDropdownDirective, NxpDropdownOpen],
+  host: { class: 'block w-full' },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputDateComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => InputDateComponent),
+      multi: true,
+    },
   ],
-  styles: `
-    .nxp-date-pop {
-      transform-origin: top left;
-      animation: nxp-date-pop-in 180ms cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    @keyframes nxp-date-pop-in {
-      from {
-        opacity: 0;
-        transform: scale(0.97) translateY(-4px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .nxp-date-pop {
-        animation: none;
-      }
-    }
-  `,
   template: `
     <div class="relative w-full">
       <input
         type="text"
+        inputmode="numeric"
         [id]="inputId() || null"
         [class]="inputClass()"
         [value]="inputValue()"
@@ -88,6 +97,7 @@ import { formatDate, parseDate } from './date-input.utils';
         [disabled]="disabled()"
         (click)="toggle()"
         (input)="onInput($event)"
+        (keydown)="onKeydown($event)"
         (blur)="onBlur()"
         (keydown.escape)="close()"
         aria-haspopup="dialog"
@@ -96,7 +106,7 @@ import { formatDate, parseDate } from './date-input.utils';
           ariaLabelledBy() ? null : (ariaLabel() ?? placeholder())
         "
         [attr.aria-labelledby]="ariaLabelledBy() || null"
-        [attr.aria-invalid]="hasError() || null"
+        [attr.aria-invalid]="hasError() || invalidInput() || null"
         autocomplete="off"
       />
 
@@ -122,38 +132,29 @@ import { formatDate, parseDate } from './date-input.utils';
           />
         </svg>
       </span>
-
-      @if (isOpen()) {
-        <div
-          class="nxp-date-pop absolute z-50 mt-2 top-full left-0"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Date picker"
-        >
-          <nxp-calendar
-            [value]="value()"
-            [min]="min()"
-            [max]="max()"
-            [weekStart]="weekStart()"
-            [disabledHandler]="disabledHandler()"
-            [markerHandler]="markerHandler()"
-            (dayClick)="onDayPicked($event)"
-          />
-        </div>
-      }
     </div>
+
+    <ng-template nxpDropdown>
+      <nxp-calendar
+        [value]="calendarValue()"
+        [min]="min()"
+        [max]="max()"
+        [weekStart]="weekStart()"
+        [disabledHandler]="disabledHandler()"
+        [markerHandler]="markerHandler()"
+        (dayClick)="onDayPicked($event)"
+      />
+    </ng-template>
   `,
 })
-export class InputDateComponent implements ControlValueAccessor {
-  private readonly el = inject(ElementRef);
-  private readonly doc = inject(NXP_DOCUMENT);
-  private readonly isBrowser = inject(NXP_IS_BROWSER);
-  private readonly destroyRef = inject(DestroyRef);
+export class InputDateComponent implements ControlValueAccessor, Validator {
+  private readonly dropdown = inject(NxpDropdownDirective);
+  private readonly dropdownOpen = inject(NxpDropdownOpen);
 
   readonly value = model<Date | null>(null);
   readonly min = input<Date | null>(null);
   readonly max = input<Date | null>(null);
-  readonly placeholder = input<string>('MM/DD/YYYY');
+  readonly placeholder = input<string>('DD/MM/YYYY');
   readonly disabled = model<boolean>(false);
   readonly weekStart = input<0 | 1 | 2 | 3 | 4 | 5 | 6>(1);
   readonly disabledHandler = input<DisabledHandler | null>(null);
@@ -169,15 +170,30 @@ export class InputDateComponent implements ControlValueAccessor {
   /** Marks the input as invalid (sets `aria-invalid`); style hook for callers wiring form validity. */
   readonly hasError = input<boolean>(false);
 
-  protected readonly isOpen = signal(false);
+  /** Whether the calendar portal is currently mounted. */
+  protected readonly isOpen = computed(() => !!this.dropdown.ref());
   protected readonly inputValue = signal('');
+  /** Set when a typed date fails to parse/validate on blur; drives the error state. */
+  protected readonly invalidInput = signal(false);
+  /**
+   * In-progress typed date, set while the user is typing a complete valid
+   * in-bounds date but before it is committed (on blur / day-pick). Lets the
+   * open calendar navigate to and highlight what is being typed without
+   * eagerly mutating the public `value` / notifying the form on every keystroke.
+   */
+  private readonly draft = signal<Date | null>(null);
+
+  /** Value shown in the calendar: the in-progress typed date, else the committed value. */
+  protected readonly calendarValue = computed(
+    () => this.draft() ?? this.value(),
+  );
 
   protected readonly inputClass = computed(() =>
     cx(
       inputVariants(),
       // Reserve room for the trailing calendar icon (rendered absolutely).
       'pr-10',
-      this.hasError() && hasErrorInput,
+      (this.hasError() || this.invalidInput()) && hasErrorInput,
       this.class(),
     ),
   );
@@ -186,34 +202,20 @@ export class InputDateComponent implements ControlValueAccessor {
     effect(() => {
       const v = this.value();
       this.inputValue.set(v ? formatDate(v) : '');
+      // The committed value is authoritative; drop any in-progress typed draft.
+      this.draft.set(null);
     });
-
-    if (this.isBrowser) {
-      const onDocClick = (event: Event): void => {
-        if (
-          !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
-        ) {
-          this.isOpen.set(false);
-        }
-      };
-      const onDocEsc = (event: KeyboardEvent): void => {
-        if (event.key === 'Escape') this.isOpen.set(false);
-      };
-      this.doc.addEventListener('click', onDocClick, true);
-      this.doc.addEventListener('keydown', onDocEsc);
-      this.destroyRef.onDestroy(() => {
-        this.doc.removeEventListener('click', onDocClick, true);
-        this.doc.removeEventListener('keydown', onDocEsc);
-      });
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onChange: (v: Date | null) => void = () => {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onTouched: () => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private _onValidatorChange: () => void = () => {};
 
   writeValue(v: Date | null): void {
+    this.invalidInput.set(false);
     this.value.set(v);
   }
 
@@ -229,36 +231,159 @@ export class InputDateComponent implements ControlValueAccessor {
     this.disabled.set(isDisabled);
   }
 
+  validate(_control: AbstractControl): ValidationErrors | null {
+    return this.invalidInput() ? { invalidDate: true } : null;
+  }
+
+  registerOnValidatorChange(fn: () => void): void {
+    this._onValidatorChange = fn;
+  }
+
   protected toggle(): void {
     if (!this.disabled()) {
-      this.isOpen.update((v) => !v);
+      this.dropdownOpen.toggle(!this.isOpen());
     }
   }
 
   protected close(): void {
-    this.isOpen.set(false);
+    this.dropdownOpen.toggle(false);
   }
 
   protected onDayPicked(day: Date): void {
+    this.invalidInput.set(false);
     this.value.set(day);
-    this.isOpen.set(false);
+    this.dropdownOpen.toggle(false);
     this._onChange(day);
+    this._onValidatorChange();
   }
 
   protected onInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value;
-    this.inputValue.set(raw);
+    const el = event.target as HTMLInputElement;
+    const raw = el.value;
+    const caret = el.selectionStart ?? raw.length;
+    const masked = maskDate(raw);
+    const newCaret =
+      caret >= raw.length
+        ? masked.length
+        : caretForDigitCount(masked, digitsBefore(raw, caret));
+    if (el.value !== masked) el.value = masked;
+    el.setSelectionRange(newCaret, newCaret);
+    this.inputValue.set(masked);
+    this.invalidInput.set(false);
+    this.syncDraft(masked);
+  }
+
+  /**
+   * Backspacing while the caret sits just after an auto-inserted `/` would
+   * otherwise be undone by re-masking. Delete the preceding digit instead.
+   */
+  protected onKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Backspace') return;
+    const el = event.target as HTMLInputElement;
+    const start = el.selectionStart ?? 0;
+    const end = el.selectionEnd ?? 0;
+    if (start !== end || start === 0 || isDigitChar(el.value[start - 1])) {
+      return;
+    }
+    event.preventDefault();
+    let i = start - 1;
+    while (i >= 0 && !isDigitChar(el.value[i])) i--;
+    if (i < 0) return;
+    const raw = el.value.slice(0, i) + el.value.slice(i + 1);
+    const masked = maskDate(raw);
+    el.value = masked;
+    const newCaret = caretForDigitCount(masked, digitsBefore(raw, i));
+    el.setSelectionRange(newCaret, newCaret);
+    this.inputValue.set(masked);
+    this.invalidInput.set(false);
+    this.syncDraft(masked);
+  }
+
+  /**
+   * Parse the masked text and, when it yields a complete valid in-bounds date,
+   * expose it as the calendar's draft so the open calendar previews it live.
+   */
+  private syncDraft(masked: string): void {
+    const parsed = parseDate(masked);
+    this.draft.set(parsed && this.inBounds(parsed) ? parsed : null);
   }
 
   protected onBlur(): void {
-    const parsed = parseDate(this.inputValue());
-    if (parsed) {
-      this.value.set(parsed);
-      this._onChange(parsed);
-    } else if (!this.inputValue()) {
+    const text = this.inputValue();
+    if (!text) {
+      this.invalidInput.set(false);
       this.value.set(null);
       this._onChange(null);
+    } else {
+      const parsed = parseDate(text);
+      if (parsed) {
+        // A real date outside the bounds is snapped to the nearest bound
+        // rather than rejected (e.g. typing 2040 with max 2030 commits 2030).
+        // Impossible dates (e.g. 31/02) still fall through to the invalid state.
+        const clamped = this.clampToBounds(parsed);
+        this.invalidInput.set(false);
+        this.value.set(clamped);
+        // Replace the typed text with the committed date. Set it explicitly
+        // (rather than relying on the value effect) to cover the case where the
+        // clamped date is the same Date reference the value already held.
+        this.inputValue.set(formatDate(clamped));
+        this._onChange(clamped);
+      } else {
+        this.invalidInput.set(true);
+      }
     }
+    this._onValidatorChange();
     this._onTouched();
+  }
+
+  /** Whether `d` falls within the optional `min`/`max` bounds (day granularity). */
+  private inBounds(d: Date): boolean {
+    const day = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    const min = this.min();
+    const max = this.max();
+    if (min) {
+      const lo = new Date(
+        min.getFullYear(),
+        min.getMonth(),
+        min.getDate(),
+      ).getTime();
+      if (day < lo) return false;
+    }
+    if (max) {
+      const hi = new Date(
+        max.getFullYear(),
+        max.getMonth(),
+        max.getDate(),
+      ).getTime();
+      if (day > hi) return false;
+    }
+    return true;
+  }
+
+  /**
+   * Snap `d` to the nearest of the optional `min`/`max` bounds (day
+   * granularity). Returns the `min`/`max` Date when `d` is out of range, else `d`.
+   */
+  private clampToBounds(d: Date): Date {
+    const day = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    const min = this.min();
+    const max = this.max();
+    if (min) {
+      const lo = new Date(
+        min.getFullYear(),
+        min.getMonth(),
+        min.getDate(),
+      ).getTime();
+      if (day < lo) return min;
+    }
+    if (max) {
+      const hi = new Date(
+        max.getFullYear(),
+        max.getMonth(),
+        max.getDate(),
+      ).getTime();
+      if (day > hi) return max;
+    }
+    return d;
   }
 }

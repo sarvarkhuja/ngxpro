@@ -1,95 +1,100 @@
-import { ChangeDetectionStrategy, Component, model } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
 
 /**
- * API table for the select demo. Inputs are exposed as two-way `model()`s
- * so the parent demo can share playground state — editing a row here updates
- * the live preview, and values persist to the URL via `nxpDocApiItem`.
+ * API table for the `<nxp-select>` component. Generic over the item type `T`.
+ *
+ * For fully custom dropdown content beyond what these inputs cover, the
+ * `input[nxpSelect]` directive remains available as the power-user escape hatch.
  */
 @Component({
   selector: 'app-select-api',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, NxpDocApi],
+  imports: [NxpDocApi],
   template: `
     <p class="text-base text-text-secondary mb-6">
-      Inputs accepted by the select directive. Edit a value to see the
-      playground above react — values are persisted to the URL query string.
+      The self-contained
+      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+        >&lt;nxp-select&gt;</code
+      >
+      component — one element +
+      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+        >[formControl]</code
+      >, no
+      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+        >nxp-textfield</code
+      >
+      assembly. Generic over the item type
+      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded">T</code>.
     </p>
 
     <h2 class="text-xl font-semibold text-text-primary mt-8 mb-2">
       <code class="text-base bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >input[nxpSelect]</code
+        >&lt;nxp-select&gt;</code
       >
     </h2>
-    <p class="text-sm text-text-secondary mb-2">
-      The directive itself takes no host inputs — it derives behaviour from the
-      bound
-      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >FormControl</code
-      >
-      and the surrounding
-      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >nxp-textfield</code
-      >. The inputs below are inherited from the shared
-      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >NxpControl</code
-      >
-      base class and apply to every form-bound directive in the library.
-    </p>
     <table nxpDocApi>
       <th class="w-[25%]">Name</th>
-      <th class="w-[45%]">Type</th>
-      <th class="w-[30%]">Value</th>
-      <tr nxpDocApiItem name="[readOnly]" type="boolean" [(value)]="readOnly">
-        When
-        <code>true</code>
-        the input is non-interactive: keyboard shortcuts are ignored and the
-        dropdown will not open. Combine with a populated form value to show a
-        locked selection.
+      <th class="w-[30%]">Type</th>
+      <th class="w-[45%]">Description</th>
+      <tr nxpDocApiItem name="[items]" type="readonly T[]">
+        The options to display in the dropdown list.
+      </tr>
+      <tr nxpDocApiItem name="[placeholder]" type="string" default="Select...">
+        Text shown in the trigger when nothing is selected.
+      </tr>
+      <tr nxpDocApiItem name="[emptyLabel]" type="string" default="No options">
+        Text shown in the dropdown when no items are available or match.
+      </tr>
+      <tr nxpDocApiItem name="[clearable]" type="boolean" default="false">
+        Show a clear button when a value is selected.
+      </tr>
+      <tr nxpDocApiItem name="[textField]" type="string">
+        Property name used as the display text for object items.
+      </tr>
+      <tr nxpDocApiItem name="[valueField]" type="string">
+        Property name used for identity matching of object items.
+      </tr>
+      <tr nxpDocApiItem name="[disabledItem]" type="(item: T) => boolean">
+        Predicate marking individual items non-selectable — they render dimmed
+        with
+        <code>aria-disabled</code>
+        and are skipped by keyboard navigation.
+      </tr>
+      <tr nxpDocApiItem name="[filterable]" type="boolean" default="false">
+        Show an in-panel search box that filters the options as you type.
+      </tr>
+      <tr nxpDocApiItem name="[matcher]" type="NxpStringMatcher<T>">
+        Custom filter matcher. Defaults to
+        <code>NXP_DEFAULT_MATCHER</code>
+        (case-insensitive substring).
       </tr>
       <tr
         nxpDocApiItem
-        name="[pseudoInvalid]"
-        type="boolean | null"
-        [(value)]="pseudoInvalid"
+        name="[filterPlaceholder]"
+        type="string"
+        default="Search…"
       >
-        Force the invalid visual state regardless of the form control's actual
-        validity. Use
-        <code>null</code>
-        (the default) to defer to the bound control's own
-        <code>status</code>
-        and
-        <code>touched</code>
-        flags.
+        Placeholder for the in-panel search input.
+      </tr>
+      <tr nxpDocApiItem name="[groupBy]" type="string">
+        Property name used to bucket options into labelled groups.
+      </tr>
+      <tr nxpDocApiItem name="[creatable]" type="boolean" default="false">
+        Show a "Create …" row when the search matches nothing (implies a search
+        box).
+      </tr>
+      <tr nxpDocApiItem name="[createLabel]" type="string" default="Create">
+        Label prefix shown on the create row.
+      </tr>
+      <tr nxpDocApiItem name="(create)" type="EventEmitter<string>">
+        Emits the trimmed search text when the create row is chosen.
+      </tr>
+      <tr nxpDocApiItem name="[class]" type="string">
+        Extra CSS classes merged onto the host element.
       </tr>
     </table>
-
-    <h2 class="text-xl font-semibold text-text-primary mt-10 mb-2">
-      <code class="text-base bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >NxpSelect</code
-      >
-    </h2>
-    <p class="text-sm text-text-secondary mb-2">
-      Convenience
-      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >const</code
-      >
-      array re-exported from
-      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >&#64;ngxpro/components/select</code
-      >. Spread it into a component's
-      <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
-        >imports</code
-      >
-      to bring in the directive together with the textfield, label, input,
-      data-list, option and dropdown pieces it composes with. No configurable
-      inputs of its own.
-    </p>
   `,
 })
-export class SelectApiComponent {
-  readonly readOnly = model(false);
-  readonly pseudoInvalid = model<boolean | null>(null);
-}
+export class SelectApiComponent {}

@@ -7,13 +7,14 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./home/home.component').then((m) => m.HomeComponent),
   },
-  {
+  nxpProvideRoutePageTab({
     path: 'text-morph',
+    title: 'Text Morph',
     loadComponent: () =>
       import('./text-morph/text-morph.component').then(
         (m) => m.TextMorphDemoComponent,
       ),
-  },
+  }),
   nxpProvideRoutePageTab({
     path: 'accordion',
     title: 'Accordion',

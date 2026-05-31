@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   input,
   OnInit,
   output,
@@ -294,6 +295,23 @@ export class CalendarRangeComponent implements OnInit {
   );
 
   // ------------------------------------------------------------------ lifecycle
+
+  constructor() {
+    // Navigate the dual calendars to a committed value that changes while the
+    // picker stays mounted (e.g. a typed range in input-date-range, or a
+    // programmatic write). Reacts only to the committed `value()` — never to
+    // `displayValue` / `pickedStart` — so an in-progress pick keeps the user's
+    // current view, and manual month navigation (which leaves `value()`
+    // untouched) is preserved.
+    effect(() => {
+      const val = this.value();
+      if (val) {
+        this.leftMonth.set(
+          new Date(val[0].getFullYear(), val[0].getMonth(), 1),
+        );
+      }
+    });
+  }
 
   ngOnInit(): void {
     const val = this.value();

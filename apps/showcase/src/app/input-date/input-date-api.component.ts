@@ -40,11 +40,13 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
       </tr>
       <tr nxpDocApiItem name="[min]" type="Date | null" [(value)]="min">
         Minimum selectable date. Dates before this bound are disabled in the
-        calendar dropdown.
+        calendar dropdown, and a typed date before it snaps up to this bound on
+        blur.
       </tr>
       <tr nxpDocApiItem name="[max]" type="Date | null" [(value)]="max">
         Maximum selectable date. Dates after this bound are disabled in the
-        calendar dropdown.
+        calendar dropdown, and a typed date after it snaps down to this bound on
+        blur.
       </tr>
       <tr
         nxpDocApiItem
@@ -53,7 +55,7 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
         [(value)]="placeholder"
       >
         Placeholder text shown when the input is empty. Defaults to
-        <code>'MM/DD/YYYY'</code
+        <code>'DD/MM/YYYY'</code
         >.
       </tr>
       <tr nxpDocApiItem name="[(disabled)]" type="boolean" [(value)]="disabled">
@@ -164,7 +166,7 @@ export class InputDateApiComponent {
   readonly value = model<Date | null>(null);
   readonly min = model<Date | null>(null);
   readonly max = model<Date | null>(null);
-  readonly placeholder = model<string>('MM/DD/YYYY');
+  readonly placeholder = model<string>('DD/MM/YYYY');
   readonly disabled = model<boolean>(false);
   readonly weekStart = model<0 | 1 | 2 | 3 | 4 | 5 | 6>(1);
   readonly disabledHandler = model<((date: Date) => boolean) | null>(null);

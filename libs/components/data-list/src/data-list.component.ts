@@ -166,7 +166,10 @@ export class DataListComponent
   // ------------------------------------------------------------------ host class
 
   protected readonly hostClass = () =>
-    cx('relative flex flex-col gap-0.5 min-w-[9rem] select-none', this.class());
+    cx(
+      'relative flex flex-col gap-0.5 min-w-[9rem] select-none overflow-hidden',
+      this.class(),
+    );
 
   // ------------------------------------------------------------------ public API for children
 

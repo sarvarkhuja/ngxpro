@@ -14,7 +14,7 @@ import {
   NXP_TEXTFIELD_OPTIONS,
   type NxpTextfieldSize,
 } from './textfield.options';
-import { cx } from '@ngxpro/cdk';
+import { cx, NxpRectAccessor } from '@ngxpro/cdk';
 import {
   NxpDropdownDirective,
   NxpDropdownFixed,
@@ -55,7 +55,7 @@ function isItemsHandlers(o: unknown): o is NxpItemsHandlers<unknown> {
   selector: 'nxp-textfield',
   template: `
     <ng-content select="label[nxpLabel]" />
-    <div [class]="innerClasses()">
+    <div [class]="innerClasses()" data-nxp-field>
       @if (iconStart(); as iconStartClass) {
         <i
           [attr.class]="iconClass('start') + ' ' + iconStartClass"
@@ -124,6 +124,20 @@ function isItemsHandlers(o: unknown): o is NxpItemsHandlers<unknown> {
     nxpAsDataListHost(NxpTextfieldComponent),
     nxpAsTextfieldAccessor(NxpTextfieldComponent),
     { provide: NXP_ITEMS_HANDLERS, useExisting: NxpTextfieldComponent },
+    {
+      provide: NxpRectAccessor,
+      multi: true,
+      deps: [ElementRef],
+      useFactory: (host: ElementRef<HTMLElement>): NxpRectAccessor => ({
+        type: 'dropdown',
+        getClientRect: () =>
+          (
+            host.nativeElement.querySelector<HTMLElement>(
+              ':scope > [data-nxp-field]',
+            ) ?? host.nativeElement
+          ).getBoundingClientRect(),
+      }),
+    },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

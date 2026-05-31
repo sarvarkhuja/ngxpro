@@ -1,4 +1,3 @@
-Select
 calendar range
 date inputs
 input date
@@ -7,3 +6,4 @@ input month
 checkbox
 radio
 alert
+\

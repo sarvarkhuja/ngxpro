@@ -96,6 +96,7 @@ import { NxpMultiSelectOptionComponent } from './multi-select-option.component';
 
       <input
         #triggerInput
+        [id]="inputId"
         class="min-w-[3rem] flex-1 bg-transparent outline-none text-sm text-text-primary placeholder:text-text-quaternary disabled:cursor-not-allowed disabled:text-text-quaternary caret-transparent cursor-default select-none"
         [placeholder]="value().length === 0 ? placeholder() : ''"
         [disabled]="disabled()"
@@ -154,6 +155,13 @@ export class NxpMultiSelectComponent<T = unknown>
 
   private static _idCounter = 0;
   readonly listboxId = `nxp-multi-select-listbox-${++NxpMultiSelectComponent._idCounter}`;
+  /**
+   * Stable per-instance id for the trigger input. A form field element with
+   * neither `id` nor `name` trips the browser's "form field element should
+   * have an id or name attribute" audit; the id also lets external labels
+   * associate via `for`.
+   */
+  readonly inputId = `nxp-multi-select-input-${NxpMultiSelectComponent._idCounter}`;
 
   private _onChange: (value: readonly T[]) => void = () => {
     /* noop */

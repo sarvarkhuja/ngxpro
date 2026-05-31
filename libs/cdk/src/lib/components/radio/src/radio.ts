@@ -1,16 +1,15 @@
 import { NxpRadioComponent } from './radio.component';
-import { NxpRadioDirective } from './radio.directive';
 
 /**
  * Convenience array for importing all Radio-related declarations.
  *
  * @example
  * ```typescript
- * import { NxpRadio } from '@ngxpro/components/radio';
+ * import { NxpRadio } from '@ngxpro/cdk/components/radio';
  *
  * @Component({
  *   imports: [...NxpRadio],
  * })
  * ```
  */
-export const NxpRadio = [NxpRadioComponent, NxpRadioDirective] as const;
+export const NxpRadio = [NxpRadioComponent] as const;

@@ -57,7 +57,7 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
         [(value)]="dateInputPlaceholder"
       >
         Placeholder shown when the input is empty. Defaults to
-        <code>MM/DD/YYYY</code
+        <code>DD/MM/YYYY</code
         >.
       </tr>
       <tr
@@ -196,7 +196,7 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
         [(value)]="rangePlaceholder"
       >
         Placeholder shown when the input is empty. Defaults to
-        <code>MM/DD/YYYY – MM/DD/YYYY</code
+        <code>DD/MM/YYYY – DD/MM/YYYY</code
         >.
       </tr>
       <tr
@@ -367,7 +367,7 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
 })
 export class DateInputsApiComponent {
   // ── nxp-input-date knobs ────────────────────────────────────────────────
-  readonly dateInputPlaceholder = model<string>('MM/DD/YYYY');
+  readonly dateInputPlaceholder = model<string>('DD/MM/YYYY');
   readonly dateInputDisabled = model<boolean>(false);
   readonly dateInputWeekStart = model<0 | 1 | 2 | 3 | 4 | 5 | 6>(1);
   readonly dateInputClass = model<string>('');
@@ -377,7 +377,7 @@ export class DateInputsApiComponent {
   // ── nxp-input-date-range knobs ──────────────────────────────────────────
   readonly rangeMinLength = model<number | null>(null);
   readonly rangeMaxLength = model<number | null>(null);
-  readonly rangePlaceholder = model<string>('MM/DD/YYYY – MM/DD/YYYY');
+  readonly rangePlaceholder = model<string>('DD/MM/YYYY – DD/MM/YYYY');
   readonly rangeDisabled = model<boolean>(false);
   readonly rangeClass = model<string>('');
   readonly rangeInputId = model<string>('');

@@ -44,11 +44,13 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
       </tr>
       <tr nxpDocApiItem name="[min]" type="Date | null" [(value)]="min">
         Minimum selectable date. Dates earlier than this are greyed out in the
-        calendar.
+        calendar, and a typed range endpoint before it snaps up to this bound on
+        blur.
       </tr>
       <tr nxpDocApiItem name="[max]" type="Date | null" [(value)]="max">
         Maximum selectable date. Dates later than this are greyed out in the
-        calendar.
+        calendar, and a typed range endpoint after it snaps down to this bound
+        on blur.
       </tr>
       <tr
         nxpDocApiItem
@@ -166,7 +168,7 @@ export class InputDateRangeApiComponent {
   readonly max = model<Date | null>(null);
   readonly minLength = model<number | null>(null);
   readonly maxLength = model<number | null>(null);
-  readonly placeholder = model<string>('MM/DD/YYYY – MM/DD/YYYY');
+  readonly placeholder = model<string>('DD/MM/YYYY – DD/MM/YYYY');
   readonly disabled = model<boolean>(false);
   readonly disabledHandler = model<unknown>(null);
   readonly markerHandler = model<unknown>(null);

@@ -2,10 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   model,
-  OnInit,
   output,
   signal,
 } from '@angular/core';
@@ -96,8 +96,44 @@ import type {
     </div>
   `,
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent {
   private readonly options = inject(CALENDAR_OPTIONS);
+
+  constructor() {
+    // Keep the displayed month in sync with explicit `month()` / `year()`
+    // overrides or, lacking those, the selected `value()`. Re-runs only when
+    // those inputs change, so a value set/typed while the calendar is already
+    // mounted (e.g. an open input-date dropdown) navigates to it instead of
+    // being stuck on the month captured at first render.
+    //
+    // User navigation (`navigateMonth` / `onYearClick`) writes
+    // `viewedYear` / `viewedMonth` directly and is preserved: this effect does
+    // not read them, so it never re-runs in response to manual navigation.
+    effect(() => {
+      const explicitYear = this.year();
+      const explicitMonth = this.month();
+
+      let targetYear: number | undefined = explicitYear;
+      let targetMonth: number | undefined = explicitMonth;
+
+      if (targetYear === undefined || targetMonth === undefined) {
+        const val = this.value();
+        const reference =
+          val instanceof Date
+            ? val
+            : Array.isArray(val) && val[0] instanceof Date
+              ? (val[0] as Date)
+              : null;
+        if (reference) {
+          targetYear ??= reference.getFullYear();
+          targetMonth ??= reference.getMonth();
+        }
+      }
+
+      if (targetYear !== undefined) this.viewedYear.set(targetYear);
+      if (targetMonth !== undefined) this.viewedMonth.set(targetMonth);
+    });
+  }
 
   // ------------------------------------------------------------------ inputs
 
@@ -180,21 +216,6 @@ export class CalendarComponent implements OnInit {
   protected readonly containerClass = computed(() =>
     cx(calendarContainerClass, 'flex-col gap-0 p-4 w-[20rem]', this.class()),
   );
-
-  // ------------------------------------------------------------------ lifecycle
-
-  ngOnInit(): void {
-    const val = this.value();
-    const reference =
-      val instanceof Date
-        ? val
-        : Array.isArray(val) && val[0] instanceof Date
-          ? (val[0] as Date)
-          : new Date();
-
-    this.viewedYear.set(this.year() ?? reference.getFullYear());
-    this.viewedMonth.set(this.month() ?? reference.getMonth());
-  }
 
   // ------------------------------------------------------------------ handlers
 

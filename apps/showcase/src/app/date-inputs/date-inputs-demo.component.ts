@@ -61,10 +61,10 @@ import { DateInputsApiComponent } from './date-inputs-api.component';
         ============================================================ -->
         <nxp-doc-example
           heading="Input date — signal binding"
-          description="Click to open the calendar, or type directly (MM/DD/YYYY). Bound to a writable signal via [value]/(valueChange)."
+          description="Click to open the calendar, or type directly — digits are auto-masked to DD/MM/YYYY and validated on blur (impossible dates flag an error). Bound to a writable signal via [value]/(valueChange)."
           [content]="{ HTML: signalDateHtml, TypeScript: signalDateTs }"
         >
-          <div class="space-y-3 max-w-sm">
+          <div class="w-64">
             <nxp-input-date
               [value]="singleDate()"
               (valueChange)="singleDate.set($event)"
@@ -86,7 +86,7 @@ import { DateInputsApiComponent } from './date-inputs-api.component';
           description="Two-way binding via template-driven forms."
           [content]="{ HTML: ngModelDateHtml, TypeScript: ngModelDateTs }"
         >
-          <div class="space-y-3 max-w-sm">
+          <div class="w-64">
             <nxp-input-date [(ngModel)]="ngModelDate" />
             <p class="text-xs text-gray-500 dark:text-gray-400">
               ngModel:
@@ -108,7 +108,7 @@ import { DateInputsApiComponent } from './date-inputs-api.component';
             TypeScript: reactiveDateTs,
           }"
         >
-          <div class="space-y-3 max-w-sm">
+          <div class="w-64">
             <nxp-input-date [formControl]="dateControl" />
             <p class="text-xs text-gray-500 dark:text-gray-400">
               Control:
@@ -126,10 +126,10 @@ import { DateInputsApiComponent } from './date-inputs-api.component';
         ============================================================ -->
         <nxp-doc-example
           heading="Input date — min / max bounds"
-          description="Only dates within ±7 days of today are selectable. Days outside the bounds are rendered as disabled in the calendar."
+          description="Only dates within ±7 days of today are selectable. Days outside the bounds are rendered as disabled in the calendar, and typing a date outside the range snaps it to the nearest bound on blur."
           [content]="{ HTML: boundedDateHtml, TypeScript: boundedDateTs }"
         >
-          <div class="space-y-3 max-w-sm">
+          <div class="w-64">
             <nxp-input-date
               [value]="boundedDate()"
               [min]="minDate"
@@ -167,7 +167,7 @@ import { DateInputsApiComponent } from './date-inputs-api.component';
         ============================================================ -->
         <nxp-doc-example
           heading="Input date range — basic"
-          description='Click once for start, again for end. Or type "MM/DD/YYYY – MM/DD/YYYY".'
+          description='Click once for start, again for end. Or type directly — digits are auto-masked to "DD/MM/YYYY – DD/MM/YYYY" and validated on blur.'
           [content]="{ HTML: rangeBasicHtml, TypeScript: rangeBasicTs }"
         >
           <div class="space-y-3 max-w-md">
@@ -284,7 +284,7 @@ import { DateInputsApiComponent } from './date-inputs-api.component';
           description="Click to open the month grid and pick a month. Value is a MonthCoord with zero-indexed month."
           [content]="{ HTML: monthBasicHtml, TypeScript: monthBasicTs }"
         >
-          <div class="space-y-3 max-w-sm">
+          <div class="w-64">
             <nxp-input-month
               [value]="selectedMonth()"
               (valueChange)="selectedMonth.set($event)"
@@ -312,7 +312,7 @@ import { DateInputsApiComponent } from './date-inputs-api.component';
           description="Two-way binding via template-driven forms."
           [content]="{ HTML: monthNgModelHtml, TypeScript: monthNgModelTs }"
         >
-          <div class="space-y-3 max-w-sm">
+          <div class="w-64">
             <nxp-input-month [(ngModel)]="ngModelMonth" />
             <p class="text-xs text-gray-500 dark:text-gray-400">
               @if (ngModelMonth) {
@@ -337,7 +337,7 @@ import { DateInputsApiComponent } from './date-inputs-api.component';
           description="Limited to months within 2024–2025. Months outside the bounds are rendered as disabled in the grid."
           [content]="{ HTML: monthBoundedHtml, TypeScript: monthBoundedTs }"
         >
-          <div class="space-y-3 max-w-sm">
+          <div class="w-64">
             <nxp-input-month
               [value]="boundedMonth()"
               [min]="minMonth"

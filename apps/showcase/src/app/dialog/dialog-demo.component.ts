@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   signal,
-  TemplateRef,
-  viewChild,
+  ViewEncapsulation,
+  type WritableSignal,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { defer, of, type Observable } from 'rxjs';
 import {
   NxpDialogService,
   NxpDialogDirective,
@@ -15,467 +16,995 @@ import {
   type NxpDialogOptions,
   type NxpDialogSize,
 } from '@ngxpro/cdk';
-import {
-  nxpInjectContext,
-  NxpDynamicComponent,
-  type NxpDynamicContent,
-} from '@ngxpro/cdk/dynamic';
+import { nxpInjectContext, NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
 import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
 import { DialogApiComponent } from './dialog-api.component';
 
-// ---------------------------------------------------------------------------
-// Inline component used by the "Open with component" demo section
-// ---------------------------------------------------------------------------
+// ───────────────────────────────────────────────────────────────────────────
+// Shared design-system class tokens (Vercel/Geist — see design-system.md).
+// Monochrome canvas, shadow-as-border, contextual status accents only.
+// ───────────────────────────────────────────────────────────────────────────
 
-interface DeleteData {
-  readonly itemName: string;
+const S = {
+  btnPrimary:
+    'inline-flex items-center justify-center gap-2 rounded-m bg-primary px-3.5 py-2 text-sm font-medium text-text-on-accent transition-[background-color,transform] duration-fast hover:bg-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base disabled:pointer-events-none disabled:opacity-40',
+  btnSecondary:
+    'inline-flex items-center justify-center gap-2 rounded-m bg-bg-base px-3.5 py-2 text-sm font-medium text-text-primary shadow-border transition-[background-color] duration-fast hover:bg-bg-neutral-1 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base',
+  btnGhost:
+    'inline-flex items-center justify-center gap-2 rounded-m px-3.5 py-2 text-sm font-medium text-text-secondary transition-colors duration-fast hover:bg-bg-neutral-1 hover:text-text-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus',
+  btnDanger:
+    'inline-flex items-center justify-center gap-2 rounded-m bg-status-negative px-3.5 py-2 text-sm font-medium text-white transition-[filter,transform] duration-fast hover:brightness-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-status-negative focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base disabled:pointer-events-none disabled:opacity-40',
+  input:
+    'w-full rounded-m bg-bg-base px-3 py-2 text-sm text-text-primary shadow-border outline-none transition-shadow duration-fast placeholder:text-text-quaternary focus:shadow-input-focus',
+  kbd: 'inline-flex h-5 min-w-[20px] items-center justify-center rounded-sm bg-bg-neutral-1 px-1.5 font-mono text-[11px] leading-none text-text-tertiary shadow-border-light',
+  groupLabel:
+    'font-mono text-[11px] font-medium uppercase tracking-wide text-text-quaternary',
+} as const;
+
+// ───────────────────────────────────────────────────────────────────────────
+// Shared data shapes
+// ───────────────────────────────────────────────────────────────────────────
+
+interface DeleteProjectData {
+  readonly projectName: string;
+}
+interface EditorData {
+  readonly initial: string;
+  readonly dirty: WritableSignal<boolean>;
+}
+interface ConnectConfig {
+  readonly source: string;
+  readonly host: string;
+  readonly database: string;
+  readonly ssl: boolean;
+}
+interface Command {
+  readonly id: string;
+  readonly label: string;
+  readonly icon: string;
+  readonly kbd?: readonly string[];
+}
+interface CommandGroup {
+  readonly label: string;
+  readonly items: readonly Command[];
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 1 — Command menu (⌘K). Opened with appearance:'command' so the dialog frame
+//     drops its default padding and the search bar sits flush to the edge.
+// ═══════════════════════════════════════════════════════════════════════════
+
 @Component({
-  selector: 'app-confirm-delete-dialog',
+  selector: 'app-command-menu-dialog',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  styles: [
+    `
+      nxp-dialog[data-appearance='command'] {
+        padding: 0;
+      }
+    `,
+  ],
+  template: `
+    <div class="flex flex-col">
+      <div class="flex items-center gap-3 border-b border-border-normal px-4">
+        <i
+          class="ri-search-line text-lg text-text-quaternary"
+          aria-hidden="true"
+        ></i>
+        <input
+          type="text"
+          [value]="query()"
+          (input)="onQuery($event)"
+          (keydown)="onKey($event)"
+          class="w-full bg-transparent py-4 text-sm text-text-primary outline-none placeholder:text-text-quaternary"
+          placeholder="Search commands…"
+          aria-label="Search commands"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <kbd [class]="s.kbd">esc</kbd>
+      </div>
+
+      <div
+        class="max-h-[min(60vh,22rem)] overflow-y-auto p-2"
+        role="listbox"
+        aria-label="Commands"
+      >
+        @for (group of filteredGroups(); track group.label) {
+          <div class="px-2 pb-1 pt-3 first:pt-1">
+            <span [class]="s.groupLabel">{{ group.label }}</span>
+          </div>
+          @for (item of group.items; track item.id) {
+            <button
+              type="button"
+              role="option"
+              [attr.aria-selected]="activeId() === item.id"
+              class="group flex w-full items-center gap-3 rounded-m px-2 py-2 text-left text-sm transition-colors duration-fast"
+              [class.bg-bg-neutral-1]="activeId() === item.id"
+              (mouseenter)="setActive(item)"
+              (click)="select(item)"
+            >
+              <i
+                [class]="item.icon + ' text-base text-text-secondary'"
+                aria-hidden="true"
+              ></i>
+              <span class="flex-1 text-text-primary">{{ item.label }}</span>
+              @if (item.kbd) {
+                <span class="flex items-center gap-1">
+                  @for (k of item.kbd; track k) {
+                    <kbd [class]="s.kbd">{{ k }}</kbd>
+                  }
+                </span>
+              }
+            </button>
+          }
+        } @empty {
+          <div class="px-3 py-10 text-center text-sm text-text-tertiary">
+            No commands match “{{ query() }}”.
+          </div>
+        }
+      </div>
+
+      <div
+        class="flex items-center gap-4 border-t border-border-normal px-4 py-2.5 text-[11px] text-text-tertiary"
+      >
+        <span class="flex items-center gap-1.5">
+          <kbd [class]="s.kbd">↑</kbd><kbd [class]="s.kbd">↓</kbd> navigate
+        </span>
+        <span class="flex items-center gap-1.5">
+          <kbd [class]="s.kbd">↵</kbd> select
+        </span>
+        <span
+          class="ml-auto font-mono uppercase tracking-wide text-text-quaternary"
+          >⌘K</span
+        >
+      </div>
+
+      <h2 [id]="context.id" class="sr-only">Command menu</h2>
+    </div>
+  `,
+})
+class CommandMenuDialogComponent {
+  protected readonly s = S;
+  protected readonly context = nxpInjectContext<NxpDialogContext<string>>();
+
+  protected readonly query = signal('');
+  protected readonly active = signal(0);
+
+  private readonly groups: readonly CommandGroup[] = [
+    {
+      label: 'Navigation',
+      items: [
+        { id: 'overview', label: 'Go to Overview', icon: 'ri-dashboard-line' },
+        {
+          id: 'deployments',
+          label: 'Go to Deployments',
+          icon: 'ri-rocket-line',
+        },
+        {
+          id: 'analytics',
+          label: 'Go to Analytics',
+          icon: 'ri-line-chart-line',
+        },
+        {
+          id: 'settings',
+          label: 'Go to Settings',
+          icon: 'ri-settings-3-line',
+        },
+      ],
+    },
+    {
+      label: 'Actions',
+      items: [
+        {
+          id: 'new-deployment',
+          label: 'New Deployment',
+          icon: 'ri-add-line',
+          kbd: ['⌘', 'N'],
+        },
+        {
+          id: 'invite',
+          label: 'Invite Member',
+          icon: 'ri-user-add-line',
+        },
+        {
+          id: 'copy-id',
+          label: 'Copy Project ID',
+          icon: 'ri-file-copy-line',
+        },
+        {
+          id: 'toggle-theme',
+          label: 'Toggle Theme',
+          icon: 'ri-contrast-2-line',
+          kbd: ['⌘', '⇧', 'L'],
+        },
+      ],
+    },
+    {
+      label: 'Help',
+      items: [
+        {
+          id: 'docs',
+          label: 'Open Documentation',
+          icon: 'ri-book-open-line',
+        },
+        {
+          id: 'shortcuts',
+          label: 'Keyboard Shortcuts',
+          icon: 'ri-keyboard-line',
+          kbd: ['⌘', '/'],
+        },
+      ],
+    },
+  ];
+
+  protected readonly filteredGroups = computed<readonly CommandGroup[]>(() => {
+    const q = this.query().trim().toLowerCase();
+    return this.groups
+      .map((g) => ({
+        ...g,
+        items: g.items.filter((it) => !q || it.label.toLowerCase().includes(q)),
+      }))
+      .filter((g) => g.items.length > 0);
+  });
+
+  protected readonly flat = computed<readonly Command[]>(() =>
+    this.filteredGroups().flatMap((g) => g.items),
+  );
+
+  protected readonly activeId = computed(
+    () => this.flat()[this.active()]?.id ?? '',
+  );
+
+  protected onQuery(e: Event): void {
+    this.query.set((e.target as HTMLInputElement).value);
+    this.active.set(0);
+  }
+
+  protected setActive(item: Command): void {
+    this.active.set(this.flat().indexOf(item));
+  }
+
+  protected onKey(e: KeyboardEvent): void {
+    const flat = this.flat();
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.active.update((i) => Math.min(i + 1, flat.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this.active.update((i) => Math.max(i - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const item = flat[this.active()];
+      if (item) this.select(item);
+    }
+  }
+
+  protected select(item: Command): void {
+    this.context.completeWith(item.id);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 2 — Type-to-confirm destructive delete. Ship Red used contextually.
+// ═══════════════════════════════════════════════════════════════════════════
+
+@Component({
+  selector: 'app-delete-project-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <p class="text-gray-700 dark:text-gray-300 mb-6">
-      Are you sure you want to permanently delete
-      <strong class="font-semibold">{{ context.data.itemName }}</strong
-      >? This action cannot be undone.
-    </p>
-    <footer class="flex justify-end gap-3 pt-2">
-      <button
-        type="button"
-        class="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800"
-        (click)="context.completeWith(false)"
+    <div class="space-y-5">
+      <div
+        class="flex items-start gap-3 rounded-lg bg-status-negative-pale p-3 text-sm text-status-negative"
       >
-        Cancel
-      </button>
-      <button
-        type="button"
-        class="px-4 py-2 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700"
-        (click)="context.completeWith(true)"
-      >
-        Delete
-      </button>
-    </footer>
+        <i
+          class="ri-error-warning-line mt-0.5 text-base"
+          aria-hidden="true"
+        ></i>
+        <p class="leading-relaxed">
+          This permanently deletes
+          <strong class="font-semibold">{{ context.data.projectName }}</strong
+          >, its <strong class="font-semibold">14 deployments</strong>, 2
+          domains, and every environment variable. This
+          <strong class="font-semibold">cannot</strong> be undone.
+        </p>
+      </div>
+
+      <div class="space-y-1.5">
+        <label [attr.for]="inputId" class="block text-sm text-text-secondary">
+          Type
+          <code
+            class="rounded-xs bg-bg-neutral-1 px-1 font-mono text-[13px] text-text-primary"
+            >{{ context.data.projectName }}</code
+          >
+          to confirm.
+        </label>
+        <input
+          [id]="inputId"
+          type="text"
+          [value]="confirmText()"
+          (input)="onInput($event)"
+          [class]="s.input"
+          [attr.placeholder]="context.data.projectName"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+      </div>
+
+      <footer class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          [class]="s.btnGhost"
+          (click)="context.completeWith(false)"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          [class]="s.btnDanger"
+          [disabled]="!canDelete()"
+          (click)="context.completeWith(true)"
+        >
+          <i class="ri-delete-bin-line text-base" aria-hidden="true"></i>
+          Delete project
+        </button>
+      </footer>
+    </div>
   `,
 })
-class ConfirmDeleteDialogComponent {
-  readonly context = nxpInjectContext<NxpDialogContext<boolean, DeleteData>>();
+class DeleteProjectDialogComponent {
+  protected readonly s = S;
+  // `context` must be public: it is passed to the nxpDialog() factory, whose
+  // signature constrains the component to Type<{ context: unknown }> (a public
+  // member). The other dialogs open via NxpDynamicComponent and can keep it
+  // protected, but this one is routed through the factory.
+  readonly context =
+    nxpInjectContext<NxpDialogContext<boolean, DeleteProjectData>>();
+  protected readonly inputId = `${this.context.id}-confirm`;
+
+  protected readonly confirmText = signal('');
+  protected readonly canDelete = computed(
+    () => this.confirmText().trim() === this.context.data.projectName,
+  );
+
+  protected onInput(e: Event): void {
+    this.confirmText.set((e.target as HTMLInputElement).value);
+  }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 3 — Notes editor whose dismissal is guarded by a nested "Discard?" dialog.
+//     Dirtiness is shared back to the opener through a signal in `data`.
+// ═══════════════════════════════════════════════════════════════════════════
+
+@Component({
+  selector: 'app-notes-editor-dialog',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div class="space-y-4">
+      <div class="flex items-center justify-between gap-3">
+        <p class="text-sm text-text-secondary">
+          Shown on every deployment of this project.
+        </p>
+        @if (dirty()) {
+          <span
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-status-warning-pale px-2 py-0.5 text-[11px] font-medium text-status-warning"
+          >
+            <span class="h-1.5 w-1.5 rounded-full bg-status-warning"></span>
+            Unsaved
+          </span>
+        }
+      </div>
+
+      <textarea
+        [value]="draft()"
+        (input)="onInput($event)"
+        rows="5"
+        [class]="s.input + ' resize-none font-mono text-[13px] leading-relaxed'"
+        placeholder="Write deployment notes…"
+      ></textarea>
+
+      <footer class="flex items-center justify-between gap-2">
+        <span class="text-[11px] text-text-tertiary">
+          Press <kbd [class]="s.kbd">esc</kbd> to discard
+        </span>
+        <button type="button" [class]="s.btnPrimary" (click)="save()">
+          Save changes
+        </button>
+      </footer>
+    </div>
+  `,
+})
+class NotesEditorDialogComponent {
+  protected readonly s = S;
+  protected readonly context =
+    nxpInjectContext<NxpDialogContext<string, EditorData>>();
+
+  protected readonly draft = signal(this.context.data.initial);
+  protected readonly dirty = computed(
+    () => this.draft() !== this.context.data.initial,
+  );
+
+  protected onInput(e: Event): void {
+    const value = (e.target as HTMLTextAreaElement).value;
+    this.draft.set(value);
+    this.context.data.dirty.set(value !== this.context.data.initial);
+  }
+
+  protected save(): void {
+    this.context.completeWith(this.draft());
+  }
+}
+
+@Component({
+  selector: 'app-discard-confirm-dialog',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div class="space-y-5">
+      <p class="text-sm leading-relaxed text-text-secondary">
+        You have unsaved changes to your deployment notes. If you leave now,
+        your edits will be lost.
+      </p>
+      <footer class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          [class]="s.btnGhost"
+          (click)="context.completeWith(false)"
+        >
+          Keep editing
+        </button>
+        <button
+          type="button"
+          [class]="s.btnDanger"
+          (click)="context.completeWith(true)"
+        >
+          Discard changes
+        </button>
+      </footer>
+    </div>
+  `,
+})
+class DiscardConfirmDialogComponent {
+  protected readonly s = S;
+  protected readonly context = nxpInjectContext<NxpDialogContext<boolean>>();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 4 — Multi-step "Connect a data source" wizard living inside one dialog.
+// ═══════════════════════════════════════════════════════════════════════════
+
+@Component({
+  selector: 'app-connect-wizard-dialog',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div class="space-y-6">
+      <ol class="flex items-center gap-2" aria-label="Progress">
+        @for (st of steps; track st.n; let i = $index) {
+          <li class="flex items-center gap-2">
+            <span
+              class="flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold transition-colors duration-normal"
+              [class.bg-primary]="step() >= i"
+              [class.text-text-on-accent]="step() >= i"
+              [class.shadow-border]="step() < i"
+              [class.text-text-tertiary]="step() < i"
+            >
+              @if (step() > i) {
+                <i class="ri-check-line text-sm" aria-hidden="true"></i>
+              } @else {
+                {{ st.n }}
+              }
+            </span>
+            <span
+              class="text-xs font-medium"
+              [class.text-text-primary]="step() === i"
+              [class.text-text-tertiary]="step() !== i"
+              >{{ st.label }}</span
+            >
+            @if (i < steps.length - 1) {
+              <span class="mx-1 h-px w-6 bg-border-normal"></span>
+            }
+          </li>
+        }
+      </ol>
+
+      @switch (step()) {
+        @case (0) {
+          <div class="grid grid-cols-2 gap-3">
+            @for (src of sources; track src.id) {
+              <button
+                type="button"
+                class="flex items-center gap-3 rounded-lg p-3 text-left text-sm transition-shadow duration-fast"
+                [class]="
+                  source() === src.id
+                    ? 'shadow-input-focus'
+                    : 'shadow-border hover:shadow-border-light'
+                "
+                (click)="source.set(src.id)"
+              >
+                <i
+                  [class]="src.icon + ' text-xl text-text-secondary'"
+                  aria-hidden="true"
+                ></i>
+                <span class="min-w-0">
+                  <span class="block font-medium text-text-primary">{{
+                    src.label
+                  }}</span>
+                  <span class="block text-[11px] text-text-tertiary">{{
+                    src.hint
+                  }}</span>
+                </span>
+              </button>
+            }
+          </div>
+        }
+        @case (1) {
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label
+                class="block text-sm text-text-secondary"
+                [attr.for]="id('host')"
+                >Host</label
+              >
+              <input
+                [id]="id('host')"
+                type="text"
+                [value]="host()"
+                (input)="setHost($event)"
+                [class]="s.input"
+                placeholder="db.example.com"
+                autocomplete="off"
+              />
+            </div>
+            <div class="space-y-1.5">
+              <label
+                class="block text-sm text-text-secondary"
+                [attr.for]="id('db')"
+                >Database</label
+              >
+              <input
+                [id]="id('db')"
+                type="text"
+                [value]="database()"
+                (input)="setDatabase($event)"
+                [class]="s.input"
+                placeholder="production"
+                autocomplete="off"
+              />
+            </div>
+            <button
+              type="button"
+              class="flex items-center gap-2.5"
+              role="switch"
+              [attr.aria-checked]="ssl()"
+              (click)="ssl.set(!ssl())"
+            >
+              <span
+                class="relative h-5 w-9 rounded-full transition-colors duration-normal"
+                [class]="ssl() ? 'bg-primary' : 'bg-bg-neutral-2'"
+              >
+                <span
+                  class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-bg-base shadow-lift transition-transform duration-normal"
+                  [class.translate-x-4]="ssl()"
+                ></span>
+              </span>
+              <span class="text-sm text-text-secondary"
+                >Require SSL connection</span
+              >
+            </button>
+          </div>
+        }
+        @case (2) {
+          <dl class="divide-y divide-border-normal rounded-lg shadow-border">
+            <div class="flex items-center justify-between px-3 py-2.5">
+              <dt class="text-sm text-text-tertiary">Source</dt>
+              <dd class="text-sm font-medium text-text-primary">
+                {{ sourceLabel() }}
+              </dd>
+            </div>
+            <div class="flex items-center justify-between px-3 py-2.5">
+              <dt class="text-sm text-text-tertiary">Host</dt>
+              <dd class="font-mono text-[13px] text-text-primary">
+                {{ host() }}
+              </dd>
+            </div>
+            <div class="flex items-center justify-between px-3 py-2.5">
+              <dt class="text-sm text-text-tertiary">Database</dt>
+              <dd class="font-mono text-[13px] text-text-primary">
+                {{ database() }}
+              </dd>
+            </div>
+            <div class="flex items-center justify-between px-3 py-2.5">
+              <dt class="text-sm text-text-tertiary">SSL</dt>
+              <dd class="text-sm font-medium text-text-primary">
+                {{ ssl() ? 'Enabled' : 'Disabled' }}
+              </dd>
+            </div>
+          </dl>
+        }
+      }
+
+      <footer class="flex items-center justify-between gap-2 pt-1">
+        <button
+          type="button"
+          [class]="s.btnGhost"
+          [style.visibility]="step() === 0 ? 'hidden' : 'visible'"
+          (click)="back()"
+        >
+          Back
+        </button>
+        @if (step() < 2) {
+          <button
+            type="button"
+            [class]="s.btnPrimary"
+            [disabled]="!canNext()"
+            (click)="next()"
+          >
+            Continue
+          </button>
+        } @else {
+          <button type="button" [class]="s.btnPrimary" (click)="finish()">
+            <i class="ri-link text-base" aria-hidden="true"></i>
+            Connect
+          </button>
+        }
+      </footer>
+    </div>
+  `,
+})
+class ConnectWizardDialogComponent {
+  protected readonly s = S;
+  protected readonly context =
+    nxpInjectContext<NxpDialogContext<ConnectConfig>>();
+
+  protected readonly steps = [
+    { n: 1, label: 'Source' },
+    { n: 2, label: 'Connect' },
+    { n: 3, label: 'Review' },
+  ] as const;
+
+  protected readonly sources = [
+    {
+      id: 'postgres',
+      label: 'PostgreSQL',
+      hint: 'Relational',
+      icon: 'ri-database-2-line',
+    },
+    {
+      id: 'mysql',
+      label: 'MySQL',
+      hint: 'Relational',
+      icon: 'ri-database-line',
+    },
+    { id: 'mongo', label: 'MongoDB', hint: 'Document', icon: 'ri-leaf-line' },
+    {
+      id: 'redis',
+      label: 'Redis',
+      hint: 'Key-value',
+      icon: 'ri-flashlight-line',
+    },
+  ] as const;
+
+  protected readonly step = signal(0);
+  protected readonly source = signal('');
+  protected readonly host = signal('');
+  protected readonly database = signal('');
+  protected readonly ssl = signal(true);
+
+  protected readonly sourceLabel = computed(
+    () => this.sources.find((s) => s.id === this.source())?.label ?? '—',
+  );
+
+  protected readonly canNext = computed(() => {
+    if (this.step() === 0) return this.source() !== '';
+    if (this.step() === 1)
+      return this.host().trim() !== '' && this.database().trim() !== '';
+    return true;
+  });
+
+  protected id(suffix: string): string {
+    return `${this.context.id}-${suffix}`;
+  }
+
+  protected setHost(e: Event): void {
+    this.host.set((e.target as HTMLInputElement).value);
+  }
+
+  protected setDatabase(e: Event): void {
+    this.database.set((e.target as HTMLInputElement).value);
+  }
+
+  protected back(): void {
+    this.step.update((s) => Math.max(0, s - 1));
+  }
+
+  protected next(): void {
+    this.step.update((s) => Math.min(2, s + 1));
+  }
+
+  protected finish(): void {
+    this.context.completeWith({
+      source: this.source(),
+      host: this.host(),
+      database: this.database(),
+      ssl: this.ssl(),
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Showcase page
+// ═══════════════════════════════════════════════════════════════════════════
 
 @Component({
   selector: 'app-dialog-demo',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    RouterModule,
     NxpDialogDirective,
     NxpDocComponentPage,
     NxpDocExampleComponent,
     DialogApiComponent,
   ],
+  host: {
+    '(document:keydown.meta.k)': 'onMetaK($event)',
+    '(document:keydown.control.k)': 'onMetaK($event)',
+  },
   template: `
     <nxp-doc-component-page
       header="Dialog"
       package="cdk"
       type="component"
       path="cdk/dialog"
+      [tags]="['overlay', 'focus-trap', 'rxjs', 'a11y']"
     >
-      <p class="text-base text-text-secondary mb-6">
-        Modal dialogs with backdrop, focus trap, enter/leave animations, Esc to
-        close, and click-outside dismiss. Supports programmatic opening via
-        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+      <p class="mb-6 text-base text-text-secondary">
+        Modal dialogs with a focus trap, dimmed backdrop, staggered enter/leave
+        animation, Esc-to-close and click-outside dismissal — opened three ways:
+        programmatically through
+        <code class="rounded-xs bg-bg-neutral-1 px-1 font-mono text-sm"
           >NxpDialogService</code
-        >
-        and template-based via the
-        <code class="text-sm bg-gray-100 dark:bg-gray-800 px-1 rounded"
+        >, declaratively with the
+        <code class="rounded-xs bg-bg-neutral-1 px-1 font-mono text-sm"
           >nxpDialog</code
         >
-        directive.
+        structural directive, or as a typed component opener via the
+        <code class="rounded-xs bg-bg-neutral-1 px-1 font-mono text-sm"
+          >nxpDialog()</code
+        >
+        factory. Content can be a string, a <code>TemplateRef</code>, or any
+        standalone component, and every dialog resolves to a typed
+        <code>Observable</code> result.
       </p>
 
       <ng-template nxpExamplesTab>
+        <!-- ── 1. Command menu ─────────────────────────────────────────── -->
         <nxp-doc-example
-          heading="Programmatic (NxpDialogService)"
-          description="Inject NxpDialogService and call open() with a string body or a TemplateRef plus an options object. The simple text dialog, labeled dialog, and required (non-dismissible) dialog all share the same service entry point — only the options differ."
-          [content]="{ HTML: programmaticHtml, TypeScript: programmaticTs }"
+          heading="Command menu (⌘K)"
+          description="A command palette opened as a dialog. The content is a standalone component resolved via NxpDynamicComponent; arrow keys move the selection, ↵ runs it, and the chosen command id returns through context.completeWith(). The appearance:'command' hook removes the dialog's default padding so the search bar sits flush to the frame. Try ⌘K / Ctrl+K anywhere on this page."
+          [content]="{ TypeScript: commandTs, HTML: commandHtml }"
         >
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <!-- Basic string content -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Simple text dialog
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Opens a dialog with a string label and text body.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                (click)="openSimple()"
-              >
-                Open simple dialog
-              </button>
-            </div>
-
-            <!-- Closable with label -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                With label & close button
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Shows a header label and X close button.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                (click)="openWithLabel()"
-              >
-                Open labeled dialog
-              </button>
-            </div>
-
-            <!-- Non-dismissible (required) -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Non-dismissible (required)
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                <code class="font-mono text-xs">required: true</code> — the
-                dialog cannot be closed by Esc or backdrop click. Use the OK
-                button.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-                (click)="openRequired()"
-              >
-                Open required dialog
-              </button>
-            </div>
+          <div class="flex flex-col items-start gap-4">
+            <button
+              type="button"
+              [class]="s.btnPrimary"
+              (click)="openCommandMenu()"
+            >
+              <i class="ri-command-line text-base" aria-hidden="true"></i>
+              Open command menu
+              <span class="ml-1 flex items-center gap-1">
+                <kbd [class]="s.kbd">⌘</kbd><kbd [class]="s.kbd">K</kbd>
+              </span>
+            </button>
+            <p class="text-sm text-text-tertiary">
+              Last command:
+              <code class="font-mono text-text-secondary">{{
+                commandResult()
+              }}</code>
+            </p>
           </div>
         </nxp-doc-example>
 
+        <!-- ── 2. Type-to-confirm delete ───────────────────────────────── -->
         <nxp-doc-example
-          heading="Size variants"
-          description="Three width scales: small (25 rem), medium (37.5 rem, default), and large (50 rem). The dialog still caps at calc(100vw - 2rem) on narrow viewports."
-          [content]="{ HTML: sizesHtml, TypeScript: sizesTs }"
+          heading="Type-to-confirm delete"
+          description="A destructive dialog where the Delete button stays disabled until you retype the project name. The component injects its context via nxpInjectContext, reads the project name from the data payload, and emits a boolean through completeWith(). Shown opened two equivalent ways — the typed nxpDialog() factory and a raw NxpDialogService.open() call."
+          [content]="{ TypeScript: deleteTs, HTML: deleteHtml }"
         >
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <!-- Size: small -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Size: small
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                <code class="font-mono text-xs">size: 's'</code>
-              </p>
+          <div class="flex flex-col items-start gap-4">
+            <div class="flex flex-wrap gap-3">
               <button
                 type="button"
-                class="px-4 py-2 rounded-md bg-gray-600 text-white text-sm font-medium hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                [class]="s.btnSecondary"
+                (click)="openDeleteFactoryClick()"
+              >
+                <i
+                  class="ri-delete-bin-line text-base text-status-negative"
+                  aria-hidden="true"
+                ></i>
+                Delete “acme-marketing-site”
+              </button>
+              <button
+                type="button"
+                [class]="s.btnGhost"
+                (click)="openDeleteService()"
+              >
+                Open via service
+              </button>
+            </div>
+            <p class="text-sm text-text-tertiary">
+              Result:
+              <code class="font-mono text-text-secondary">{{
+                deleteResult()
+              }}</code>
+            </p>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ── 3. Guarded close ────────────────────────────────────────── -->
+        <nxp-doc-example
+          heading="Guarded close — unsaved changes"
+          description="closable and dismissible accept an Observable<boolean>, not just a boolean — return false to veto the close. Here every Esc / × / backdrop attempt is routed through a nested 'Discard changes?' dialog while the editor is dirty. The editor shares its dirty state back to the opener through a signal passed in data. This is the dialog's most powerful, least-known capability."
+          [content]="{ TypeScript: editorTs, HTML: editorHtml }"
+        >
+          <div class="flex flex-col items-start gap-4">
+            <button type="button" [class]="s.btnPrimary" (click)="openEditor()">
+              <i class="ri-edit-line text-base" aria-hidden="true"></i>
+              Edit deployment notes
+            </button>
+            <p class="text-sm text-text-tertiary">
+              Outcome:
+              <code class="font-mono text-text-secondary">{{
+                editorResult()
+              }}</code>
+              · Saved notes:
+              <code class="font-mono text-text-secondary">{{
+                notes() || '(empty)'
+              }}</code>
+            </p>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ── 4. Connect wizard ───────────────────────────────────────── -->
+        <nxp-doc-example
+          heading="Multi-step connect wizard"
+          description="A dialog is a full, stateful surface. This component holds its own step / source / credentials signals, walks through a three-step flow with a progress indicator, and assembles a typed config object returned via completeWith() on the final step."
+          [content]="{ TypeScript: wizardTs, HTML: wizardHtml }"
+        >
+          <div class="flex flex-col items-start gap-4">
+            <button type="button" [class]="s.btnPrimary" (click)="openWizard()">
+              <i class="ri-add-line text-base" aria-hidden="true"></i>
+              Connect a data source
+            </button>
+            <p class="text-sm text-text-tertiary">
+              Returned config:
+              <code class="font-mono text-text-secondary">{{
+                wizardResult()
+              }}</code>
+            </p>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ── 5. Core API ─────────────────────────────────────────────── -->
+        <nxp-doc-example
+          heading="Core API — service, sizes & required"
+          description="The everyday surface: open() with a string body, the three width scales (s = 25rem, m = 37.5rem, l = 50rem), and required:true — which routes a dismissal (Esc / × / backdrop) to the Observable's error channel instead of completing, forcing a deliberate choice."
+          [content]="{ TypeScript: coreTs, HTML: coreHtml }"
+        >
+          <div class="flex flex-col items-start gap-4">
+            <div class="flex flex-wrap gap-3">
+              <button
+                type="button"
+                [class]="s.btnSecondary"
+                (click)="openSimple()"
+              >
+                Simple message
+              </button>
+              <button
+                type="button"
+                [class]="s.btnSecondary"
                 (click)="openSized('s')"
               >
                 Small
               </button>
-            </div>
-
-            <!-- Size: medium -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Size: medium (default)
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                <code class="font-mono text-xs">size: 'm'</code>
-              </p>
               <button
                 type="button"
-                class="px-4 py-2 rounded-md bg-gray-600 text-white text-sm font-medium hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                [class]="s.btnSecondary"
                 (click)="openSized('m')"
               >
                 Medium
               </button>
-            </div>
-
-            <!-- Size: large -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Size: large
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                <code class="font-mono text-xs">size: 'l'</code>
-              </p>
               <button
                 type="button"
-                class="px-4 py-2 rounded-md bg-gray-600 text-white text-sm font-medium hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                [class]="s.btnSecondary"
                 (click)="openSized('l')"
               >
                 Large
               </button>
+              <button
+                type="button"
+                [class]="s.btnSecondary"
+                (click)="openRequired()"
+              >
+                Required (blocking)
+              </button>
             </div>
+            <p class="text-sm text-text-tertiary">
+              Approval result:
+              <code class="font-mono text-text-secondary">{{
+                requiredResult()
+              }}</code>
+            </p>
           </div>
         </nxp-doc-example>
 
+        <!-- ── 6. Template directive ───────────────────────────────────── -->
         <nxp-doc-example
-          heading="Template-based (nxpDialog directive)"
-          description="Use <ng-template nxpDialog> to declare inline dialog content. Two-way bind a boolean signal to control visibility; pass [nxpDialogOptions] for label, size, etc."
-          [content]="{ HTML: templateHtml, TypeScript: templateTs }"
+          heading="Template directive (controlled)"
+          description="For inline content without touching the service: declare <ng-template nxpDialog>, two-way bind a boolean signal to control visibility, and pass [nxpDialogOptions] for label, size, etc."
+          [content]="{ TypeScript: directiveTs, HTML: directiveHtml }"
         >
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <!-- Template dialog -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Structural directive
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Use
-                <code class="font-mono text-xs"
-                  >&lt;ng-template nxpDialog&gt;</code
-                >
-                to declare inline dialog content. Toggle via a boolean signal.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-                (click)="templateOpen.set(true)"
-              >
-                Open template dialog
-              </button>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Open:
-                <code class="font-mono">{{ templateOpen() }}</code>
-              </p>
-            </div>
-
-            <!-- Template dialog with options -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                With options
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Pass options like
-                <code class="font-mono text-xs">label</code> and
-                <code class="font-mono text-xs">size</code> via
-                <code class="font-mono text-xs">[nxpDialogOptions]</code>.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-                (click)="templateWithOptsOpen.set(true)"
-              >
-                Open with options
-              </button>
-            </div>
+          <div class="flex flex-col items-start gap-4">
+            <button
+              type="button"
+              [class]="s.btnSecondary"
+              (click)="templateOpen.set(true)"
+            >
+              Open inline dialog
+            </button>
+            <p class="text-sm text-text-tertiary">
+              open =
+              <code class="font-mono text-text-secondary">{{
+                templateOpen()
+              }}</code>
+            </p>
           </div>
 
           <ng-template
             [nxpDialog]="templateOpen()"
             (nxpDialogChange)="templateOpen.set($event)"
-            [nxpDialogOptions]="{ label: 'Template Dialog' }"
+            [nxpDialogOptions]="{ label: 'Inline dialog', size: 's' }"
           >
-            <p class="text-gray-700 dark:text-gray-300">
-              This dialog content is declared inline using
-              <code class="font-mono text-xs"
+            <p class="text-sm leading-relaxed text-text-secondary">
+              Declared with
+              <code
+                class="rounded-xs bg-bg-neutral-1 px-1 font-mono text-[13px]"
                 >&lt;ng-template nxpDialog&gt;</code
-              >. Close it with the X button, Esc, or clicking outside.
+              >
+              and toggled by a boolean signal — no service needed. Close with ×,
+              Esc, or the backdrop.
             </p>
           </ng-template>
-
-          <ng-template
-            [nxpDialog]="templateWithOptsOpen()"
-            (nxpDialogChange)="templateWithOptsOpen.set($event)"
-            [nxpDialogOptions]="{ label: 'Custom Options', size: 'l' }"
-          >
-            <p class="text-gray-700 dark:text-gray-300">
-              This is a large-sized dialog opened via the template directive
-              with custom options. It demonstrates passing
-              <code class="font-mono text-xs">[nxpDialogOptions]</code>.
-            </p>
-            <div
-              class="mt-4 p-4 rounded-md bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400"
-            >
-              You can put any arbitrary template content here — forms, tables,
-              rich layouts, etc.
-            </div>
-          </ng-template>
         </nxp-doc-example>
 
-        <nxp-doc-example
-          heading="Rich template content via service"
-          description="Pass a TemplateRef to dialogService.open() for rich custom content. The confirm/cancel pattern uses context.completeWith() to emit a result back to the subscriber."
-          [content]="{ HTML: richHtml, TypeScript: richTs }"
-        >
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Template ref
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Pass a
-                <code class="font-mono text-xs">TemplateRef</code> to
-                <code class="font-mono text-xs">dialogService.open()</code> for
-                rich custom content.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
-                (click)="openWithTemplate()"
-              >
-                Open rich dialog
-              </button>
-            </div>
-
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Confirm / Cancel pattern
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                A dialog that emits a result via
-                <code class="font-mono text-xs">completeWith()</code>.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
-                (click)="openConfirm()"
-              >
-                Open confirm dialog
-              </button>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Last result:
-                <code class="font-mono">{{ confirmResult() }}</code>
-              </p>
-            </div>
-          </div>
-
-          <ng-template #richTpl let-ctx>
-            <div class="space-y-4">
-              <p class="text-gray-700 dark:text-gray-300">
-                This dialog is rendered from a
-                <code class="font-mono text-xs">TemplateRef</code> passed
-                programmatically to
-                <code class="font-mono text-xs">NxpDialogService.open()</code>.
-              </p>
-              <div
-                class="p-3 rounded-md bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-sm text-blue-800 dark:text-blue-300"
-              >
-                You can place forms, tables, charts — anything you want here.
-              </div>
-            </div>
-          </ng-template>
-
-          <ng-template #confirmTpl let-ctx>
-            <div class="space-y-4">
-              <p class="text-gray-700 dark:text-gray-300">
-                Are you sure you want to proceed? This action cannot be undone.
-              </p>
-              <footer class="flex justify-end gap-2">
-                <button
-                  type="button"
-                  class="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800"
-                  (click)="ctx.$implicit.complete()"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  class="px-4 py-2 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700"
-                  (click)="ctx.completeWith('confirmed')"
-                >
-                  Confirm
-                </button>
-              </footer>
-            </div>
-          </ng-template>
-        </nxp-doc-example>
-
-        <nxp-doc-example
-          heading="Component-based dialog"
-          description="Pass a standalone component as dialog content. The component injects its context via nxpInjectContext<NxpDialogContext>() and calls context.completeWith(value) to return a result. Two equivalent entry points: NxpDynamicComponent (lower-level) or the nxpDialog() factory (class-field, fully typed)."
-          [content]="{ HTML: componentHtml, TypeScript: componentTs }"
-        >
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <!-- Via NxpDynamicComponent -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Via NxpDynamicComponent
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Wrap the component with
-                <code class="font-mono text-xs"
-                  >new NxpDynamicComponent(MyComponent)</code
-                >
-                and pass it directly to
-                <code class="font-mono text-xs">dialogService.open()</code>. Use
-                the <code class="font-mono text-xs">data</code> option to send
-                input data.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
-                (click)="openDeleteWithComponent()"
-              >
-                Delete annual-report.pdf
-              </button>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Last result:
-                <code class="font-mono">{{ deleteResult() }}</code>
-              </p>
-            </div>
-
-            <!-- Via nxpDialog() factory -->
-            <div class="space-y-3">
-              <h3 class="text-base font-medium text-gray-900 dark:text-white">
-                Via nxpDialog() factory
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Call
-                <code class="font-mono text-xs"
-                  >nxpDialog(MyComponent, opts)</code
-                >
-                as a class field to create a typed opener function. Invoke it
-                with the data payload — no extra boilerplate needed.
-              </p>
-              <button
-                type="button"
-                class="px-4 py-2 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
-                (click)="openDeleteWithFactory()"
-              >
-                Delete quarterly-data.csv
-              </button>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Last result:
-                <code class="font-mono">{{ deleteResult() }}</code>
-              </p>
-            </div>
-          </div>
-        </nxp-doc-example>
-
+        <!-- ── 7. Playground ───────────────────────────────────────────── -->
         <nxp-doc-example
           heading="Configurable playground"
-          description="Edit any option in the API tab — label, size, closable, dismissible, required, appearance — then open the dialog to see the live result. Values are persisted to the URL."
-          [content]="{ HTML: playgroundHtml, TypeScript: playgroundTs }"
+          description="Edit any option in the API tab, then reopen — values persist to the URL query string."
+          [content]="{ TypeScript: playgroundTs, HTML: playgroundHtml }"
         >
-          <div class="space-y-3">
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Current options —
-              <code class="font-mono text-xs">label="{{ label() }}"</code>,
-              <code class="font-mono text-xs">size="{{ size() }}"</code>,
-              <code class="font-mono text-xs">closable={{ closable() }}</code
-              >,
-              <code class="font-mono text-xs"
-                >dismissible={{ dismissible() }}</code
-              >, <code class="font-mono text-xs">required={{ required() }}</code
-              >,
-              <code class="font-mono text-xs"
-                >appearance="{{ appearance() }}"</code
-              >.
+          <div class="flex flex-col items-start gap-4">
+            <p class="text-sm text-text-tertiary">
+              <code class="font-mono">label="{{ label() }}"</code> ·
+              <code class="font-mono">size="{{ size() }}"</code> ·
+              <code class="font-mono">closable={{ closable() }}</code> ·
+              <code class="font-mono">dismissible={{ dismissible() }}</code> ·
+              <code class="font-mono">required={{ required() }}</code> ·
+              <code class="font-mono">appearance="{{ appearance() }}"</code>
             </p>
             <button
               type="button"
-              class="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              [class]="s.btnPrimary"
               (click)="openConfigurable()"
             >
-              Open configurable dialog
+              Open configured dialog
             </button>
           </div>
         </nxp-doc-example>
@@ -495,144 +1024,175 @@ class ConfirmDeleteDialogComponent {
   `,
 })
 export class DialogDemoComponent {
-  private readonly dialogService = inject(NxpDialogService);
-  private readonly richTpl = viewChild<TemplateRef<unknown>>('richTpl');
-  private readonly confirmTpl = viewChild<TemplateRef<unknown>>('confirmTpl');
+  protected readonly s = S;
+  private readonly dialog = inject(NxpDialogService);
 
-  readonly templateOpen = signal(false);
-  readonly templateWithOptsOpen = signal(false);
-  readonly confirmResult = signal<string>('(none)');
-  readonly deleteResult = signal<string>('(none)');
+  // ── Live result state ─────────────────────────────────────────────────────
+  protected readonly menuOpen = signal(false);
+  protected readonly commandResult = signal('(none)');
+  protected readonly deleteResult = signal('(none)');
+  protected readonly editorResult = signal('(none)');
+  protected readonly notes = signal('Ship the build before standup.');
+  protected readonly wizardResult = signal('(none)');
+  protected readonly requiredResult = signal('(none)');
+  protected readonly templateOpen = signal(false);
 
-  // Shared playground state — two-way bound into <app-dialog-api>
-  readonly label = signal('Configurable dialog');
-  readonly size = signal<NxpDialogSize>('m');
-  readonly closable = signal(true);
-  readonly dismissible = signal(true);
-  readonly required = signal(false);
-  readonly appearance = signal('default');
+  // ── Playground state — two-way bound into <app-dialog-api> ────────────────
+  protected readonly label = signal('Configurable dialog');
+  protected readonly size = signal<NxpDialogSize>('m');
+  protected readonly closable = signal(true);
+  protected readonly dismissible = signal(true);
+  protected readonly required = signal(false);
+  protected readonly appearance = signal('default');
 
-  // Factory-based opener — created once in injection context as a class field
-  readonly openDeleteFactory = nxpDialog<DeleteData, boolean>(
-    ConfirmDeleteDialogComponent,
-    { label: 'Confirm Delete', size: 's' },
+  // ── Typed factory opener — created once in injection context ──────────────
+  private readonly openDelete = nxpDialog<DeleteProjectData, boolean>(
+    DeleteProjectDialogComponent,
+    { label: 'Delete project', size: 's' },
   );
 
-  openSimple(): void {
-    this.dialogService
-      .open('This is a simple dialog with text content.', {
-        label: 'Simple Dialog',
-      } as Partial<NxpDialogOptions<unknown>>)
-      .subscribe();
+  // ── 1. Command menu ───────────────────────────────────────────────────────
+  protected onMetaK(e: Event): void {
+    e.preventDefault();
+    this.openCommandMenu();
   }
 
-  openWithLabel(): void {
-    this.dialogService
-      .open(
-        'You can close this dialog with the X button, Esc key, or clicking the backdrop.',
-        {
-          label: 'Closable Dialog',
-          closable: true,
-          dismissible: true,
-        } as Partial<NxpDialogOptions<unknown>>,
-      )
-      .subscribe();
-  }
-
-  openRequired(): void {
-    this.dialogService
-      .open('This dialog cannot be dismissed. You must click OK.', {
-        label: 'Required Action',
+  protected openCommandMenu(): void {
+    if (this.menuOpen()) return;
+    this.menuOpen.set(true);
+    this.dialog
+      .open<string>(new NxpDynamicComponent(CommandMenuDialogComponent), {
+        label: '',
+        size: 'm',
+        appearance: 'command',
         closable: false,
-        dismissible: false,
-        required: true,
+      } as Partial<NxpDialogOptions<unknown>>)
+      .subscribe({
+        next: (id) => this.commandResult.set(id),
+        complete: () => this.menuOpen.set(false),
+      });
+  }
+
+  // ── 2. Type-to-confirm delete ─────────────────────────────────────────────
+  protected openDeleteFactoryClick(): void {
+    this.settleBool(
+      this.openDelete({ projectName: 'acme-marketing-site' }),
+      this.deleteResult,
+      'deleted',
+      'kept',
+    );
+  }
+
+  protected openDeleteService(): void {
+    this.settleBool(
+      this.dialog.open<boolean>(
+        new NxpDynamicComponent(DeleteProjectDialogComponent),
+        {
+          label: 'Delete project',
+          size: 's',
+          data: { projectName: 'billing-dashboard' },
+        } as Partial<NxpDialogOptions<DeleteProjectData>>,
+      ),
+      this.deleteResult,
+      'deleted',
+      'kept',
+    );
+  }
+
+  // ── 3. Guarded close ──────────────────────────────────────────────────────
+  protected openEditor(): void {
+    const dirty = signal(false);
+    let saved = false;
+    this.dialog
+      .open<string>(new NxpDynamicComponent(NotesEditorDialogComponent), {
+        label: 'Edit deployment notes',
+        size: 'm',
+        data: { initial: this.notes(), dirty },
+        dismissible: defer(() => (dirty() ? this.confirmDiscard() : of(true))),
+        closable: defer(() => (dirty() ? this.confirmDiscard() : of(true))),
+      } as Partial<NxpDialogOptions<EditorData>>)
+      .subscribe({
+        next: (value) => {
+          saved = true;
+          this.notes.set(value);
+          this.editorResult.set('saved');
+        },
+        complete: () => {
+          if (!saved) this.editorResult.set(dirty() ? 'discarded' : 'closed');
+        },
+      });
+  }
+
+  private confirmDiscard(): Observable<boolean> {
+    return this.dialog.open<boolean>(
+      new NxpDynamicComponent(DiscardConfirmDialogComponent),
+      { label: 'Discard changes?', size: 's' },
+    );
+  }
+
+  // ── 4. Connect wizard ─────────────────────────────────────────────────────
+  protected openWizard(): void {
+    let done = false;
+    this.dialog
+      .open<ConnectConfig>(
+        new NxpDynamicComponent(ConnectWizardDialogComponent),
+        { label: 'Connect a data source', size: 'm' },
+      )
+      .subscribe({
+        next: (cfg) => {
+          done = true;
+          this.wizardResult.set(
+            `${cfg.source} · ${cfg.host}/${cfg.database}${
+              cfg.ssl ? ' · ssl' : ''
+            }`,
+          );
+        },
+        complete: () => {
+          if (!done) this.wizardResult.set('cancelled');
+        },
+      });
+  }
+
+  // ── 5. Core API ───────────────────────────────────────────────────────────
+  protected openSimple(): void {
+    this.dialog
+      .open('A lightweight message dialog with a title and an OK button.', {
+        label: 'Heads up',
       } as Partial<NxpDialogOptions<unknown>>)
       .subscribe();
   }
 
-  openSized(size: NxpDialogSize): void {
-    this.dialogService
-      .open(
-        `This is a ${size === 's' ? 'small' : size === 'm' ? 'medium' : 'large'}-sized dialog.`,
-        {
-          label: `Size: ${size}`,
-          size,
-        } as Partial<NxpDialogOptions<unknown>>,
-      )
+  protected openSized(size: NxpDialogSize): void {
+    this.dialog
+      .open(`This dialog uses the ${size} width scale.`, {
+        label: `Size — ${size}`,
+        size,
+      } as Partial<NxpDialogOptions<unknown>>)
       .subscribe();
   }
 
-  openWithTemplate(): void {
-    const tpl = this.richTpl();
-    if (!tpl) return;
-    this.dialogService
+  protected openRequired(): void {
+    this.dialog
       .open(
-        tpl as NxpDynamicContent,
+        'Approve this deployment to production? Dismissing this dialog (Esc / × / backdrop) rejects the action.',
         {
-          label: 'Rich Content',
-          size: 'm',
-        } as Partial<NxpDialogOptions<unknown>>,
-      )
-      .subscribe();
-  }
-
-  openConfirm(): void {
-    const tpl = this.confirmTpl();
-    if (!tpl) return;
-    this.dialogService
-      .open<string>(
-        tpl as NxpDynamicContent,
-        {
-          label: 'Confirm Action',
-          closable: true,
-          dismissible: true,
+          label: 'Approval required',
           size: 's',
+          required: true,
+          data: 'Approve',
         } as Partial<NxpDialogOptions<unknown>>,
       )
       .subscribe({
-        next: (result) => this.confirmResult.set(result),
-        complete: () => {
-          if (this.confirmResult() === '(none)') {
-            this.confirmResult.set('cancelled');
-          }
-        },
+        complete: () => this.requiredResult.set('approved'),
+        error: () => this.requiredResult.set('rejected'),
       });
   }
 
-  openDeleteWithComponent(): void {
-    this.dialogService
-      .open<boolean>(new NxpDynamicComponent(ConfirmDeleteDialogComponent), {
-        label: 'Confirm Delete',
-        size: 's',
-        data: { itemName: 'annual-report.pdf' },
-      } as Partial<NxpDialogOptions<DeleteData>>)
-      .subscribe({
-        next: (confirmed) =>
-          this.deleteResult.set(confirmed ? 'deleted' : 'cancelled'),
-        complete: () => {
-          if (this.deleteResult() === '(none)') {
-            this.deleteResult.set('cancelled');
-          }
-        },
-      });
-  }
-
-  openDeleteWithFactory(): void {
-    this.openDeleteFactory({ itemName: 'quarterly-data.csv' }).subscribe({
-      next: (confirmed) =>
-        this.deleteResult.set(confirmed ? 'deleted' : 'cancelled'),
-      complete: () => {
-        if (this.deleteResult() === '(none)') {
-          this.deleteResult.set('cancelled');
-        }
-      },
-    });
-  }
-
-  openConfigurable(): void {
-    this.dialogService
+  // ── 7. Playground ─────────────────────────────────────────────────────────
+  protected openConfigurable(): void {
+    this.dialog
       .open(
-        'This dialog reflects the current options from the API tab. Edit the values there and reopen to see the change.',
+        'This dialog reflects the options from the API tab. Tweak them and reopen.',
         {
           label: this.label(),
           size: this.size(),
@@ -642,290 +1202,229 @@ export class DialogDemoComponent {
           appearance: this.appearance(),
         } as Partial<NxpDialogOptions<unknown>>,
       )
-      .subscribe();
+      .subscribe({ error: () => {} });
   }
 
-  // ── Example source snippets shown inside <nxp-doc-example> tabs ────────────
-  readonly programmaticHtml = `<button type="button" (click)="openSimple()">Open simple dialog</button>
-<button type="button" (click)="openWithLabel()">Open labeled dialog</button>
-<button type="button" (click)="openRequired()">Open required dialog</button>`;
+  // ── Helper — map a boolean dialog result to a status label ────────────────
+  private settleBool(
+    obs: Observable<boolean>,
+    sig: WritableSignal<string>,
+    truthy: string,
+    falsy: string,
+  ): void {
+    let emitted = false;
+    obs.subscribe({
+      next: (v) => {
+        emitted = true;
+        sig.set(v ? truthy : falsy);
+      },
+      complete: () => {
+        if (!emitted) sig.set('cancelled');
+      },
+    });
+  }
 
-  readonly programmaticTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { NxpDialogService, type NxpDialogOptions } from '@ngxpro/cdk';
+  // ── Source snippets shown inside each <nxp-doc-example> code tab ──────────
+  protected readonly commandTs = `import { ChangeDetectionStrategy, Component, computed, signal, ViewEncapsulation } from '@angular/core';
+import { type NxpDialogContext } from '@ngxpro/cdk';
+import { nxpInjectContext, NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 
 @Component({
-  selector: 'app-programmatic-dialog',
+  selector: 'app-command-menu',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './programmatic.html',
+  encapsulation: ViewEncapsulation.None,
+  // appearance:'command' zeroes the dialog's default 2rem padding
+  styles: [\`nxp-dialog[data-appearance='command'] { padding: 0 }\`],
+  templateUrl: './command-menu.html',
 })
-export class ProgrammaticDialogExample {
-  private readonly dialogService = inject(NxpDialogService);
-
-  openSimple(): void {
-    this.dialogService
-      .open('This is a simple dialog with text content.', {
-        label: 'Simple Dialog',
-      } as Partial<NxpDialogOptions<unknown>>)
-      .subscribe();
+export class CommandMenuDialogComponent {
+  readonly context = nxpInjectContext<NxpDialogContext<string>>();
+  readonly query = signal('');
+  readonly active = signal(0);
+  // …filter + ArrowUp/ArrowDown/Enter handling…
+  select(id: string): void {
+    this.context.completeWith(id); // returns the chosen command id
   }
+}
 
-  openWithLabel(): void {
-    this.dialogService
-      .open('You can close this dialog with X, Esc, or backdrop click.', {
-        label: 'Closable Dialog',
-        closable: true,
-        dismissible: true,
-      } as Partial<NxpDialogOptions<unknown>>)
-      .subscribe();
-  }
-
-  openRequired(): void {
-    this.dialogService
-      .open('This dialog cannot be dismissed. You must click OK.', {
-        label: 'Required Action',
-        closable: false,
-        dismissible: false,
-        required: true,
-      } as Partial<NxpDialogOptions<unknown>>)
-      .subscribe();
-  }
+// open it (⌘K):
+openCommandMenu(): void {
+  this.dialog
+    .open<string>(new NxpDynamicComponent(CommandMenuDialogComponent), {
+      label: '',
+      appearance: 'command',
+      closable: false,
+    })
+    .subscribe((id) => this.commandResult.set(id));
 }`;
 
-  readonly sizesHtml = `<button (click)="openSized('s')">Small</button>
-<button (click)="openSized('m')">Medium</button>
-<button (click)="openSized('l')">Large</button>`;
+  protected readonly commandHtml = `<button (click)="openCommandMenu()">
+  Open command menu <kbd>⌘</kbd><kbd>K</kbd>
+</button>`;
 
-  readonly sizesTs = `import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import {
-  NxpDialogService,
-  type NxpDialogOptions,
-  type NxpDialogSize,
-} from '@ngxpro/cdk';
+  protected readonly deleteTs = `import { computed, signal } from '@angular/core';
+import { nxpDialog, type NxpDialogContext } from '@ngxpro/cdk';
+import { nxpInjectContext, NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 
-@Component({
-  selector: 'app-sized-dialog',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './sizes.html',
-})
-export class SizedDialogExample {
-  private readonly dialogService = inject(NxpDialogService);
+interface DeleteProjectData { readonly projectName: string; }
 
-  openSized(size: NxpDialogSize): void {
-    this.dialogService
-      .open(\`This is a \${size}-sized dialog.\`, {
-        label: \`Size: \${size}\`,
-        size,
-      } as Partial<NxpDialogOptions<unknown>>)
-      .subscribe();
-  }
+@Component({ /* … */ })
+class DeleteProjectDialogComponent {
+  readonly context =
+    nxpInjectContext<NxpDialogContext<boolean, DeleteProjectData>>();
+  readonly confirmText = signal('');
+  readonly canDelete = computed(
+    () => this.confirmText().trim() === this.context.data.projectName,
+  );
+}
+
+// 1 — typed factory opener (class field, injection-context aware)
+readonly openDelete = nxpDialog<DeleteProjectData, boolean>(
+  DeleteProjectDialogComponent,
+  { label: 'Delete project', size: 's' },
+);
+this.openDelete({ projectName: 'acme-marketing-site' })
+  .subscribe((deleted) => { /* … */ });
+
+// 2 — the equivalent call straight through the service
+this.dialog.open<boolean>(
+  new NxpDynamicComponent(DeleteProjectDialogComponent),
+  { label: 'Delete project', size: 's', data: { projectName: 'billing-dashboard' } },
+).subscribe((deleted) => { /* … */ });`;
+
+  protected readonly deleteHtml = `<input [value]="confirmText()" (input)="onInput($event)" />
+
+<button [disabled]="!canDelete()" (click)="context.completeWith(true)">
+  Delete project
+</button>
+<button (click)="context.completeWith(false)">Cancel</button>`;
+
+  protected readonly editorTs = `import { defer, of, type Observable } from 'rxjs';
+import { signal } from '@angular/core';
+import { type NxpDialogOptions } from '@ngxpro/cdk';
+
+// closable / dismissible accept Observable<boolean> — emit false to VETO the
+// close. Here a nested "Discard changes?" dialog gates every dismiss while the
+// editor is dirty. \`defer\` re-runs the guard on each attempt.
+openEditor(): void {
+  const dirty = signal(false); // shared with the editor via \`data\`
+  this.dialog
+    .open<string>(new NxpDynamicComponent(NotesEditorDialogComponent), {
+      label: 'Edit deployment notes',
+      data: { initial: this.notes(), dirty },
+      dismissible: defer(() => (dirty() ? this.confirmDiscard() : of(true))),
+      closable: defer(() => (dirty() ? this.confirmDiscard() : of(true))),
+    } as Partial<NxpDialogOptions<unknown>>)
+    .subscribe((saved) => this.notes.set(saved));
+}
+
+confirmDiscard(): Observable<boolean> {
+  return this.dialog.open<boolean>(
+    new NxpDynamicComponent(DiscardConfirmDialogComponent),
+    { label: 'Discard changes?', size: 's' },
+  );
 }`;
 
-  readonly templateHtml = `<button (click)="templateOpen.set(true)">Open template dialog</button>
+  protected readonly editorHtml = `<textarea [value]="draft()" (input)="onInput($event)"></textarea>
+<button (click)="save()">Save changes</button>
+<!-- Esc / × / backdrop → routed through confirmDiscard() while dirty -->`;
 
-<ng-template
-  [nxpDialog]="templateOpen()"
-  (nxpDialogChange)="templateOpen.set($event)"
-  [nxpDialogOptions]="{ label: 'Template Dialog' }"
->
-  <p>This dialog content is declared inline using
-    <code>&lt;ng-template nxpDialog&gt;</code>.
-  </p>
-</ng-template>
+  protected readonly wizardTs = `import { computed, signal } from '@angular/core';
+import { type NxpDialogContext } from '@ngxpro/cdk';
+import { nxpInjectContext, NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 
-<button (click)="templateWithOptsOpen.set(true)">Open with options</button>
+interface ConnectConfig {
+  readonly source: string; readonly host: string;
+  readonly database: string; readonly ssl: boolean;
+}
 
-<ng-template
-  [nxpDialog]="templateWithOptsOpen()"
-  (nxpDialogChange)="templateWithOptsOpen.set($event)"
-  [nxpDialogOptions]="{ label: 'Custom Options', size: 'l' }"
->
-  <p>A large-sized dialog with a custom label.</p>
-</ng-template>`;
+@Component({ /* step indicator + @switch (step()) body */ })
+class ConnectWizardDialogComponent {
+  readonly context = nxpInjectContext<NxpDialogContext<ConnectConfig>>();
+  readonly step = signal(0);
+  readonly source = signal('');
+  // …host, database, ssl signals + canNext()…
+  finish(): void {
+    this.context.completeWith({
+      source: this.source(), host: this.host(),
+      database: this.database(), ssl: this.ssl(),
+    });
+  }
+}
 
-  readonly templateTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+// a stateful component is a full dialog surface
+this.dialog
+  .open<ConnectConfig>(new NxpDynamicComponent(ConnectWizardDialogComponent), {
+    label: 'Connect a data source',
+  })
+  .subscribe((config) => this.wizardResult.set(config));`;
+
+  protected readonly wizardHtml = `<button (click)="openWizard()">Connect a data source</button>`;
+
+  protected readonly coreTs = `import { inject } from '@angular/core';
+import { NxpDialogService, type NxpDialogOptions, type NxpDialogSize } from '@ngxpro/cdk';
+
+private readonly dialog = inject(NxpDialogService);
+
+openSimple(): void {
+  this.dialog.open('A lightweight message with an OK button.', { label: 'Heads up' }).subscribe();
+}
+
+openSized(size: NxpDialogSize): void {
+  this.dialog.open(\`This dialog uses the \${size} width scale.\`, { label: \`Size — \${size}\`, size }).subscribe();
+}
+
+// required:true → a dismissal (Esc / × / backdrop) ERRORS the stream
+openRequired(): void {
+  this.dialog
+    .open('Approve this deployment? Dismissing rejects it.', {
+      label: 'Approval required', required: true, data: 'Approve', size: 's',
+    } as Partial<NxpDialogOptions<unknown>>)
+    .subscribe({
+      complete: () => this.result.set('approved'),
+      error: () => this.result.set('rejected'),
+    });
+}`;
+
+  protected readonly coreHtml = `<button (click)="openSimple()">Simple message</button>
+<button (click)="openSized('l')">Large</button>
+<button (click)="openRequired()">Required (blocking)</button>`;
+
+  protected readonly directiveTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { NxpDialogDirective } from '@ngxpro/cdk';
 
 @Component({
-  selector: 'app-template-dialog',
+  selector: 'app-inline-dialog',
   imports: [NxpDialogDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './template.html',
+  templateUrl: './inline-dialog.html',
 })
-export class TemplateDialogExample {
-  readonly templateOpen = signal(false);
-  readonly templateWithOptsOpen = signal(false);
+export class InlineDialogExample {
+  readonly open = signal(false);
 }`;
 
-  readonly richHtml = `<button (click)="openWithTemplate()">Open rich dialog</button>
-<button (click)="openConfirm()">Open confirm dialog</button>
+  protected readonly directiveHtml = `<button (click)="open.set(true)">Open inline dialog</button>
 
-<ng-template #richTpl let-ctx>
-  <p>This dialog is rendered from a TemplateRef passed to
-    NxpDialogService.open().
-  </p>
-</ng-template>
-
-<ng-template #confirmTpl let-ctx>
-  <p>Are you sure you want to proceed?</p>
-  <footer>
-    <button (click)="ctx.$implicit.complete()">Cancel</button>
-    <button (click)="ctx.completeWith('confirmed')">Confirm</button>
-  </footer>
+<ng-template
+  [nxpDialog]="open()"
+  (nxpDialogChange)="open.set($event)"
+  [nxpDialogOptions]="{ label: 'Inline dialog', size: 's' }"
+>
+  <p>Declared inline and toggled by a boolean signal — no service needed.</p>
 </ng-template>`;
 
-  readonly richTs = `import { ChangeDetectionStrategy, Component, inject, signal, TemplateRef, viewChild } from '@angular/core';
-import { NxpDialogService, type NxpDialogOptions } from '@ngxpro/cdk';
-import type { NxpDynamicContent } from '@ngxpro/cdk/dynamic';
-
-@Component({
-  selector: 'app-rich-dialog',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './rich.html',
-})
-export class RichDialogExample {
-  private readonly dialogService = inject(NxpDialogService);
-  private readonly richTpl = viewChild<TemplateRef<unknown>>('richTpl');
-  private readonly confirmTpl = viewChild<TemplateRef<unknown>>('confirmTpl');
-
-  readonly confirmResult = signal<string>('(none)');
-
-  openWithTemplate(): void {
-    const tpl = this.richTpl();
-    if (!tpl) return;
-    this.dialogService
-      .open(tpl as NxpDynamicContent, {
-        label: 'Rich Content',
-        size: 'm',
-      } as Partial<NxpDialogOptions<unknown>>)
-      .subscribe();
-  }
-
-  openConfirm(): void {
-    const tpl = this.confirmTpl();
-    if (!tpl) return;
-    this.dialogService
-      .open<string>(tpl as NxpDynamicContent, {
-        label: 'Confirm Action',
-        closable: true,
-        dismissible: true,
-        size: 's',
-      } as Partial<NxpDialogOptions<unknown>>)
-      .subscribe({
-        next: (result) => this.confirmResult.set(result),
-        complete: () => {
-          if (this.confirmResult() === '(none)') {
-            this.confirmResult.set('cancelled');
-          }
-        },
-      });
-  }
+  protected readonly playgroundTs = `openConfigurable(): void {
+  this.dialog
+    .open('This dialog reflects the options from the API tab.', {
+      label: this.label(),
+      size: this.size(),
+      closable: this.closable(),
+      dismissible: this.dismissible(),
+      required: this.required(),
+      appearance: this.appearance(),
+    } as Partial<NxpDialogOptions<unknown>>)
+    .subscribe({ error: () => {} });
 }`;
 
-  readonly componentHtml = `<button (click)="openDeleteWithComponent()">
-  Delete annual-report.pdf
-</button>
-<button (click)="openDeleteWithFactory()">
-  Delete quarterly-data.csv
-</button>`;
-
-  readonly componentTs = `import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import {
-  NxpDialogService,
-  nxpDialog,
-  type NxpDialogContext,
-  type NxpDialogOptions,
-} from '@ngxpro/cdk';
-import { nxpInjectContext, NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
-
-interface DeleteData {
-  readonly itemName: string;
-}
-
-@Component({
-  selector: 'app-confirm-delete',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: \`
-    <p>Permanently delete <strong>{{ context.data.itemName }}</strong>?</p>
-    <footer>
-      <button (click)="context.completeWith(false)">Cancel</button>
-      <button (click)="context.completeWith(true)">Delete</button>
-    </footer>
-  \`,
-})
-class ConfirmDeleteDialogComponent {
-  readonly context = nxpInjectContext<NxpDialogContext<boolean, DeleteData>>();
-}
-
-@Component({
-  selector: 'app-component-dialog',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './component.html',
-})
-export class ComponentDialogExample {
-  private readonly dialogService = inject(NxpDialogService);
-  readonly deleteResult = signal<string>('(none)');
-
-  // Factory opener — typed, class-field, fully injection-context aware
-  readonly openDeleteFactory = nxpDialog<DeleteData, boolean>(
-    ConfirmDeleteDialogComponent,
-    { label: 'Confirm Delete', size: 's' },
-  );
-
-  openDeleteWithComponent(): void {
-    this.dialogService
-      .open<boolean>(new NxpDynamicComponent(ConfirmDeleteDialogComponent), {
-        label: 'Confirm Delete',
-        size: 's',
-        data: { itemName: 'annual-report.pdf' },
-      } as Partial<NxpDialogOptions<DeleteData>>)
-      .subscribe((confirmed) =>
-        this.deleteResult.set(confirmed ? 'deleted' : 'cancelled'),
-      );
-  }
-
-  openDeleteWithFactory(): void {
-    this.openDeleteFactory({ itemName: 'quarterly-data.csv' }).subscribe(
-      (confirmed) =>
-        this.deleteResult.set(confirmed ? 'deleted' : 'cancelled'),
-    );
-  }
-}`;
-
-  readonly playgroundHtml = `<button (click)="openConfigurable()">Open configurable dialog</button>`;
-
-  readonly playgroundTs = `import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import {
-  NxpDialogService,
-  type NxpDialogOptions,
-  type NxpDialogSize,
-} from '@ngxpro/cdk';
-
-@Component({
-  selector: 'app-playground-dialog',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './playground.html',
-})
-export class PlaygroundDialogExample {
-  private readonly dialogService = inject(NxpDialogService);
-
-  readonly label = signal('Configurable dialog');
-  readonly size = signal<NxpDialogSize>('m');
-  readonly closable = signal(true);
-  readonly dismissible = signal(true);
-  readonly required = signal(false);
-  readonly appearance = signal('default');
-
-  openConfigurable(): void {
-    this.dialogService
-      .open('This dialog reflects the current options.', {
-        label: this.label(),
-        size: this.size(),
-        closable: this.closable(),
-        dismissible: this.dismissible(),
-        required: this.required(),
-        appearance: this.appearance(),
-      } as Partial<NxpDialogOptions<unknown>>)
-      .subscribe();
-  }
-}`;
+  protected readonly playgroundHtml = `<button (click)="openConfigurable()">Open configured dialog</button>`;
 }

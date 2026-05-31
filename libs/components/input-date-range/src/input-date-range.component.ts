@@ -1,8 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  ElementRef,
   computed,
   effect,
   forwardRef,
@@ -11,13 +9,21 @@ import {
   model,
   signal,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import {
   cx,
   hasErrorInput,
   inputVariants,
-  NXP_DOCUMENT,
-  NXP_IS_BROWSER,
+  NxpDropdownContent,
+  NxpDropdownDirective,
+  NxpDropdownOpen,
 } from '@ngxpro/cdk';
 import type {
   DisabledHandler,
@@ -27,56 +33,58 @@ import {
   CalendarRangeComponent,
   DateRangePeriod,
 } from '@ngxpro/components/calendar-range';
-import { formatDateRange, parseDateRange } from '@ngxpro/components/input-date';
+import {
+  caretForDigitCount,
+  digitsBefore,
+  formatDateRange,
+  maskDateRange,
+  parseDateRange,
+} from '@ngxpro/components/input-date';
+
+const isDigitChar = (ch: string): boolean => !!ch && ch >= '0' && ch <= '9';
 
 /**
  * Date-range input with dual-calendar dropdown.
  *
  * Clicking the input opens a `nxp-calendar-range` dropdown. Selecting a
  * complete range closes the dropdown and updates the value. The user may also
- * type a range directly (format: "MM/DD/YYYY – MM/DD/YYYY"); on blur, the
- * raw text is parsed.
+ * type a range directly: input is masked to digits-only and auto-formatted as
+ * "DD/MM/YYYY – DD/MM/YYYY" while typing; on blur it is validated against the
+ * `min`/`max` and `minLength`/`maxLength` constraints, marking the field
+ * invalid (while keeping the typed text) when it doesn't fit.
  *
- * Implements `ControlValueAccessor` for Angular forms integration. `value`
+ * The dropdown is rendered through the CDK dropdown portal
+ * (`NxpDropdownDirective` / `nxpDropdown`), so it escapes any ancestor
+ * `overflow` clipping and is positioned/closed by the shared portal machinery.
+ *
+ * Implements `ControlValueAccessor` and `Validator` for Angular forms
+ * integration (a failed parse surfaces an `invalidDateRange` error). `value`
  * is a `model()` so reactive form `setValue()` propagates back through
  * `writeValue()` and updates the calendar.
  */
 @Component({
   selector: 'nxp-input-date-range',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CalendarRangeComponent],
+  imports: [CalendarRangeComponent, NxpDropdownContent],
+  hostDirectives: [NxpDropdownDirective, NxpDropdownOpen],
+  host: { class: 'block w-full' },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputDateRangeComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => InputDateRangeComponent),
+      multi: true,
+    },
   ],
-  styles: `
-    .nxp-date-range-pop {
-      transform-origin: top left;
-      animation: nxp-date-range-pop-in 180ms cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    @keyframes nxp-date-range-pop-in {
-      from {
-        opacity: 0;
-        transform: scale(0.97) translateY(-4px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .nxp-date-range-pop {
-        animation: none;
-      }
-    }
-  `,
   template: `
     <div class="relative w-full">
       <input
         type="text"
+        inputmode="numeric"
         [id]="inputId() || null"
         [class]="inputClass()"
         [value]="inputValue()"
@@ -84,6 +92,7 @@ import { formatDateRange, parseDateRange } from '@ngxpro/components/input-date';
         [disabled]="disabled()"
         (click)="toggle()"
         (input)="onInput($event)"
+        (keydown)="onKeydown($event)"
         (blur)="onBlur()"
         (keydown.escape)="close()"
         aria-haspopup="dialog"
@@ -92,7 +101,7 @@ import { formatDateRange, parseDateRange } from '@ngxpro/components/input-date';
           ariaLabelledBy() ? null : (ariaLabel() ?? placeholder())
         "
         [attr.aria-labelledby]="ariaLabelledBy() || null"
-        [attr.aria-invalid]="hasError() || null"
+        [attr.aria-invalid]="hasError() || invalidInput() || null"
         autocomplete="off"
       />
 
@@ -118,42 +127,35 @@ import { formatDateRange, parseDateRange } from '@ngxpro/components/input-date';
           />
         </svg>
       </span>
-
-      @if (isOpen()) {
-        <div
-          class="nxp-date-range-pop absolute z-50 mt-2 top-full left-0"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Date range picker"
-        >
-          <nxp-calendar-range
-            [value]="value()"
-            [min]="min()"
-            [max]="max()"
-            [minLength]="minLength()"
-            [maxLength]="maxLength()"
-            [disabledHandler]="disabledHandler()"
-            [markerHandler]="markerHandler()"
-            [items]="items()"
-            (valueChange)="onRangePicked($event)"
-          />
-        </div>
-      }
     </div>
+
+    <ng-template nxpDropdown>
+      <nxp-calendar-range
+        [value]="calendarValue()"
+        [min]="min()"
+        [max]="max()"
+        [minLength]="minLength()"
+        [maxLength]="maxLength()"
+        [disabledHandler]="disabledHandler()"
+        [markerHandler]="markerHandler()"
+        [items]="items()"
+        (valueChange)="onRangePicked($event)"
+      />
+    </ng-template>
   `,
 })
-export class InputDateRangeComponent implements ControlValueAccessor {
-  private readonly el = inject(ElementRef);
-  private readonly doc = inject(NXP_DOCUMENT);
-  private readonly isBrowser = inject(NXP_IS_BROWSER);
-  private readonly destroyRef = inject(DestroyRef);
+export class InputDateRangeComponent
+  implements ControlValueAccessor, Validator
+{
+  private readonly dropdown = inject(NxpDropdownDirective);
+  private readonly dropdownOpen = inject(NxpDropdownOpen);
 
   readonly value = model<[Date, Date] | null>(null);
   readonly min = input<Date | null>(null);
   readonly max = input<Date | null>(null);
   readonly minLength = input<number | null>(null);
   readonly maxLength = input<number | null>(null);
-  readonly placeholder = input<string>('MM/DD/YYYY – MM/DD/YYYY');
+  readonly placeholder = input<string>('DD/MM/YYYY – DD/MM/YYYY');
   readonly disabled = model<boolean>(false);
   readonly disabledHandler = input<DisabledHandler | null>(null);
   readonly markerHandler = input<MarkerHandler | null>(null);
@@ -169,15 +171,30 @@ export class InputDateRangeComponent implements ControlValueAccessor {
   /** Marks the input as invalid (sets `aria-invalid`); style hook for callers wiring form validity. */
   readonly hasError = input<boolean>(false);
 
-  protected readonly isOpen = signal(false);
+  /** Whether the calendar portal is currently mounted. */
+  protected readonly isOpen = computed(() => !!this.dropdown.ref());
   protected readonly inputValue = signal('');
+  /** Set when a typed range fails to parse/validate on blur; drives the error state. */
+  protected readonly invalidInput = signal(false);
+  /**
+   * In-progress typed range, set while the user is typing a complete valid
+   * in-bounds range but before it is committed (on blur / pick). Lets the open
+   * dual-calendar navigate to and highlight what is being typed without eagerly
+   * mutating the public `value` / notifying the form on every keystroke.
+   */
+  private readonly draft = signal<[Date, Date] | null>(null);
+
+  /** Range shown in the calendar: the in-progress typed range, else the committed value. */
+  protected readonly calendarValue = computed(
+    () => this.draft() ?? this.value(),
+  );
 
   protected readonly inputClass = computed(() =>
     cx(
       inputVariants(),
       // Reserve room for the trailing calendar icon (rendered absolutely).
       'pr-10',
-      this.hasError() && hasErrorInput,
+      (this.hasError() || this.invalidInput()) && hasErrorInput,
       this.class(),
     ),
   );
@@ -186,34 +203,20 @@ export class InputDateRangeComponent implements ControlValueAccessor {
     effect(() => {
       const v = this.value();
       this.inputValue.set(v ? formatDateRange(v) : '');
+      // The committed value is authoritative; drop any in-progress typed draft.
+      this.draft.set(null);
     });
-
-    if (this.isBrowser) {
-      const onDocClick = (event: Event): void => {
-        if (
-          !(this.el.nativeElement as HTMLElement).contains(event.target as Node)
-        ) {
-          this.isOpen.set(false);
-        }
-      };
-      const onDocEsc = (event: KeyboardEvent): void => {
-        if (event.key === 'Escape') this.isOpen.set(false);
-      };
-      this.doc.addEventListener('click', onDocClick, true);
-      this.doc.addEventListener('keydown', onDocEsc);
-      this.destroyRef.onDestroy(() => {
-        this.doc.removeEventListener('click', onDocClick, true);
-        this.doc.removeEventListener('keydown', onDocEsc);
-      });
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onChange: (v: [Date, Date] | null) => void = () => {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onTouched: () => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private _onValidatorChange: () => void = () => {};
 
   writeValue(v: [Date, Date] | null): void {
+    this.invalidInput.set(false);
     this.value.set(v);
   }
 
@@ -229,38 +232,168 @@ export class InputDateRangeComponent implements ControlValueAccessor {
     this.disabled.set(isDisabled);
   }
 
+  validate(_control: AbstractControl): ValidationErrors | null {
+    return this.invalidInput() ? { invalidDateRange: true } : null;
+  }
+
+  registerOnValidatorChange(fn: () => void): void {
+    this._onValidatorChange = fn;
+  }
+
   protected toggle(): void {
     if (!this.disabled()) {
-      this.isOpen.update((v) => !v);
+      this.dropdownOpen.toggle(!this.isOpen());
     }
   }
 
   protected close(): void {
-    this.isOpen.set(false);
+    this.dropdownOpen.toggle(false);
   }
 
   protected onRangePicked(range: [Date, Date] | null): void {
+    this.invalidInput.set(false);
     this.value.set(range);
     if (range) {
-      this.isOpen.set(false);
+      this.dropdownOpen.toggle(false);
     }
     this._onChange(range);
+    this._onValidatorChange();
   }
 
   protected onInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value;
-    this.inputValue.set(raw);
+    const el = event.target as HTMLInputElement;
+    const raw = el.value;
+    const caret = el.selectionStart ?? raw.length;
+    const masked = maskDateRange(raw);
+    const newCaret =
+      caret >= raw.length
+        ? masked.length
+        : caretForDigitCount(masked, digitsBefore(raw, caret));
+    if (el.value !== masked) el.value = masked;
+    el.setSelectionRange(newCaret, newCaret);
+    this.inputValue.set(masked);
+    this.invalidInput.set(false);
+    this.syncDraft(masked);
+  }
+
+  /**
+   * Backspacing while the caret sits just after an auto-inserted `/` or ` – `
+   * would otherwise be undone by re-masking. Delete the preceding digit instead.
+   */
+  protected onKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Backspace') return;
+    const el = event.target as HTMLInputElement;
+    const start = el.selectionStart ?? 0;
+    const end = el.selectionEnd ?? 0;
+    if (start !== end || start === 0 || isDigitChar(el.value[start - 1])) {
+      return;
+    }
+    event.preventDefault();
+    let i = start - 1;
+    while (i >= 0 && !isDigitChar(el.value[i])) i--;
+    if (i < 0) return;
+    const raw = el.value.slice(0, i) + el.value.slice(i + 1);
+    const masked = maskDateRange(raw);
+    el.value = masked;
+    const newCaret = caretForDigitCount(masked, digitsBefore(raw, i));
+    el.setSelectionRange(newCaret, newCaret);
+    this.inputValue.set(masked);
+    this.invalidInput.set(false);
+    this.syncDraft(masked);
+  }
+
+  /**
+   * Parse the masked text and, when it yields a complete valid in-bounds range,
+   * expose it as the calendar's draft so the open dual-calendar previews it live.
+   */
+  private syncDraft(masked: string): void {
+    const parsed = parseDateRange(masked);
+    this.draft.set(parsed && this.rangeInBounds(parsed) ? parsed : null);
   }
 
   protected onBlur(): void {
-    const parsed = parseDateRange(this.inputValue());
-    if (parsed) {
-      this.value.set(parsed);
-      this._onChange(parsed);
-    } else if (!this.inputValue()) {
+    const text = this.inputValue();
+    if (!text) {
+      this.invalidInput.set(false);
       this.value.set(null);
       this._onChange(null);
+    } else {
+      const parsed = parseDateRange(text);
+      if (parsed) {
+        // Snap each endpoint into the optional min/max bounds (e.g. typing 2040
+        // with max 2030 commits 2030). Length (minLength/maxLength) violations
+        // are still rejected — clamping the bounds alone cannot resolve them.
+        const clamped: [Date, Date] = [
+          this.clampToBounds(parsed[0]),
+          this.clampToBounds(parsed[1]),
+        ];
+        if (this.lengthInBounds(clamped)) {
+          this.invalidInput.set(false);
+          this.value.set(clamped);
+          this.inputValue.set(formatDateRange(clamped));
+          this._onChange(clamped);
+        } else {
+          this.invalidInput.set(true);
+        }
+      } else {
+        this.invalidInput.set(true);
+      }
     }
+    this._onValidatorChange();
     this._onTouched();
+  }
+
+  /**
+   * Whether `[from, to]` satisfies the optional `min`/`max` bounds and the
+   * `minLength`/`maxLength` duration constraints (matching the calendar-range
+   * day-delta convention).
+   */
+  private rangeInBounds(range: [Date, Date]): boolean {
+    const [from, to] = range;
+    if (!this.inBounds(from) || !this.inBounds(to)) return false;
+    return this.lengthInBounds(range);
+  }
+
+  /**
+   * Whether `[from, to]` satisfies the optional `minLength`/`maxLength` duration
+   * constraints (day-delta convention shared with the calendar-range). Unlike
+   * the `min`/`max` date bounds, a length violation cannot be auto-corrected by
+   * clamping, so it stays rejected.
+   */
+  private lengthInBounds([from, to]: [Date, Date]): boolean {
+    const delta = Math.round(
+      (this.startOfDay(to) - this.startOfDay(from)) / 86_400_000,
+    );
+    const minLength = this.minLength();
+    const maxLength = this.maxLength();
+    if (minLength && delta > 0 && delta < minLength) return false;
+    if (maxLength && delta > maxLength - 1) return false;
+    return true;
+  }
+
+  private inBounds(d: Date): boolean {
+    const day = this.startOfDay(d);
+    const min = this.min();
+    const max = this.max();
+    if (min && day < this.startOfDay(min)) return false;
+    if (max && day > this.startOfDay(max)) return false;
+    return true;
+  }
+
+  /**
+   * Snap `d` to the nearest of the optional `min`/`max` bounds (day
+   * granularity). Returns the `min`/`max` Date when `d` is out of range, else `d`.
+   */
+  private clampToBounds(d: Date): Date {
+    const day = this.startOfDay(d);
+    const min = this.min();
+    const max = this.max();
+    if (min && day < this.startOfDay(min)) return min;
+    if (max && day > this.startOfDay(max)) return max;
+    return d;
+  }
+
+  private startOfDay(d: Date): number {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
   }
 }

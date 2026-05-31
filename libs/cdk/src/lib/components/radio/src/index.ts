@@ -3,8 +3,8 @@ export {
   NxpRadioComponent,
   type NxpRadioSize,
   type NxpRadioColor,
+  type NxpRadioCompareWith,
 } from './radio.component';
-export { NxpRadioDirective } from './radio.directive';
 export {
   NXP_RADIO_OPTIONS,
   NXP_RADIO_DEFAULT_OPTIONS,

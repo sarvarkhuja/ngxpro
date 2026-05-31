@@ -2,13 +2,22 @@ import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   NXP_DROPDOWN_COMPONENT,
+  NXP_IS_BROWSER,
   NxpDropdownComponent,
+  NxpDropdownOpen,
   NxpPortalService,
 } from '@ngxpro/cdk';
 import { NxpSelectOptionComponent } from '@ngxpro/components/combo-box';
 import { NxpSelectFilterComponent } from './select-filter.component';
 
 class StubPortalService extends NxpPortalService {}
+
+class StubDropdownOpen {
+  readonly toggleCalls: boolean[] = [];
+  toggle(open: boolean): void {
+    this.toggleCalls.push(open);
+  }
+}
 
 @Component({
   imports: [NxpSelectFilterComponent, NxpSelectOptionComponent],
@@ -39,10 +48,13 @@ class FilterHost {
 
 describe('NxpSelectFilterComponent', () => {
   function setup() {
+    const dropdownOpen = new StubDropdownOpen();
     TestBed.configureTestingModule({
       providers: [
         { provide: NxpPortalService, useClass: StubPortalService },
         { provide: NXP_DROPDOWN_COMPONENT, useValue: NxpDropdownComponent },
+        { provide: NxpDropdownOpen, useValue: dropdownOpen },
+        { provide: NXP_IS_BROWSER, useValue: false },
       ],
     });
     const fixture = TestBed.createComponent(FilterHost);
@@ -68,6 +80,7 @@ describe('NxpSelectFilterComponent', () => {
       options,
       createButton,
       type,
+      dropdownOpen,
     };
   }
 
@@ -112,6 +125,14 @@ describe('NxpSelectFilterComponent', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.created).toEqual(['brand new tag']);
     expect(filterInput.value).toBe('');
+  });
+
+  it('closes the dropdown after the create row is activated', () => {
+    const { fixture, createButton, type, dropdownOpen } = setup();
+    type('brand new tag');
+    createButton()?.click();
+    fixture.detectChanges();
+    expect(dropdownOpen.toggleCalls).toContain(false);
   });
 
   it('clears the search when Escape is pressed while typing', () => {

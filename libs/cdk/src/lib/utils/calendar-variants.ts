@@ -115,7 +115,7 @@ export const calendarCellVariants = tv({
  * 8px radius (rounded-lg) per the card scale in design-system.md §5.
  */
 export const calendarContainerClass = cx(
-  'inline-flex rounded-lg bg-bg-base shadow-card',
+  'inline-flex rounded-lg bg-base',
   'overflow-hidden',
 );
 

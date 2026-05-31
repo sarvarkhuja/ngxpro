@@ -8,13 +8,21 @@ import {
   OptionDirective,
 } from '@ngxpro/components/data-list';
 import { NxpSelectOptionComponent } from '@ngxpro/components/combo-box';
+import { NxpSelectComponent } from './select.component';
 import { NxpSelectDirective } from './select.directive';
 import { NxpSelectFilterComponent } from './select-filter.component';
 
 /**
  * Convenience array — spread into `imports` to bring in all select pieces.
  *
+ * Two flavours share the same selection plumbing:
+ * - `<nxp-select>` (`NxpSelectComponent`) — self-contained, items-driven
+ *   single-select. One element + `[formControl]`; best for most forms.
+ * - `input[nxpSelect]` (`NxpSelectDirective`) inside `<nxp-textfield>` — the
+ *   composable form for custom dropdown content (filtering, grouping, "create").
+ *
  * Includes:
+ * - `NxpSelectComponent` — the `<nxp-select>` component
  * - `NxpSelectDirective` — the directive itself (`input[nxpSelect]`)
  * - `NxpSelectFilterComponent` — `<nxp-select-filter>` panel wrapper with
  *   filtering + auto "Create" affordance on empty results
@@ -66,6 +74,7 @@ import { NxpSelectFilterComponent } from './select-filter.component';
  * ```
  */
 export const NxpSelect = [
+  NxpSelectComponent,
   NxpSelectDirective,
   NxpSelectFilterComponent,
   NxpSelectOptionComponent,
