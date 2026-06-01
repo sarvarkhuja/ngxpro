@@ -562,8 +562,13 @@ export class NxpRangeComponent implements ControlValueAccessor {
     const [start, end] = this.value();
     const marginVal = this.margin();
     const limitVal = this.limit();
-    const minVal = this.min();
-    const maxVal = this.max();
+    // With keySteps the value domain is defined by the steps (e.g. 50_000–
+    // 30_000_000), not by min()/max() which stay 0–100. Clamp to the keystep
+    // bounds so a dragged value maps back to a valid domain value instead of
+    // collapsing to 0/100. Falls back to min()/max() when keySteps is absent.
+    const steps = this.keySteps();
+    const minVal = steps ? steps[0][1] : this.min();
+    const maxVal = steps ? steps[steps.length - 1][1] : this.max();
 
     let clamped = round(
       clamp(newValue, minVal, maxVal),

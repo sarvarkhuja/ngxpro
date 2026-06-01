@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   DataListComponent,
@@ -12,15 +17,76 @@ import { DataListApiComponent } from './data-list-api.component';
 
 // ------------------------------------------------------------------ types
 
-interface TodoItem {
-  label: string;
-  done: boolean;
+interface Person {
+  id: string;
+  name: string;
+  handle: string;
+  mono: string;
+  role: string;
 }
 
-interface Permission {
+interface Scope {
+  id: string;
   label: string;
   description: string;
   enabled: boolean;
+  destructive?: boolean;
+}
+
+interface Command {
+  id: string;
+  label: string;
+  icon: string;
+  keys?: string[];
+}
+
+interface CommandGroup {
+  label: string;
+  items: Command[];
+}
+
+interface ModelOption {
+  id: string;
+  name: string;
+  vendor: string;
+  mono: string;
+  context: string;
+  recommended?: boolean;
+  disabled?: boolean;
+  note?: string;
+}
+
+interface Region {
+  code: string;
+  name: string;
+  latency: number;
+  nearest?: boolean;
+}
+
+interface DeployEnv {
+  name: string;
+  branch: string;
+  hash: string;
+  when: string;
+  status: string;
+  dot: string;
+  pill: string;
+  pulse: boolean;
+}
+
+interface Account {
+  id: string;
+  name: string;
+  handle: string;
+  mono: string;
+  plan: string;
+  avatar: string;
+  planClass: string;
+}
+
+interface AccountGroup {
+  label: string;
+  items: Account[];
 }
 
 @Component({
@@ -44,553 +110,663 @@ interface Permission {
       type="component"
       path="components/data-list"
     >
-      <p class="text-base text-text-secondary mb-6">
-        Accessible listbox with animated proximity-hover indicators, keyboard
-        navigation, sizes, groups, and empty state. Composable with checkboxes,
-        inputs, and custom content.
+      <p class="text-base text-text-secondary mb-6 max-w-2xl">
+        An accessible <code class="font-mono">role="listbox"</code> with
+        animated proximity-hover indicators, full keyboard navigation (<kbd
+          class="font-mono text-xs"
+          >↑</kbd
+        >
+        <kbd class="font-mono text-xs">↓</kbd>
+        <kbd class="font-mono text-xs">Home</kbd>
+        <kbd class="font-mono text-xs">End</kbd>), size variants, grouping, a
+        two-way <code class="font-mono">selectedIndex</code>, and a graceful
+        empty state. It projects plain
+        <code class="font-mono">button[nxpOption]</code> children, so anything
+        composes inside — checkboxes, avatars, monospace metadata, shortcut caps
+        — to build command palettes, pickers, and switchers.
       </p>
 
       <ng-template nxpExamplesTab>
+        <!-- ─────────────────────────────────────────── Playground (API-wired) -->
         <nxp-doc-example
           heading="Playground"
-          description="Live wiring of the data-list inputs from the API tab. Tweak label, size, and emptyLabel below to see the listbox react."
+          description="Live wiring of the inputs from the API tab. Tweak label, size, emptyLabel, and class to watch the listbox react."
           [content]="{ HTML: playgroundHtml, TypeScript: playgroundTs }"
         >
-          <div
-            class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3 w-full max-w-xs"
-          >
+          <div class="w-full max-w-xs rounded-xl bg-bg-base p-2 shadow-card">
             <nxp-data-list
+              [class]="'w-full ' + extraClass()"
               [label]="label()"
               [size]="size()"
               [emptyLabel]="emptyLabel()"
-              [class]="extraClass()"
             >
               <button
                 nxpOption
-                [selected]="playgroundSelected() === 'a'"
-                (click)="playgroundSelected.set('a')"
+                [selected]="playgroundSelected() === 'overview'"
+                (click)="playgroundSelected.set('overview')"
               >
-                Option A
+                <i
+                  class="ri-bar-chart-box-line text-base text-text-tertiary"
+                ></i>
+                <span class="flex-1">Overview</span>
               </button>
               <button
                 nxpOption
-                [selected]="playgroundSelected() === 'b'"
-                (click)="playgroundSelected.set('b')"
+                [selected]="playgroundSelected() === 'activity'"
+                (click)="playgroundSelected.set('activity')"
               >
-                Option B
+                <i class="ri-pulse-line text-base text-text-tertiary"></i>
+                <span class="flex-1">Activity</span>
               </button>
               <button
                 nxpOption
-                [selected]="playgroundSelected() === 'c'"
-                (click)="playgroundSelected.set('c')"
+                [selected]="playgroundSelected() === 'settings'"
+                (click)="playgroundSelected.set('settings')"
               >
-                Option C
+                <i class="ri-settings-3-line text-base text-text-tertiary"></i>
+                <span class="flex-1">Settings</span>
               </button>
-              <button nxpOption [disabled]="true">Disabled</button>
+              <button nxpOption [disabled]="true">
+                <i class="ri-lock-2-line text-base text-text-tertiary"></i>
+                <span class="flex-1">Billing</span>
+                <span
+                  class="ml-auto rounded-full bg-bg-neutral-1 px-2 py-0.5 font-mono text-[10px] text-text-tertiary"
+                  >locked</span
+                >
+              </button>
             </nxp-data-list>
           </div>
         </nxp-doc-example>
 
+        <!-- ─────────────────────────────────────────── Sizes & empty state -->
         <nxp-doc-example
-          heading="Sizes"
-          description="Three size variants: sm, md (default), lg. Arrow / Home / End keys navigate without a mouse."
+          heading="Sizes & empty state"
+          description="Three density variants — sm, md (default), lg — readable by child options through parent injection, plus the emptyLabel placeholder shown when no options are projected."
           [content]="{ HTML: sizesHtml, TypeScript: sizesTs }"
         >
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <!-- Size: sm -->
-            <div class="space-y-3">
-              <h3
-                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
+          <div
+            class="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            <!-- sm -->
+            <div class="space-y-2.5">
+              <span
+                class="font-mono text-[11px] uppercase tracking-wide text-text-quaternary"
+                >sm</span
               >
-                Size <code class="font-mono">sm</code>
-              </h3>
-              <div
-                class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3"
-              >
-                <nxp-data-list size="sm" label="Compact list">
+              <div class="rounded-xl bg-bg-base p-2 shadow-card">
+                <nxp-data-list size="sm" label="Sort by" class="w-full">
                   <button
                     nxpOption
-                    [selected]="dl1() === 'a'"
-                    (click)="dl1.set('a')"
+                    [selected]="sortBy() === 'relevance'"
+                    (click)="sortBy.set('relevance')"
                   >
-                    Option A
+                    Relevance
                   </button>
                   <button
                     nxpOption
-                    [selected]="dl1() === 'b'"
-                    (click)="dl1.set('b')"
+                    [selected]="sortBy() === 'newest'"
+                    (click)="sortBy.set('newest')"
                   >
-                    Option B
+                    Newest first
                   </button>
                   <button
                     nxpOption
-                    [selected]="dl1() === 'c'"
-                    (click)="dl1.set('c')"
+                    [selected]="sortBy() === 'oldest'"
+                    (click)="sortBy.set('oldest')"
                   >
-                    Option C
-                  </button>
-                  <button nxpOption [disabled]="true">Disabled</button>
-                </nxp-data-list>
-              </div>
-              <p class="text-xs text-gray-400">
-                Selected: <strong>{{ dl1() ?? '—' }}</strong>
-              </p>
-            </div>
-
-            <!-- Size: md (default) -->
-            <div class="space-y-3">
-              <h3
-                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >
-                Size <code class="font-mono">md</code> (default)
-              </h3>
-              <div
-                class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3"
-              >
-                <nxp-data-list label="Default list">
-                  <button
-                    nxpOption
-                    [selected]="dl2() === 'x'"
-                    (click)="dl2.set('x')"
-                  >
-                    Option X
-                  </button>
-                  <button
-                    nxpOption
-                    [selected]="dl2() === 'y'"
-                    (click)="dl2.set('y')"
-                  >
-                    Option Y
-                  </button>
-                  <button
-                    nxpOption
-                    [selected]="dl2() === 'z'"
-                    (click)="dl2.set('z')"
-                  >
-                    Option Z
+                    Oldest first
                   </button>
                 </nxp-data-list>
               </div>
-              <p class="text-xs text-gray-400">
-                Selected: <strong>{{ dl2() ?? '—' }}</strong>
-              </p>
             </div>
 
-            <!-- Size: lg -->
-            <div class="space-y-3">
-              <h3
-                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
+            <!-- md (default) -->
+            <div class="space-y-2.5">
+              <span
+                class="font-mono text-[11px] uppercase tracking-wide text-text-quaternary"
+                >md · default</span
               >
-                Size <code class="font-mono">lg</code>
-              </h3>
-              <div
-                class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3"
-              >
-                <nxp-data-list size="lg" label="Large list">
+              <div class="rounded-xl bg-bg-base p-2 shadow-card">
+                <nxp-data-list label="Filter issues" class="w-full">
                   <button
                     nxpOption
-                    [selected]="dl3() === '1'"
-                    (click)="dl3.set('1')"
+                    [selected]="statusFilter() === 'all'"
+                    (click)="statusFilter.set('all')"
                   >
-                    Item 1
+                    All issues
                   </button>
                   <button
                     nxpOption
-                    [selected]="dl3() === '2'"
-                    (click)="dl3.set('2')"
+                    [selected]="statusFilter() === 'open'"
+                    (click)="statusFilter.set('open')"
                   >
-                    Item 2
+                    Open
                   </button>
                   <button
                     nxpOption
-                    [selected]="dl3() === '3'"
-                    (click)="dl3.set('3')"
+                    [selected]="statusFilter() === 'closed'"
+                    (click)="statusFilter.set('closed')"
                   >
-                    Item 3
+                    Closed
+                  </button>
+                  <button nxpOption [disabled]="true">Archived</button>
+                </nxp-data-list>
+              </div>
+            </div>
+
+            <!-- lg -->
+            <div class="space-y-2.5">
+              <span
+                class="font-mono text-[11px] uppercase tracking-wide text-text-quaternary"
+                >lg</span
+              >
+              <div class="rounded-xl bg-bg-base p-2 shadow-card">
+                <nxp-data-list size="lg" label="Density" class="w-full">
+                  <button
+                    nxpOption
+                    [selected]="viewDensity() === 'comfortable'"
+                    (click)="viewDensity.set('comfortable')"
+                  >
+                    Comfortable
+                  </button>
+                  <button
+                    nxpOption
+                    [selected]="viewDensity() === 'cozy'"
+                    (click)="viewDensity.set('cozy')"
+                  >
+                    Cozy
+                  </button>
+                  <button
+                    nxpOption
+                    [selected]="viewDensity() === 'compact'"
+                    (click)="viewDensity.set('compact')"
+                  >
+                    Compact
                   </button>
                 </nxp-data-list>
               </div>
-              <p class="text-xs text-gray-400">
-                Selected: <strong>{{ dl3() ?? '—' }}</strong>
-              </p>
             </div>
 
-            <!-- Empty state -->
-            <div class="space-y-3">
-              <h3
-                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
+            <!-- empty -->
+            <div class="space-y-2.5">
+              <span
+                class="font-mono text-[11px] uppercase tracking-wide text-text-quaternary"
+                >empty</span
               >
-                Empty state
-              </h3>
-              <div
-                class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-3"
-              >
-                <nxp-data-list emptyLabel="No options available" />
-              </div>
-              <p class="text-xs text-gray-400">
-                Shown when no options are projected.
-              </p>
-            </div>
-          </div>
-        </nxp-doc-example>
-
-        <nxp-doc-example
-          heading="Grouped options"
-          description='Use [nxpOptGroup] to organize options into labeled groups with role="group" and aria-label.'
-          [content]="{ HTML: groupedHtml, TypeScript: groupedTs }"
-        >
-          <div class="flex gap-8 items-start flex-wrap">
-            <div
-              class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4"
-            >
-              <nxp-data-list label="Grouped options" size="sm">
-                <div nxpOptGroup label="Fruits">
-                  <button
-                    nxpOption
-                    [selected]="dlGroup() === 'apple'"
-                    (click)="dlGroup.set('apple')"
-                  >
-                    Apple
-                  </button>
-                  <button
-                    nxpOption
-                    [selected]="dlGroup() === 'banana'"
-                    (click)="dlGroup.set('banana')"
-                  >
-                    Banana
-                  </button>
-                  <button
-                    nxpOption
-                    [selected]="dlGroup() === 'cherry'"
-                    (click)="dlGroup.set('cherry')"
-                  >
-                    Cherry
-                  </button>
-                </div>
-                <div nxpOptGroup label="Vegetables">
-                  <button
-                    nxpOption
-                    [selected]="dlGroup() === 'carrot'"
-                    (click)="dlGroup.set('carrot')"
-                  >
-                    Carrot
-                  </button>
-                  <button
-                    nxpOption
-                    [selected]="dlGroup() === 'pea'"
-                    (click)="dlGroup.set('pea')"
-                  >
-                    Pea
-                  </button>
-                </div>
-                <div nxpOptGroup label="Grains">
-                  <button nxpOption [disabled]="true">
-                    Wheat (unavailable)
-                  </button>
-                  <button
-                    nxpOption
-                    [selected]="dlGroup() === 'rice'"
-                    (click)="dlGroup.set('rice')"
-                  >
-                    Rice
-                  </button>
-                </div>
-              </nxp-data-list>
-            </div>
-            <div class="text-sm space-y-1">
-              <p class="text-gray-500 dark:text-gray-400 text-xs">Selected:</p>
-              <p class="font-semibold text-gray-900 dark:text-white">
-                {{ dlGroup() ?? '—' }}
-              </p>
-              <p class="text-xs text-gray-400 mt-4">
-                Use &uarr; &darr; keys to navigate.<br />
-                Home / End jump to first / last.
-              </p>
-            </div>
-          </div>
-        </nxp-doc-example>
-
-        <nxp-doc-example
-          heading="With checkboxes"
-          description="Compose nxp-checkbox inside options for multi-select lists. The animated hover overlay still tracks pointer proximity."
-          [content]="{ HTML: checkboxesHtml, TypeScript: checkboxesTs }"
-        >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Todo list -->
-            <div class="space-y-3">
-              <h3
-                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >
-                Todo list
-              </h3>
-              <div
-                class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 max-w-sm"
-              >
-                <nxp-data-list label="Todo items">
-                  @for (item of todos; track item.label) {
-                    <button nxpOption (click)="item.done = !item.done">
-                      <input
-                        type="checkbox"
-                        nxpCheckbox
-                        size="s"
-                        [ngModel]="item.done"
-                        (click)="$event.stopPropagation()"
-                        (ngModelChange)="item.done = $event"
-                      />
-                      <span
-                        [class.line-through]="item.done"
-                        [class.text-gray-400]="item.done"
-                      >
-                        {{ item.label }}
-                      </span>
-                    </button>
-                  }
-                </nxp-data-list>
-              </div>
-              <p class="text-xs text-gray-400">
-                Completed: <strong>{{ completedCount() }}</strong> /
-                {{ todos.length }}
-              </p>
-            </div>
-
-            <!-- Permissions list -->
-            <div class="space-y-3">
-              <h3
-                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >
-                Permissions
-              </h3>
-              <div
-                class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 max-w-md"
-              >
-                <nxp-data-list label="Permissions" size="lg">
-                  @for (perm of permissions; track perm.label) {
-                    <button nxpOption (click)="perm.enabled = !perm.enabled">
-                      <input
-                        type="checkbox"
-                        nxpCheckbox
-                        size="s"
-                        [ngModel]="perm.enabled"
-                        (click)="$event.stopPropagation()"
-                        (ngModelChange)="perm.enabled = $event"
-                      />
-                      <div class="flex flex-col gap-0.5 min-w-0">
-                        <span class="font-medium truncate">{{
-                          perm.label
-                        }}</span>
-                        <span
-                          class="text-xs text-gray-400 dark:text-gray-500 truncate"
-                          >{{ perm.description }}</span
-                        >
-                      </div>
-                    </button>
-                  }
-                </nxp-data-list>
-              </div>
-              <p class="text-xs text-gray-400">
-                Enabled: <strong>{{ enabledPermissions() }}</strong>
-              </p>
-            </div>
-          </div>
-        </nxp-doc-example>
-
-        <nxp-doc-example
-          heading="With input filter"
-          description="Place a native <input> above the data-list to create a filterable list. The animated hover indicators work seamlessly as items appear and disappear."
-          [content]="{ HTML: filterHtml, TypeScript: filterTs }"
-        >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Filterable country list -->
-            <div class="space-y-3">
-              <h3
-                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >
-                Country picker
-              </h3>
-              <div
-                class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 max-w-xs"
-              >
-                <input
-                  type="text"
-                  placeholder="Search countries..."
-                  class="w-full mb-2 px-3 py-1.5 text-sm rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors"
-                  [ngModel]="countryFilter()"
-                  (ngModelChange)="countryFilter.set($event)"
-                />
+              <div class="rounded-xl bg-bg-base p-2 shadow-card">
                 <nxp-data-list
-                  size="sm"
-                  label="Countries"
-                  [emptyLabel]="'No countries match ‘' + countryFilter() + '’'"
-                >
-                  @for (c of filteredCountries(); track c) {
-                    <button
-                      nxpOption
-                      [selected]="selectedCountry() === c"
-                      (click)="selectedCountry.set(c)"
-                    >
-                      {{ c }}
-                    </button>
-                  }
-                </nxp-data-list>
-              </div>
-              <p class="text-xs text-gray-400">
-                Selected: <strong>{{ selectedCountry() ?? '—' }}</strong>
-              </p>
-            </div>
-
-            <!-- Filterable multi-select with checkboxes -->
-            <div class="space-y-3">
-              <h3
-                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >
-                Filterable multi-select
-              </h3>
-              <div
-                class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 max-w-xs"
-              >
-                <input
-                  type="text"
-                  placeholder="Filter languages..."
-                  class="w-full mb-2 px-3 py-1.5 text-sm rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors"
-                  [ngModel]="langFilter()"
-                  (ngModelChange)="langFilter.set($event)"
+                  label="Saved views"
+                  class="w-full"
+                  emptyLabel="No saved views yet"
                 />
-                <nxp-data-list
-                  size="sm"
-                  label="Languages"
-                  [emptyLabel]="'No match'"
-                >
-                  @for (lang of filteredLanguages(); track lang) {
-                    <button nxpOption (click)="toggleLang(lang)">
-                      <input
-                        type="checkbox"
-                        nxpCheckbox
-                        size="s"
-                        [ngModel]="selectedLangs().has(lang)"
-                        (click)="$event.stopPropagation()"
-                        (ngModelChange)="toggleLang(lang)"
-                      />
-                      {{ lang }}
-                    </button>
-                  }
-                </nxp-data-list>
               </div>
-              <p class="text-xs text-gray-400">
-                Selected: <strong>{{ selectedLangsDisplay() || '—' }}</strong>
-              </p>
             </div>
           </div>
         </nxp-doc-example>
 
+        <!-- ─────────────────────────────────────────── Assignee picker (filter) -->
         <nxp-doc-example
-          heading="Rich content"
-          description="Options can contain arbitrary projected content — icons, descriptions, badges, etc."
-          [content]="{ HTML: richHtml, TypeScript: richTs }"
+          heading="Assignee picker"
+          description="A filterable single-select popover — a native input above the list narrows the options, with monogram avatars, handles in Geist Mono, a trailing check on the active row, and an empty state that echoes the query."
+          [content]="{ HTML: assigneeHtml, TypeScript: assigneeTs }"
         >
           <div
-            class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 inline-block max-w-sm"
+            class="w-full max-w-xs overflow-hidden rounded-xl bg-bg-base shadow-card-lg"
           >
-            <nxp-data-list label="Actions">
-              <button
-                nxpOption
-                [selected]="richSelected() === 'profile'"
-                (click)="richSelected.set('profile')"
+            <div
+              class="flex items-center gap-2.5 border-b border-border-normal px-3.5"
+            >
+              <i class="ri-search-line text-base text-text-quaternary"></i>
+              <input
+                type="text"
+                placeholder="Assign to…"
+                class="flex-1 bg-transparent py-2.5 text-sm text-text-primary outline-none placeholder:text-text-quaternary"
+                [ngModel]="assigneeQuery()"
+                (ngModelChange)="assigneeQuery.set($event)"
+              />
+            </div>
+            <div class="p-2">
+              <nxp-data-list
+                class="w-full"
+                label="Assignees"
+                [emptyLabel]="'No people match ‘' + assigneeQuery() + '’'"
               >
-                <svg
-                  class="h-4 w-4 shrink-0 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-medium">Profile</span>
-                  <span class="text-xs text-gray-400 dark:text-gray-500"
-                    >View and edit your profile</span
+                @for (p of filteredPeople(); track p.id) {
+                  <button
+                    nxpOption
+                    [selected]="selectedAssignee() === p.id"
+                    (click)="selectedAssignee.set(p.id)"
                   >
-                </div>
+                    <span
+                      class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-bg-neutral-2 font-mono text-[11px] font-semibold text-text-primary shadow-border"
+                      >{{ p.mono }}</span
+                    >
+                    <span class="flex min-w-0 flex-col">
+                      <span class="truncate text-text-primary">{{
+                        p.name
+                      }}</span>
+                      <span
+                        class="truncate font-mono text-xs text-text-tertiary"
+                      >
+                        {{ p.handle }} · {{ p.role }}
+                      </span>
+                    </span>
+                    <i
+                      class="ri-check-line ml-auto shrink-0 text-base text-text-primary transition-opacity duration-fast"
+                      [class.opacity-0]="selectedAssignee() !== p.id"
+                    ></i>
+                  </button>
+                }
+              </nxp-data-list>
+            </div>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ─────────────────────────────────────────── Permission scopes (multi) -->
+        <nxp-doc-example
+          heading="Permission scopes"
+          description="Multi-select via composed checkboxes. Because more than one option carries [selected], the single-selection pill is auto-suppressed — each active row simply brightens its own text while the proximity-hover overlay still tracks the pointer."
+          [content]="{ HTML: scopesHtml, TypeScript: scopesTs }"
+        >
+          <div
+            class="w-full max-w-md overflow-hidden rounded-xl bg-bg-base shadow-card"
+          >
+            <div
+              class="flex items-center justify-between border-b border-border-normal px-4 py-2.5"
+            >
+              <span
+                class="font-mono text-[11px] uppercase tracking-wide text-text-quaternary"
+                >Token scopes</span
+              >
+              <span class="font-mono text-xs text-text-tertiary"
+                >{{ enabledScopeCount() }} / {{ scopes.length }}</span
+              >
+            </div>
+            <div class="p-2">
+              <nxp-data-list size="lg" label="Token scopes" class="w-full">
+                @for (scope of scopes; track scope.id) {
+                  <button
+                    nxpOption
+                    [selected]="scope.enabled"
+                    (click)="scope.enabled = !scope.enabled"
+                  >
+                    <input
+                      type="checkbox"
+                      nxpCheckbox
+                      size="s"
+                      [ngModel]="scope.enabled"
+                      (click)="$event.stopPropagation()"
+                      (ngModelChange)="scope.enabled = $event"
+                    />
+                    <span class="flex min-w-0 flex-col">
+                      <span class="flex items-center gap-2">
+                        <span class="truncate font-mono text-sm">{{
+                          scope.label
+                        }}</span>
+                        @if (scope.destructive) {
+                          <span
+                            class="rounded-full bg-status-negative-pale px-1.5 py-0.5 text-[10px] font-medium text-status-negative"
+                            >destructive</span
+                          >
+                        }
+                      </span>
+                      <span class="truncate text-xs text-text-tertiary">{{
+                        scope.description
+                      }}</span>
+                    </span>
+                  </button>
+                }
+              </nxp-data-list>
+            </div>
+            <div
+              class="border-t border-border-normal px-4 py-2.5 text-xs text-text-tertiary"
+            >
+              Grants:
+              <span class="font-mono text-text-secondary">{{
+                enabledScopeLabels() || 'none'
+              }}</span>
+            </div>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ─────────────────────────────────────────── Command palette ⌘K -->
+        <nxp-doc-example
+          heading="Command palette"
+          description="A ⌘K menu: a search field, commands grouped under monospace section headers with leading icons and trailing shortcut caps, and a graceful empty state. Filter, groups, rich content, the proximity indicator, and arrow-key navigation — composed onto one surface."
+          [content]="{ HTML: commandHtml, TypeScript: commandTs }"
+        >
+          <div
+            class="w-full max-w-md overflow-hidden rounded-xl bg-bg-base shadow-card-lg"
+          >
+            <div
+              class="flex items-center gap-2.5 border-b border-border-normal px-3.5"
+            >
+              <i class="ri-search-line text-base text-text-quaternary"></i>
+              <input
+                type="text"
+                placeholder="Type a command or search…"
+                class="flex-1 bg-transparent py-3 text-sm text-text-primary outline-none placeholder:text-text-quaternary"
+                [ngModel]="cmdQuery()"
+                (ngModelChange)="cmdQuery.set($event)"
+              />
+              <kbd
+                class="hidden h-5 items-center rounded-sm px-1.5 font-mono text-[11px] font-medium text-text-tertiary shadow-border-light sm:inline-flex"
+                >esc</kbd
+              >
+            </div>
+
+            <div class="p-2">
+              <nxp-data-list
+                class="w-full"
+                label="Commands"
+                [emptyLabel]="'No commands matching “' + cmdQuery() + '”'"
+              >
+                @for (group of filteredCommands(); track group.label) {
+                  <div nxpOptGroup [label]="group.label">
+                    <div
+                      class="px-2 pb-0.5 pt-1 font-mono text-[10px] font-medium uppercase tracking-wide text-text-quaternary"
+                    >
+                      {{ group.label }}
+                    </div>
+                    @for (cmd of group.items; track cmd.id) {
+                      <button
+                        nxpOption
+                        [selected]="cmdSelected() === cmd.id"
+                        (click)="cmdSelected.set(cmd.id)"
+                      >
+                        <i
+                          [class]="cmd.icon + ' text-base text-text-tertiary'"
+                        ></i>
+                        <span class="flex-1 truncate">{{ cmd.label }}</span>
+                        @if (cmd.keys; as keys) {
+                          <span
+                            class="ml-auto flex shrink-0 items-center gap-1"
+                          >
+                            @for (k of keys; track $index) {
+                              <kbd
+                                class="inline-flex h-5 min-w-5 items-center justify-center rounded-sm px-1 font-mono text-[11px] font-medium text-text-tertiary shadow-border-light"
+                                >{{ k }}</kbd
+                              >
+                            }
+                          </span>
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              </nxp-data-list>
+            </div>
+
+            <div
+              class="flex items-center gap-3 border-t border-border-normal px-3.5 py-2 text-[11px] text-text-tertiary"
+            >
+              <span class="flex items-center gap-1">
+                <kbd
+                  class="inline-flex h-4 min-w-4 items-center justify-center rounded-sm font-mono shadow-border-light"
+                  >↑</kbd
+                >
+                <kbd
+                  class="inline-flex h-4 min-w-4 items-center justify-center rounded-sm font-mono shadow-border-light"
+                  >↓</kbd
+                >
+                navigate
+              </span>
+              <span class="flex items-center gap-1">
+                <kbd
+                  class="inline-flex h-4 min-w-4 items-center justify-center rounded-sm font-mono shadow-border-light"
+                  >↵</kbd
+                >
+                select
+              </span>
+              <span class="ml-auto flex items-center gap-1.5">
+                <i class="ri-command-line text-sm"></i> command menu
+              </span>
+            </div>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ─────────────────────────────────────────── AI model picker -->
+        <nxp-doc-example
+          heading="Model picker"
+          description="A rich single-select: provider monogram, model name, context window in Geist Mono, a “Recommended” pill, and a disabled row for a model that isn't ready. Selection is auto-derived from the one option carrying [selected] — no [(selectedIndex)] binding required."
+          [content]="{ HTML: modelHtml, TypeScript: modelTs }"
+        >
+          <div
+            class="w-full max-w-sm overflow-hidden rounded-xl bg-bg-base shadow-card-lg"
+          >
+            <div class="border-b border-border-normal px-4 py-2.5">
+              <span
+                class="font-mono text-[11px] uppercase tracking-wide text-text-quaternary"
+                >Model</span
+              >
+            </div>
+            <div class="p-2">
+              <nxp-data-list size="lg" label="Select model" class="w-full">
+                @for (model of models; track model.id) {
+                  <button
+                    nxpOption
+                    [selected]="selectedModel() === model.id"
+                    [disabled]="model.disabled ?? false"
+                    (click)="selectedModel.set(model.id)"
+                  >
+                    <span
+                      class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-bg-neutral-2 font-mono text-xs font-semibold text-text-primary shadow-border"
+                      >{{ model.mono }}</span
+                    >
+                    <span class="flex min-w-0 flex-col">
+                      <span class="flex items-center gap-2">
+                        <span class="truncate text-text-primary">{{
+                          model.name
+                        }}</span>
+                        @if (model.recommended) {
+                          <span
+                            class="rounded-full bg-badge-blue-bg px-2 py-0.5 text-[10px] font-medium text-badge-blue-text"
+                            >Recommended</span
+                          >
+                        }
+                      </span>
+                      <span
+                        class="truncate font-mono text-xs text-text-tertiary"
+                      >
+                        {{ model.vendor }} · {{ model.context }}
+                      </span>
+                    </span>
+                    @if (model.note) {
+                      <span
+                        class="ml-auto shrink-0 rounded-full bg-bg-neutral-1 px-2 py-0.5 font-mono text-[10px] text-text-tertiary"
+                        >{{ model.note }}</span
+                      >
+                    } @else {
+                      <i
+                        class="ri-check-line ml-auto shrink-0 text-base text-text-primary transition-opacity duration-fast"
+                        [class.opacity-0]="selectedModel() !== model.id"
+                      ></i>
+                    }
+                  </button>
+                }
+              </nxp-data-list>
+            </div>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ─────────────────────────────────────────── Region / edge picker -->
+        <nxp-doc-example
+          heading="Region picker"
+          description="An edge-region selector: the deploy region code in a monospace chip, the city, round-trip latency in Geist Mono, and a “Nearest” badge on the lowest-latency edge. A clean infrastructure list with technical metadata aligned to the right."
+          [content]="{ HTML: regionHtml, TypeScript: regionTs }"
+        >
+          <div class="w-full max-w-sm rounded-xl bg-bg-base p-2 shadow-card">
+            <nxp-data-list size="lg" label="Deploy region" class="w-full">
+              @for (region of regions; track region.code) {
+                <button
+                  nxpOption
+                  [selected]="selectedRegion() === region.code"
+                  (click)="selectedRegion.set(region.code)"
+                >
+                  <span
+                    class="rounded-md bg-bg-neutral-1 px-1.5 py-0.5 font-mono text-[11px] font-medium text-text-secondary"
+                    >{{ region.code }}</span
+                  >
+                  <span class="flex-1 truncate text-text-primary">{{
+                    region.name
+                  }}</span>
+                  @if (region.nearest) {
+                    <span
+                      class="shrink-0 rounded-full bg-badge-blue-bg px-2 py-0.5 text-[10px] font-medium text-badge-blue-text"
+                      >Nearest</span
+                    >
+                  }
+                  <span
+                    class="ml-auto w-14 shrink-0 text-right font-mono text-xs"
+                    [class.text-text-primary]="region.nearest"
+                    [class.font-medium]="region.nearest"
+                    [class.text-text-tertiary]="!region.nearest"
+                    >{{ region.latency }} ms</span
+                  >
+                </button>
+              }
+            </nxp-data-list>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ─────────────────────────────────────────── Deployment target -->
+        <nxp-doc-example
+          heading="Deployment pipeline"
+          description="The Develop → Preview → Production workflow as a selectable listbox. Status dots carry the workflow accent colors in their proper pipeline context, and selection is driven by a two-way [(selectedIndex)] — the Prev / Next buttons set it from outside the list."
+          [content]="{ HTML: deployHtml, TypeScript: deployTs }"
+        >
+          <div class="w-full max-w-md space-y-4">
+            <div class="rounded-xl bg-bg-base p-2 shadow-card">
+              <nxp-data-list
+                class="w-full"
+                size="lg"
+                label="Deploy target"
+                [(selectedIndex)]="deployIndex"
+              >
+                @for (env of environments; track env.name; let i = $index) {
+                  <button
+                    nxpOption
+                    [selected]="deployIndex() === i"
+                    (click)="deployIndex.set(i)"
+                  >
+                    <span
+                      class="relative flex h-2.5 w-2.5 shrink-0 items-center justify-center"
+                    >
+                      @if (env.pulse) {
+                        <span
+                          [class]="
+                            'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ' +
+                            env.dot
+                          "
+                        ></span>
+                      }
+                      <span
+                        [class]="
+                          'relative inline-flex h-2.5 w-2.5 rounded-full ' +
+                          env.dot
+                        "
+                      ></span>
+                    </span>
+                    <span class="flex min-w-0 flex-col">
+                      <span class="font-medium text-text-primary">{{
+                        env.name
+                      }}</span>
+                      <span
+                        class="truncate font-mono text-xs text-text-tertiary"
+                      >
+                        {{ env.branch }} · {{ env.hash }} · {{ env.when }}
+                      </span>
+                    </span>
+                    <span
+                      [class]="
+                        'ml-auto shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ' +
+                        env.pill
+                      "
+                      >{{ env.status }}</span
+                    >
+                  </button>
+                }
+              </nxp-data-list>
+            </div>
+
+            <div class="flex items-center gap-2 text-sm">
+              <button
+                type="button"
+                class="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 font-medium text-text-secondary shadow-border transition-colors duration-fast hover:text-text-primary"
+                (click)="cycleDeploy(-1)"
+              >
+                <i class="ri-arrow-left-s-line"></i> Prev
               </button>
               <button
-                nxpOption
-                [selected]="richSelected() === 'settings'"
-                (click)="richSelected.set('settings')"
+                type="button"
+                class="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 font-medium text-text-secondary shadow-border transition-colors duration-fast hover:text-text-primary"
+                (click)="cycleDeploy(1)"
               >
-                <svg
-                  class="h-4 w-4 shrink-0 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-medium">Settings</span>
-                  <span class="text-xs text-gray-400 dark:text-gray-500"
-                    >Manage account settings</span
+                Next <i class="ri-arrow-right-s-line"></i>
+              </button>
+              <span class="ml-auto text-text-tertiary">
+                Target:
+                <strong class="text-text-primary">{{
+                  environments[deployIndex() ?? 0]?.name
+                }}</strong>
+                · index {{ deployIndex() }}
+              </span>
+            </div>
+          </div>
+        </nxp-doc-example>
+
+        <!-- ─────────────────────────────────────────── Account switcher -->
+        <nxp-doc-example
+          heading="Account switcher"
+          description="A Vercel-style team switcher: personal and team accounts under monospace section headers, monogram avatars, handles in Geist Mono, plan badges, and a check on the active account. The selected row keeps the animated indicator pinned while the pointer roams."
+          [content]="{ HTML: teamHtml, TypeScript: teamTs }"
+        >
+          <div class="w-full max-w-sm rounded-xl bg-bg-base p-2 shadow-card">
+            <nxp-data-list class="w-full" size="lg" label="Switch account">
+              @for (group of accountGroups; track group.label) {
+                <div nxpOptGroup [label]="group.label">
+                  <div
+                    class="px-2 pb-0.5 pt-1 font-mono text-[10px] font-medium uppercase tracking-wide text-text-quaternary"
                   >
+                    {{ group.label }}
+                  </div>
+                  @for (acc of group.items; track acc.id) {
+                    <button
+                      nxpOption
+                      [selected]="account() === acc.id"
+                      (click)="account.set(acc.id)"
+                    >
+                      <span
+                        [class]="
+                          'grid h-7 w-7 shrink-0 place-items-center rounded-md text-[11px] font-semibold ' +
+                          acc.avatar
+                        "
+                        >{{ acc.mono }}</span
+                      >
+                      <span class="flex min-w-0 flex-col">
+                        <span class="truncate font-medium text-text-primary">{{
+                          acc.name
+                        }}</span>
+                        <span
+                          class="truncate font-mono text-xs text-text-tertiary"
+                          >{{ acc.handle }}</span
+                        >
+                      </span>
+                      <span
+                        [class]="
+                          'ml-auto shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ' +
+                          acc.planClass
+                        "
+                        >{{ acc.plan }}</span
+                      >
+                      <i
+                        class="ri-check-line shrink-0 text-base text-text-primary transition-opacity duration-fast"
+                        [class.opacity-0]="account() !== acc.id"
+                      ></i>
+                    </button>
+                  }
                 </div>
-              </button>
-              <button
-                nxpOption
-                [selected]="richSelected() === 'billing'"
-                (click)="richSelected.set('billing')"
-              >
-                <svg
-                  class="h-4 w-4 shrink-0 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                  />
-                </svg>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-medium">Billing</span>
-                  <span class="text-xs text-gray-400 dark:text-gray-500"
-                    >Invoices and payment methods</span
-                  >
-                </div>
-                <span
-                  class="ml-auto shrink-0 text-xs font-medium text-blue-500 bg-blue-50 dark:bg-blue-500/10 px-1.5 py-0.5 rounded"
-                  >Pro</span
-                >
-              </button>
-              <button nxpOption [disabled]="true">
-                <svg
-                  class="h-4 w-4 shrink-0 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-                <span class="font-medium">Sign out</span>
-              </button>
+              }
             </nxp-data-list>
           </div>
         </nxp-doc-example>
@@ -613,116 +789,345 @@ export class DataListDemoComponent {
   readonly emptyLabel = signal<string>('No options');
   readonly size = signal<'sm' | 'md' | 'lg'>('md');
   readonly extraClass = signal<string>('');
-  readonly playgroundSelected = signal<string | null>(null);
+  readonly playgroundSelected = signal<string | null>('overview');
 
-  // ── Size demos ──────────────────────────────────────────────────────────
-  readonly dl1 = signal<string | null>(null);
-  readonly dl2 = signal<string | null>(null);
-  readonly dl3 = signal<string | null>(null);
-  readonly dlGroup = signal<string | null>(null);
+  // ── Sizes & empty state ─────────────────────────────────────────────────
+  readonly sortBy = signal<string>('relevance');
+  readonly statusFilter = signal<string>('open');
+  readonly viewDensity = signal<string>('comfortable');
 
-  // ── Checkbox demos ──────────────────────────────────────────────────────
-  readonly todos: TodoItem[] = [
-    { label: 'Review pull request', done: false },
-    { label: 'Update documentation', done: true },
-    { label: 'Fix failing tests', done: false },
-    { label: 'Deploy to staging', done: false },
-    { label: 'Write changelog', done: false },
+  // ── Assignee picker (filterable single-select) ──────────────────────────
+  readonly assigneeQuery = signal('');
+  readonly selectedAssignee = signal<string | null>('sarah');
+
+  readonly people: Person[] = [
+    {
+      id: 'sarah',
+      name: 'Sarah Chen',
+      handle: '@schen',
+      mono: 'SC',
+      role: 'Maintainer',
+    },
+    {
+      id: 'marco',
+      name: 'Marco Rossi',
+      handle: '@mrossi',
+      mono: 'MR',
+      role: 'Reviewer',
+    },
+    {
+      id: 'aisha',
+      name: 'Aisha Khan',
+      handle: '@akhan',
+      mono: 'AK',
+      role: 'Triage',
+    },
+    {
+      id: 'tomas',
+      name: 'Tomás Vega',
+      handle: '@tvega',
+      mono: 'TV',
+      role: 'Reviewer',
+    },
+    {
+      id: 'yuki',
+      name: 'Yuki Tanaka',
+      handle: '@ytanaka',
+      mono: 'YT',
+      role: 'Maintainer',
+    },
+    {
+      id: 'lena',
+      name: 'Lena Fischer',
+      handle: '@lfischer',
+      mono: 'LF',
+      role: 'Contributor',
+    },
   ];
 
-  readonly permissions: Permission[] = [
-    { label: 'Read', description: 'View resources and data', enabled: true },
+  readonly filteredPeople = computed<Person[]>(() => {
+    const q = this.assigneeQuery().trim().toLowerCase();
+    return q
+      ? this.people.filter(
+          (p) =>
+            p.name.toLowerCase().includes(q) ||
+            p.handle.toLowerCase().includes(q) ||
+            p.role.toLowerCase().includes(q),
+        )
+      : this.people;
+  });
+
+  // ── Permission scopes (multi-select) ────────────────────────────────────
+  readonly scopes: Scope[] = [
     {
-      label: 'Write',
-      description: 'Create and modify resources',
+      id: 'read:user',
+      label: 'read:user',
+      description: 'Read access to profile data',
       enabled: true,
     },
     {
-      label: 'Delete',
-      description: 'Remove resources permanently',
+      id: 'repo',
+      label: 'repo',
+      description: 'Full control of private repositories',
+      enabled: true,
+    },
+    {
+      id: 'write:packages',
+      label: 'write:packages',
+      description: 'Upload and publish packages',
       enabled: false,
     },
     {
-      label: 'Admin',
-      description: 'Full system administration',
+      id: 'admin:org',
+      label: 'admin:org',
+      description: 'Manage organization members and teams',
       enabled: false,
+    },
+    {
+      id: 'delete:repo',
+      label: 'delete:repo',
+      description: 'Permanently delete repositories',
+      enabled: false,
+      destructive: true,
     },
   ];
 
-  completedCount = () => this.todos.filter((t) => t.done).length;
-  enabledPermissions = () =>
-    this.permissions
-      .filter((p) => p.enabled)
-      .map((p) => p.label)
+  enabledScopeCount = (): number => this.scopes.filter((s) => s.enabled).length;
+  enabledScopeLabels = (): string =>
+    this.scopes
+      .filter((s) => s.enabled)
+      .map((s) => s.label)
       .join(', ');
 
-  // ── Filter demos ────────────────────────────────────────────────────────
-  readonly countries = [
-    'Argentina',
-    'Australia',
-    'Brazil',
-    'Canada',
-    'China',
-    'France',
-    'Germany',
-    'India',
-    'Italy',
-    'Japan',
-    'Mexico',
-    'Netherlands',
-    'Norway',
-    'South Korea',
-    'Spain',
-    'Sweden',
-    'Switzerland',
-    'United Kingdom',
-    'United States',
+  // ── Command palette ─────────────────────────────────────────────────────
+  readonly cmdQuery = signal('');
+  readonly cmdSelected = signal<string | null>('new-project');
+
+  readonly commandGroups: CommandGroup[] = [
+    {
+      label: 'Suggestions',
+      items: [
+        {
+          id: 'new-project',
+          label: 'Create New Project…',
+          icon: 'ri-add-box-line',
+          keys: ['⌘', 'N'],
+        },
+        {
+          id: 'import-repo',
+          label: 'Import Git Repository',
+          icon: 'ri-git-branch-line',
+          keys: ['⌘', 'I'],
+        },
+        { id: 'invite', label: 'Invite Team Member', icon: 'ri-user-add-line' },
+      ],
+    },
+    {
+      label: 'Navigation',
+      items: [
+        {
+          id: 'dashboard',
+          label: 'Go to Dashboard',
+          icon: 'ri-dashboard-line',
+          keys: ['G', 'H'],
+        },
+        {
+          id: 'deployments',
+          label: 'Go to Deployments',
+          icon: 'ri-rocket-2-line',
+          keys: ['G', 'D'],
+        },
+        {
+          id: 'analytics',
+          label: 'Go to Analytics',
+          icon: 'ri-line-chart-line',
+          keys: ['G', 'A'],
+        },
+        {
+          id: 'domains',
+          label: 'Go to Domains',
+          icon: 'ri-global-line',
+          keys: ['G', 'M'],
+        },
+      ],
+    },
+    {
+      label: 'Appearance',
+      items: [
+        {
+          id: 'theme-light',
+          label: 'Switch to Light Mode',
+          icon: 'ri-sun-line',
+        },
+        {
+          id: 'theme-dark',
+          label: 'Switch to Dark Mode',
+          icon: 'ri-moon-line',
+        },
+      ],
+    },
   ];
-  readonly countryFilter = signal('');
-  readonly selectedCountry = signal<string | null>(null);
-  readonly filteredCountries = () => {
-    const q = this.countryFilter().toLowerCase();
-    return q
-      ? this.countries.filter((c) => c.toLowerCase().includes(q))
-      : this.countries;
+
+  readonly filteredCommands = (): CommandGroup[] => {
+    const q = this.cmdQuery().trim().toLowerCase();
+    if (!q) return this.commandGroups;
+    return this.commandGroups
+      .map((g) => ({
+        ...g,
+        items: g.items.filter((c) => c.label.toLowerCase().includes(q)),
+      }))
+      .filter((g) => g.items.length > 0);
   };
 
-  readonly languages = [
-    'TypeScript',
-    'JavaScript',
-    'Python',
-    'Rust',
-    'Go',
-    'Java',
-    'C#',
-    'C++',
-    'Ruby',
-    'Swift',
-    'Kotlin',
-    'Dart',
-  ];
-  readonly langFilter = signal('');
-  readonly selectedLangs = signal(new Set<string>());
-  readonly filteredLanguages = () => {
-    const q = this.langFilter().toLowerCase();
-    return q
-      ? this.languages.filter((l) => l.toLowerCase().includes(q))
-      : this.languages;
-  };
-  readonly selectedLangsDisplay = () => [...this.selectedLangs()].join(', ');
+  // ── Model picker ─────────────────────────────────────────────────────────
+  readonly selectedModel = signal<string>('opus');
 
-  toggleLang(lang: string): void {
-    const next = new Set(this.selectedLangs());
-    if (next.has(lang)) {
-      next.delete(lang);
-    } else {
-      next.add(lang);
-    }
-    this.selectedLangs.set(next);
+  readonly models: ModelOption[] = [
+    {
+      id: 'opus',
+      name: 'Claude Opus 4.6',
+      vendor: 'Anthropic',
+      mono: 'A',
+      context: '200K context',
+      recommended: true,
+    },
+    {
+      id: 'sonnet',
+      name: 'Claude Sonnet 4.6',
+      vendor: 'Anthropic',
+      mono: 'A',
+      context: '200K context',
+    },
+    {
+      id: 'haiku',
+      name: 'Claude Haiku 4.5',
+      vendor: 'Anthropic',
+      mono: 'A',
+      context: '200K context',
+    },
+    {
+      id: 'gpt',
+      name: 'GPT-5',
+      vendor: 'OpenAI',
+      mono: 'O',
+      context: '256K context',
+    },
+    {
+      id: 'llama',
+      name: 'Llama 4 Maverick',
+      vendor: 'Local · Ollama',
+      mono: 'L',
+      context: '128K context',
+      disabled: true,
+      note: 'Pulling…',
+    },
+  ];
+
+  // ── Region picker ─────────────────────────────────────────────────────────
+  readonly selectedRegion = signal<string>('iad1');
+
+  readonly regions: Region[] = [
+    { code: 'iad1', name: 'Washington, D.C.', latency: 12, nearest: true },
+    { code: 'sfo1', name: 'San Francisco', latency: 68 },
+    { code: 'cdg1', name: 'Paris', latency: 96 },
+    { code: 'fra1', name: 'Frankfurt', latency: 104 },
+    { code: 'hnd1', name: 'Tokyo', latency: 158 },
+    { code: 'syd1', name: 'Sydney', latency: 191 },
+  ];
+
+  // ── Deployment pipeline ──────────────────────────────────────────────────
+  readonly deployIndex = signal<number | null>(2);
+
+  readonly environments: DeployEnv[] = [
+    {
+      name: 'Development',
+      branch: 'feat/edge-cache',
+      hash: 'a1b9f02',
+      when: 'building now',
+      status: 'Building',
+      dot: 'bg-accent-develop',
+      pill: 'bg-accent-develop/10 text-accent-develop',
+      pulse: true,
+    },
+    {
+      name: 'Preview',
+      branch: 'fix/auth-retry',
+      hash: '7c3d4e1',
+      when: '2m ago',
+      status: 'Ready',
+      dot: 'bg-accent-preview',
+      pill: 'bg-accent-preview/10 text-accent-preview',
+      pulse: false,
+    },
+    {
+      name: 'Production',
+      branch: 'main',
+      hash: 'e91f8a0',
+      when: '14m ago',
+      status: 'Live',
+      dot: 'bg-accent-ship',
+      pill: 'bg-accent-ship/10 text-accent-ship',
+      pulse: false,
+    },
+  ];
+
+  cycleDeploy(direction: number): void {
+    const n = this.environments.length;
+    const current = this.deployIndex() ?? 0;
+    this.deployIndex.set((current + direction + n) % n);
   }
 
-  // ── Rich content demo ───────────────────────────────────────────────────
-  readonly richSelected = signal<string | null>(null);
+  // ── Account switcher ──────────────────────────────────────────────────────
+  readonly account = signal<string>('acme');
+
+  readonly accountGroups: AccountGroup[] = [
+    {
+      label: 'Personal Account',
+      items: [
+        {
+          id: 'sarah',
+          name: 'Sarah Chen',
+          handle: 'sarah-chen',
+          mono: 'SC',
+          plan: 'Hobby',
+          avatar: 'bg-primary text-text-on-accent',
+          planClass: 'bg-bg-neutral-1 text-text-tertiary',
+        },
+      ],
+    },
+    {
+      label: 'Teams',
+      items: [
+        {
+          id: 'acme',
+          name: 'Acme Inc.',
+          handle: 'acme',
+          mono: 'A',
+          plan: 'Pro',
+          avatar: 'bg-bg-neutral-2 text-text-primary shadow-border',
+          planClass: 'bg-badge-blue-bg text-badge-blue-text',
+        },
+        {
+          id: 'monorail',
+          name: 'Monorail Labs',
+          handle: 'monorail-labs',
+          mono: 'M',
+          plan: 'Enterprise',
+          avatar: 'bg-primary text-text-on-accent',
+          planClass: 'bg-primary text-text-on-accent',
+        },
+        {
+          id: 'northwind',
+          name: 'Northwind',
+          handle: 'northwind',
+          mono: 'N',
+          plan: 'Hobby',
+          avatar: 'bg-bg-neutral-2 text-text-primary shadow-border',
+          planClass: 'bg-bg-neutral-1 text-text-tertiary',
+        },
+      ],
+    },
+  ];
 
   // ── Example source snippets shown inside <nxp-doc-example> tabs ─────────
   readonly playgroundHtml = `<nxp-data-list
@@ -730,17 +1135,26 @@ export class DataListDemoComponent {
   [size]="size()"
   [emptyLabel]="emptyLabel()"
 >
-  <button nxpOption [selected]="selected() === 'a'" (click)="selected.set('a')">Option A</button>
-  <button nxpOption [selected]="selected() === 'b'" (click)="selected.set('b')">Option B</button>
-  <button nxpOption [selected]="selected() === 'c'" (click)="selected.set('c')">Option C</button>
-  <button nxpOption [disabled]="true">Disabled</button>
+  <button nxpOption [selected]="selected() === 'overview'" (click)="selected.set('overview')">
+    <i class="ri-bar-chart-box-line"></i>
+    <span class="flex-1">Overview</span>
+  </button>
+  <button nxpOption [selected]="selected() === 'activity'" (click)="selected.set('activity')">
+    <i class="ri-pulse-line"></i>
+    <span class="flex-1">Activity</span>
+  </button>
+  <button nxpOption [selected]="selected() === 'settings'" (click)="selected.set('settings')">
+    <i class="ri-settings-3-line"></i>
+    <span class="flex-1">Settings</span>
+  </button>
+  <button nxpOption [disabled]="true">
+    <i class="ri-lock-2-line"></i>
+    <span class="flex-1">Billing</span>
+  </button>
 </nxp-data-list>`;
 
   readonly playgroundTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import {
-  DataListComponent,
-  OptionDirective,
-} from '@ngxpro/components/data-list';
+import { DataListComponent, OptionDirective } from '@ngxpro/components/data-list';
 
 @Component({
   selector: 'app-data-list-playground',
@@ -752,36 +1166,34 @@ export class DataListPlaygroundExample {
   readonly label = signal<string>('Playground list');
   readonly emptyLabel = signal<string>('No options');
   readonly size = signal<'sm' | 'md' | 'lg'>('md');
-  readonly selected = signal<string | null>(null);
+  readonly selected = signal<string | null>('overview');
 }`;
 
   readonly sizesHtml = `<!-- sm -->
-<nxp-data-list size="sm" label="Compact list">
-  <button nxpOption [selected]="dl1() === 'a'" (click)="dl1.set('a')">Option A</button>
-  <button nxpOption [selected]="dl1() === 'b'" (click)="dl1.set('b')">Option B</button>
-  <button nxpOption [disabled]="true">Disabled</button>
+<nxp-data-list size="sm" label="Sort by">
+  <button nxpOption [selected]="sortBy() === 'relevance'" (click)="sortBy.set('relevance')">Relevance</button>
+  <button nxpOption [selected]="sortBy() === 'newest'" (click)="sortBy.set('newest')">Newest first</button>
+  <button nxpOption [selected]="sortBy() === 'oldest'" (click)="sortBy.set('oldest')">Oldest first</button>
 </nxp-data-list>
 
-<!-- md (default) -->
-<nxp-data-list label="Default list">
-  <button nxpOption [selected]="dl2() === 'x'" (click)="dl2.set('x')">Option X</button>
-  <button nxpOption [selected]="dl2() === 'y'" (click)="dl2.set('y')">Option Y</button>
+<!-- md (default) — note the disabled option -->
+<nxp-data-list label="Filter issues">
+  <button nxpOption [selected]="statusFilter() === 'all'" (click)="statusFilter.set('all')">All issues</button>
+  <button nxpOption [selected]="statusFilter() === 'open'" (click)="statusFilter.set('open')">Open</button>
+  <button nxpOption [disabled]="true">Archived</button>
 </nxp-data-list>
 
 <!-- lg -->
-<nxp-data-list size="lg" label="Large list">
-  <button nxpOption [selected]="dl3() === '1'" (click)="dl3.set('1')">Item 1</button>
-  <button nxpOption [selected]="dl3() === '2'" (click)="dl3.set('2')">Item 2</button>
+<nxp-data-list size="lg" label="Density">
+  <button nxpOption [selected]="viewDensity() === 'comfortable'" (click)="viewDensity.set('comfortable')">Comfortable</button>
+  <button nxpOption [selected]="viewDensity() === 'compact'" (click)="viewDensity.set('compact')">Compact</button>
 </nxp-data-list>
 
-<!-- Empty -->
-<nxp-data-list emptyLabel="No options available" />`;
+<!-- empty state -->
+<nxp-data-list label="Saved views" emptyLabel="No saved views yet" />`;
 
   readonly sizesTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import {
-  DataListComponent,
-  OptionDirective,
-} from '@ngxpro/components/data-list';
+import { DataListComponent, OptionDirective } from '@ngxpro/components/data-list';
 
 @Component({
   selector: 'app-data-list-sizes',
@@ -790,236 +1202,396 @@ import {
   templateUrl: './sizes.html',
 })
 export class DataListSizesExample {
-  readonly dl1 = signal<string | null>(null);
-  readonly dl2 = signal<string | null>(null);
-  readonly dl3 = signal<string | null>(null);
+  readonly sortBy = signal('relevance');
+  readonly statusFilter = signal('open');
+  readonly viewDensity = signal('comfortable');
 }`;
 
-  readonly groupedHtml = `<nxp-data-list label="Grouped options" size="sm">
-  <div nxpOptGroup label="Fruits">
-    <button nxpOption [selected]="dlGroup() === 'apple'" (click)="dlGroup.set('apple')">Apple</button>
-    <button nxpOption [selected]="dlGroup() === 'banana'" (click)="dlGroup.set('banana')">Banana</button>
-    <button nxpOption [selected]="dlGroup() === 'cherry'" (click)="dlGroup.set('cherry')">Cherry</button>
-  </div>
-  <div nxpOptGroup label="Vegetables">
-    <button nxpOption [selected]="dlGroup() === 'carrot'" (click)="dlGroup.set('carrot')">Carrot</button>
-    <button nxpOption [selected]="dlGroup() === 'pea'" (click)="dlGroup.set('pea')">Pea</button>
-  </div>
-  <div nxpOptGroup label="Grains">
-    <button nxpOption [disabled]="true">Wheat (unavailable)</button>
-    <button nxpOption [selected]="dlGroup() === 'rice'" (click)="dlGroup.set('rice')">Rice</button>
-  </div>
+  readonly assigneeHtml = `<!-- Search field above the list narrows the options -->
+<input
+  type="text"
+  placeholder="Assign to…"
+  [ngModel]="assigneeQuery()"
+  (ngModelChange)="assigneeQuery.set($event)"
+/>
+
+<nxp-data-list
+  label="Assignees"
+  [emptyLabel]="'No people match ‘' + assigneeQuery() + '’'"
+>
+  @for (p of filteredPeople(); track p.id) {
+    <button nxpOption [selected]="selectedAssignee() === p.id" (click)="selectedAssignee.set(p.id)">
+      <span class="grid h-7 w-7 place-items-center rounded-full bg-bg-neutral-2 font-mono text-[11px] font-semibold shadow-border">
+        {{ p.mono }}
+      </span>
+      <span class="flex flex-col">
+        <span>{{ p.name }}</span>
+        <span class="font-mono text-xs text-text-tertiary">{{ p.handle }} · {{ p.role }}</span>
+      </span>
+      <i class="ri-check-line ml-auto" [class.opacity-0]="selectedAssignee() !== p.id"></i>
+    </button>
+  }
 </nxp-data-list>`;
 
-  readonly groupedTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import {
-  DataListComponent,
-  OptGroupDirective,
-  OptionDirective,
-} from '@ngxpro/components/data-list';
+  readonly assigneeTs = `import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DataListComponent, OptionDirective } from '@ngxpro/components/data-list';
+
+interface Person {
+  id: string;
+  name: string;
+  handle: string;
+  mono: string;
+  role: string;
+}
 
 @Component({
-  selector: 'app-data-list-grouped',
-  imports: [DataListComponent, OptGroupDirective, OptionDirective],
+  selector: 'app-data-list-assignee',
+  imports: [FormsModule, DataListComponent, OptionDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './grouped.html',
+  templateUrl: './assignee.html',
 })
-export class DataListGroupedExample {
-  readonly dlGroup = signal<string | null>(null);
+export class DataListAssigneeExample {
+  readonly assigneeQuery = signal('');
+  readonly selectedAssignee = signal<string | null>('sarah');
+
+  readonly people: Person[] = [
+    { id: 'sarah', name: 'Sarah Chen', handle: '@schen', mono: 'SC', role: 'Maintainer' },
+    { id: 'marco', name: 'Marco Rossi', handle: '@mrossi', mono: 'MR', role: 'Reviewer' },
+    /* … */
+  ];
+
+  readonly filteredPeople = computed(() => {
+    const q = this.assigneeQuery().trim().toLowerCase();
+    return q
+      ? this.people.filter((p) => p.name.toLowerCase().includes(q) || p.handle.toLowerCase().includes(q))
+      : this.people;
+  });
 }`;
 
-  readonly checkboxesHtml = `<!-- Todo list -->
-<nxp-data-list label="Todo items">
-  @for (item of todos; track item.label) {
-    <button nxpOption (click)="item.done = !item.done">
+  readonly scopesHtml = `<!-- Binding [selected] on 2+ options auto-suppresses the single-selection pill -->
+<nxp-data-list size="lg" label="Token scopes">
+  @for (scope of scopes; track scope.id) {
+    <button nxpOption [selected]="scope.enabled" (click)="scope.enabled = !scope.enabled">
       <input
         type="checkbox"
         nxpCheckbox
         size="s"
-        [ngModel]="item.done"
+        [ngModel]="scope.enabled"
         (click)="$event.stopPropagation()"
-        (ngModelChange)="item.done = $event"
+        (ngModelChange)="scope.enabled = $event"
       />
-      <span [class.line-through]="item.done">{{ item.label }}</span>
-    </button>
-  }
-</nxp-data-list>
-
-<!-- Permissions list -->
-<nxp-data-list label="Permissions" size="lg">
-  @for (perm of permissions; track perm.label) {
-    <button nxpOption (click)="perm.enabled = !perm.enabled">
-      <input type="checkbox" nxpCheckbox size="s" [ngModel]="perm.enabled"
-        (click)="$event.stopPropagation()"
-        (ngModelChange)="perm.enabled = $event" />
-      <div class="flex flex-col gap-0.5 min-w-0">
-        <span class="font-medium truncate">{{ perm.label }}</span>
-        <span class="text-xs text-text-tertiary truncate">{{ perm.description }}</span>
-      </div>
+      <span class="flex flex-col">
+        <span class="flex items-center gap-2">
+          <span class="font-mono text-sm">{{ scope.label }}</span>
+          @if (scope.destructive) {
+            <span class="rounded-full bg-status-negative-pale px-1.5 text-[10px] text-status-negative">destructive</span>
+          }
+        </span>
+        <span class="text-xs text-text-tertiary">{{ scope.description }}</span>
+      </span>
     </button>
   }
 </nxp-data-list>`;
 
-  readonly checkboxesTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
+  readonly scopesTs = `import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NxpCheckboxDirective } from '@ngxpro/cdk/components/checkbox';
-import {
-  DataListComponent,
-  OptionDirective,
-} from '@ngxpro/components/data-list';
+import { DataListComponent, OptionDirective } from '@ngxpro/components/data-list';
 
-interface TodoItem {
-  label: string;
-  done: boolean;
-}
-
-interface Permission {
+interface Scope {
+  id: string;
   label: string;
   description: string;
   enabled: boolean;
+  destructive?: boolean;
 }
 
 @Component({
-  selector: 'app-data-list-checkboxes',
-  imports: [
-    FormsModule,
-    NxpCheckboxDirective,
-    DataListComponent,
-    OptionDirective,
-  ],
+  selector: 'app-data-list-scopes',
+  imports: [FormsModule, NxpCheckboxDirective, DataListComponent, OptionDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './checkboxes.html',
+  templateUrl: './scopes.html',
 })
-export class DataListCheckboxesExample {
-  readonly todos: TodoItem[] = [
-    { label: 'Review pull request', done: false },
-    { label: 'Update documentation', done: true },
-    { label: 'Fix failing tests', done: false },
-  ];
-
-  readonly permissions: Permission[] = [
-    { label: 'Read', description: 'View resources and data', enabled: true },
-    { label: 'Write', description: 'Create and modify resources', enabled: true },
-    { label: 'Delete', description: 'Remove resources permanently', enabled: false },
+export class DataListScopesExample {
+  readonly scopes: Scope[] = [
+    { id: 'read:user', label: 'read:user', description: 'Read access to profile data', enabled: true },
+    { id: 'repo', label: 'repo', description: 'Full control of private repositories', enabled: true },
+    { id: 'delete:repo', label: 'delete:repo', description: 'Permanently delete repositories', enabled: false, destructive: true },
+    /* … */
   ];
 }`;
 
-  readonly filterHtml = `<!-- Country picker -->
+  readonly commandHtml = `<!-- Search -->
 <input
   type="text"
-  placeholder="Search countries..."
-  [ngModel]="countryFilter()"
-  (ngModelChange)="countryFilter.set($event)"
+  placeholder="Type a command or search…"
+  [ngModel]="cmdQuery()"
+  (ngModelChange)="cmdQuery.set($event)"
 />
-<nxp-data-list size="sm" label="Countries"
-  [emptyLabel]="'No countries match ‘' + countryFilter() + '’'">
-  @for (c of filteredCountries(); track c) {
-    <button nxpOption [selected]="selectedCountry() === c" (click)="selectedCountry.set(c)">
-      {{ c }}
+
+<!-- Grouped, filterable command list -->
+<nxp-data-list label="Commands" [emptyLabel]="'No commands matching “' + cmdQuery() + '”'">
+  @for (group of filteredCommands(); track group.label) {
+    <div nxpOptGroup [label]="group.label">
+      <div class="px-2 font-mono text-[10px] uppercase text-text-quaternary">{{ group.label }}</div>
+      @for (cmd of group.items; track cmd.id) {
+        <button nxpOption [selected]="cmdSelected() === cmd.id" (click)="cmdSelected.set(cmd.id)">
+          <i [class]="cmd.icon + ' text-text-tertiary'"></i>
+          <span class="flex-1 truncate">{{ cmd.label }}</span>
+          @if (cmd.keys; as keys) {
+            <span class="ml-auto flex items-center gap-1">
+              @for (k of keys; track $index) {
+                <kbd class="rounded-sm px-1 font-mono shadow-border-light">{{ k }}</kbd>
+              }
+            </span>
+          }
+        </button>
+      }
+    </div>
+  }
+</nxp-data-list>`;
+
+  readonly commandTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DataListComponent, OptGroupDirective, OptionDirective } from '@ngxpro/components/data-list';
+
+interface Command { id: string; label: string; icon: string; keys?: string[]; }
+
+@Component({
+  selector: 'app-data-list-command',
+  imports: [FormsModule, DataListComponent, OptGroupDirective, OptionDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './command.html',
+})
+export class DataListCommandExample {
+  readonly cmdQuery = signal('');
+  readonly cmdSelected = signal<string | null>('new-project');
+
+  readonly commandGroups = [
+    {
+      label: 'Suggestions',
+      items: [
+        { id: 'new-project', label: 'Create New Project…', icon: 'ri-add-box-line', keys: ['⌘', 'N'] },
+        { id: 'invite', label: 'Invite Team Member', icon: 'ri-user-add-line' },
+      ],
+    },
+    {
+      label: 'Navigation',
+      items: [
+        { id: 'dashboard', label: 'Go to Dashboard', icon: 'ri-dashboard-line', keys: ['G', 'H'] },
+        { id: 'deployments', label: 'Go to Deployments', icon: 'ri-rocket-2-line', keys: ['G', 'D'] },
+      ],
+    },
+  ];
+
+  readonly filteredCommands = () => {
+    const q = this.cmdQuery().trim().toLowerCase();
+    if (!q) return this.commandGroups;
+    return this.commandGroups
+      .map((g) => ({ ...g, items: g.items.filter((c) => c.label.toLowerCase().includes(q)) }))
+      .filter((g) => g.items.length > 0);
+  };
+}`;
+
+  readonly modelHtml = `<!-- Single-select: only one option carries [selected], so the pill auto-derives -->
+<nxp-data-list size="lg" label="Select model">
+  @for (model of models; track model.id) {
+    <button
+      nxpOption
+      [selected]="selectedModel() === model.id"
+      [disabled]="model.disabled ?? false"
+      (click)="selectedModel.set(model.id)"
+    >
+      <span class="grid h-8 w-8 place-items-center rounded-lg bg-bg-neutral-2 font-mono text-xs font-semibold shadow-border">
+        {{ model.mono }}
+      </span>
+      <span class="flex flex-col">
+        <span class="flex items-center gap-2">
+          {{ model.name }}
+          @if (model.recommended) {
+            <span class="rounded-full bg-badge-blue-bg px-2 text-[10px] text-badge-blue-text">Recommended</span>
+          }
+        </span>
+        <span class="font-mono text-xs text-text-tertiary">{{ model.vendor }} · {{ model.context }}</span>
+      </span>
+      @if (model.note) {
+        <span class="ml-auto font-mono text-[10px] text-text-tertiary">{{ model.note }}</span>
+      } @else {
+        <i class="ri-check-line ml-auto" [class.opacity-0]="selectedModel() !== model.id"></i>
+      }
+    </button>
+  }
+</nxp-data-list>`;
+
+  readonly modelTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { DataListComponent, OptionDirective } from '@ngxpro/components/data-list';
+
+interface ModelOption {
+  id: string;
+  name: string;
+  vendor: string;
+  mono: string;
+  context: string;
+  recommended?: boolean;
+  disabled?: boolean;
+  note?: string;
+}
+
+@Component({
+  selector: 'app-data-list-model',
+  imports: [DataListComponent, OptionDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './model.html',
+})
+export class DataListModelExample {
+  readonly selectedModel = signal<string>('opus');
+
+  readonly models: ModelOption[] = [
+    { id: 'opus', name: 'Claude Opus 4.6', vendor: 'Anthropic', mono: 'A', context: '200K context', recommended: true },
+    { id: 'sonnet', name: 'Claude Sonnet 4.6', vendor: 'Anthropic', mono: 'A', context: '200K context' },
+    { id: 'gpt', name: 'GPT-5', vendor: 'OpenAI', mono: 'O', context: '256K context' },
+    { id: 'llama', name: 'Llama 4 Maverick', vendor: 'Local · Ollama', mono: 'L', context: '128K context', disabled: true, note: 'Pulling…' },
+  ];
+}`;
+
+  readonly regionHtml = `<nxp-data-list size="lg" label="Deploy region">
+  @for (region of regions; track region.code) {
+    <button nxpOption [selected]="selectedRegion() === region.code" (click)="selectedRegion.set(region.code)">
+      <span class="rounded-md bg-bg-neutral-1 px-1.5 py-0.5 font-mono text-[11px] font-medium text-text-secondary">
+        {{ region.code }}
+      </span>
+      <span class="flex-1 truncate">{{ region.name }}</span>
+      @if (region.nearest) {
+        <span class="rounded-full bg-badge-blue-bg px-2 text-[10px] text-badge-blue-text">Nearest</span>
+      }
+      <span class="ml-auto w-14 text-right font-mono text-xs"
+            [class.text-text-primary]="region.nearest"
+            [class.text-text-tertiary]="!region.nearest">{{ region.latency }} ms</span>
+    </button>
+  }
+</nxp-data-list>`;
+
+  readonly regionTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { DataListComponent, OptionDirective } from '@ngxpro/components/data-list';
+
+interface Region { code: string; name: string; latency: number; nearest?: boolean; }
+
+@Component({
+  selector: 'app-data-list-region',
+  imports: [DataListComponent, OptionDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './region.html',
+})
+export class DataListRegionExample {
+  readonly selectedRegion = signal<string>('iad1');
+
+  readonly regions: Region[] = [
+    { code: 'iad1', name: 'Washington, D.C.', latency: 12, nearest: true },
+    { code: 'sfo1', name: 'San Francisco', latency: 68 },
+    { code: 'fra1', name: 'Frankfurt', latency: 104 },
+    /* … */
+  ];
+}`;
+
+  readonly deployHtml = `<nxp-data-list size="lg" label="Deploy target" [(selectedIndex)]="deployIndex">
+  @for (env of environments; track env.name; let i = $index) {
+    <button nxpOption [selected]="deployIndex() === i" (click)="deployIndex.set(i)">
+      <span [class]="'h-2.5 w-2.5 rounded-full ' + env.dot"></span>
+      <span class="flex flex-col">
+        <span class="font-medium">{{ env.name }}</span>
+        <span class="font-mono text-xs text-text-tertiary">{{ env.branch }} · {{ env.hash }} · {{ env.when }}</span>
+      </span>
+      <span [class]="'ml-auto rounded-full px-2 py-0.5 text-[11px] ' + env.pill">{{ env.status }}</span>
     </button>
   }
 </nxp-data-list>
 
-<!-- Multi-select with checkboxes -->
-<input
-  type="text"
-  placeholder="Filter languages..."
-  [ngModel]="langFilter()"
-  (ngModelChange)="langFilter.set($event)"
-/>
-<nxp-data-list size="sm" label="Languages" [emptyLabel]="'No match'">
-  @for (lang of filteredLanguages(); track lang) {
-    <button nxpOption (click)="toggleLang(lang)">
-      <input type="checkbox" nxpCheckbox size="s"
-        [ngModel]="selectedLangs().has(lang)"
-        (click)="$event.stopPropagation()"
-        (ngModelChange)="toggleLang(lang)" />
-      {{ lang }}
-    </button>
-  }
-</nxp-data-list>`;
+<!-- Drive the listbox selection from outside via [(selectedIndex)] -->
+<button (click)="cycleDeploy(-1)">Prev</button>
+<button (click)="cycleDeploy(1)">Next</button>
+<span>Target: {{ environments[deployIndex() ?? 0]?.name }} · index {{ deployIndex() }}</span>`;
 
-  readonly filterTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NxpCheckboxDirective } from '@ngxpro/cdk/components/checkbox';
-import {
-  DataListComponent,
-  OptionDirective,
-} from '@ngxpro/components/data-list';
+  readonly deployTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { DataListComponent, OptionDirective } from '@ngxpro/components/data-list';
+
+interface DeployEnv {
+  name: string; branch: string; hash: string; when: string;
+  status: string; dot: string; pill: string;
+}
 
 @Component({
-  selector: 'app-data-list-filter',
-  imports: [
-    FormsModule,
-    NxpCheckboxDirective,
-    DataListComponent,
-    OptionDirective,
-  ],
+  selector: 'app-data-list-deploy',
+  imports: [DataListComponent, OptionDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './filter.html',
+  templateUrl: './deploy.html',
 })
-export class DataListFilterExample {
-  readonly countries = ['Argentina', 'Australia', 'Brazil', 'Canada', /* … */];
-  readonly countryFilter = signal('');
-  readonly selectedCountry = signal<string | null>(null);
-  readonly filteredCountries = () => {
-    const q = this.countryFilter().toLowerCase();
-    return q ? this.countries.filter((c) => c.toLowerCase().includes(q)) : this.countries;
-  };
+export class DataListDeployExample {
+  readonly deployIndex = signal<number | null>(2);
 
-  readonly languages = ['TypeScript', 'JavaScript', 'Python', /* … */];
-  readonly langFilter = signal('');
-  readonly selectedLangs = signal(new Set<string>());
-  readonly filteredLanguages = () => {
-    const q = this.langFilter().toLowerCase();
-    return q ? this.languages.filter((l) => l.toLowerCase().includes(q)) : this.languages;
-  };
+  readonly environments: DeployEnv[] = [
+    { name: 'Development', branch: 'feat/edge-cache', hash: 'a1b9f02', when: 'building now', status: 'Building', dot: 'bg-accent-develop', pill: 'bg-accent-develop/10 text-accent-develop' },
+    { name: 'Preview', branch: 'fix/auth-retry', hash: '7c3d4e1', when: '2m ago', status: 'Ready', dot: 'bg-accent-preview', pill: 'bg-accent-preview/10 text-accent-preview' },
+    { name: 'Production', branch: 'main', hash: 'e91f8a0', when: '14m ago', status: 'Live', dot: 'bg-accent-ship', pill: 'bg-accent-ship/10 text-accent-ship' },
+  ];
 
-  toggleLang(lang: string): void {
-    const next = new Set(this.selectedLangs());
-    next.has(lang) ? next.delete(lang) : next.add(lang);
-    this.selectedLangs.set(next);
+  cycleDeploy(direction: number): void {
+    const n = this.environments.length;
+    const current = this.deployIndex() ?? 0;
+    this.deployIndex.set((current + direction + n) % n);
   }
 }`;
 
-  readonly richHtml = `<nxp-data-list label="Actions">
-  <button nxpOption [selected]="richSelected() === 'profile'"
-          (click)="richSelected.set('profile')">
-    <svg class="h-4 w-4 shrink-0 text-gray-400" ...>...</svg>
-    <div class="flex flex-col min-w-0">
-      <span class="font-medium">Profile</span>
-      <span class="text-xs text-text-tertiary">View and edit your profile</span>
+  readonly teamHtml = `<nxp-data-list size="lg" label="Switch account">
+  @for (group of accountGroups; track group.label) {
+    <div nxpOptGroup [label]="group.label">
+      <div class="px-2 font-mono text-[10px] uppercase text-text-quaternary">{{ group.label }}</div>
+      @for (acc of group.items; track acc.id) {
+        <button nxpOption [selected]="account() === acc.id" (click)="account.set(acc.id)">
+          <span [class]="'grid h-7 w-7 place-items-center rounded-md text-[11px] font-semibold ' + acc.avatar">{{ acc.mono }}</span>
+          <span class="flex flex-col">
+            <span class="font-medium">{{ acc.name }}</span>
+            <span class="font-mono text-xs text-text-tertiary">{{ acc.handle }}</span>
+          </span>
+          <span [class]="'ml-auto rounded-full px-2 py-0.5 text-[11px] ' + acc.planClass">{{ acc.plan }}</span>
+          <i class="ri-check-line" [class.opacity-0]="account() !== acc.id"></i>
+        </button>
+      }
     </div>
-  </button>
-  <button nxpOption [selected]="richSelected() === 'billing'"
-          (click)="richSelected.set('billing')">
-    <svg ...>...</svg>
-    <div class="flex flex-col min-w-0">
-      <span class="font-medium">Billing</span>
-      <span class="text-xs text-text-tertiary">Invoices and payment methods</span>
-    </div>
-    <span class="ml-auto text-xs font-medium px-1.5 py-0.5 rounded
-                 bg-blue-50 text-blue-500">Pro</span>
-  </button>
-  <button nxpOption [disabled]="true">
-    <svg ...>...</svg>
-    <span class="font-medium">Sign out</span>
-  </button>
+  }
 </nxp-data-list>`;
 
-  readonly richTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import {
-  DataListComponent,
-  OptionDirective,
-} from '@ngxpro/components/data-list';
+  readonly teamTs = `import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { DataListComponent, OptGroupDirective, OptionDirective } from '@ngxpro/components/data-list';
+
+interface Account {
+  id: string; name: string; handle: string; mono: string;
+  plan: string; avatar: string; planClass: string;
+}
 
 @Component({
-  selector: 'app-data-list-rich',
-  imports: [DataListComponent, OptionDirective],
+  selector: 'app-data-list-team',
+  imports: [DataListComponent, OptGroupDirective, OptionDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './rich.html',
+  templateUrl: './team.html',
 })
-export class DataListRichExample {
-  readonly richSelected = signal<string | null>(null);
+export class DataListTeamExample {
+  readonly account = signal<string>('acme');
+
+  readonly accountGroups = [
+    {
+      label: 'Personal Account',
+      items: [
+        { id: 'sarah', name: 'Sarah Chen', handle: 'sarah-chen', mono: 'SC', plan: 'Hobby', avatar: 'bg-primary text-text-on-accent', planClass: 'bg-bg-neutral-1 text-text-tertiary' },
+      ],
+    },
+    {
+      label: 'Teams',
+      items: [
+        { id: 'acme', name: 'Acme Inc.', handle: 'acme', mono: 'A', plan: 'Pro', avatar: 'bg-bg-neutral-2 text-text-primary shadow-border', planClass: 'bg-badge-blue-bg text-badge-blue-text' },
+        { id: 'monorail', name: 'Monorail Labs', handle: 'monorail-labs', mono: 'M', plan: 'Enterprise', avatar: 'bg-primary text-text-on-accent', planClass: 'bg-primary text-text-on-accent' },
+      ],
+    },
+  ];
 }`;
 }

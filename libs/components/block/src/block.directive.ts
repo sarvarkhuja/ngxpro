@@ -94,6 +94,15 @@ export class NxpBlockDirective {
     return cx(
       'relative flex cursor-pointer select-none items-start gap-3 rounded-m border',
       'transition-[background-color,border-color,box-shadow] duration-normal ease-out',
+      // A nested control (e.g. <nxp-radio>) only toggles when its own inner
+      // <label> is clicked, leaving the block's padding as a dead zone where
+      // clicks land but nothing selects. Stretch that inner label with an
+      // absolute overlay so its hit area spans the whole (position:relative)
+      // block — clicking anywhere on the card now fires the native label
+      // toggle. Inert when the block wraps no descendant <label>.
+      !disabled && [
+        "[&_label]:after:absolute [&_label]:after:inset-0 [&_label]:after:content-['']",
+      ],
       // When inside a group, the overlay handles hover/focus/checked — just lift content above overlays
       inGroup && 'z-10',
       // Standalone: block handles its own hover/focus/checked styles —

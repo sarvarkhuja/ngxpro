@@ -7,6 +7,7 @@ import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
 import {
   NxpRadio,
   type NxpRadioColor,
+  type NxpRadioCompareWith,
   type NxpRadioSize,
 } from '@ngxpro/cdk/components/radio';
 import { RadioApiComponent } from './radio-api.component';
@@ -355,7 +356,8 @@ export class RadioDemoComponent {
   readonly fruitControl = new FormControl<Fruit | null>(this.fruits[0]);
 
   /** Custom equality that compares fruits by id. */
-  readonly fruitMatcher = (a: Fruit, b: Fruit): boolean => a?.id === b?.id;
+  readonly fruitMatcher: NxpRadioCompareWith = (a, b) =>
+    (a as Fruit)?.id === (b as Fruit)?.id;
 
   setFruitById(id: number): void {
     // Simulate a new object reference (e.g., fetched from API) with the same id
@@ -533,7 +535,7 @@ export class ReactiveFormsRadioExample {
   readonly compareTs = `import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NxpRadio } from '@ngxpro/cdk/components/radio';
+import { NxpRadio, type NxpRadioCompareWith } from '@ngxpro/cdk/components/radio';
 
 interface Fruit {
   id: number;
@@ -556,7 +558,8 @@ export class CompareWithRadioExample {
   readonly fruitControl = new FormControl<Fruit | null>(this.fruits[0]);
 
   /** Custom equality that compares fruits by id. */
-  readonly fruitMatcher = (a: Fruit, b: Fruit): boolean => a?.id === b?.id;
+  readonly fruitMatcher: NxpRadioCompareWith = (a, b) =>
+    (a as Fruit)?.id === (b as Fruit)?.id;
 
   setFruitById(id: number): void {
     const found = this.fruits.find((f) => f.id === id);

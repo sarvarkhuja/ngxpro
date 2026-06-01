@@ -54,11 +54,11 @@ import { NxpDocApi } from '@ngxpro/addon-doc-lib/api';
   `,
 })
 export class IconApiComponent {
-  readonly icon = model<string>('ri-home-line');
+  readonly icon = model<string>('ri-rocket-2-line');
   readonly size = model<'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | undefined>(
-    'lg',
+    'xl',
   );
-  readonly class = model<string>('text-gray-700 dark:text-gray-200');
+  readonly class = model<string>('text-text-primary');
 
   readonly sizeOptions = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
 }

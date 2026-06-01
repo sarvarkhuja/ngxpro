@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "nx run-many -t build --parallel=3 -p cdk,core,components,blocks,fintech",
+    "build:showcase": "nx build showcase --configuration=production",
     "test": "nx run-many -t test --parallel=3 -p cdk,core,components,blocks,fintech",
     "lint": "nx run-many -t lint --parallel=3 -p cdk,core,components,blocks,fintech",
     "format": "nx format:write",

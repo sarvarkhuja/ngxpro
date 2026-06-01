@@ -27,7 +27,9 @@ export const appRoutes: Route[] = [
   {
     path: 'button',
     loadComponent: () =>
-      import('./button/button.component').then((m) => m.ButtonDemoComponent),
+      import('./button/button-demo.component').then(
+        (m) => m.ButtonDemoComponent,
+      ),
   },
   {
     path: 'calendar',
@@ -159,13 +161,6 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./switch/switch-demo.component').then(
         (m) => m.SwitchDemoComponent,
-      ),
-  },
-  {
-    path: 'notification',
-    loadComponent: () =>
-      import('./notification/notification-demo.component').then(
-        (m) => m.NotificationDemoComponent,
       ),
   },
   {

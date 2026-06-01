@@ -19,6 +19,10 @@ import {
 import { nxpInjectContext, NxpDynamicComponent } from '@ngxpro/cdk/dynamic';
 import { NxpDocComponentPage } from '@ngxpro/addon-doc-lib/component-page';
 import { NxpDocExampleComponent } from '@ngxpro/addon-doc-lib/example';
+import {
+  DataListComponent,
+  OptionDirective,
+} from '@ngxpro/components/data-list';
 import { DialogApiComponent } from './dialog-api.component';
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -80,6 +84,7 @@ interface CommandGroup {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  imports: [DataListComponent, OptionDirective],
   styles: [
     `
       nxp-dialog[data-appearance='command'] {
@@ -108,10 +113,10 @@ interface CommandGroup {
         <kbd [class]="s.kbd">esc</kbd>
       </div>
 
-      <div
-        class="max-h-[min(60vh,22rem)] overflow-y-auto p-2"
-        role="listbox"
-        aria-label="Commands"
+      <nxp-data-list
+        label="Commands"
+        [emptyLabel]="'No commands match “' + query() + '”'"
+        [class]="'max-h-[min(60vh,22rem)] overflow-y-auto p-2'"
       >
         @for (group of filteredGroups(); track group.label) {
           <div class="px-2 pb-1 pt-3 first:pt-1">
@@ -119,11 +124,8 @@ interface CommandGroup {
           </div>
           @for (item of group.items; track item.id) {
             <button
-              type="button"
-              role="option"
-              [attr.aria-selected]="activeId() === item.id"
-              class="group flex w-full items-center gap-3 rounded-m px-2 py-2 text-left text-sm transition-colors duration-fast"
-              [class.bg-bg-neutral-1]="activeId() === item.id"
+              nxpOption
+              [selected]="activeId() === item.id"
               (mouseenter)="setActive(item)"
               (click)="select(item)"
             >
@@ -131,7 +133,7 @@ interface CommandGroup {
                 [class]="item.icon + ' text-base text-text-secondary'"
                 aria-hidden="true"
               ></i>
-              <span class="flex-1 text-text-primary">{{ item.label }}</span>
+              <span class="flex-1">{{ item.label }}</span>
               @if (item.kbd) {
                 <span class="flex items-center gap-1">
                   @for (k of item.kbd; track k) {
@@ -141,12 +143,8 @@ interface CommandGroup {
               }
             </button>
           }
-        } @empty {
-          <div class="px-3 py-10 text-center text-sm text-text-tertiary">
-            No commands match “{{ query() }}”.
-          </div>
         }
-      </div>
+      </nxp-data-list>
 
       <div
         class="flex items-center gap-4 border-t border-border-normal px-4 py-2.5 text-[11px] text-text-tertiary"

@@ -4,10 +4,14 @@ export const SHOWCASE_PAGES: NxpDocRoutePages = [
   { title: 'Home', route: '/' },
 
   { section: 'Layout', title: 'Accordion', route: '/accordion' },
-  { section: 'Layout', title: 'Block', route: '/block' },
   { section: 'Layout', title: 'Segmented', route: '/segmented' },
   { section: 'Layout', title: 'Tree', route: '/tree' },
-
+  { section: 'Display', title: 'Badge', route: '/badge' },
+  { section: 'Display', title: 'Button', route: '/button' },
+  { section: 'Display', title: 'Data List', route: '/data-list' },
+  { section: 'Display', title: 'Icon', route: '/icon' },
+  { section: 'Display', title: 'Link', route: '/link' },
+  { section: 'Display', title: 'Text Morph', route: '/text-morph' },
   { section: 'Inputs', title: 'Combo Box', route: '/combo-box' },
   { section: 'Inputs', title: 'Input', route: '/input' },
   { section: 'Inputs', title: 'Input Chip', route: '/input-chip' },
@@ -45,18 +49,9 @@ export const SHOWCASE_PAGES: NxpDocRoutePages = [
 
   { section: 'Feedback', title: 'Alert', route: '/alert' },
   { section: 'Feedback', title: 'Dialog', route: '/dialog' },
-  { section: 'Feedback', title: 'Drawer', route: '/drawer' },
   { section: 'Feedback', title: 'Dropdown', route: '/dropdown' },
   { section: 'Feedback', title: 'Menu', route: '/menu' },
-  { section: 'Feedback', title: 'Notification', route: '/notification' },
   { section: 'Feedback', title: 'Tooltip', route: '/tooltip' },
-
-  { section: 'Display', title: 'Badge', route: '/badge' },
-  { section: 'Display', title: 'Button', route: '/button' },
-  { section: 'Display', title: 'Data List', route: '/data-list' },
-  { section: 'Display', title: 'Icon', route: '/icon' },
-  { section: 'Display', title: 'Link', route: '/link' },
-  { section: 'Display', title: 'Text Morph', route: '/text-morph' },
 
   { section: 'Documentation', title: 'Overview', route: '/doc' },
   { section: 'Documentation', title: 'Doc Page Sample', route: '/doc/button' },

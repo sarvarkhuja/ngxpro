@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
+import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 import { tv, type VariantProps } from 'tailwind-variants';
 import { cx } from '@ngxpro/cdk';
 
@@ -138,17 +140,34 @@ export type ButtonSize = NonNullable<
 @Component({
   selector: 'nxp-button, nxp-a-button, button[nxpButton], a[nxpButton]',
   template: `
+    <!--
+      A single <ng-content/> is mandatory: Angular routes default-slot
+      projection to the LAST catch-all <ng-content>, so duplicating it across
+      @if branches drops the content whenever the "losing" branch is active
+      (e.g. icon-only buttons). The content row stays mounted while loading —
+      hidden under the spinner — which preserves the button width for free.
+    -->
+    @if (iconStart() && !isIconOnly()) {
+      <span
+        [class]="iconClasses()"
+        [innerHTML]="iconStartHtml()"
+        [style.opacity]="loading() ? 0 : null"
+      ></span>
+    }
+
+    <span [class]="contentClasses()" [style.opacity]="loading() ? 0 : null">
+      <ng-content />
+    </span>
+
+    @if (iconEnd() && !isIconOnly()) {
+      <span
+        [class]="iconClasses()"
+        [innerHTML]="iconEndHtml()"
+        [style.opacity]="loading() ? 0 : null"
+      ></span>
+    }
+
     @if (loading()) {
-      <!-- Invisible content preserves layout dimensions -->
-      <span class="flex items-center justify-center gap-[inherit] opacity-0">
-        @if (iconStart() && !isIconOnly()) {
-          <span [class]="iconClasses()" [innerHTML]="iconStart()"></span>
-        }
-        <ng-content />
-        @if (iconEnd() && !isIconOnly()) {
-          <span [class]="iconClasses()" [innerHTML]="iconEnd()"></span>
-        }
-      </span>
       <!-- Figure-8 spinner overlay -->
       <span class="absolute inset-0 flex items-center justify-center">
         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -162,26 +181,6 @@ export type ButtonSize = NonNullable<
           />
         </svg>
       </span>
-    } @else {
-      @if (iconStart() && !isIconOnly()) {
-        <span [class]="iconClasses()" [innerHTML]="iconStart()"></span>
-      }
-
-      @if (isIconOnly()) {
-        <span
-          class="[&_svg]:stroke-[1.5] [&_svg]:transition-[stroke-width] [&_svg]:duration-fast group-hover:[&_svg]:stroke-[2]"
-        >
-          <ng-content />
-        </span>
-      } @else {
-        <span>
-          <ng-content />
-        </span>
-      }
-
-      @if (iconEnd() && !isIconOnly()) {
-        <span [class]="iconClasses()" [innerHTML]="iconEnd()"></span>
-      }
     }
   `,
   host: {
@@ -203,6 +202,22 @@ export class ButtonComponent {
 
   /** Icon to display at the end of the button (HTML string or icon name). */
   readonly iconEnd = input<string>('');
+
+  private readonly sanitizer = inject(DomSanitizer);
+
+  /**
+   * Icon markup trusted for `[innerHTML]`. Inline SVG passed to `iconStart` /
+   * `iconEnd` would otherwise be stripped by Angular's HTML sanitizer (SVG
+   * elements are not in the HTML allowlist), leaving the slot empty — so we
+   * bypass it here, mirroring how `NxpIconComponent` renders raw SVG.
+   */
+  protected readonly iconStartHtml = computed<SafeHtml>(() =>
+    this.sanitizer.bypassSecurityTrustHtml(this.iconStart()),
+  );
+
+  protected readonly iconEndHtml = computed<SafeHtml>(() =>
+    this.sanitizer.bypassSecurityTrustHtml(this.iconEnd()),
+  );
 
   /** Whether the button is in a loading state. */
   readonly loading = input<boolean>(false);
@@ -231,6 +246,16 @@ export class ButtonComponent {
   readonly iconClasses = computed(() => this.variants().icon());
 
   readonly spinnerClasses = computed(() => this.variants().spinner());
+
+  /**
+   * Classes for the single projected-content span. Icon-only buttons animate a
+   * projected SVG's stroke on hover (1.5 → 2); text buttons need no extra class.
+   */
+  protected readonly contentClasses = computed(() =>
+    this.isIconOnly()
+      ? '[&_svg]:stroke-[1.5] [&_svg]:transition-[stroke-width] [&_svg]:duration-fast group-hover:[&_svg]:stroke-[2]'
+      : '',
+  );
 }
 
 export { buttonVariants };
